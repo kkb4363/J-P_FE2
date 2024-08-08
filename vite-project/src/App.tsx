@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { isMobile } from "react-device-detect";
+import Mobile from "./pages/mobile/Mobile";
+import Web from "./pages/web/Web";
 
 function App() {
-  const [count, setCount] = useState(0);
-  // web&app
-  return <>page</>;
+  if (isMobile) {
+    return <Mobile />;
+  }
+  return <Web />;
 }
 
 export default App;
