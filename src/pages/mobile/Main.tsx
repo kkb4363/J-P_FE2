@@ -10,7 +10,9 @@ export default function Main() {
 
   return (
     <MainContainer>
-      <Outlet />
+      <OutletBox>
+        <Outlet />
+      </OutletBox>
 
       <Footer>
         <FooterRow>
@@ -40,18 +42,24 @@ export default function Main() {
 
 const MainContainer = styled.div`
   // Todo: mobile 화면 보호 적용
-  padding: 4px 18px 18px 18px;
   width: 100vw;
   height: 100vh;
+  background-color: #fafafa;
 
   display: flex;
   flex-direction: column;
 `;
 
+const OutletBox = styled.div`
+  flex: 1;
+  height: calc(100% - 80px);
+  padding-bottom: 10px;
+`;
+
 const Footer = styled.div`
   height: 80px;
   width: 100%;
-  background-color: #fafafa;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const FooterRow = styled.div`
