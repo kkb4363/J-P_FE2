@@ -70,3 +70,11 @@ img {
   -moz-user-drag: none;
   -o-user-drag: none;
 }
+
+.scrollHidden {
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
