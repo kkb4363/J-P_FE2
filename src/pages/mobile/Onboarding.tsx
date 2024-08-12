@@ -9,7 +9,9 @@ export default function Onboarding() {
       <OnboardingContainer>
         <OnBoardingTopBox>
           <OnboardingTitle>
-            여행을 더 즐겁게, <br /> 함께 계획하고 공유해요!
+            여행을 더 즐겁게, <br />
+            함께 계획하고 공유해요!
+            <br />
             <span>더 특별한 나만의 여행기를 만들어요.</span>
           </OnboardingTitle>
         </OnBoardingTopBox>
@@ -63,6 +65,7 @@ const OnboardingTitle = styled.p<{ subtitle?: boolean }>`
   line-height: 140%;
   color: #fff;
   flex-shrink: 0;
+  white-space: nowrap;
 
   & > span {
     font-size: 14px;
@@ -97,6 +100,7 @@ const JustLookButton = styled.div`
   gap: 8px;
   margin-top: 49px;
   cursor: pointer;
+  white-space: nowrap;
 
   & > p {
     font-family: Pretendard;
