@@ -1,57 +1,50 @@
 import styled from "styled-components";
+import { Outlet } from "react-router-dom";
 
 import { footerTabs } from "../../utils/staticDatas";
 import { TabProps, useDisplayStore } from "../../store/display.store";
-import { Outlet, useLocation } from "react-router-dom";
 
 export default function Main() {
-  // onboading page vs home page
   const { getTabs, setTabs } = useDisplayStore();
-  const location = useLocation();
 
   return (
     <MainContainer>
       <OutletBox>
         <Outlet />
       </OutletBox>
-      {/* onboarding, survey page에 footer 안 보이게 임시 처리*/}
-      {location.pathname !== "/survey" &&
-        location.pathname !== "/onboarding" && (
-          <Footer>
-            <FooterRow>
-              {footerTabs.map((tab, idx) => {
-                const isCurrentTab = getTabs() === tab.label;
-                return (
-                  <FooterTab
-                    key={idx}
-                    onClick={() => setTabs(tab.label as TabProps)}
-                  >
-                    <tab.icon
-                      stroke={isCurrentTab ? "#ffc814" : "#4D4D4D"}
-                    />
-                    <span
-                      style={{
-                        color: isCurrentTab ? "#ffc814" : "#666",
-                      }}
-                    >
-                      {tab.label}
-                    </span>
-                  </FooterTab>
-                );
-              })}
-            </FooterRow>
 
-            <FooterBottom>
-              <div />
-            </FooterBottom>
-          </Footer>
-        )}
+      <Footer>
+        <FooterRow>
+          {footerTabs.map((tab, idx) => {
+            const isCurrentTab = getTabs() === tab.label;
+            return (
+              <FooterTab
+                key={idx}
+                onClick={() => setTabs(tab.label as TabProps)}
+              >
+                <tab.icon stroke={isCurrentTab ? "#ffc814" : "#4D4D4D"} />
+                <span
+                  style={{
+                    color: isCurrentTab ? "#ffc814" : "#666",
+                  }}
+                >
+                  {tab.label}
+                </span>
+              </FooterTab>
+            );
+          })}
+        </FooterRow>
+
+        <FooterBottom>
+          <div />
+        </FooterBottom>
+      </Footer>
     </MainContainer>
   );
 }
 
 const MainContainer = styled.div`
-  // Todo: mobile 화면 보호 적용
+  // Todo: mobile 화면 보호 적용 - 기범
   width: 100vw;
   height: 100vh;
   background-color: #fafafa;

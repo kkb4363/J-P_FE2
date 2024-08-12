@@ -2,14 +2,25 @@ import styled from "styled-components";
 import img from "../../assets/images/onboarding.png";
 import GoogleIcon from "./../../icons/GoogleIcon";
 import ArrowRightIcon from "../../icons/ArrowRightIcon";
+import { useNavigate } from "react-router-dom";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
+
+  // 아래는 제가 생각한 방법 입니다!
+  // 구글 계정으로 로그인 성공시
+  // 1. 예시로 userId가 서버로부터 넘어옴
+  // 2. zustand - store에 저장
+  // 3. userId 정보가 null이 아니면 survey page 띄우기
+
   return (
     <>
       <OnboardingContainer>
         <OnBoardingTopBox>
           <OnboardingTitle>
-            여행을 더 즐겁게, <br /> 함께 계획하고 공유해요!
+            여행을 더 즐겁게, <br />
+            함께 계획하고 공유해요!
+            <br />
             <span>더 특별한 나만의 여행기를 만들어요.</span>
           </OnboardingTitle>
         </OnBoardingTopBox>
@@ -18,7 +29,7 @@ export default function Onboarding() {
             <GoogleIcon />
             <p>구글 계정으로 시작하기</p>
           </GoogleLoginButton>
-          <JustLookButton>
+          <JustLookButton onClick={() => navigate("/home")}>
             <p>서비스 둘러보기</p> <ArrowRightIcon />
           </JustLookButton>
         </OnBoardingBottomBox>
@@ -63,6 +74,7 @@ const OnboardingTitle = styled.p<{ subtitle?: boolean }>`
   line-height: 140%;
   color: #fff;
   flex-shrink: 0;
+  white-space: nowrap;
 
   & > span {
     font-size: 14px;
@@ -97,6 +109,7 @@ const JustLookButton = styled.div`
   gap: 8px;
   margin-top: 49px;
   cursor: pointer;
+  white-space: nowrap;
 
   & > p {
     font-family: Pretendard;

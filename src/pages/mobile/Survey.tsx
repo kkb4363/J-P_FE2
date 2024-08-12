@@ -4,22 +4,23 @@ import NicknameIcon from "../../icons/NicknameIcon";
 import YellowButton from "./../../components/mobile/YelloButton";
 import { useState } from "react";
 
+type JPProps = "J" | "P";
+
 export default function Survey() {
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   };
 
-  const handleJ = () => {
-    setType("J");
-  };
-  const handleP = () => {
-    setType("P");
+  const handleJPSelect = (type: JPProps) => {
+    setType(type);
   };
 
-  const handleClick = () => {
+  const handleSubmit = () => {
+    // 닉네임이 중복되진 않았는지 & jp선택은 되어있는지 확인후
+    // 이상 없으면 /home 페이지로 이동
     console.log(nickname);
     console.log(type);
   };
@@ -41,7 +42,7 @@ export default function Survey() {
                   name="nickname"
                   placeholder="닉네임을 입력해주세요."
                   value={nickname}
-                  onChange={handleChange}
+                  onChange={handleNicknameChange}
                 />
               </SurveyNicknameInput>
             </SurveyInputBox>
@@ -49,14 +50,14 @@ export default function Survey() {
               <p>성향을 선택해주세요.</p>
               <SurveyTypeBox>
                 <SurveyTypeButton
-                  isSelected={type === "J"}
-                  onClick={() => handleJ()}
+                  isSelected={type === ("J" as JPProps)}
+                  onClick={() => handleJPSelect("J" as JPProps)}
                 >
                   J 형/계획형
                 </SurveyTypeButton>
                 <SurveyTypeButton
-                  isSelected={type === "P"}
-                  onClick={() => handleP()}
+                  isSelected={type === ("P" as JPProps)}
+                  onClick={() => handleJPSelect("P" as JPProps)}
                 >
                   P 형/즉흥형
                 </SurveyTypeButton>
@@ -64,7 +65,7 @@ export default function Survey() {
             </SurveyInputBox>
           </SurveyBox>
           <SurveyButtonBox>
-            <YellowButton text="시작하기" onClick={handleClick} />
+            <YellowButton text="시작하기" onClick={handleSubmit} />
           </SurveyButtonBox>
         </SurveyBody>
       </SurveyContainer>
@@ -123,7 +124,6 @@ const SurveyInputBox = styled.div`
 const SurveyNicknameInput = styled.div`
   width: 100%;
   height: 50px;
-  min-width: 280px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -152,10 +152,9 @@ const SurveyTypeBox = styled.div`
 
 const SurveyTypeButton = styled.button<{ isSelected: boolean }>`
   width: 100%;
-  padding: 18px 35px;
+  padding: 18px 0;
   white-space: nowrap;
-  background-color: ${(props) =>
-    props.isSelected ? "#e6e6e6" : "#fff"};
+  background-color: ${(props) => (props.isSelected ? "#e6e6e6" : "#fff")};
   border-radius: 16px;
   border: 1px solid #e6e6e6;
   font-family: Pretendard;
