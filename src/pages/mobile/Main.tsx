@@ -67,6 +67,7 @@ const Footer = styled.div`
 
 const FooterRow = styled.div`
   display: flex;
+  justify-content: space-evenly;
   height: calc(100% - 30px);
 `;
 
