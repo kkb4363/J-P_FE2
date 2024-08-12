@@ -29,7 +29,13 @@ import {
   ReviewTextCol,
 } from "../../styles/home.style";
 
+import { useNavigate } from "react-router-dom";
+
+type MoreProps = "travel-place" | "city" | "theme-place";
+
 export default function Home() {
+  const navigate = useNavigate();
+
   // 인기 여행지
   const [travelPlace, setTravelPlace] = useState([]);
   // 인기 도시
@@ -74,6 +80,10 @@ export default function Home() {
     requestApi();
   }, []);
 
+  const handleMoreClick = (type: MoreProps) => {
+    navigate(`${type}`);
+  };
+
   return (
     <HomeContainer>
       <HomeHeader>
@@ -86,7 +96,11 @@ export default function Home() {
       <HomeBody>
         <InfoRow>
           <InfoText>지금 가장 인기있는 여행지</InfoText>
-          <MoreText>더보기</MoreText>
+          <MoreText
+            onClick={() => handleMoreClick("travel-place" as MoreProps)}
+          >
+            더보기
+          </MoreText>
         </InfoRow>
         <CarouselRow>
           {travelPlace?.map((item: placeApiProps) => (
@@ -103,7 +117,9 @@ export default function Home() {
 
         <InfoRow>
           <InfoText>인기 여행 도시</InfoText>
-          <MoreText>더보기</MoreText>
+          <MoreText onClick={() => handleMoreClick("city" as MoreProps)}>
+            더보기
+          </MoreText>
         </InfoRow>
         <CarouselRow>
           {city?.map((item: placeApiProps) => (
@@ -118,7 +134,9 @@ export default function Home() {
 
         <InfoRow>
           <InfoText>지금 가면 좋은 여행지</InfoText>
-          <MoreText>더보기</MoreText>
+          <MoreText onClick={() => handleMoreClick("theme-place" as MoreProps)}>
+            더보기
+          </MoreText>
         </InfoRow>
         <CarouselRow>
           {themePlace?.map((item: placeApiProps) => (
