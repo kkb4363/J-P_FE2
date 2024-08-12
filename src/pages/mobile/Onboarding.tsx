@@ -2,8 +2,17 @@ import styled from "styled-components";
 import img from "../../assets/images/onboarding.png";
 import GoogleIcon from "./../../icons/GoogleIcon";
 import ArrowRightIcon from "../../icons/ArrowRightIcon";
+import { useNavigate } from "react-router-dom";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
+
+  // 아래는 제가 생각한 방법 입니다!
+  // 구글 계정으로 로그인 성공시
+  // 1. 예시로 userId가 서버로부터 넘어옴
+  // 2. zustand - store에 저장
+  // 3. userId 정보가 null이 아니면 survey page 띄우기
+
   return (
     <>
       <OnboardingContainer>
@@ -20,7 +29,7 @@ export default function Onboarding() {
             <GoogleIcon />
             <p>구글 계정으로 시작하기</p>
           </GoogleLoginButton>
-          <JustLookButton>
+          <JustLookButton onClick={() => navigate("/home")}>
             <p>서비스 둘러보기</p> <ArrowRightIcon />
           </JustLookButton>
         </OnBoardingBottomBox>

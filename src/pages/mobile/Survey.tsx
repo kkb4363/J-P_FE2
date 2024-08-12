@@ -19,6 +19,8 @@ export default function Survey() {
   };
 
   const handleSubmit = () => {
+    // 닉네임이 중복되진 않았는지 & jp선택은 되어있는지 확인후
+    // 이상 없으면 /home 페이지로 이동
     console.log(nickname);
     console.log(type);
   };
