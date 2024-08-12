@@ -43,6 +43,7 @@ const ImageViewContainer = styled.div<{ $width?: string; $height?: string }>`
     width: ${({ $width }) => ($width ? $width : "120px")};
     height: ${({ $height }) => ($height ? $height : "120px")};
     border-radius: 16px;
+    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   }
 `;
 
