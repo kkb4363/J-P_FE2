@@ -7,10 +7,9 @@ import StarIcon from "../../icons/StarIcon";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
 import { placeApiProps, reviewApiProps } from "../../types/home";
+import CarouselTitleBox from "../../components/mobile/CarouselTitleBox";
 import {
-  CarouselLocationTitle,
   CarouselRow,
-  CarouselTitle,
   CarouselWithText,
   HomeBody,
   HomeContainer,
@@ -97,8 +96,7 @@ export default function Home() {
                 alt={item.name}
               />
 
-              <CarouselTitle>{item.name}</CarouselTitle>
-              <CarouselLocationTitle>{item.subName}</CarouselLocationTitle>
+              <CarouselTitleBox name={item.name} subName={item.subName} />
             </CarouselWithText>
           ))}
         </CarouselRow>
@@ -132,8 +130,7 @@ export default function Home() {
                 alt={item.name}
                 topText="여행지"
               />
-              <CarouselTitle>{item.name}</CarouselTitle>
-              <CarouselLocationTitle>{item.subName}</CarouselLocationTitle>
+              <CarouselTitleBox name={item.name} subName={item.subName} />
             </CarouselWithText>
           ))}
         </CarouselRow>
