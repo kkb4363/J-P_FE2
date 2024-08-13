@@ -27,7 +27,7 @@ import {
   ReviewTag,
   ReviewTagRow,
   ReviewTextCol,
-} from "../../styles/home.style";
+} from "../../assets/styles/home.style";
 
 import { useNavigate } from "react-router-dom";
 

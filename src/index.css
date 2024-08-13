@@ -1,6 +1,7 @@
 /* css 초기화  */
 * {
   box-sizing: border-box;
+  font-family: "SuitVariableKR";
 }
 
 html,
