@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import img from "../../assets/images/onboarding.png";
-import GoogleIcon from "./../../icons/GoogleIcon";
-import ArrowRightIcon from "../../icons/ArrowRightIcon";
+import GoogleIcon from "../../assets/icons/GoogleIcon";
+import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
 import { useNavigate } from "react-router-dom";
 
 export default function Onboarding() {

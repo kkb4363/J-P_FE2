@@ -7,6 +7,7 @@ interface Props {
   bottomText?: string;
   width?: string;
   height?: string;
+  handleClick?: () => void;
 }
 
 export default function ImageView({
@@ -16,9 +17,10 @@ export default function ImageView({
   bottomText,
   width,
   height,
+  handleClick,
 }: Props) {
   return (
-    <ImageViewContainer $width={width} $height={height}>
+    <ImageViewContainer $width={width} $height={height} onClick={handleClick}>
       <img src={src} alt={alt} />
 
       {!!topText && (

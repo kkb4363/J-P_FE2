@@ -1,8 +1,8 @@
-import CalendarIcon from "../icons/CalendarIcon";
-import HomeIcon from "../icons/HomeIcon";
-import MessageIcon from "../icons/MessageIcon";
-import ProfileIcon from "../icons/ProfileIcon";
-import SearchIcon from "../icons/SearchIcon";
+import CalendarIcon from "../assets/icons/CalendarIcon";
+import HomeIcon from "../assets/icons/HomeIcon";
+import MessageIcon from "../assets/icons/MessageIcon";
+import ProfileIcon from "../assets/icons/ProfileIcon";
+import SearchIcon from "../assets/icons/SearchIcon";
 
 export const footerTabs = [
   { icon: HomeIcon, label: "홈" },

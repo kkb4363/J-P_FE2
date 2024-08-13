@@ -36,6 +36,10 @@ export const router = createBrowserRouter([
         path: "theme-place",
         element: <ThemePlace />,
       },
+      {
+        path: ":placeId",
+        element: <HomeDetails />,
+      },
     ],
   },
 ]);

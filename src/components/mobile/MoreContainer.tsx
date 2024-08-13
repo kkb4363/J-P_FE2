@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ArrowLeftIcon from "../../icons/ArrowLeftIcon";
+import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon";
 import { useNavigate } from "react-router-dom";
 import { ReactNode } from "react";
 

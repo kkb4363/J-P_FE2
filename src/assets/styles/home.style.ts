@@ -1,14 +1,18 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const HomeContainer = styled.div`
-  padding: 0 18px 18px 18px;
-  height: 100%;
-  overflow-y: scroll;
+export const scrollHidden = css`
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+`;
+
+export const HomeContainer = styled.div`
+  padding: 0 18px 18px 18px;
+  height: 100%;
+  overflow-y: scroll;
+  ${scrollHidden};
 `;
 
 export const HomeHeader = styled.div`
@@ -50,7 +54,6 @@ export const MoreText = styled.span`
 export const CarouselRow = styled.div`
   display: flex;
   gap: 8px;
-  align-items: center;
   overflow-x: scroll;
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
