@@ -5,6 +5,7 @@ import Onboarding from "./Onboarding";
 import TravelPlace from "./TravelPlace";
 import City from "./City";
 import ThemePlace from "./ThemePlace";
+import Survey from "./Survey";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "survey",
+        element: <Survey />,
       },
       {
         path: "travel-place",

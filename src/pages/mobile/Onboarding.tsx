@@ -70,9 +70,8 @@ const OnboardingTitle = styled.p<{ subtitle?: boolean }>`
   width: 226px;
   font-size: 24px;
   font-weight: 700;
-  font-family: Pretendard;
   line-height: 140%;
-  color: #fff;
+  color: ${(props) => props.theme.color.white};
   flex-shrink: 0;
   white-space: nowrap;
 
@@ -84,12 +83,11 @@ const OnboardingTitle = styled.p<{ subtitle?: boolean }>`
 `;
 
 const GoogleLoginButton = styled.div`
-  width: 263px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-shrink: 0;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.color.white};
   padding: 14px;
   gap: 12px;
   border-radius: 16px;
@@ -108,11 +106,7 @@ const JustLookButton = styled.div`
   display: flex;
   gap: 8px;
   margin-top: 49px;
+  color: ${(props) => props.theme.color.white};
   cursor: pointer;
   white-space: nowrap;
-
-  & > p {
-    font-family: Pretendard;
-    color: #fff;
-  }
 `;
