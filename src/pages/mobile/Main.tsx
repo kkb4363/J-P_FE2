@@ -47,8 +47,6 @@ const MainContainer = styled.div`
   // Todo: mobile 화면 보호 적용 - 기범
   width: 100vw;
   height: 100vh;
-  background-color: #fafafa;
-
   display: flex;
   flex-direction: column;
 `;
@@ -82,7 +80,6 @@ const FooterTab = styled.div`
   & > span {
     text-align: center;
     font-size: 10px;
-    font-style: normal;
     font-weight: 700;
     line-height: 20px;
   }
@@ -98,7 +95,7 @@ const FooterBottom = styled.div`
   & > div {
     width: 135px;
     height: 5px;
-    background-color: #000;
+    background-color: ${(props) => props.theme.color.black};
     border-radius: 100px;
   }
 `;

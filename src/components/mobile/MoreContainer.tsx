@@ -33,7 +33,6 @@ export default function MoreContainer({ title, children }: Props) {
 const MoreBox = styled.div`
   height: 100%;
   padding: 16px;
-  background-color: #fafafa;
 `;
 
 const MoreHeader = styled.div`
@@ -44,7 +43,6 @@ const MoreHeader = styled.div`
   margin: 10px 0;
 
   & > p {
-    font-family: Pretendard;
     font-weight: 700;
     font-size: 20px;
   }

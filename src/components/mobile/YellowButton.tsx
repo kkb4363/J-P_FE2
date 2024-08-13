@@ -14,25 +14,20 @@ export default function YellowButton({
   onClick,
 }: Props) {
   return (
-    <YelloButtonContainer
-      width={width}
-      height={height}
-      onClick={onClick}
-    >
+    <YellowButtonContainer width={width} height={height} onClick={onClick}>
       {text}
-    </YelloButtonContainer>
+    </YellowButtonContainer>
   );
 }
 
-const YelloButtonContainer = styled.button<{
+const YellowButtonContainer = styled.button<{
   width: string;
   height: string;
 }>`
   width: ${(props) => props.width};
   height: ${(props) => props.height};
-  background-color: #ffc814;
+  background-color: ${(props) => props.theme.color.main};
   border-radius: 16px;
-  color: #fff;
-  font-family: Pretendard;
+  color: ${(props) => props.theme.color.white};
   font-weight: 700;
 `;

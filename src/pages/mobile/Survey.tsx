@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import LogoutIcon from "../../assets/icons/LogoutIcon";
-import NicknameIcon from "../../assets/icons/NicknameIcon";
-import YellowButton from "./../../components/mobile/YelloButton";
+import LogoutIcon from "../../icons/LogoutIcon";
+import NicknameIcon from "../../icons/NicknameIcon";
+import YellowButton from "../../components/mobile/YellowButton";
 import { useState } from "react";
 
 type JPProps = "J" | "P";
@@ -76,7 +76,6 @@ export default function Survey() {
 const SurveyContainer = styled.div`
   width: 100%;
   height: 100%;
-  background-color: #fafafa;
   display: flex;
   flex-direction: column;
 `;
@@ -115,7 +114,6 @@ const SurveyInputBox = styled.div`
   gap: 24px;
 
   & > p {
-    font-family: Pretendard;
     font-weight: 700;
     white-space: nowrap;
   }
@@ -127,19 +125,18 @@ const SurveyNicknameInput = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.color.white};
   border-radius: 16px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid ${(props) => props.theme.color.gray200};
   padding: 8px 23px;
 
   & > input {
     width: 100%;
     outline: none;
-    font-family: Pretendard;
     font-size: 14px;
 
     &::placeholder {
-      color: #b8b8b8;
+      color: ${(props) => props.theme.color.gray300};
     }
   }
 `;
@@ -154,10 +151,10 @@ const SurveyTypeButton = styled.button<{ isSelected: boolean }>`
   width: 100%;
   padding: 18px 0;
   white-space: nowrap;
-  background-color: ${(props) => (props.isSelected ? "#e6e6e6" : "#fff")};
+  background-color: ${(props) =>
+    props.isSelected ? props.theme.color.gray200 : props.theme.color.white};
   border-radius: 16px;
-  border: 1px solid #e6e6e6;
-  font-family: Pretendard;
+  border: 1px solid ${(props) => props.theme.color.gray200};
   font-size: 14px;
 `;
 
