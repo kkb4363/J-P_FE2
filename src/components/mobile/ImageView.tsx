@@ -56,11 +56,9 @@ const TopText = styled.div`
   padding: 2px 8px;
 
   & > span {
-    color: #000;
+    color: ${(props) => props.theme.color.gray900};
     text-align: center;
-    font-family: Pretendard;
     font-size: 10px;
-    font-style: normal;
     font-weight: 400;
     line-height: 20px;
   }
@@ -80,11 +78,9 @@ const BottomText = styled.div`
   background: rgba(255, 255, 255, 0.6);
 
   & > span {
-    color: #000;
-    font-family: Pretendard;
+    color: ${(props) => props.theme.color.gray900};
     font-size: 14px;
     font-weight: 700;
-    line-height: normal;
     text-transform: capitalize;
   }
 `;
