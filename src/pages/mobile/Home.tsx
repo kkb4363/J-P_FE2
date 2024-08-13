@@ -1,9 +1,9 @@
 import CustomInput from "../../components/mobile/CustomInput";
-import BellIcon from "../../icons/BellIcon";
+import BellIcon from "../../assets/icons/BellIcon";
 import ImageView from "../../components/mobile/ImageView";
-import CommentIcon from "../../icons/CommentIcon";
-import HeartIcon from "../../icons/HeartIcon";
-import StarIcon from "../../icons/StarIcon";
+import CommentIcon from "../../assets/icons/CommentIcon";
+import HeartIcon from "../../assets/icons/HeartIcon";
+import StarIcon from "../../assets/icons/StarIcon";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
 import { placeApiProps, reviewApiProps } from "../../types/home";
@@ -108,6 +108,7 @@ export default function Home() {
               <ImageView
                 src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
                 alt={item.name}
+                handleClick={() => navigate(`${item.placeId}`)}
               />
 
               <CarouselTitleBox name={item.name} subName={item.subName} />

@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import LogoutIcon from "../../icons/LogoutIcon";
-import NicknameIcon from "../../icons/NicknameIcon";
+import LogoutIcon from "../../assets/icons/LogoutIcon";
+import NicknameIcon from "../../assets/icons/NicknameIcon";
 import YellowButton from "./../../components/mobile/YelloButton";
 import { useState } from "react";
 

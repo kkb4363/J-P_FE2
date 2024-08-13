@@ -5,6 +5,7 @@ import Onboarding from "./Onboarding";
 import TravelPlace from "./TravelPlace";
 import City from "./City";
 import ThemePlace from "./ThemePlace";
+import HomeDetails from "./HomeDetails";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "theme-place",
         element: <ThemePlace />,
+      },
+      {
+        path: ":placeId",
+        element: <HomeDetails />,
       },
     ],
   },
