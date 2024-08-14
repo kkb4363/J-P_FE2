@@ -8,6 +8,7 @@ import ThemePlace from "./ThemePlace";
 import Survey from "./Survey";
 import HomeDetails from "./HomeDetails";
 import NearPlace from "./NearPlace";
+import Search from "./Search";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
       {
         path: "nearby/:placeId",
         element: <NearPlace />,
+      },
+      {
+        path: "search",
+        element: <Search />,
       },
     ],
   },
