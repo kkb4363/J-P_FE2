@@ -1,10 +1,13 @@
 import styled from "styled-components";
 import SearchIcon from "../../assets/icons/SearchIcon";
+import React from "react";
 
 interface Props {
   height?: string;
   width?: string;
   text: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   // ref
   // callback or onClick
 }
@@ -13,12 +16,15 @@ export default function CustomInput({
   height = "45px",
   width = "100%",
   text,
+  onChange,
+  onSubmit,
 }: Props) {
   return (
     <CustomInputContainer $height={height} $width={width}>
       <SearchIcon />
-
-      <input placeholder={text} />
+      <form onSubmit={onSubmit}>
+        <input placeholder={text} onChange={onChange} />
+      </form>
     </CustomInputContainer>
   );
 }
@@ -32,11 +38,11 @@ const CustomInputContainer = styled.div<{ $height: string; $width: string }>`
   gap: 8px;
 
   border-radius: 30px;
-  border: 0.8px solid #e6e6e6;
+  border: 0.8px solid ${(props) => props.theme.color.gray200};
   background: ${(props) => props.theme.color.white};
   box-shadow: 0px 4px 15px 0px rgba(26, 26, 26, 0.05);
 
-  & > input {
+  & > form > input {
     outline: none;
     width: 100%;
     color: ${(props) => props.theme.color.gray900};
