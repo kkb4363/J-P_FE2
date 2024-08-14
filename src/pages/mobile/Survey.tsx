@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import LogoutIcon from "../../icons/LogoutIcon";
-import NicknameIcon from "../../icons/NicknameIcon";
 import YellowButton from "../../components/mobile/YellowButton";
 import { useState } from "react";
+import NicknameIcon from "../../assets/icons/NicknameIcon";
+import LogoutIcon from "../../assets/icons/LogoutIcon";
 
 type JPProps = "J" | "P";
 

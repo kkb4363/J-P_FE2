@@ -14,3 +14,18 @@ export interface PlaceDetailAPiProps {
   placeType: string;
   tags: string[];
 }
+
+export interface NearByPlaceProps {
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+  };
+  name: string;
+  photoUrls: string[];
+  placeId: string;
+  rating: number;
+  userRatingsTotal: number;
+  vicinity: string;
+}
