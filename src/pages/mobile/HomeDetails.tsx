@@ -15,17 +15,21 @@ import PlusIcon from "../../assets/icons/PlusIcon";
 import CommentIcon from "../../assets/icons/CommentIcon";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "../../utils/axios";
-import { PlaceDetailAPiProps } from "../../types/home.details";
+import {
+  NearByPlaceProps,
+  PlaceDetailAPiProps,
+} from "../../types/home.details";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
-
   const mapRef = useRef<HTMLDivElement>(null);
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
-  console.log(details);
+  const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
+
+  const isCityDetailPage = location.pathname.includes("city");
 
   useEffect(() => {
     const requestApi = async () => {
@@ -75,18 +79,42 @@ export default function HomeDetails() {
       }
     };
 
+    const getNearPlace = async () => {
+      try {
+        axiosInstance
+          .get(
+            `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
+          )
+          .then((res) => {
+            if (res.status === 200) {
+              setNearbyPlaces(res.data.results);
+            }
+          });
+      } catch (error) {
+        console.error("nearbyPlace Api Error=", error);
+      }
+    };
+
     const initMap = () => {
       if (mapRef.current && details?.location) {
-        new (window as any).google.maps.Map(mapRef.current, {
+        const map = new (window as any).google.maps.Map(mapRef.current, {
           center: { lat: details.location.lat, lng: details.location.lng },
-          zoom: 8,
+          zoom: 16,
         });
+
+        const marker = new (window as any).google.maps.Marker({
+          position: { lat: details.location.lat, lng: details.location.lng },
+          map: map,
+          title: details.name,
+        });
+
         console.log("Google Maps init");
       }
     };
 
     if (details) {
       loadGoogleMapsScript();
+      getNearPlace();
     }
   }, [details]);
 
@@ -136,13 +164,17 @@ export default function HomeDetails() {
 
         <DetailsInfo>{details?.description}</DetailsInfo>
 
-        <DetailsTitle>기본 정보</DetailsTitle>
-        <DetailsSubTitle>
-          <MarkIcon width="18" height="18" />
-          <span>{details?.formattedAddress}</span>
-        </DetailsSubTitle>
+        {!isCityDetailPage && (
+          <>
+            <DetailsTitle>기본 정보</DetailsTitle>
+            <DetailsSubTitle>
+              <MarkIcon width="18" height="18" />
+              <span>{details?.formattedAddress}</span>
+            </DetailsSubTitle>
 
-        <GoogleMapBox ref={mapRef} />
+            <GoogleMapBox ref={mapRef} />
+          </>
+        )}
 
         <DetailsTitleWithMoreText>
           주변 여행지 추천
@@ -151,72 +183,30 @@ export default function HomeDetails() {
         </DetailsTitleWithMoreText>
 
         <NearPlaceCol>
-          <NearPlaceBox>
-            <ImageView
-              width="60px"
-              height="60px"
-              src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-              alt="test"
-            />
+          {nearbyPlaces?.slice(0, 3).map((place) => (
+            <NearPlaceBox key={place.placeId}>
+              <ImageView
+                width="60px"
+                height="60px"
+                src={place.photoUrls[0]}
+                alt={place.name}
+              />
 
-            <NearPlaceDetailCol>
-              <p>섬진강 대나무숲길</p>
+              <NearPlaceDetailCol>
+                <p>{place.name}</p>
 
-              <div>
-                <StarIcon />
-                4.9 | 주소보기
-              </div>
-            </NearPlaceDetailCol>
+                <div>
+                  <StarIcon />
+                  {place.rating} | <span>주소보기</span>
+                </div>
+              </NearPlaceDetailCol>
 
-            <NearPlaceAddBtn>
-              <PlusIcon />
-              <span>추가</span>
-            </NearPlaceAddBtn>
-          </NearPlaceBox>
-          <NearPlaceBox>
-            <ImageView
-              width="60px"
-              height="60px"
-              src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-              alt="test"
-            />
-
-            <NearPlaceDetailCol>
-              <p>섬진강 대나무숲길</p>
-
-              <div>
-                <StarIcon />
-                4.9 | 주소보기
-              </div>
-            </NearPlaceDetailCol>
-
-            <NearPlaceAddBtn>
-              <PlusIcon />
-              <span>추가</span>
-            </NearPlaceAddBtn>
-          </NearPlaceBox>
-          <NearPlaceBox>
-            <ImageView
-              width="60px"
-              height="60px"
-              src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-              alt="test"
-            />
-
-            <NearPlaceDetailCol>
-              <p>섬진강 대나무숲길</p>
-
-              <div>
-                <StarIcon />
-                4.9 | 주소보기
-              </div>
-            </NearPlaceDetailCol>
-
-            <NearPlaceAddBtn>
-              <PlusIcon />
-              <span>추가</span>
-            </NearPlaceAddBtn>
-          </NearPlaceBox>
+              <NearPlaceAddBtn>
+                <PlusIcon />
+                <span>추가</span>
+              </NearPlaceAddBtn>
+            </NearPlaceBox>
+          ))}
         </NearPlaceCol>
 
         <DetailsTitleWithMoreText>

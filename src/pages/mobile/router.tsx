@@ -6,6 +6,7 @@ import TravelPlace from "./TravelPlace";
 import City from "./City";
 import ThemePlace from "./ThemePlace";
 import Survey from "./Survey";
+import HomeDetails from "./HomeDetails";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       },
       {
         path: ":placeId",
+        element: <HomeDetails />,
+      },
+      {
+        path: "city/:placeId",
         element: <HomeDetails />,
       },
     ],
