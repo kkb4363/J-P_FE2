@@ -9,7 +9,6 @@ import {
   scrollHidden,
 } from "../../assets/styles/home.style";
 import { useEffect, useRef, useState } from "react";
-import ImageView from "../../components/mobile/ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import PlusIcon from "../../assets/icons/PlusIcon";
 import CommentIcon from "../../assets/icons/CommentIcon";
@@ -19,6 +18,7 @@ import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
 } from "../../types/home.details";
+import NearPlaceCard from "../../components/mobile/NearPlaceCard";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
@@ -81,15 +81,17 @@ export default function HomeDetails() {
 
     const getNearPlace = async () => {
       try {
-        axiosInstance
-          .get(
-            `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
-          )
-          .then((res) => {
-            if (res.status === 200) {
-              setNearbyPlaces(res.data.results);
-            }
-          });
+        if (details?.location) {
+          axiosInstance
+            .get(
+              `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
+            )
+            .then((res) => {
+              if (res.status === 200) {
+                setNearbyPlaces(res.data.results);
+              }
+            });
+        }
       } catch (error) {
         console.error("nearbyPlace Api Error=", error);
       }
@@ -179,33 +181,22 @@ export default function HomeDetails() {
         <DetailsTitleWithMoreText>
           주변 여행지 추천
           <span>지도로 보기</span>
-          <MoreTextAbsolute>더보기</MoreTextAbsolute>
+          <MoreTextAbsolute
+            onClick={() => navigate(`/home/nearby/${param?.placeId}`)}
+          >
+            더보기
+          </MoreTextAbsolute>
         </DetailsTitleWithMoreText>
 
         <NearPlaceCol>
           {nearbyPlaces?.slice(0, 3).map((place) => (
-            <NearPlaceBox key={place.placeId}>
-              <ImageView
-                width="60px"
-                height="60px"
-                src={place.photoUrls[0]}
-                alt={place.name}
-              />
-
-              <NearPlaceDetailCol>
-                <p>{place.name}</p>
-
-                <div>
-                  <StarIcon />
-                  {place.rating} | <span>주소보기</span>
-                </div>
-              </NearPlaceDetailCol>
-
-              <NearPlaceAddBtn>
-                <PlusIcon />
-                <span>추가</span>
-              </NearPlaceAddBtn>
-            </NearPlaceBox>
+            <NearPlaceCard
+              key={place.placeId}
+              placeId={place.placeId}
+              photoUrl={place.photoUrls[0]}
+              name={place.name}
+              rating={place.rating}
+            />
           ))}
         </NearPlaceCol>
 
@@ -459,69 +450,6 @@ const NearPlaceCol = styled.div`
   gap: 8px;
 
   padding: 6px 0;
-`;
-
-const NearPlaceBox = styled.div`
-  height: 83px;
-  border-radius: 16px;
-  border: 1px solid #e6e6e6;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-`;
-
-const NearPlaceDetailCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 0.8;
-
-  & > p {
-    color: #1a1a1a;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.048px;
-  }
-
-  & > div {
-    color: #808080;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%; /* 18px */
-    letter-spacing: -0.036px;
-
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-`;
-
-const NearPlaceAddBtn = styled.button`
-  display: flex;
-  width: 66px;
-  height: 34px;
-  padding: 8px 12px;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  border-radius: 30px;
-  border: 1px solid #4d4d4d;
-  background: #fff;
-
-  & > span {
-    color: #4d4d4d;
-    text-align: center;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 18px;
-    letter-spacing: -0.6px;
-    white-space: nowrap;
-  }
 `;
 
 const DetailsReviewRow = styled.div`

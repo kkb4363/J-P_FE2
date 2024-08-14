@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon";
-import { useNavigate } from "react-router-dom";
 import { ReactNode } from "react";
+import CustomHeader from "./CustomHeader";
 
 interface Props {
   title: string;
@@ -9,20 +8,9 @@ interface Props {
 }
 
 export default function MoreContainer({ title, children }: Props) {
-  const navigate = useNavigate();
-  const handleBackClick = () => {
-    navigate(-1);
-  };
-
   return (
     <MoreBox>
-      <MoreHeader>
-        <div onClick={() => handleBackClick()}>
-          <ArrowLeftIcon />
-        </div>
-        <p>{title}</p>
-        <EmptyBox />
-      </MoreHeader>
+      <CustomHeader title={title} />
       <MoreBody>
         <MoreGridBox>{children}</MoreGridBox>
       </MoreBody>
@@ -32,28 +20,11 @@ export default function MoreContainer({ title, children }: Props) {
 
 const MoreBox = styled.div`
   height: 100%;
-  padding: 16px;
-`;
-
-const MoreHeader = styled.div`
-  height: 50px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0;
-
-  & > p {
-    font-weight: 700;
-    font-size: 20px;
-  }
-`;
-
-const EmptyBox = styled.div`
-  width: 24px;
 `;
 
 const MoreBody = styled.div`
-  height: calc(100% - 45px);
+  height: calc(100% - 50px);
+  padding: 16px;
   display: flex;
   justify-content: flex-start;
 `;
