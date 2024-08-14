@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
 import { PlaceDetailAPiProps } from "../../types/home.details";
 import { useMapStore } from "../../store/map.store";
+import BottomSheet from "../../components/mobile/BottomSheet";
+import NearPlaceCard2 from "../../components/mobile/NearPlaceCard2";
 
 export default function NearPlace() {
   const param = useParams();
@@ -56,7 +58,7 @@ export default function NearPlace() {
         if (details?.location) {
           axiosInstance
             .get(
-              `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
+              `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=5`
             )
             .then((res) => {
               if (res.status === 200) {
@@ -113,9 +115,24 @@ export default function NearPlace() {
     }
   }, [details]);
 
+  console.log(mapStore.getNearPlace());
+
   return (
     <NearPlaceContainer>
       <CustomHeader title="주변 여행지" />
+      <BottomSheet>
+        {mapStore.getNearPlace().map((place) => (
+          <NearPlaceCard2
+            height="100px"
+            key={place.placeId}
+            placeId={place.placeId}
+            photoUrl={place.photoUrls[0]}
+            name={place.name}
+            rating={place.rating}
+            vicinity={place.vicinity}
+          />
+        ))}
+      </BottomSheet>
       <NearPlaceMapBox ref={mapRef}></NearPlaceMapBox>
     </NearPlaceContainer>
   );
