@@ -113,7 +113,7 @@ export default function NearPlace() {
     if (details) {
       loadMapAndNearbyPlaces();
     }
-  }, [details]);
+  }, [details, mapStore.getNearPlace().length]);
 
   return (
     <NearPlaceContainer>

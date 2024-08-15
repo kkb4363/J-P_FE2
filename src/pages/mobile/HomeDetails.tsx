@@ -113,8 +113,6 @@ export default function HomeDetails() {
           map: map,
           title: details.name,
         });
-
-        console.log("Google Maps init");
       }
     };
 
