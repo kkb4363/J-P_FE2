@@ -8,26 +8,7 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
 import { placeApiProps, reviewApiProps } from "../../types/home";
 import CarouselTitleBox from "../../components/mobile/CarouselTitleBox";
-import {
-  CarouselRow,
-  CarouselWithText,
-  HomeBody,
-  HomeContainer,
-  HomeHeader,
-  InfoRow,
-  InfoText,
-  LikeCommentBox,
-  MoreText,
-  ReviewCol,
-  ReviewDetailText,
-  ReviewLikeCommentRow,
-  ReviewProfile,
-  ReviewProfileRow,
-  ReviewRow,
-  ReviewTag,
-  ReviewTagRow,
-  ReviewTextCol,
-} from "../../assets/styles/home.style";
+import * as S from "../../assets/styles/home.style";
 
 import { useNavigate } from "react-router-dom";
 
@@ -42,12 +23,13 @@ export default function Home() {
   const [city, setCity] = useState([]);
   // 테마별 여행지
   const [themePlace, setThemePlace] = useState([]);
-
-  // TODO : 사람들이 찜한 여행기 api 요청 해야함
-  // const [lovePlace, setLovePlace] = useState([]);
-
   // 지금 뜨는 리뷰
   const [review, setReview] = useState([]);
+  // TODO : 사람들이 찜한 여행기 api = 아직 백엔드 개발 중
+
+  const handleMoreClick = (type: MoreProps) => {
+    navigate(`${type}`);
+  };
 
   useEffect(() => {
     const requestApi = async () => {
@@ -80,31 +62,27 @@ export default function Home() {
     requestApi();
   }, []);
 
-  const handleMoreClick = (type: MoreProps) => {
-    navigate(`${type}`);
-  };
-
   return (
-    <HomeContainer>
-      <HomeHeader>
+    <S.HomeContainer>
+      <S.HomeHeader>
         <div>Logo</div>
         <BellIcon />
-      </HomeHeader>
+      </S.HomeHeader>
 
       <CustomInput text="여행지를 입력해주세요" />
 
-      <HomeBody>
-        <InfoRow>
-          <InfoText>지금 가장 인기있는 여행지</InfoText>
-          <MoreText
+      <S.HomeBody>
+        <S.InfoRow>
+          <S.InfoText>지금 가장 인기있는 여행지</S.InfoText>
+          <S.MoreText
             onClick={() => handleMoreClick("travel-place" as MoreProps)}
           >
             더보기
-          </MoreText>
-        </InfoRow>
-        <CarouselRow>
+          </S.MoreText>
+        </S.InfoRow>
+        <S.CarouselRow>
           {travelPlace?.map((item: placeApiProps) => (
-            <CarouselWithText key={item.id}>
+            <S.CarouselWithText key={item.id}>
               <ImageView
                 src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
                 alt={item.name}
@@ -112,17 +90,17 @@ export default function Home() {
               />
 
               <CarouselTitleBox name={item.name} subName={item.subName} />
-            </CarouselWithText>
+            </S.CarouselWithText>
           ))}
-        </CarouselRow>
+        </S.CarouselRow>
 
-        <InfoRow>
-          <InfoText>인기 여행 도시</InfoText>
-          <MoreText onClick={() => handleMoreClick("city" as MoreProps)}>
+        <S.InfoRow>
+          <S.InfoText>인기 여행 도시</S.InfoText>
+          <S.MoreText onClick={() => handleMoreClick("city" as MoreProps)}>
             더보기
-          </MoreText>
-        </InfoRow>
-        <CarouselRow>
+          </S.MoreText>
+        </S.InfoRow>
+        <S.CarouselRow>
           {city?.map((item: placeApiProps) => (
             <ImageView
               key={item.id}
@@ -132,17 +110,19 @@ export default function Home() {
               handleClick={() => navigate(`city/${item.placeId}`)}
             />
           ))}
-        </CarouselRow>
+        </S.CarouselRow>
 
-        <InfoRow>
-          <InfoText>지금 가면 좋은 여행지</InfoText>
-          <MoreText onClick={() => handleMoreClick("theme-place" as MoreProps)}>
+        <S.InfoRow>
+          <S.InfoText>지금 가면 좋은 여행지</S.InfoText>
+          <S.MoreText
+            onClick={() => handleMoreClick("theme-place" as MoreProps)}
+          >
             더보기
-          </MoreText>
-        </InfoRow>
-        <CarouselRow>
+          </S.MoreText>
+        </S.InfoRow>
+        <S.CarouselRow>
           {themePlace?.map((item: placeApiProps) => (
-            <CarouselWithText key={item.id}>
+            <S.CarouselWithText key={item.id}>
               <ImageView
                 src={
                   "https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
@@ -151,16 +131,16 @@ export default function Home() {
                 topText="여행지"
               />
               <CarouselTitleBox name={item.name} subName={item.subName} />
-            </CarouselWithText>
+            </S.CarouselWithText>
           ))}
-        </CarouselRow>
+        </S.CarouselRow>
 
-        <InfoRow>
-          <InfoText>사람들이 찜한 여행기</InfoText>
-          <MoreText>더보기</MoreText>
-        </InfoRow>
-        <ReviewCol>
-          <ReviewRow>
+        <S.InfoRow>
+          <S.InfoText>사람들이 찜한 여행기</S.InfoText>
+          <S.MoreText>더보기</S.MoreText>
+        </S.InfoRow>
+        <S.ReviewCol>
+          <S.ReviewRow>
             <ImageView
               src={
                 "https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
@@ -170,39 +150,39 @@ export default function Home() {
               height="80px"
             />
 
-            <ReviewTextCol>
-              <ReviewTagRow>
-                <ReviewTag>
+            <S.ReviewTextCol>
+              <S.ReviewTagRow>
+                <S.ReviewTag>
                   <span>#안동</span>
-                </ReviewTag>
-                <ReviewTag>
+                </S.ReviewTag>
+                <S.ReviewTag>
                   <span>#2박3일</span>
-                </ReviewTag>
-              </ReviewTagRow>
+                </S.ReviewTag>
+              </S.ReviewTagRow>
 
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
-              <ReviewProfileRow>
-                <ReviewProfile>
+              <S.ReviewProfileRow>
+                <S.ReviewProfile>
                   <img src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__" />
                   <span>coco1202</span>
-                </ReviewProfile>
+                </S.ReviewProfile>
 
-                <ReviewLikeCommentRow>
-                  <LikeCommentBox>
+                <S.ReviewLikeCommentRow>
+                  <S.LikeCommentBox>
                     <HeartIcon />
                     <span>26</span>
-                  </LikeCommentBox>
+                  </S.LikeCommentBox>
 
-                  <LikeCommentBox>
+                  <S.LikeCommentBox>
                     <CommentIcon />
                     <span>16</span>
-                  </LikeCommentBox>
-                </ReviewLikeCommentRow>
-              </ReviewProfileRow>
-            </ReviewTextCol>
-          </ReviewRow>
-          <ReviewRow>
+                  </S.LikeCommentBox>
+                </S.ReviewLikeCommentRow>
+              </S.ReviewProfileRow>
+            </S.ReviewTextCol>
+          </S.ReviewRow>
+          <S.ReviewRow>
             <ImageView
               src={
                 "https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
@@ -212,47 +192,47 @@ export default function Home() {
               height="80px"
             />
 
-            <ReviewTextCol>
-              <ReviewTagRow>
-                <ReviewTag>
+            <S.ReviewTextCol>
+              <S.ReviewTagRow>
+                <S.ReviewTag>
                   <span>#안동</span>
-                </ReviewTag>
-                <ReviewTag>
+                </S.ReviewTag>
+                <S.ReviewTag>
                   <span>#2박3일</span>
-                </ReviewTag>
-              </ReviewTagRow>
+                </S.ReviewTag>
+              </S.ReviewTagRow>
 
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
-              <ReviewProfileRow>
-                <ReviewProfile>
+              <S.ReviewProfileRow>
+                <S.ReviewProfile>
                   <img src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__" />
                   <span>coco1202</span>
-                </ReviewProfile>
+                </S.ReviewProfile>
 
-                <ReviewLikeCommentRow>
-                  <LikeCommentBox>
+                <S.ReviewLikeCommentRow>
+                  <S.LikeCommentBox>
                     <HeartIcon />
                     <span>26</span>
-                  </LikeCommentBox>
+                  </S.LikeCommentBox>
 
-                  <LikeCommentBox>
+                  <S.LikeCommentBox>
                     <CommentIcon />
                     <span>16</span>
-                  </LikeCommentBox>
-                </ReviewLikeCommentRow>
-              </ReviewProfileRow>
-            </ReviewTextCol>
-          </ReviewRow>
-        </ReviewCol>
+                  </S.LikeCommentBox>
+                </S.ReviewLikeCommentRow>
+              </S.ReviewProfileRow>
+            </S.ReviewTextCol>
+          </S.ReviewRow>
+        </S.ReviewCol>
 
-        <InfoRow>
-          <InfoText>지금 뜨는 리뷰</InfoText>
-          <MoreText>더보기</MoreText>
-        </InfoRow>
-        <ReviewCol>
+        <S.InfoRow>
+          <S.InfoText>지금 뜨는 리뷰</S.InfoText>
+          <S.MoreText>더보기</S.MoreText>
+        </S.InfoRow>
+        <S.ReviewCol>
           {review?.slice(0, 2).map((item: reviewApiProps) => (
-            <ReviewRow key={item.id}>
+            <S.ReviewRow key={item.id}>
               <ImageView
                 src={
                   "https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
@@ -262,32 +242,32 @@ export default function Home() {
                 height="80px"
               />
 
-              <ReviewTextCol>
+              <S.ReviewTextCol>
                 <p>{item.subject}</p>
-                <ReviewDetailText>{item.content}</ReviewDetailText>
-                <ReviewProfileRow>
-                  <ReviewProfile>
+                <S.ReviewDetailText>{item.content}</S.ReviewDetailText>
+                <S.ReviewProfileRow>
+                  <S.ReviewProfile>
                     <img src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__" />
                     <span>{item.userCompactResDto.nickname}</span>
-                  </ReviewProfile>
+                  </S.ReviewProfile>
 
-                  <ReviewLikeCommentRow>
-                    <LikeCommentBox>
+                  <S.ReviewLikeCommentRow>
+                    <S.LikeCommentBox>
                       <StarIcon />
                       <span>{item.star}</span>
-                    </LikeCommentBox>
+                    </S.LikeCommentBox>
 
-                    <LikeCommentBox>
+                    <S.LikeCommentBox>
                       <CommentIcon />
                       <span>{item.commentCnt}</span>
-                    </LikeCommentBox>
-                  </ReviewLikeCommentRow>
-                </ReviewProfileRow>
-              </ReviewTextCol>
-            </ReviewRow>
+                    </S.LikeCommentBox>
+                  </S.ReviewLikeCommentRow>
+                </S.ReviewProfileRow>
+              </S.ReviewTextCol>
+            </S.ReviewRow>
           ))}
-        </ReviewCol>
-      </HomeBody>
-    </HomeContainer>
+        </S.ReviewCol>
+      </S.HomeBody>
+    </S.HomeContainer>
   );
 }
