@@ -4,7 +4,6 @@ import StarIcon from "../../assets/icons/StarIcon";
 import PlusIcon from "../../assets/icons/PlusIcon";
 
 interface Props {
-  placeId: string;
   photoUrl: string;
   name: string;
   rating: number;
@@ -14,7 +13,6 @@ interface Props {
 }
 
 export default function NearPlaceCard2({
-  placeId,
   photoUrl,
   name,
   rating,
@@ -22,8 +20,7 @@ export default function NearPlaceCard2({
   height = "83px",
 }: Props) {
   return (
-    // key 여기선 필요없음 나중에 삭제하기
-    <NearPlaceBox key={placeId} $height={height}>
+    <NearPlaceBox $height={height}>
       <ImageView width="80px" height="80px" src={photoUrl} alt={"이미지없음"} />
 
       <NearPlaceDetailCol>
@@ -53,7 +50,6 @@ export default function NearPlaceCard2({
 
 const NearPlaceBox = styled.div<{ $height: string }>`
   height: ${({ $height }) => $height && $height};
-  max-height: ${({ $height }) => $height && $height};
   min-height: ${({ $height }) => $height && $height};
   border-radius: 16px;
   border: 1px solid #e6e6e6;
@@ -83,6 +79,7 @@ const NearPlaceDetailCol = styled.div`
     width: auto;
     align-self: flex-start;
   }
+  overflow: hidden;
 
   & > p {
     color: #1a1a1a;
@@ -91,6 +88,9 @@ const NearPlaceDetailCol = styled.div`
     font-weight: 700;
     line-height: 150%;
     letter-spacing: -0.048px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   & > div {

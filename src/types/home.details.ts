@@ -29,3 +29,19 @@ export interface NearByPlaceProps {
   userRatingsTotal: number;
   vicinity: string;
 }
+
+export interface ReviewProps {
+  commentCnt: number;
+  content: string;
+  createdAt: string;
+  id: number;
+  likeCnt: number;
+  placeId: string;
+  star: number;
+  subject: string;
+  userCompactResDto: {
+    id: number;
+    nickname: string;
+    picture: string;
+  };
+}

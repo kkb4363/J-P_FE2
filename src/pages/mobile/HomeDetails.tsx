@@ -17,17 +17,21 @@ import { axiosInstance } from "../../utils/axios";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
+  ReviewProps,
 } from "../../types/home.details";
 import NearPlaceCard from "../../components/mobile/NearPlaceCard";
+import { useMapStore } from "../../store/map.store";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
   const mapRef = useRef<HTMLDivElement>(null);
+  const { clear } = useMapStore();
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
+  const [reviews, setReviews] = useState<ReviewProps[]>([]);
 
   const isCityDetailPage = location.pathname.includes("city");
 
@@ -37,7 +41,7 @@ export default function HomeDetails() {
         const [detailsRes, reviewsRes] = await Promise.all([
           axiosInstance.get(`/place/details/${param?.placeId}`),
           axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
+            `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
           ),
         ]);
 
@@ -45,7 +49,7 @@ export default function HomeDetails() {
           setDetails(detailsRes.data);
         }
         if (reviewsRes.status === 200) {
-          console.log(reviewsRes.data);
+          setReviews(reviewsRes.data.data);
         }
       } catch (error) {
         console.error("API Error:", error);
@@ -73,7 +77,7 @@ export default function HomeDetails() {
           }
         };
       } else {
-        if ((window as any).google) {
+        if ((window as any).google && details?.location) {
           initMap();
         }
       }
@@ -98,7 +102,7 @@ export default function HomeDetails() {
     };
 
     const initMap = () => {
-      if (mapRef.current && details?.location) {
+      if (mapRef.current) {
         const map = new (window as any).google.maps.Map(mapRef.current, {
           center: { lat: details.location.lat, lng: details.location.lng },
           zoom: 16,
@@ -133,7 +137,12 @@ export default function HomeDetails() {
           <DetailsImageBox key={idx}>
             <img src={img} alt={img} />
 
-            <ArrowLeftBox onClick={() => navigate(-1)}>
+            <ArrowLeftBox
+              onClick={() => {
+                navigate(-1);
+                clear();
+              }}
+            >
               <ArrowLeftIcon stroke="#fff" />
             </ArrowLeftBox>
 
@@ -192,7 +201,6 @@ export default function HomeDetails() {
           {nearbyPlaces?.slice(0, 3).map((place) => (
             <NearPlaceCard
               key={place.placeId}
-              placeId={place.placeId}
               photoUrl={place.photoUrls[0]}
               name={place.name}
               rating={place.rating}
@@ -206,93 +214,33 @@ export default function HomeDetails() {
         </DetailsTitleWithMoreText>
 
         <DetailsReviewRow>
-          <DetailsReviewBox>
-            <ReviewTitle>
-              <div>
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-                  alt="test"
-                />
-                <span>Jiyoo | </span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>
-                드라이브, 산책 코스로 딱 좋았던 섬진강길 벚꽃길은 구례부터
-                하동까지 쭉 이어져있는데 만개했을깨 벚꽃 터널을 드라이브 하면
-                너무 좋아요. 
-              </span>
-            </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>12</span>
-              <CommentIcon />
-              <span>2</span>
-            </ReviewMessageRow>
-          </DetailsReviewBox>
-          <DetailsReviewBox>
-            <ReviewTitle>
-              <div>
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-                  alt="test"
-                />
-                <span>Jiyoo | </span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>
-                드라이브, 산책 코스로 딱 좋았던 섬진강길 벚꽃길은 구례부터
-                하동까지 쭉 이어져있는데 만개했을깨 벚꽃 터널을 드라이브 하면
-                너무 좋아요. 
-              </span>
-            </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>12</span>
-              <CommentIcon />
-              <span>2</span>
-            </ReviewMessageRow>
-          </DetailsReviewBox>
-          <DetailsReviewBox>
-            <ReviewTitle>
-              <div>
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-                  alt="test"
-                />
-                <span>Jiyoo | </span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>
-                드라이브, 산책 코스로 딱 좋았던 섬진강길 벚꽃길은 구례부터
-                하동까지 쭉 이어져있는데 만개했을깨 벚꽃 터널을 드라이브 하면
-                너무 좋아요. 
-              </span>
-            </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>12</span>
-              <CommentIcon />
-              <span>2</span>
-            </ReviewMessageRow>
-          </DetailsReviewBox>
+          {reviews?.map((review) => (
+            <DetailsReviewBox key={review.id}>
+              <ReviewTitle>
+                <div>
+                  <img
+                    src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
+                    alt="user-img"
+                  />
+                  <span>{review.userCompactResDto.nickname} | </span>
+                  <span>24.4.1</span>
+                </div>
+                <div>
+                  <StarIcon />
+                  <span>{review.star}</span>
+                </div>
+              </ReviewTitle>
+              <ReviewInfo>
+                <span>{review.content}</span>
+              </ReviewInfo>
+              <ReviewMessageRow>
+                <HeartIcon />
+                <span>{review.likeCnt}</span>
+                <CommentIcon />
+                <span>{review.commentCnt}</span>
+              </ReviewMessageRow>
+            </DetailsReviewBox>
+          ))}
         </DetailsReviewRow>
 
         <AddScheduleBox>

@@ -115,8 +115,6 @@ export default function NearPlace() {
     }
   }, [details]);
 
-  console.log(mapStore.getNearPlace());
-
   return (
     <NearPlaceContainer>
       <CustomHeader title="주변 여행지" />
@@ -125,7 +123,6 @@ export default function NearPlace() {
           <NearPlaceCard2
             height="100px"
             key={place.placeId}
-            placeId={place.placeId}
             photoUrl={place.photoUrls[0]}
             name={place.name}
             rating={place.rating}

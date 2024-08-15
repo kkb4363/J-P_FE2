@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 
 import useBottomSheet, { MIN_Y } from "../../hooks/useBottomSheet";
 import { ReactNode } from "react";
+import { scrollHidden } from "../../assets/styles/home.style";
 
 const BOTTOM_SHEET_HEIGHT = window.innerHeight - MIN_Y;
 
 const BottomSheetContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-
   position: fixed;
   z-index: 1;
   top: calc(100% - 270px);
@@ -18,9 +18,7 @@ const BottomSheetContainer = styled(motion.div)`
 
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
   height: ${BOTTOM_SHEET_HEIGHT}px;
-
   border-radius: 30px 30px 0px 0px;
   background: #fafafa;
   box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.08),
@@ -31,10 +29,11 @@ const BottomSheetContainer = styled(motion.div)`
 
 const BottomSheetHeader = styled.div`
   width: 100%;
-  height: 150px;
+  height: 40px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 10px;
 
   &::before {
     content: "";
@@ -48,6 +47,8 @@ const BottomSheetHeader = styled.div`
 const BottomSheetContent = styled.div`
   -webkit-overflow-scrolling: touch;
   overflow: scroll;
+  ${scrollHidden};
+  height: calc(${BOTTOM_SHEET_HEIGHT}px - 50px);
   box-sizing: border-box;
   padding: 4px 16px 40px 16px;
   display: flex;

@@ -4,7 +4,6 @@ import StarIcon from "../../assets/icons/StarIcon";
 import PlusIcon from "../../assets/icons/PlusIcon";
 
 interface Props {
-  placeId: string;
   photoUrl: string;
   name: string;
   rating: number;
@@ -13,15 +12,13 @@ interface Props {
 }
 
 export default function NearPlaceCard({
-  placeId,
   photoUrl,
   name,
   rating,
   height = "83px",
 }: Props) {
   return (
-    // key 여기선 필요없음 나중에 삭제하기
-    <NearPlaceBox key={placeId} $height={height}>
+    <NearPlaceBox $height={height}>
       <ImageView width="60px" height="60px" src={photoUrl} alt={name} />
 
       <NearPlaceDetailCol>

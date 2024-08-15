@@ -94,7 +94,7 @@ export default function useBottomSheet() {
         sheet.current!.style.setProperty(
           "transform",
           `translateY(${nextSheetY - MAX_Y}px)`
-        ); //바닥 만큼은 빼야쥬...
+        );
       } else {
         document.body.style.overflowY = "hidden";
       }
