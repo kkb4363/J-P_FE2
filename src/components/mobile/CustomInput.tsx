@@ -8,6 +8,7 @@ interface Props {
   text: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   // ref
   // callback or onClick
 }
@@ -18,12 +19,13 @@ export default function CustomInput({
   text,
   onChange,
   onSubmit,
+  onClick,
 }: Props) {
   return (
     <CustomInputContainer $height={height} $width={width}>
       <SearchIcon />
       <form onSubmit={onSubmit}>
-        <input placeholder={text} onChange={onChange} />
+        <input placeholder={text} onChange={onChange} onClick={onClick} />
       </form>
     </CustomInputContainer>
   );

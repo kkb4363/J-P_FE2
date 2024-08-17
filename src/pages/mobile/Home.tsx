@@ -91,7 +91,10 @@ export default function Home() {
         <BellIcon />
       </HomeHeader>
 
-      <CustomInput text="여행지를 입력해주세요" />
+      <CustomInput
+        text="여행지를 입력해주세요"
+        onClick={() => navigate("search")}
+      />
 
       <HomeBody>
         <InfoRow>
