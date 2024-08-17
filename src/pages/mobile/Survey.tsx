@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import YellowButton from "../../components/mobile/YellowButton";
 import { useState } from "react";
 import NicknameIcon from "../../assets/icons/NicknameIcon";
 import LogoutIcon from "../../assets/icons/LogoutIcon";
+import PrimaryButton from "../../components/mobile/PrimaryButton";
 
 type JPProps = "J" | "P";
 
@@ -65,7 +65,7 @@ export default function Survey() {
             </SurveyInputBox>
           </SurveyBox>
           <SurveyButtonBox>
-            <YellowButton text="시작하기" onClick={handleSubmit} />
+            <PrimaryButton text="시작하기" onClick={handleSubmit} />
           </SurveyButtonBox>
         </SurveyBody>
       </SurveyContainer>
