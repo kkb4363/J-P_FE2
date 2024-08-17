@@ -9,8 +9,7 @@ import ImageView from "../../components/mobile/ImageView";
 import { googleSearchApiProps } from "../../types/search";
 import StarIcon from "../../assets/icons/StarIcon";
 
-// [TODO]: 최근 검색어 배열 데이터 가져오기
-const recentWords: string[] = ["춘천", "거제도", "통영"];
+const RECENT_SEARCH_KEY = "recentSearches";
 const realTimeWords: string[] = [
   "제주도",
   "여수",
@@ -26,6 +25,7 @@ const realTimeWords: string[] = [
 
 export default function Search() {
   const [searchWord, setSearchWord] = useState("");
+  const [recentWords, setRecentWords] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState<googleSearchApiProps[]>([]);
   const [nextPageToken, setNextPageToken] = useState("");
@@ -33,6 +33,13 @@ export default function Search() {
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    const storedWords = localStorage.getItem(RECENT_SEARCH_KEY);
+    if (storedWords) {
+      setRecentWords(JSON.parse(storedWords));
+    }
+  }, []);
 
   useEffect(() => {
     if (searchWord.trim() !== "") {
@@ -100,33 +107,56 @@ export default function Search() {
     e.preventDefault();
     setIsSubmit(true);
     setPage(1);
+
+    if (searchWord.trim() !== "") {
+      const updatedRecentWords = [
+        searchWord,
+        ...recentWords.filter((word) => word !== searchWord),
+      ].slice(0, 5);
+      setRecentWords(updatedRecentWords);
+      localStorage.setItem(
+        RECENT_SEARCH_KEY,
+        JSON.stringify(updatedRecentWords)
+      );
+    }
   };
 
-  console.log(searchWord, page, loading);
-  console.log(searchData);
+  const handleAllDeleteClick = () => {
+    setRecentWords([]);
+    localStorage.removeItem(RECENT_SEARCH_KEY);
+  };
+
+  const handleWordDelete = (deleteWord: string) => {
+    const updatedWords = recentWords.filter((word) => word !== deleteWord);
+    setRecentWords(updatedWords);
+    localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(updatedWords));
+  };
+
   return (
     <>
       <CustomHeader title="검색" />
       <SearchContainer>
-        {/* [TODO]: 검색어 입력 시 x 아이콘 추가 */}
         <CustomInput
           text="여행지를 입력해주세요"
+          del={searchWord !== ""}
+          value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
-          onSubmit={(e) => handleSearchSubmit(e)}
+          onSubmit={handleSearchSubmit}
+          onDelete={() => setSearchWord("")}
         />
         {searchWord === "" && (
           <>
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p>모두 삭제</p>
+                <p onClick={handleAllDeleteClick}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {
                   return (
                     <SmallRoundButton del>
                       <span>{word}</span>
-                      <CancelIcon />
+                      <CancelIcon onClick={() => handleWordDelete(word)} />
                     </SmallRoundButton>
                   );
                 })}
