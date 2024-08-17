@@ -8,6 +8,7 @@ import CancelIcon from "../../assets/icons/CancelIcon";
 import ImageView from "../../components/mobile/ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import ActionButton from "../../components/mobile/ActionButton";
+import Modal from "../../components/mobile/Modal";
 
 const RECENT_SEARCH_KEY = "recentSearches";
 const realTimeWords: string[] = [
@@ -32,6 +33,7 @@ export default function Search() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -124,6 +126,7 @@ export default function Search() {
   const handleAllDeleteClick = () => {
     setRecentWords([]);
     localStorage.removeItem(RECENT_SEARCH_KEY);
+    setModalOpen(false);
   };
 
   const handleWordDelete = (deleteWord: string) => {
@@ -144,12 +147,19 @@ export default function Search() {
           onSubmit={handleSearchSubmit}
           onDelete={() => setSearchWord("")}
         />
+        {modalOpen && (
+          <Modal
+            setModalOpen={setModalOpen}
+            text="검색 기록을 모두 삭제하시겠습니까?"
+            allDelete={handleAllDeleteClick}
+          />
+        )}
         {searchWord === "" && (
           <>
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={handleAllDeleteClick}>모두 삭제</p>
+                <p onClick={() => setModalOpen(true)}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {
