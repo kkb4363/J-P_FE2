@@ -5,6 +5,7 @@ interface Props {
   height?: string;
   text: string;
   blue?: boolean;
+  secondary?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -13,6 +14,7 @@ export default function PrimaryButton({
   height = "50px",
   text,
   blue = false,
+  secondary = false,
   onClick,
 }: Props) {
   return (
@@ -21,6 +23,7 @@ export default function PrimaryButton({
       $height={height}
       onClick={onClick}
       $blue={blue}
+      $secondary={secondary}
     >
       {text}
     </PrimaryButtonContainer>
@@ -31,12 +34,18 @@ const PrimaryButtonContainer = styled.button<{
   $width: string;
   $height: string;
   $blue?: boolean;
+  $secondary?: boolean;
 }>`
   width: ${(props) => props.$width};
   height: ${(props) => props.$height};
   background-color: ${(props) =>
-    props.$blue ? props.theme.color.secondary : props.theme.color.main};
+    props.$blue
+      ? props.theme.color.secondary
+      : props.$secondary ? props.theme.color.white : props.theme.color.main};
   border-radius: 16px;
-  color: ${(props) => props.theme.color.white};
+  color: ${(props) => props.$secondary
+    ? props.theme.color.gray700
+    : props.theme.color.white};
   font-weight: 700;
+  border: 1px ${(props) => (props.$secondary ? "solid" : "none")} ${(props) => props.theme.color.gray300};
 `;
