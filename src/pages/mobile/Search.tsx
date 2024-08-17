@@ -1,13 +1,14 @@
 import styled from "styled-components";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { axiosInstance } from "../../utils/axios";
+import { googleSearchApiProps } from "../../types/search";
 import CustomHeader from "../../components/mobile/CustomHeader";
 import CustomInput from "../../components/mobile/CustomInput";
 import CancelIcon from "../../assets/icons/CancelIcon";
-import SmallRoundButton from "../../components/mobile/SmallRoundButton";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../utils/axios";
 import ImageView from "../../components/mobile/ImageView";
-import { googleSearchApiProps } from "../../types/search";
 import StarIcon from "../../assets/icons/StarIcon";
+import ActionButton from "../../components/mobile/ActionButton";
+import Modal from "../../components/mobile/Modal";
 
 const RECENT_SEARCH_KEY = "recentSearches";
 const realTimeWords: string[] = [
@@ -32,6 +33,7 @@ export default function Search() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -124,6 +126,7 @@ export default function Search() {
   const handleAllDeleteClick = () => {
     setRecentWords([]);
     localStorage.removeItem(RECENT_SEARCH_KEY);
+    setModalOpen(false);
   };
 
   const handleWordDelete = (deleteWord: string) => {
@@ -144,20 +147,27 @@ export default function Search() {
           onSubmit={handleSearchSubmit}
           onDelete={() => setSearchWord("")}
         />
+        {modalOpen && (
+          <Modal
+            setModalOpen={setModalOpen}
+            text="검색 기록을 모두 삭제하시겠습니까?"
+            allDelete={handleAllDeleteClick}
+          />
+        )}
         {searchWord === "" && (
           <>
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={handleAllDeleteClick}>모두 삭제</p>
+                <p onClick={() => setModalOpen(true)}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {
                   return (
-                    <SmallRoundButton del>
+                    <ActionButton del>
                       <span>{word}</span>
                       <CancelIcon onClick={() => handleWordDelete(word)} />
-                    </SmallRoundButton>
+                    </ActionButton>
                   );
                 })}
               </SearchWordBox>
@@ -166,9 +176,7 @@ export default function Search() {
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
                 {realTimeWords.map((word) => {
-                  return (
-                    <SmallRoundButton hashtag>{`#${word}`}</SmallRoundButton>
-                  );
+                  return <ActionButton hashtag>{`#${word}`}</ActionButton>;
                 })}
               </SearchWordBox>
             </SearchWordContainer>
