@@ -102,8 +102,12 @@ export default function Search() {
     setPage(1);
   };
 
+  const handleDeleteClick = () => {
+    setSearchWord("");
+    console.log(searchWord);
+  };
+
   console.log(searchWord, page, loading);
-  console.log(searchData);
   return (
     <>
       <CustomHeader title="검색" />
@@ -111,8 +115,11 @@ export default function Search() {
         {/* [TODO]: 검색어 입력 시 x 아이콘 추가 */}
         <CustomInput
           text="여행지를 입력해주세요"
+          del={searchWord !== ""}
+          value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
-          onSubmit={(e) => handleSearchSubmit(e)}
+          onSubmit={handleSearchSubmit}
+          onDelete={handleDeleteClick}
         />
         {searchWord === "" && (
           <>
