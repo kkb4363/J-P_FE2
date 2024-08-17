@@ -1,13 +1,13 @@
 import styled from "styled-components";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { axiosInstance } from "../../utils/axios";
+import { googleSearchApiProps } from "../../types/search";
 import CustomHeader from "../../components/mobile/CustomHeader";
 import CustomInput from "../../components/mobile/CustomInput";
 import CancelIcon from "../../assets/icons/CancelIcon";
-import SmallRoundButton from "../../components/mobile/SmallRoundButton";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../utils/axios";
 import ImageView from "../../components/mobile/ImageView";
-import { googleSearchApiProps } from "../../types/search";
 import StarIcon from "../../assets/icons/StarIcon";
+import ActionButton from "../../components/mobile/ActionButton";
 
 const RECENT_SEARCH_KEY = "recentSearches";
 const realTimeWords: string[] = [
@@ -154,10 +154,10 @@ export default function Search() {
               <SearchWordBox>
                 {recentWords.map((word) => {
                   return (
-                    <SmallRoundButton del>
+                    <ActionButton del>
                       <span>{word}</span>
                       <CancelIcon onClick={() => handleWordDelete(word)} />
-                    </SmallRoundButton>
+                    </ActionButton>
                   );
                 })}
               </SearchWordBox>
@@ -166,9 +166,7 @@ export default function Search() {
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
                 {realTimeWords.map((word) => {
-                  return (
-                    <SmallRoundButton hashtag>{`#${word}`}</SmallRoundButton>
-                  );
+                  return <ActionButton hashtag>{`#${word}`}</ActionButton>;
                 })}
               </SearchWordBox>
             </SearchWordContainer>

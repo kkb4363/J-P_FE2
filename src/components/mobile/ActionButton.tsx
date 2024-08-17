@@ -8,20 +8,15 @@ interface Props {
   children: ReactNode;
 }
 
-export default function SmallRoundButton({
-  add,
-  del,
-  hashtag,
-  children,
-}: Props) {
+export default function ActionButton({ add, del, hashtag, children }: Props) {
   return (
-    <SmallRoundButtonContainer $add={add} $del={del} $hashtag={hashtag}>
+    <ActionButtonContainer $add={add} $del={del} $hashtag={hashtag}>
       {children}
-    </SmallRoundButtonContainer>
+    </ActionButtonContainer>
   );
 }
 
-const SmallRoundButtonContainer = styled.button<{
+const ActionButtonContainer = styled.button<{
   $add?: boolean;
   $del?: boolean;
   $hashtag?: boolean;

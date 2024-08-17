@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ImageView from "./ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import PlusIcon from "../../assets/icons/PlusIcon";
-import SmallRoundButton from "./SmallRoundButton";
+import ActionButton from "./ActionButton";
 
 interface Props {
   placeId: string;
@@ -31,10 +31,10 @@ export default function NearPlaceCard({
         </div>
       </NearPlaceDetailCol>
 
-      <SmallRoundButton>
+      <ActionButton>
         <PlusIcon />
         <span>추가</span>
-      </SmallRoundButton>
+      </ActionButton>
     </NearPlaceBox>
   );
 }
