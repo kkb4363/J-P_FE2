@@ -29,12 +29,10 @@ export const CarouselTitle = styled.span`
   color: ${(props) => props.theme.color.gray900};
   font-size: 14px;
   font-weight: 700;
-  line-height: normal;
 `;
 
 export const CarouselLocationTitle = styled.span`
   color: ${(props) => props.theme.color.gray600};
   font-size: 12px;
   font-weight: 700;
-  line-height: normal;
 `;

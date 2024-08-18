@@ -1,13 +1,8 @@
-import styled from "styled-components";
 import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon";
 import HeartIcon from "../../assets/icons/HeartIcon";
 import Carousel from "react-material-ui-carousel";
 import MarkIcon from "../../assets/icons/MarkIcon";
-import {
-  ReviewTag,
-  ReviewTagRow,
-  scrollHidden,
-} from "../../assets/styles/home.style";
+import { ReviewTag, ReviewTagRow } from "../../assets/styles/home.style";
 import { useEffect, useRef, useState } from "react";
 import StarIcon from "../../assets/icons/StarIcon";
 import PlusIcon from "../../assets/icons/PlusIcon";
@@ -17,17 +12,32 @@ import { axiosInstance } from "../../utils/axios";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
+  ReviewProps,
 } from "../../types/home.details";
-import NearPlaceCard from "../../components/mobile/NearPlaceCard";
+import { useMapStore } from "../../store/map.store";
+import ImageView from "../../components/mobile/ImageView";
+import ActionButton from "../../components/mobile/ActionButton";
+import * as S from "../../assets/styles/homeDetail.style";
+import { testImg2 } from "../../utils/staticDatas";
+
+interface Props {
+  photoUrl: string;
+  name: string;
+  rating: number;
+  handleClick?: () => void;
+  height?: string;
+}
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
   const mapRef = useRef<HTMLDivElement>(null);
+  const { clear } = useMapStore();
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
+  const [reviews, setReviews] = useState<ReviewProps[]>([]);
 
   const isCityDetailPage = location.pathname.includes("city");
 
@@ -37,7 +47,7 @@ export default function HomeDetails() {
         const [detailsRes, reviewsRes] = await Promise.all([
           axiosInstance.get(`/place/details/${param?.placeId}`),
           axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
+            `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
           ),
         ]);
 
@@ -45,7 +55,7 @@ export default function HomeDetails() {
           setDetails(detailsRes.data);
         }
         if (reviewsRes.status === 200) {
-          console.log(reviewsRes.data);
+          setReviews(reviewsRes.data.data);
         }
       } catch (error) {
         console.error("API Error:", error);
@@ -73,7 +83,7 @@ export default function HomeDetails() {
           }
         };
       } else {
-        if ((window as any).google) {
+        if ((window as any).google && details?.location) {
           initMap();
         }
       }
@@ -98,7 +108,7 @@ export default function HomeDetails() {
     };
 
     const initMap = () => {
-      if (mapRef.current && details?.location) {
+      if (mapRef.current) {
         const map = new (window as any).google.maps.Map(mapRef.current, {
           center: { lat: details.location.lat, lng: details.location.lng },
           zoom: 16,
@@ -109,8 +119,6 @@ export default function HomeDetails() {
           map: map,
           title: details.name,
         });
-
-        console.log("Google Maps init");
       }
     };
 
@@ -121,7 +129,7 @@ export default function HomeDetails() {
   }, [details]);
 
   return (
-    <HomeDetailsContainer>
+    <S.HomeDetailsContainer>
       <Carousel
         cycleNavigation={true}
         navButtonsAlwaysInvisible={true}
@@ -130,31 +138,36 @@ export default function HomeDetails() {
         swipe={true}
       >
         {details?.photoUrls?.map((img, idx) => (
-          <DetailsImageBox key={idx}>
+          <S.DetailsImageBox key={idx}>
             <img src={img} alt={img} />
 
-            <ArrowLeftBox onClick={() => navigate(-1)}>
+            <S.ArrowLeftBox
+              onClick={() => {
+                navigate(-1);
+                clear();
+              }}
+            >
               <ArrowLeftIcon stroke="#fff" />
-            </ArrowLeftBox>
+            </S.ArrowLeftBox>
 
-            <LikeBox>
+            <S.LikeBox>
               <HeartIcon />
-            </LikeBox>
+            </S.LikeBox>
 
-            <ImagePageIndicatorBox>
+            <S.ImagePageIndicatorBox>
               <span>
                 {idx + 1} / {details?.photoUrls.length}
               </span>
-            </ImagePageIndicatorBox>
-          </DetailsImageBox>
+            </S.ImagePageIndicatorBox>
+          </S.DetailsImageBox>
         ))}
       </Carousel>
 
-      <DetailsBody>
-        <DetailsTitle>
+      <S.DetailsBody>
+        <S.DetailsTitle>
           <MarkIcon />
           {details?.name}
-        </DetailsTitle>
+        </S.DetailsTitle>
 
         <ReviewTagRow>
           {details?.tags?.map((tag) => (
@@ -164,426 +177,102 @@ export default function HomeDetails() {
           ))}
         </ReviewTagRow>
 
-        <DetailsInfo>{details?.description}</DetailsInfo>
+        <S.DetailsInfo>{details?.description}</S.DetailsInfo>
 
         {!isCityDetailPage && (
           <>
-            <DetailsTitle>기본 정보</DetailsTitle>
-            <DetailsSubTitle>
+            <S.DetailsTitle>기본 정보</S.DetailsTitle>
+            <S.DetailsSubTitle>
               <MarkIcon width="18" height="18" />
               <span>{details?.formattedAddress}</span>
-            </DetailsSubTitle>
+            </S.DetailsSubTitle>
 
-            <GoogleMapBox ref={mapRef} />
+            <S.GoogleMapBox ref={mapRef} />
           </>
         )}
 
-        <DetailsTitleWithMoreText>
+        <S.DetailsTitleWithMoreText>
           주변 여행지 추천
           <span>지도로 보기</span>
-          <MoreTextAbsolute
+          <S.MoreTextAbsolute
             onClick={() => navigate(`/home/nearby/${param?.placeId}`)}
           >
             더보기
-          </MoreTextAbsolute>
-        </DetailsTitleWithMoreText>
+          </S.MoreTextAbsolute>
+        </S.DetailsTitleWithMoreText>
 
-        <NearPlaceCol>
+        <S.NearPlaceCol>
           {nearbyPlaces?.slice(0, 3).map((place) => (
             <NearPlaceCard
               key={place.placeId}
-              placeId={place.placeId}
               photoUrl={place.photoUrls[0]}
               name={place.name}
               rating={place.rating}
             />
           ))}
-        </NearPlaceCol>
+        </S.NearPlaceCol>
 
-        <DetailsTitleWithMoreText>
+        <S.DetailsTitleWithMoreText>
           리뷰
-          <MoreTextAbsolute>더보기</MoreTextAbsolute>
-        </DetailsTitleWithMoreText>
+          <S.MoreTextAbsolute>더보기</S.MoreTextAbsolute>
+        </S.DetailsTitleWithMoreText>
 
-        <DetailsReviewRow>
-          <DetailsReviewBox>
-            <ReviewTitle>
-              <div>
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-                  alt="test"
-                />
-                <span>Jiyoo | </span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>
-                드라이브, 산책 코스로 딱 좋았던 섬진강길 벚꽃길은 구례부터
-                하동까지 쭉 이어져있는데 만개했을깨 벚꽃 터널을 드라이브 하면
-                너무 좋아요. 
-              </span>
-            </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>12</span>
-              <CommentIcon />
-              <span>2</span>
-            </ReviewMessageRow>
-          </DetailsReviewBox>
-          <DetailsReviewBox>
-            <ReviewTitle>
-              <div>
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-                  alt="test"
-                />
-                <span>Jiyoo | </span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>
-                드라이브, 산책 코스로 딱 좋았던 섬진강길 벚꽃길은 구례부터
-                하동까지 쭉 이어져있는데 만개했을깨 벚꽃 터널을 드라이브 하면
-                너무 좋아요. 
-              </span>
-            </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>12</span>
-              <CommentIcon />
-              <span>2</span>
-            </ReviewMessageRow>
-          </DetailsReviewBox>
-          <DetailsReviewBox>
-            <ReviewTitle>
-              <div>
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/4de5/c6cd/4d2c94956b12da010b7b99e5d5a92224?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lZ2c4t3VMX6f294Wf7WfbN8I3w1F8kPIYESWvv8AExhb8e3~KJyk51jjkqmg4SZJhqj5fuQwcXlFyGrHgbAho7~Ayb5dB2Si3~m4ymVzHrkQZYRmaiwXOMPoCY~fgwBT3rMYUbv8EVQ56-mzMpqthcFNoUv7bOmPKDq7v~OHIWJfFonhH4R4NC9L3n53aSUs5qXuEuG-qku7vQltRVE-oTzyrYzpbVYTDkzP~E3qgo~0-UZHPTzbThN1rlaDqUUUXSma9lpze94lezKHpvrRm0DhkPvyfbSSVdWswiodrO7eWUTH33uQv2RIYJiLbxckUlwsv5Bmhgdzm5YAVJrHGw__"
-                  alt="test"
-                />
-                <span>Jiyoo | </span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>
-                드라이브, 산책 코스로 딱 좋았던 섬진강길 벚꽃길은 구례부터
-                하동까지 쭉 이어져있는데 만개했을깨 벚꽃 터널을 드라이브 하면
-                너무 좋아요. 
-              </span>
-            </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>12</span>
-              <CommentIcon />
-              <span>2</span>
-            </ReviewMessageRow>
-          </DetailsReviewBox>
-        </DetailsReviewRow>
+        <S.DetailsReviewRow>
+          {reviews?.map((review) => (
+            <S.DetailsReviewBox key={review.id}>
+              <S.ReviewTitle>
+                <div>
+                  <img src={testImg2} alt="user-img" />
+                  <span>{review.userCompactResDto.nickname} | </span>
+                  <span>24.4.1</span>
+                </div>
+                <div>
+                  <StarIcon />
+                  <span>{review.star}</span>
+                </div>
+              </S.ReviewTitle>
+              <S.ReviewInfo>
+                <span>{review.content}</span>
+              </S.ReviewInfo>
+              <S.ReviewMessageRow>
+                <HeartIcon />
+                <span>{review.likeCnt}</span>
+                <CommentIcon />
+                <span>{review.commentCnt}</span>
+              </S.ReviewMessageRow>
+            </S.DetailsReviewBox>
+          ))}
+        </S.DetailsReviewRow>
 
-        <AddScheduleBox>
-          <AddScheduleButton>
+        <S.AddScheduleBox>
+          <S.AddScheduleButton>
             <PlusIcon stroke="#fff" />
             <span>일정 추가</span>
-          </AddScheduleButton>
-        </AddScheduleBox>
-      </DetailsBody>
-    </HomeDetailsContainer>
+          </S.AddScheduleButton>
+        </S.AddScheduleBox>
+      </S.DetailsBody>
+    </S.HomeDetailsContainer>
   );
 }
 
-const HomeDetailsContainer = styled.div`
-  width: 360px;
-  height: 100%;
-  overflow-y: scroll;
-  ${scrollHidden};
-  position: relative;
-`;
+function NearPlaceCard({ photoUrl, name, rating, height = "83px" }: Props) {
+  return (
+    <S.NearPlaceBox $height={height}>
+      <ImageView width="60px" height="60px" src={photoUrl} alt={name} />
 
-const DetailsImageBox = styled.div`
-  width: 100%;
-  min-height: 250px;
-  position: relative;
+      <S.NearPlaceDetailCol>
+        <p>{name}</p>
 
-  & > img {
-    width: 100%;
-    height: 250px;
-  }
-`;
+        <div>
+          <StarIcon />
+          {rating} | <span>주소보기</span>
+        </div>
+      </S.NearPlaceDetailCol>
 
-const ArrowLeftBox = styled.div`
-  position: absolute;
-  left: 18px;
-  top: 38px;
-`;
-
-const LikeBox = styled.div`
-  position: absolute;
-  right: 18px;
-  top: 38px;
-  width: 32px;
-  height: 32px;
-  background-color: #fff;
-  filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.06));
-  opacity: 0.9;
-  border-radius: 50%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ImagePageIndicatorBox = styled.div`
-  position: absolute;
-  right: 25px;
-  bottom: 20px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 30px;
-  width: 32px;
-  height: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  & > span {
-    color: #000;
-    text-align: center;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-  }
-`;
-
-const DetailsBody = styled.div`
-  padding: 6px 16px 16px 16px;
-`;
-
-const DetailsTitle = styled.h1`
-  display: flex;
-  align-items: center;
-  margin: 18px 0 8px 0;
-
-  color: #1a1a1a;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  text-transform: capitalize;
-`;
-
-const DetailsInfo = styled.div`
-  color: #1a1a1a;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%;
-  letter-spacing: -0.048px;
-  margin: 8px 0;
-`;
-
-const DetailsSubTitle = styled.p`
-  display: flex;
-  align-items: center;
-  & > span {
-    color: #4d4d4d;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-transform: capitalize;
-  }
-`;
-
-const GoogleMapBox = styled.div`
-  width: 100%;
-  height: 146px;
-  margin: 8px 0;
-  border-radius: 16px;
-`;
-
-const DetailsTitleWithMoreText = styled(DetailsTitle)`
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  & > span {
-    color: #4d4d4d;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 140%;
-  }
-`;
-
-const MoreText = styled.span`
-  color: #b8b8b8;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 140%;
-`;
-
-const MoreTextAbsolute = styled(MoreText)`
-  position: absolute;
-  right: 0;
-`;
-
-const NearPlaceCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  padding: 6px 0;
-`;
-
-const DetailsReviewRow = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  height: 134px;
-  overflow-x: scroll;
-  ${scrollHidden};
-`;
-
-const DetailsReviewBox = styled.div`
-  border-radius: 16px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
-  height: 134px;
-  width: 270px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 14px;
-`;
-
-const ReviewTitle = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  & > div:first-child {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    & > img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-    }
-
-    & > span:last-child {
-      color: #808080;
-      font-family: Pretendard;
-      font-size: 12px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 140%;
-    }
-
-    & > span:first-child {
-      color: #1a1a1a;
-      font-size: 12px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 140%;
-    }
-  }
-
-  & > div:last-child {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-
-    & > span {
-      color: #808080;
-      font-family: Pretendard;
-      font-size: 12px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 140%;
-    }
-  }
-`;
-
-const ReviewInfo = styled.div`
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 221px;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-
-  & > span {
-    color: #1a1a1a;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 140%;
-  }
-`;
-
-const ReviewMessageRow = styled.div`
-  display: flex;
-  gap: 4px;
-  & > span {
-    color: #808080;
-    font-family: Pretendard;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 140%;
-  }
-`;
-
-const AddScheduleBox = styled.div`
-  padding: 29px 0 0 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const AddScheduleButton = styled.button`
-  border-radius: 30px;
-  background: #ffc814;
-  box-shadow: 0px 6px 8px 0px rgba(0, 0, 0, 0.08),
-    0px 4px 10px 0px rgba(0, 0, 0, 0.08);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 16px;
-  gap: 8px;
-
-  & > span {
-    color: #fff;
-    text-align: center;
-
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 18px;
-    letter-spacing: -0.6px;
-  }
-`;
+      <ActionButton>
+        <PlusIcon />
+        <span>추가</span>
+      </ActionButton>
+    </S.NearPlaceBox>
+  );
+}
