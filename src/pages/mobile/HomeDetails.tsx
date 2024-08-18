@@ -20,6 +20,7 @@ import ActionButton from "../../components/mobile/ActionButton";
 import * as S from "../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../utils/staticDatas";
 import EditIcon from "../../assets/icons/EditIcon";
+import CustomSkeleton from "../../components/mobile/CustomSkeleton";
 
 interface Props {
   photoUrl: string;
@@ -34,6 +35,8 @@ export default function HomeDetails() {
   const param = useParams();
   const mapRef = useRef<HTMLDivElement>(null);
   const { clear } = useMapStore();
+  const [loading, setLoading] = useState(true);
+
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
@@ -60,6 +63,8 @@ export default function HomeDetails() {
         }
       } catch (error) {
         console.error("API Error:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -129,8 +134,6 @@ export default function HomeDetails() {
     }
   }, [details]);
 
-  console.log(reviews);
-
   return (
     <S.HomeDetailsContainer>
       <Carousel
@@ -140,30 +143,34 @@ export default function HomeDetails() {
         autoPlay={false}
         swipe={true}
       >
-        {details?.photoUrls?.map((img, idx) => (
-          <S.DetailsImageBox key={idx}>
-            <img src={img} alt={img} />
+        {loading ? (
+          <CustomSkeleton height="250px" borderRadius="0" />
+        ) : (
+          details?.photoUrls?.map((img, idx) => (
+            <S.DetailsImageBox key={idx}>
+              <img src={img} alt={img} />
 
-            <S.ArrowLeftBox
-              onClick={() => {
-                navigate(-1);
-                clear();
-              }}
-            >
-              <ArrowLeftIcon stroke="#fff" />
-            </S.ArrowLeftBox>
+              <S.ArrowLeftBox
+                onClick={() => {
+                  navigate(-1);
+                  clear();
+                }}
+              >
+                <ArrowLeftIcon stroke="#fff" />
+              </S.ArrowLeftBox>
 
-            <S.LikeBox>
-              <HeartIcon />
-            </S.LikeBox>
+              <S.LikeBox>
+                <HeartIcon />
+              </S.LikeBox>
 
-            <S.ImagePageIndicatorBox>
-              <span>
-                {idx + 1} / {details?.photoUrls.length}
-              </span>
-            </S.ImagePageIndicatorBox>
-          </S.DetailsImageBox>
-        ))}
+              <S.ImagePageIndicatorBox>
+                <span>
+                  {idx + 1} / {details?.photoUrls.length}
+                </span>
+              </S.ImagePageIndicatorBox>
+            </S.DetailsImageBox>
+          ))
+        )}
       </Carousel>
 
       <S.DetailsBody>
@@ -190,7 +197,11 @@ export default function HomeDetails() {
               <span>{details?.formattedAddress}</span>
             </S.DetailsSubTitle>
 
-            <S.GoogleMapBox ref={mapRef} />
+            {loading ? (
+              <CustomSkeleton height="146px" />
+            ) : (
+              <S.GoogleMapBox ref={mapRef} />
+            )}
           </>
         )}
 
@@ -205,14 +216,20 @@ export default function HomeDetails() {
         </S.DetailsTitleWithMoreText>
 
         <S.NearPlaceCol>
-          {nearbyPlaces?.slice(0, 3).map((place) => (
-            <NearPlaceCard
-              key={place.placeId}
-              photoUrl={place.photoUrls[0]}
-              name={place.name}
-              rating={place.rating}
-            />
-          ))}
+          {nearbyPlaces.length === 0
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <CustomSkeleton height="83px" borderRadius="16px" />
+              ))
+            : nearbyPlaces
+                ?.slice(0, 3)
+                .map((place) => (
+                  <NearPlaceCard
+                    key={place.placeId}
+                    photoUrl={place.photoUrls[0]}
+                    name={place.name}
+                    rating={place.rating}
+                  />
+                ))}
         </S.NearPlaceCol>
 
         <S.DetailsTitleWithMoreText>

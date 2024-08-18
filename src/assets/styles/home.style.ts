@@ -59,7 +59,7 @@ export const CarouselWithText = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-height: 182px;
+  min-height: 160px;
 `;
 
 export const CarouselTitle = styled.span`

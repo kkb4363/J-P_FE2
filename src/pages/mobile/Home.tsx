@@ -12,6 +12,7 @@ import * as S from "../../assets/styles/home.style";
 
 import { useNavigate } from "react-router-dom";
 import { testImg1 } from "../../utils/staticDatas";
+import CustomSkeleton from "../../components/mobile/CustomSkeleton";
 
 type MoreProps = "travel-place" | "city" | "theme-place";
 
@@ -26,6 +27,8 @@ export default function Home() {
   const [themePlace, setThemePlace] = useState([]);
   // 지금 뜨는 리뷰
   const [review, setReview] = useState([]);
+
+  const [loading, setLoading] = useState(true);
   // TODO : 사람들이 찜한 여행기 api = 아직 백엔드 개발 중
 
   const handleMoreClick = (type: MoreProps) => {
@@ -57,6 +60,8 @@ export default function Home() {
         }
       } catch (error) {
         console.error("api error=", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -86,17 +91,28 @@ export default function Home() {
           </S.MoreText>
         </S.InfoRow>
         <S.CarouselRow>
-          {travelPlace?.map((item: placeApiProps) => (
-            <S.CarouselWithText key={item.id}>
-              <ImageView
-                src={testImg1}
-                alt={item.name}
-                handleClick={() => navigate(`${item.placeId}`)}
-              />
-
-              <CarouselTitleBox name={item.name} subName={item.subName} />
-            </S.CarouselWithText>
-          ))}
+          {loading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <S.CarouselWithText key={index}>
+                  <CustomSkeleton
+                    width="120px"
+                    height="120px"
+                    borderRadius="16px"
+                  />
+                  <CustomSkeleton style={{ borderRadius: "8px" }} />
+                  <CustomSkeleton style={{ borderRadius: "8px" }} />
+                </S.CarouselWithText>
+              ))
+            : travelPlace?.map((item: placeApiProps) => (
+                <S.CarouselWithText key={item.id}>
+                  <ImageView
+                    src={testImg1}
+                    alt={item.name}
+                    handleClick={() => navigate(`${item.placeId}`)}
+                  />
+                  <CarouselTitleBox name={item.name} subName={item.subName} />
+                </S.CarouselWithText>
+              ))}
         </S.CarouselRow>
 
         <S.InfoRow>
@@ -106,15 +122,25 @@ export default function Home() {
           </S.MoreText>
         </S.InfoRow>
         <S.CarouselRow>
-          {city?.map((item: placeApiProps) => (
-            <ImageView
-              key={item.id}
-              src={testImg1}
-              alt={item.name}
-              bottomText={item.name}
-              handleClick={() => navigate(`city/${item.placeId}`)}
-            />
-          ))}
+          {loading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <S.CarouselWithText key={index}>
+                  <CustomSkeleton
+                    width="120px"
+                    height="120px"
+                    borderRadius="16px"
+                  />
+                </S.CarouselWithText>
+              ))
+            : city?.map((item: placeApiProps) => (
+                <ImageView
+                  key={item.id}
+                  src={testImg1}
+                  alt={item.name}
+                  bottomText={item.name}
+                  handleClick={() => navigate(`city/${item.placeId}`)}
+                />
+              ))}
         </S.CarouselRow>
 
         <S.InfoRow>
@@ -126,12 +152,22 @@ export default function Home() {
           </S.MoreText>
         </S.InfoRow>
         <S.CarouselRow>
-          {themePlace?.map((item: placeApiProps) => (
-            <S.CarouselWithText key={item.id}>
-              <ImageView src={testImg1} alt={item.name} topText="여행지" />
-              <CarouselTitleBox name={item.name} subName={item.subName} />
-            </S.CarouselWithText>
-          ))}
+          {loading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <S.CarouselWithText key={index}>
+                  <CustomSkeleton
+                    width="120px"
+                    height="120px"
+                    borderRadius="16px"
+                  />
+                </S.CarouselWithText>
+              ))
+            : themePlace?.map((item: placeApiProps) => (
+                <S.CarouselWithText key={item.id}>
+                  <ImageView src={testImg1} alt={item.name} topText="여행지" />
+                  <CarouselTitleBox name={item.name} subName={item.subName} />
+                </S.CarouselWithText>
+              ))}
         </S.CarouselRow>
 
         <S.InfoRow>

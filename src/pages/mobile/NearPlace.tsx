@@ -202,10 +202,10 @@ export default function NearPlace() {
               />
               <S.CardCol>
                 <p>{selectPlace?.name}</p>
-                <span>전남 구례군</span>
+                <span>{selectPlace?.shortAddress}</span>
                 <div>
                   <StarIcon />
-                  <span>4,9</span>
+                  <span>{selectPlace?.rating}</span>
                 </div>
               </S.CardCol>
             </S.SelectPlaceCard>
@@ -213,15 +213,19 @@ export default function NearPlace() {
             <S.SelectPlaceDetailCol>
               <div>
                 <AlarmIcon />
-                <span>연중무휴</span>
+                <span>{selectPlace?.openNow ? "영업 중" : "영업 종료"}</span>
               </div>
               <div>
                 <InfoIcon />
-                <span>061-666-666</span>
+                <span>
+                  {selectPlace?.formattedPhoneNumber
+                    ? selectPlace?.formattedPhoneNumber
+                    : "전화번호 미제공"}
+                </span>
               </div>
               <div>
                 <MarkIcon width="18" height="18" />
-                <span>전라남도 구례군 구례읍 원방리 </span>
+                <span>{selectPlace?.fullAddress}</span>
               </div>
             </S.SelectPlaceDetailCol>
           </S.SelectPlaceCol>

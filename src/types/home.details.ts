@@ -49,7 +49,7 @@ export interface ReviewProps {
 // 04. [구글 플레이스] /googleplace/details
 export interface SelectPlaceProps {
   businessStatus: string;
-  formattedAddress: string;
+  fullAddress: string;
   formattedPhoneNumber: string;
   location: {
     lat: number;
@@ -61,4 +61,6 @@ export interface SelectPlaceProps {
   placeId: string;
   website: string;
   weekdayText: string[];
+  rating: number;
+  shortAddress: string;
 }
