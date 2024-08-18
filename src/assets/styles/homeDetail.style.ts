@@ -146,6 +146,22 @@ export const DetailsReviewRow = styled.div`
   ${scrollHidden};
 `;
 
+export const DetailsNoReview = styled.div`
+  height: 134px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid ${(props) => props.theme.color.gray200};
+  border-radius: 16px;
+
+  & > span {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 16px;
+    font-weight: 400;
+  }
+`;
+
 export const DetailsReviewBox = styled.div`
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};

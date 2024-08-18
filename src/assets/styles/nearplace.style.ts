@@ -40,7 +40,7 @@ export const SelectPlaceCard = styled.div`
   display: flex;
   align-items: center;
   height: 80px;
-  gap: 8px;
+  gap: 16px;
 `;
 
 export const CardCol = styled.div`
@@ -99,6 +99,7 @@ export const SelectPlaceDetailCol = styled.div`
       color: ${(props) => props.theme.color.gray700};
       font-size: 14px;
       font-weight: 400;
+      width: 90%;
     }
   }
 `;
