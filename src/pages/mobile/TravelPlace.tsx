@@ -5,6 +5,7 @@ import { axiosInstance } from "../../utils/axios";
 import { placeApiProps } from "../../types/home";
 import ImageView from "../../components/mobile/ImageView";
 import CarouselTitleBox from "../../components/mobile/CarouselTitleBox";
+import { testImg1 } from "../../utils/staticDatas";
 
 export default function TravelPlace() {
   const [travelPlace, setTravelPlace] = useState<placeApiProps[]>([]);
@@ -60,7 +61,7 @@ export default function TravelPlace() {
           return (
             <PlaceCardWithText key={item.id} ref={lastElementRef}>
               <ImageView
-                src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
+                src={testImg1}
                 alt={item.name}
                 width="164px"
                 height="155px"
@@ -76,7 +77,7 @@ export default function TravelPlace() {
           return (
             <PlaceCardWithText key={item.id}>
               <ImageView
-                src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
+                src={testImg1}
                 alt={item.name}
                 width="164px"
                 height="155px"

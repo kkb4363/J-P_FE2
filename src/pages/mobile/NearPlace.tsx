@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import CustomHeader from "../../components/mobile/CustomHeader";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -9,12 +8,22 @@ import {
 } from "../../types/home.details";
 import { useMapStore } from "../../store/map.store";
 import BottomSheet from "../../components/mobile/BottomSheet";
-import NearPlaceCard2 from "../../components/mobile/NearPlaceCard2";
 import ImageView from "../../components/mobile/ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import AlarmIcon from "../../assets/icons/AlarmIcon";
 import InfoIcon from "../../assets/icons/InfoIcon";
 import MarkIcon from "../../assets/icons/MarkIcon";
+import PlusIcon from "../../assets/icons/PlusIcon";
+import * as S from "../../assets/styles/nearplace.style";
+
+interface Props {
+  photoUrl: string;
+  name: string;
+  rating: number;
+  handleClick?: () => void;
+  vicinity: string;
+  height?: string;
+}
 
 export default function NearPlace() {
   const param = useParams();
@@ -112,7 +121,7 @@ export default function NearPlace() {
 
           marker.addListener("click", () => {
             const contentString = `
-            <div class="${PlaceMarkerName.styledComponentId}">
+            <div class="${S.PlaceMarkerName.styledComponentId}">
               <strong>${place.name}</strong>
             </div>
           `;
@@ -165,13 +174,13 @@ export default function NearPlace() {
   }, [selectPlaceId]);
 
   return (
-    <NearPlaceContainer>
+    <S.NearPlaceContainer>
       <CustomHeader title="주변 여행지" handleClick={handlePrev} />
 
       {!selectPlaceId ? (
         <BottomSheet maxHeight={window.innerHeight - 100} key={"sheet1"}>
           {mapStore.getNearPlace().map((place) => (
-            <NearPlaceCard2
+            <NearPlaceCard
               height="100px"
               key={place.placeId}
               photoUrl={place.photoUrls[0]}
@@ -183,25 +192,25 @@ export default function NearPlace() {
         </BottomSheet>
       ) : (
         <BottomSheet maxHeight={window.innerHeight - 500} key={"sheet2"}>
-          <SelectPlaceCol>
-            <SelectPlaceCard>
+          <S.SelectPlaceCol>
+            <S.SelectPlaceCard>
               <ImageView
                 width="80px"
                 height="80px"
                 src={selectPlace?.photoUrls?.[0]}
                 alt={selectPlace?.name}
               />
-              <CardCol>
+              <S.CardCol>
                 <p>{selectPlace?.name}</p>
                 <span>전남 구례군</span>
                 <div>
                   <StarIcon />
                   <span>4,9</span>
                 </div>
-              </CardCol>
-            </SelectPlaceCard>
-            <Divider />
-            <SelectPlaceDetailCol>
+              </S.CardCol>
+            </S.SelectPlaceCard>
+            <S.Divider />
+            <S.SelectPlaceDetailCol>
               <div>
                 <AlarmIcon />
                 <span>연중무휴</span>
@@ -214,115 +223,47 @@ export default function NearPlace() {
                 <MarkIcon width="18" height="18" />
                 <span>전라남도 구례군 구례읍 원방리 </span>
               </div>
-            </SelectPlaceDetailCol>
-          </SelectPlaceCol>
+            </S.SelectPlaceDetailCol>
+          </S.SelectPlaceCol>
         </BottomSheet>
       )}
-      <NearPlaceMapBox ref={mapRef}></NearPlaceMapBox>
-    </NearPlaceContainer>
+      <S.NearPlaceMapBox ref={mapRef}></S.NearPlaceMapBox>
+    </S.NearPlaceContainer>
   );
 }
 
-const NearPlaceContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  padding-bottom: 10px;
-`;
+function NearPlaceCard({
+  photoUrl,
+  name,
+  rating,
+  vicinity,
+  height = "83px",
+}: Props) {
+  return (
+    <S.NearPlaceBox $height={height}>
+      <ImageView width="80px" height="80px" src={photoUrl} alt={"이미지없음"} />
 
-const NearPlaceMapBox = styled.div`
-  width: 100%;
-  height: calc(100% - 50px);
-`;
+      <S.NearPlaceDetailCol>
+        <div>주변 여행지</div>
 
-const PlaceMarkerName = styled.div`
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.12),
-    2px 6px 12px 0px rgba(0, 0, 0, 0.12);
+        <p>{name}</p>
 
-  & > strong {
-    color: #1a1a1a;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 18px;
-    letter-spacing: -0.6px;
-  }
+        <div>
+          <span>{vicinity}</span>
+        </div>
+      </S.NearPlaceDetailCol>
 
-  & > .gm-style-iw-chr > button {
-    display: none;
-    background-color: tomato;
-  }
-`;
+      <S.ButtonCol>
+        <S.RatingBox>
+          <StarIcon />
+          <span>{rating}</span>
+        </S.RatingBox>
 
-const SelectPlaceCol = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 0 24px 24px 24px;
-`;
-
-const SelectPlaceCard = styled.div`
-  display: flex;
-  align-items: center;
-  height: 80px;
-  gap: 8px;
-`;
-
-const CardCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-around;
-  height: 100%;
-
-  & > p {
-    color: #1a1a1a;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.048px;
-  }
-
-  & > span {
-    color: #4d4d4d;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 150%;
-    letter-spacing: -0.036px;
-  }
-
-  & > div {
-    color: #808080;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 150%;
-    letter-spacing: -0.036px;
-
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-`;
-
-const Divider = styled.div`
-  background: #e6e6e6;
-  width: 100%;
-  height: 1px;
-  margin: 16px 0;
-`;
-
-const SelectPlaceDetailCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  & > div {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    & > span {
-      color: #4d4d4d;
-      font-size: 14px;
-      font-weight: 400;
-      text-transform: capitalize;
-    }
-  }
-`;
+        <S.NearPlaceAddBtn>
+          <PlusIcon />
+          <span>추가</span>
+        </S.NearPlaceAddBtn>
+      </S.ButtonCol>
+    </S.NearPlaceBox>
+  );
+}
