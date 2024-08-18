@@ -218,7 +218,7 @@ export default function HomeDetails() {
         <S.NearPlaceCol>
           {nearbyPlaces.length === 0
             ? Array.from({ length: 3 }).map((_, index) => (
-                <CustomSkeleton height="83px" borderRadius="16px" />
+                <CustomSkeleton key={index} height="83px" borderRadius="16px" />
               ))
             : nearbyPlaces
                 ?.slice(0, 3)
