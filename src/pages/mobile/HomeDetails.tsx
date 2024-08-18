@@ -19,6 +19,7 @@ import ImageView from "../../components/mobile/ImageView";
 import ActionButton from "../../components/mobile/ActionButton";
 import * as S from "../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../utils/staticDatas";
+import EditIcon from "../../assets/icons/EditIcon";
 
 interface Props {
   photoUrl: string;
@@ -47,7 +48,7 @@ export default function HomeDetails() {
         const [detailsRes, reviewsRes] = await Promise.all([
           axiosInstance.get(`/place/details/${param?.placeId}`),
           axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
+            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
           ),
         ]);
 
@@ -127,6 +128,8 @@ export default function HomeDetails() {
       getNearPlace();
     }
   }, [details]);
+
+  console.log(reviews);
 
   return (
     <S.HomeDetailsContainer>
@@ -214,35 +217,43 @@ export default function HomeDetails() {
 
         <S.DetailsTitleWithMoreText>
           리뷰
-          <S.MoreTextAbsolute>더보기</S.MoreTextAbsolute>
+          <S.MoreTextAbsolute>
+            {reviews.length === 0 ? <EditIcon /> : "더보기"}
+          </S.MoreTextAbsolute>
         </S.DetailsTitleWithMoreText>
 
-        <S.DetailsReviewRow>
-          {reviews?.map((review) => (
-            <S.DetailsReviewBox key={review.id}>
-              <S.ReviewTitle>
-                <div>
-                  <img src={testImg2} alt="user-img" />
-                  <span>{review.userCompactResDto.nickname} | </span>
-                  <span>24.4.1</span>
-                </div>
-                <div>
-                  <StarIcon />
-                  <span>{review.star}</span>
-                </div>
-              </S.ReviewTitle>
-              <S.ReviewInfo>
-                <span>{review.content}</span>
-              </S.ReviewInfo>
-              <S.ReviewMessageRow>
-                <HeartIcon />
-                <span>{review.likeCnt}</span>
-                <CommentIcon />
-                <span>{review.commentCnt}</span>
-              </S.ReviewMessageRow>
-            </S.DetailsReviewBox>
-          ))}
-        </S.DetailsReviewRow>
+        {reviews.length === 0 ? (
+          <S.DetailsNoReview>
+            <span>첫 리뷰를 남겨주세요!</span>
+          </S.DetailsNoReview>
+        ) : (
+          <S.DetailsReviewRow>
+            {reviews?.map((review) => (
+              <S.DetailsReviewBox key={review.id}>
+                <S.ReviewTitle>
+                  <div>
+                    <img src={testImg2} alt="user-img" />
+                    <span>{review.userCompactResDto.nickname} | </span>
+                    <span>24.4.1</span>
+                  </div>
+                  <div>
+                    <StarIcon />
+                    <span>{review.star}</span>
+                  </div>
+                </S.ReviewTitle>
+                <S.ReviewInfo>
+                  <span>{review.content}</span>
+                </S.ReviewInfo>
+                <S.ReviewMessageRow>
+                  <HeartIcon />
+                  <span>{review.likeCnt}</span>
+                  <CommentIcon />
+                  <span>{review.commentCnt}</span>
+                </S.ReviewMessageRow>
+              </S.DetailsReviewBox>
+            ))}
+          </S.DetailsReviewRow>
+        )}
 
         <S.AddScheduleBox>
           <S.AddScheduleButton>
