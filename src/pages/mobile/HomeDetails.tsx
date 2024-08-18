@@ -253,7 +253,8 @@ export default function HomeDetails() {
 }
 
 const HomeDetailsContainer = styled.div`
-  width: 360px;
+  width: 100%;
+  min-width: 360px;
   height: 100%;
   overflow-y: scroll;
   ${scrollHidden};

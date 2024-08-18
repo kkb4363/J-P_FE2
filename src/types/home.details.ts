@@ -45,3 +45,20 @@ export interface ReviewProps {
     picture: string;
   };
 }
+
+// 04. [구글 플레이스] /googleplace/details
+export interface SelectPlaceProps {
+  businessStatus: string;
+  formattedAddress: string;
+  formattedPhoneNumber: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  name: string;
+  openNow: boolean;
+  photoUrls: string[];
+  placeId: string;
+  website: string;
+  weekdayText: string[];
+}

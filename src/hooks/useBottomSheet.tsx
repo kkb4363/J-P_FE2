@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 
+// 최소 높이
 export const MIN_Y = 60;
-const MAX_Y = window.innerHeight - 300;
 
 interface BottomSheetMetrics {
   touchStart: {
@@ -15,11 +15,13 @@ interface BottomSheetMetrics {
   isContentAreaTouched: boolean;
 }
 
-export default function useBottomSheet() {
+interface Props {
+  maxHeight: number;
+}
+
+export default function useBottomSheet({ maxHeight }: Props) {
   const sheet = useRef<HTMLDivElement>(null);
-
   const content = useRef<HTMLDivElement>(null);
-
   const metrics = useRef<BottomSheetMetrics>({
     touchStart: {
       sheetY: 0,
@@ -87,13 +89,13 @@ export default function useBottomSheet() {
           nextSheetY = MIN_Y;
         }
 
-        if (nextSheetY >= MAX_Y) {
-          nextSheetY = MAX_Y;
+        if (nextSheetY >= maxHeight) {
+          nextSheetY = maxHeight;
         }
 
         sheet.current!.style.setProperty(
           "transform",
-          `translateY(${nextSheetY - MAX_Y}px)`
+          `translateY(${nextSheetY - maxHeight}px)`
         );
       } else {
         document.body.style.overflowY = "hidden";
@@ -115,7 +117,7 @@ export default function useBottomSheet() {
         if (touchMove.movingDirection === "up") {
           sheet.current!.style.setProperty(
             "transform",
-            `translateY(${MIN_Y - MAX_Y}px)`
+            `translateY(${MIN_Y - maxHeight}px)`
           );
         }
       }

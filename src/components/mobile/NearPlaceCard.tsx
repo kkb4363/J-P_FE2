@@ -57,7 +57,6 @@ const NearPlaceDetailCol = styled.div`
   & > p {
     color: #1a1a1a;
     font-size: 16px;
-    font-style: normal;
     font-weight: 700;
     line-height: 150%;
     letter-spacing: -0.048px;
@@ -66,7 +65,6 @@ const NearPlaceDetailCol = styled.div`
   & > div {
     color: #808080;
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 150%; /* 18px */
     letter-spacing: -0.036px;

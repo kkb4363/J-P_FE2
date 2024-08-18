@@ -7,12 +7,30 @@ import { scrollHidden } from "../../assets/styles/home.style";
 
 const BOTTOM_SHEET_HEIGHT = window.innerHeight - MIN_Y;
 
+interface Props {
+  children?: ReactNode;
+  maxHeight: number;
+}
+
+function BottomSheet({ children, maxHeight }: Props) {
+  const { sheet, content } = useBottomSheet({ maxHeight: maxHeight });
+
+  return (
+    <BottomSheetContainer ref={sheet}>
+      <BottomSheetHeader />
+      <BottomSheetContent ref={content}>{children}</BottomSheetContent>
+    </BottomSheetContainer>
+  );
+}
+
+export default BottomSheet;
+
 const BottomSheetContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
   position: fixed;
   z-index: 1;
-  top: calc(100% - 270px);
+  top: calc(100% - 80px);
   left: 0;
   right: 0;
 
@@ -48,27 +66,10 @@ const BottomSheetContent = styled.div`
   -webkit-overflow-scrolling: touch;
   overflow: scroll;
   ${scrollHidden};
-  height: calc(${BOTTOM_SHEET_HEIGHT}px - 50px);
+  height: calc(${BOTTOM_SHEET_HEIGHT}px - 80px);
   box-sizing: border-box;
-  padding: 4px 16px 40px 16px;
+  padding: 4px 16px 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 `;
-
-interface Props {
-  children?: ReactNode;
-}
-
-function BottomSheet({ children }: Props) {
-  const { sheet, content } = useBottomSheet();
-
-  return (
-    <BottomSheetContainer ref={sheet}>
-      <BottomSheetHeader />
-      <BottomSheetContent ref={content}>{children}</BottomSheetContent>
-    </BottomSheetContainer>
-  );
-}
-
-export default BottomSheet;
