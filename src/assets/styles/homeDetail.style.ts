@@ -33,7 +33,7 @@ export const LikeBox = styled.div`
   top: 38px;
   width: 32px;
   height: 32px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.color.white};
   filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.06));
   opacity: 0.9;
   border-radius: 50%;
@@ -56,10 +56,9 @@ export const ImagePageIndicatorBox = styled.div`
   align-items: center;
 
   & > span {
-    color: #000;
+    color: ${(props) => props.theme.color.black};
     text-align: center;
     font-size: 10px;
-    font-style: normal;
     font-weight: 400;
     line-height: 20px;
   }
@@ -73,19 +72,14 @@ export const DetailsTitle = styled.h1`
   display: flex;
   align-items: center;
   margin: 18px 0 8px 0;
-
-  color: #1a1a1a;
+  color: ${(props) => props.theme.color.gray900};
   font-size: 20px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
-  text-transform: capitalize;
 `;
 
 export const DetailsInfo = styled.div`
-  color: #1a1a1a;
+  color: ${(props) => props.theme.color.gray900};
   font-size: 14px;
-  font-style: normal;
   font-weight: 400;
   line-height: 150%;
   letter-spacing: -0.048px;
@@ -96,12 +90,9 @@ export const DetailsSubTitle = styled.p`
   display: flex;
   align-items: center;
   & > span {
-    color: #4d4d4d;
+    color: ${(props) => props.theme.color.gray700};
     font-size: 14px;
-    font-style: normal;
     font-weight: 400;
-    line-height: normal;
-    text-transform: capitalize;
   }
 `;
 
@@ -119,18 +110,16 @@ export const DetailsTitleWithMoreText = styled(DetailsTitle)`
   gap: 8px;
 
   & > span {
-    color: #4d4d4d;
+    color: ${(props) => props.theme.color.gray700};
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 140%;
   }
 `;
 
 export const MoreText = styled.span`
-  color: #b8b8b8;
+  color: ${(props) => props.theme.color.gray300};
   font-size: 12px;
-  font-style: normal;
   font-weight: 400;
   line-height: 140%;
 `;
@@ -159,8 +148,8 @@ export const DetailsReviewRow = styled.div`
 
 export const DetailsReviewBox = styled.div`
   border-radius: 16px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
+  border: 1px solid ${(props) => props.theme.color.gray200};
+  background: ${(props) => props.theme.color.white};
   height: 134px;
   width: 270px;
   display: flex;
@@ -186,18 +175,15 @@ export const ReviewTitle = styled.div`
     }
 
     & > span:last-child {
-      color: #808080;
-      font-family: Pretendard;
+      color: ${(props) => props.theme.color.gray500};
       font-size: 12px;
-      font-style: normal;
       font-weight: 400;
       line-height: 140%;
     }
 
     & > span:first-child {
-      color: #1a1a1a;
+      color: ${(props) => props.theme.color.gray900};
       font-size: 12px;
-      font-style: normal;
       font-weight: 400;
       line-height: 140%;
     }
@@ -209,10 +195,8 @@ export const ReviewTitle = styled.div`
     align-items: center;
 
     & > span {
-      color: #808080;
-      font-family: Pretendard;
+      color: ${(props) => props.theme.color.gray500};
       font-size: 12px;
-      font-style: normal;
       font-weight: 400;
       line-height: 140%;
     }
@@ -231,9 +215,8 @@ export const ReviewInfo = styled.div`
   align-items: center;
 
   & > span {
-    color: #1a1a1a;
+    color: ${(props) => props.theme.color.gray900};
     font-size: 14px;
-    font-style: normal;
     font-weight: 400;
     line-height: 140%;
   }
@@ -243,10 +226,8 @@ export const ReviewMessageRow = styled.div`
   display: flex;
   gap: 4px;
   & > span {
-    color: #808080;
-    font-family: Pretendard;
+    color: ${(props) => props.theme.color.gray500};
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 140%;
   }
@@ -262,7 +243,7 @@ export const AddScheduleBox = styled.div`
 
 export const AddScheduleButton = styled.button`
   border-radius: 30px;
-  background: #ffc814;
+  background: ${(props) => props.theme.color.main};
   box-shadow: 0px 6px 8px 0px rgba(0, 0, 0, 0.08),
     0px 4px 10px 0px rgba(0, 0, 0, 0.08);
 
@@ -273,11 +254,9 @@ export const AddScheduleButton = styled.button`
   gap: 8px;
 
   & > span {
-    color: #fff;
+    color: ${(props) => props.theme.color.white};
     text-align: center;
-
     font-size: 14px;
-    font-style: normal;
     font-weight: 700;
     line-height: 18px;
     letter-spacing: -0.6px;

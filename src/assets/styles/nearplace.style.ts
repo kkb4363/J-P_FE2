@@ -16,7 +16,7 @@ export const PlaceMarkerName = styled.div`
     2px 6px 12px 0px rgba(0, 0, 0, 0.12);
 
   & > strong {
-    color: #1a1a1a;
+    color: ${(props) => props.theme.color.gray900};
     text-align: center;
     font-size: 12px;
     font-weight: 700;
@@ -51,7 +51,7 @@ export const CardCol = styled.div`
   height: 100%;
 
   & > p {
-    color: #1a1a1a;
+    color: ${(props) => props.theme.color.gray900};
     font-size: 16px;
     font-weight: 700;
     line-height: 150%;
@@ -59,7 +59,7 @@ export const CardCol = styled.div`
   }
 
   & > span {
-    color: #4d4d4d;
+    color: ${(props) => props.theme.color.gray700};
     font-size: 12px;
     font-weight: 400;
     line-height: 150%;
@@ -67,7 +67,7 @@ export const CardCol = styled.div`
   }
 
   & > div {
-    color: #808080;
+    color: ${(props) => props.theme.color.gray500};
     font-size: 12px;
     font-weight: 400;
     line-height: 150%;
@@ -80,7 +80,7 @@ export const CardCol = styled.div`
 `;
 
 export const Divider = styled.div`
-  background: #e6e6e6;
+  background: ${(props) => props.theme.color.gray200};
   width: 100%;
   height: 1px;
   margin: 16px 0;
@@ -96,10 +96,9 @@ export const SelectPlaceDetailCol = styled.div`
     align-items: center;
     gap: 8px;
     & > span {
-      color: #4d4d4d;
+      color: ${(props) => props.theme.color.gray700};
       font-size: 14px;
       font-weight: 400;
-      text-transform: capitalize;
     }
   }
 `;
@@ -108,8 +107,8 @@ export const NearPlaceBox = styled.div<{ $height: string }>`
   height: ${({ $height }) => $height && $height};
   min-height: ${({ $height }) => $height && $height};
   border-radius: 16px;
-  border: 1px solid #e6e6e6;
-  background-color: #fff;
+  border: 1px solid ${(props) => props.theme.color.gray200};
+  background-color: ${(props) => props.theme.color.white};
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -120,6 +119,7 @@ export const NearPlaceDetailCol = styled.div`
   flex-direction: column;
   gap: 4px;
   flex: 0.8;
+  overflow: hidden;
 
   & > div:first-child {
     display: inline-flex;
@@ -129,18 +129,16 @@ export const NearPlaceDetailCol = styled.div`
     gap: 8px;
 
     border-radius: 16px;
-    border: 1px solid #4d4d4d;
-    background: #fff;
+    border: 1px solid ${(props) => props.theme.color.gray700};
+    background: ${(props) => props.theme.color.white};
 
     width: auto;
     align-self: flex-start;
   }
-  overflow: hidden;
 
   & > p {
-    color: #1a1a1a;
+    color: ${(props) => props.theme.color.gray900};
     font-size: 16px;
-    font-style: normal;
     font-weight: 700;
     line-height: 150%;
     letter-spacing: -0.048px;
@@ -150,9 +148,8 @@ export const NearPlaceDetailCol = styled.div`
   }
 
   & > div {
-    color: #808080;
+    color: ${(props) => props.theme.color.gray500};
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 150%; /* 18px */
     letter-spacing: -0.036px;
@@ -172,14 +169,14 @@ export const NearPlaceAddBtn = styled.button`
   justify-content: center;
   gap: 2px;
   border-radius: 30px;
-  border: 1px solid #4d4d4d;
-  background: #fff;
+  border: 1px solid ${(props) => props.theme.color.gray700};
+  background: ${(props) => props.theme.color.white};
 
   & > span {
-    color: #4d4d4d;
+    color: ${(props) => props.theme.color.gray700};
     text-align: center;
     font-size: 14px;
-    font-style: normal;
+
     font-weight: 700;
     line-height: 18px;
     letter-spacing: -0.6px;
@@ -201,9 +198,9 @@ export const RatingBox = styled.div`
   gap: 3px;
 
   & > span {
-    color: #808080;
+    color: ${(props) => props.theme.color.gray500};
     font-size: 12px;
-    font-style: normal;
+
     font-weight: 400;
     line-height: 140%; /* 16.8px */
   }
