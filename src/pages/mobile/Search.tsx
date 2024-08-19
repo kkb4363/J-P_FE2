@@ -9,20 +9,11 @@ import ImageView from "../../components/mobile/ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import ActionButton from "../../components/mobile/ActionButton";
 import Modal from "../../components/mobile/Modal";
-
-const RECENT_SEARCH_KEY = "recentSearches";
-const realTimeWords: string[] = [
-  "제주도",
-  "여수",
-  "강릉",
-  "부산",
-  "전주",
-  "남해",
-  "가평",
-  "진천",
-  "담양",
-  "곡성",
-];
+import {
+  realTimeWords,
+  RECENT_SEARCH_KEY,
+  testImg1,
+} from "../../utils/staticDatas";
 
 export default function Search() {
   const [searchWord, setSearchWord] = useState("");
@@ -190,7 +181,7 @@ export default function Search() {
                 return (
                   <SearchPlaceCard key={item.placeId} ref={lastElementRef}>
                     <ImageView
-                      src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
+                      src={testImg1}
                       alt={item.name}
                       width="80px"
                       height="78px"
@@ -210,7 +201,7 @@ export default function Search() {
                 return (
                   <SearchPlaceCard key={item.placeId}>
                     <ImageView
-                      src="https://s3-alpha-sig.figma.com/img/82ac/4f82/5cbe8bae096f592edde440a9ff3651d1?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=kSD35h8~WYXG1blwZdEu4473T9uNBFlr709crKwRGGPGuAWKCB1CzUK8el5vW22KvP3dXxSVxAFiOxfhneviqZTNbyJvlMuieSmS2Pcn~QnpccTnipv~rEIt4ZX7wlt7Aczfmc7kdNf0inS1Qai~XEcPJbbGE9hYufKcwEPulB5Vq71WdUVj3Ba4UjSUxZWIS3iQFsSHNWXCXAC105FDXX7F6nH6MjWx9rgNfNii63vkQZLyUI0YmUUq9ksU06qHLCCKpFzeL541OQX763sqwck~j2GIshgYYSNefXf37ArW85Wprh7MY83~s~0O4ZvHEe4ybLEuLAthZgdIBqvznw__"
+                      src={testImg1}
                       alt={item.name}
                       width="80px"
                       height="78px"

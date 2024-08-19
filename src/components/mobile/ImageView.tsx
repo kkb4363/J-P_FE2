@@ -83,6 +83,5 @@ const BottomText = styled.div`
     color: ${(props) => props.theme.color.gray900};
     font-size: 14px;
     font-weight: 700;
-    text-transform: capitalize;
   }
 `;

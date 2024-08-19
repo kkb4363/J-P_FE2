@@ -94,7 +94,6 @@ const GoogleLoginButton = styled.div`
   cursor: pointer;
 
   & > p {
-    font-family: Pretendard;
     font-size: 14px;
     font-weight: 700;
   }

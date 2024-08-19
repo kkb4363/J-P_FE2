@@ -16,8 +16,8 @@ const CancelIcon = ({ stroke = "#1A1A1A", onClick }: Props) => {
       <path
         d="M15.1666 7.33331L7.83331 14.6666M15.1666 14.6666L7.83331 7.33331"
         stroke={stroke}
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );

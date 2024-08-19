@@ -70,7 +70,6 @@ const CustomInputContainer = styled.div<{ $height: string; $width: string }>`
     outline: none;
     width: 100%;
     color: ${(props) => props.theme.color.gray900};
-    text-transform: capitalize;
 
     &::placeholder {
       color: ${(props) => props.theme.color.gray300};

@@ -36,17 +36,14 @@ export const InfoRow = styled.div`
 `;
 
 export const InfoText = styled.span`
-  color: #1a1a1a;
+  color: ${(props) => props.theme.color.gray900};
   font-size: 20px;
   font-weight: 700;
-  line-height: normal;
-  text-transform: capitalize;
 `;
 
 export const MoreText = styled.span`
-  color: #b8b8b8;
+  color: ${(props) => props.theme.color.gray300};
   font-size: 12px;
-  font-style: normal;
   font-weight: 400;
   line-height: 140%;
 `;
@@ -55,38 +52,26 @@ export const CarouselRow = styled.div`
   display: flex;
   gap: 8px;
   overflow-x: scroll;
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
-  }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  ${scrollHidden};
 `;
 
 export const CarouselWithText = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-height: 182px;
+  min-height: 160px;
 `;
 
 export const CarouselTitle = styled.span`
-  color: #1a1a1a;
-  font-family: Pretendard;
+  color: ${(props) => props.theme.color.gray900};
   font-size: 14px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
-  text-transform: capitalize;
 `;
 
 export const CarouselLocationTitle = styled.span`
-  color: #666;
-  font-family: Pretendard;
+  color: ${(props) => props.theme.color.gray600};
   font-size: 12px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
-  text-transform: capitalize;
 `;
 
 export const ReviewCol = styled.div`
@@ -114,10 +99,8 @@ export const ReviewTextCol = styled.div`
   }
 
   & > p {
-    color: #1a1a1a;
-    font-family: Pretendard;
+    color: ${(props) => props.theme.color.gray900};
     font-size: 14px;
-    font-style: normal;
     font-weight: 700;
     line-height: 140%;
   }
@@ -130,8 +113,8 @@ export const ReviewTagRow = styled.div`
 
 export const ReviewTag = styled.div`
   border-radius: 16px;
-  border: 1px solid #4d4d4d;
-  background: #fff;
+  border: 1px solid ${(props) => props.theme.color.gray700};
+  background: ${(props) => props.theme.color.white};
   display: flex;
   padding: 3px 8px;
   justify-content: center;
@@ -139,10 +122,8 @@ export const ReviewTag = styled.div`
   gap: 8px;
 
   & > span {
-    color: #4d4d4d;
-    font-family: Pretendard;
+    color: ${(props) => props.theme.color.gray700};
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 140%;
   }
@@ -166,10 +147,8 @@ export const ReviewProfile = styled.div`
   }
 
   & > span {
-    color: #1a1a1a;
-    font-family: Pretendard;
+    color: ${(props) => props.theme.color.gray900};
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 140%;
   }
@@ -185,20 +164,16 @@ export const LikeCommentBox = styled.div`
   display: flex;
 
   & > span {
-    color: #b8b8b8;
-    font-family: Pretendard;
+    color: ${(props) => props.theme.color.gray300};
     font-size: 12px;
-    font-style: normal;
     font-weight: 400;
     line-height: 140%;
   }
 `;
 
 export const ReviewDetailText = styled.span`
-  color: #1a1a1a;
-  font-family: Pretendard;
+  color: ${(props) => props.theme.color.gray900};
   font-size: 14px;
-  font-style: normal;
   font-weight: 400;
   line-height: 140%;
 `;

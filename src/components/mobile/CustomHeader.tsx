@@ -6,13 +6,14 @@ import { ReactNode } from "react";
 interface Props {
   title: string;
   children?: ReactNode;
+  handleClick?: () => void;
 }
 
-export default function CustomHeader({ title, children }: Props) {
+export default function CustomHeader({ title, children, handleClick }: Props) {
   const navigate = useNavigate();
   return (
     <CustomHeaderContainer>
-      <div onClick={() => navigate(-1)}>
+      <div onClick={handleClick ? handleClick : () => navigate(-1)}>
         <ArrowLeftIcon />
       </div>
       <p>{title}</p>
