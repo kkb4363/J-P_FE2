@@ -68,7 +68,6 @@ export default function Search() {
           console.error(error);
         } finally {
           setLoading(false);
-          setIsSubmit(false);
         }
       };
       requestApi();
@@ -77,6 +76,7 @@ export default function Search() {
 
   // 검색 data 초기화
   useEffect(() => {
+    setIsSubmit(false);
     if (searchWord.trim() === "") {
       setSearchData([]);
       setPage(1);
@@ -176,7 +176,9 @@ export default function Search() {
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
                 {realTimeWords.map((word) => {
-                  return <ActionButton hashtag key={word}>{`#${word}`}</ActionButton>;
+                  return (
+                    <ActionButton hashtag key={word}>{`#${word}`}</ActionButton>
+                  );
                 })}
               </SearchWordBox>
             </SearchWordContainer>
@@ -184,6 +186,9 @@ export default function Search() {
         )}
         {searchWord !== "" && (
           <SearchBody>
+            {searchData.length === 0 && !loading && isSubmit && (
+              <NoResultsText>검색 결과가 없습니다.</NoResultsText>
+            )}
             {searchData.map((item: googleSearchApiProps, index: number) => {
               if (searchData.length === index + 1) {
                 // 마지막 요소에 ref 설정
@@ -280,6 +285,14 @@ const SearchBody = styled.div`
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
+`;
+
+const NoResultsText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  color: ${(props) => props.theme.color.gray300};
 `;
 
 const SearchPlaceCard = styled.div`
