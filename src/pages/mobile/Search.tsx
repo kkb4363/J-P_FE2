@@ -8,12 +8,13 @@ import CancelIcon from "../../assets/icons/CancelIcon";
 import ImageView from "../../components/mobile/ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import ActionButton from "../../components/mobile/ActionButton";
-import Modal from "../../components/mobile/Modal";
 import {
   realTimeWords,
   RECENT_SEARCH_KEY,
   testImg1,
 } from "../../utils/staticDatas";
+import { useModal } from "../../hooks/useModal";
+import TwoButtonsModal from "../../components/mobile/TwoButtonsModal";
 
 export default function Search() {
   const [searchWord, setSearchWord] = useState("");
@@ -24,9 +25,16 @@ export default function Search() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+    modalRef: deleteModalRef,
+  } = useModal();
+
+  // 최근 검색어 불러오기
   useEffect(() => {
     const storedWords = localStorage.getItem(RECENT_SEARCH_KEY);
     if (storedWords) {
@@ -34,10 +42,9 @@ export default function Search() {
     }
   }, []);
 
+  // 검색 api 불러오기
   useEffect(() => {
     if (searchWord.trim() !== "") {
-      // [TODO]: 최근 검색어 로컬 스토리지 저장
-      //
       const requestApi = async () => {
         setLoading(true);
         try {
@@ -68,6 +75,7 @@ export default function Search() {
     }
   }, [isSubmit, page]);
 
+  // 검색 data 초기화
   useEffect(() => {
     if (searchWord.trim() === "") {
       setSearchData([]);
@@ -117,7 +125,7 @@ export default function Search() {
   const handleAllDeleteClick = () => {
     setRecentWords([]);
     localStorage.removeItem(RECENT_SEARCH_KEY);
-    setModalOpen(false);
+    closeDeleteModal();
   };
 
   const handleWordDelete = (deleteWord: string) => {
@@ -138,11 +146,12 @@ export default function Search() {
           onSubmit={handleSearchSubmit}
           onDelete={() => setSearchWord("")}
         />
-        {modalOpen && (
-          <Modal
-            setModalOpen={setModalOpen}
+        {isDeleteModalOpen && (
+          <TwoButtonsModal
             text="검색 기록을 모두 삭제하시겠습니까?"
-            allDelete={handleAllDeleteClick}
+            onClick={handleAllDeleteClick}
+            onClose={closeDeleteModal}
+            modalRef={deleteModalRef}
           />
         )}
         {searchWord === "" && (
@@ -150,7 +159,7 @@ export default function Search() {
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={() => setModalOpen(true)}>모두 삭제</p>
+                <p onClick={() => openDeleteModal()}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {
@@ -167,7 +176,7 @@ export default function Search() {
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
                 {realTimeWords.map((word) => {
-                  return <ActionButton hashtag>{`#${word}`}</ActionButton>;
+                  return <ActionButton hashtag key={word}>{`#${word}`}</ActionButton>;
                 })}
               </SearchWordBox>
             </SearchWordContainer>
