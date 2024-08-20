@@ -11,7 +11,7 @@ interface Props {
 
 export default function PrimaryButton({
   width = "100%",
-  height = "50px",
+  height = "45px",
   text,
   blue = false,
   secondary = false,
@@ -47,5 +47,6 @@ const PrimaryButtonContainer = styled.button<{
     ? props.theme.color.gray700
     : props.theme.color.white};
   font-weight: 700;
+  font-size: 14px;
   border: 1px ${(props) => (props.$secondary ? "solid" : "none")} ${(props) => props.theme.color.gray300};
 `;
