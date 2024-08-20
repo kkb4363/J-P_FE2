@@ -3,6 +3,7 @@ export interface placeApiProps {
   placeId: string;
   name: string;
   subName: string;
+  rating: number;
   photourl: string;
 }
 
