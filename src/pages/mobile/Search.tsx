@@ -1,32 +1,39 @@
 import styled from "styled-components";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
-import { googleSearchApiProps } from "../../types/search";
 import CustomHeader from "../../components/mobile/CustomHeader";
 import CustomInput from "../../components/mobile/CustomInput";
 import CancelIcon from "../../assets/icons/CancelIcon";
 import ImageView from "../../components/mobile/ImageView";
 import StarIcon from "../../assets/icons/StarIcon";
 import ActionButton from "../../components/mobile/ActionButton";
-import Modal from "../../components/mobile/Modal";
 import {
   realTimeWords,
   RECENT_SEARCH_KEY,
   testImg1,
 } from "../../utils/staticDatas";
+import { useModal } from "../../hooks/useModal";
+import TwoButtonsModal from "../../components/mobile/TwoButtonsModal";
+import { placeApiProps } from "../../types/home";
 
 export default function Search() {
   const [searchWord, setSearchWord] = useState("");
   const [recentWords, setRecentWords] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchData, setSearchData] = useState<googleSearchApiProps[]>([]);
-  const [nextPageToken, setNextPageToken] = useState("");
+  const [searchData, setSearchData] = useState<placeApiProps[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+    modalRef: deleteModalRef,
+  } = useModal();
+
+  // 최근 검색어 불러오기
   useEffect(() => {
     const storedWords = localStorage.getItem(RECENT_SEARCH_KEY);
     if (storedWords) {
@@ -34,22 +41,19 @@ export default function Search() {
     }
   }, []);
 
+  // 검색 api 불러오기
+  // [TODO]: google api 이슈로 잘 불러와지는지 확인해야함
   useEffect(() => {
     if (searchWord.trim() !== "") {
-      // [TODO]: 최근 검색어 로컬 스토리지 저장
-      //
       const requestApi = async () => {
         setLoading(true);
         try {
           const response = await axiosInstance.get(
-            `/googleplace/text-search/page?contents=${searchWord}${
-              page === 1 ? "" : `&nextPageToken=${nextPageToken}`
-            }`
+            `/place/page?page=${page}&searchString=${searchWord}`
           );
 
           if (response.status === 200) {
             const data = response.data;
-            setNextPageToken(data.nextPageToken);
             if (page === 1) {
               setSearchData(data.results);
             } else {
@@ -61,14 +65,15 @@ export default function Search() {
           console.error(error);
         } finally {
           setLoading(false);
-          setIsSubmit(false);
         }
       };
       requestApi();
     }
   }, [isSubmit, page]);
 
+  // 검색 data 초기화
   useEffect(() => {
+    setIsSubmit(false);
     if (searchWord.trim() === "") {
       setSearchData([]);
       setPage(1);
@@ -87,7 +92,7 @@ export default function Search() {
           }
         },
         {
-          threshold: 0.5, // 요소의 50% 이상이 보여야 트리거됨
+          threshold: 0.5, // 요소의 50% 이상이 보여야 트리거
         }
       );
 
@@ -117,7 +122,7 @@ export default function Search() {
   const handleAllDeleteClick = () => {
     setRecentWords([]);
     localStorage.removeItem(RECENT_SEARCH_KEY);
-    setModalOpen(false);
+    closeDeleteModal();
   };
 
   const handleWordDelete = (deleteWord: string) => {
@@ -138,11 +143,12 @@ export default function Search() {
           onSubmit={handleSearchSubmit}
           onDelete={() => setSearchWord("")}
         />
-        {modalOpen && (
-          <Modal
-            setModalOpen={setModalOpen}
+        {isDeleteModalOpen && (
+          <TwoButtonsModal
             text="검색 기록을 모두 삭제하시겠습니까?"
-            allDelete={handleAllDeleteClick}
+            onClick={handleAllDeleteClick}
+            onClose={closeDeleteModal}
+            modalRef={deleteModalRef}
           />
         )}
         {searchWord === "" && (
@@ -150,7 +156,7 @@ export default function Search() {
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={() => setModalOpen(true)}>모두 삭제</p>
+                <p onClick={() => openDeleteModal()}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {
@@ -166,8 +172,13 @@ export default function Search() {
             <SearchWordContainer>
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
-                {realTimeWords.map((word) => {
-                  return <ActionButton hashtag>{`#${word}`}</ActionButton>;
+                {realTimeWords.map((word: string, index: number) => {
+                  return (
+                    <ActionButton
+                      hashtag
+                      key={index}
+                    >{`#${word}`}</ActionButton>
+                  );
                 })}
               </SearchWordBox>
             </SearchWordContainer>
@@ -175,7 +186,10 @@ export default function Search() {
         )}
         {searchWord !== "" && (
           <SearchBody>
-            {searchData.map((item: googleSearchApiProps, index: number) => {
+            {searchData.length === 0 && !loading && isSubmit && (
+              <NoResultsText>검색 결과가 없습니다.</NoResultsText>
+            )}
+            {searchData.map((item: placeApiProps, index: number) => {
               if (searchData.length === index + 1) {
                 // 마지막 요소에 ref 설정
                 return (
@@ -193,7 +207,7 @@ export default function Search() {
                       </SearchPlaceRating>
                       <SearchPlaceTitle>{item.name}</SearchPlaceTitle>
 
-                      <span>{item.formattedAddress}</span>
+                      <span>{item.subName}</span>
                     </SearchPlaceDetailCol>
                   </SearchPlaceCard>
                 );
@@ -213,7 +227,7 @@ export default function Search() {
                       </SearchPlaceRating>
                       <SearchPlaceTitle>{item.name}</SearchPlaceTitle>
 
-                      <span>{item.formattedAddress}</span>
+                      <span>{item.subName}</span>
                     </SearchPlaceDetailCol>
                   </SearchPlaceCard>
                 );
@@ -271,6 +285,14 @@ const SearchBody = styled.div`
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
+`;
+
+const NoResultsText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  color: ${(props) => props.theme.color.gray300};
 `;
 
 const SearchPlaceCard = styled.div`
