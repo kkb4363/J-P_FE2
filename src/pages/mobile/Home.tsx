@@ -11,7 +11,7 @@ import CarouselTitleBox from "../../components/mobile/CarouselTitleBox";
 import * as S from "../../assets/styles/home.style";
 
 import { useNavigate } from "react-router-dom";
-import { testImg1 } from "../../utils/staticDatas";
+import testImg from "../../assets/images/testImg.png";
 import CustomSkeleton from "../../components/mobile/CustomSkeleton";
 
 type MoreProps = "travel-place" | "city" | "theme-place";
@@ -61,7 +61,7 @@ export default function Home() {
       } catch (error) {
         console.error("api error=", error);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -106,7 +106,7 @@ export default function Home() {
             : travelPlace?.map((item: placeApiProps) => (
                 <S.CarouselWithText key={item.id}>
                   <ImageView
-                    src={testImg1}
+                    src={testImg}
                     alt={item.name}
                     handleClick={() => navigate(`${item.placeId}`)}
                   />
@@ -135,7 +135,7 @@ export default function Home() {
             : city?.map((item: placeApiProps) => (
                 <ImageView
                   key={item.id}
-                  src={testImg1}
+                  src={testImg}
                   alt={item.name}
                   bottomText={item.name}
                   handleClick={() => navigate(`city/${item.placeId}`)}
@@ -164,7 +164,7 @@ export default function Home() {
               ))
             : themePlace?.map((item: placeApiProps) => (
                 <S.CarouselWithText key={item.id}>
-                  <ImageView src={testImg1} alt={item.name} topText="여행지" />
+                  <ImageView src={testImg} alt={item.name} topText="여행지" />
                   <CarouselTitleBox name={item.name} subName={item.subName} />
                 </S.CarouselWithText>
               ))}
@@ -177,7 +177,7 @@ export default function Home() {
         <S.ReviewCol>
           <S.ReviewRow>
             <ImageView
-              src={testImg1}
+              src={testImg}
               alt={"소금산 출렁다리"}
               width="85px"
               height="80px"
@@ -197,7 +197,7 @@ export default function Home() {
 
               <S.ReviewProfileRow>
                 <S.ReviewProfile>
-                  <img src={testImg1} />
+                  <img src={testImg} />
                   <span>coco1202</span>
                 </S.ReviewProfile>
 
@@ -217,7 +217,7 @@ export default function Home() {
           </S.ReviewRow>
           <S.ReviewRow>
             <ImageView
-              src={testImg1}
+              src={testImg}
               alt={"소금산 출렁다리"}
               width="85px"
               height="80px"
@@ -237,7 +237,7 @@ export default function Home() {
 
               <S.ReviewProfileRow>
                 <S.ReviewProfile>
-                  <img src={testImg1} />
+                  <img src={testImg} />
                   <span>coco1202</span>
                 </S.ReviewProfile>
 
@@ -264,14 +264,14 @@ export default function Home() {
         <S.ReviewCol>
           {review?.slice(0, 2).map((item: reviewApiProps) => (
             <S.ReviewRow key={item.id}>
-              <ImageView src={testImg1} alt={""} width="85px" height="80px" />
+              <ImageView src={testImg} alt={""} width="85px" height="80px" />
 
               <S.ReviewTextCol>
                 <p>{item.subject}</p>
                 <S.ReviewDetailText>{item.content}</S.ReviewDetailText>
                 <S.ReviewProfileRow>
                   <S.ReviewProfile>
-                    <img src={testImg1} />
+                    <img src={testImg} />
                     <span>{item.userCompactResDto.nickname}</span>
                   </S.ReviewProfile>
 
