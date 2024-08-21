@@ -99,8 +99,8 @@ export default function Home() {
                     height="120px"
                     borderRadius="16px"
                   />
-                  <CustomSkeleton style={{ borderRadius: "8px" }} />
-                  <CustomSkeleton style={{ borderRadius: "8px" }} />
+                  <CustomSkeleton style={{ borderRadius: "16px" }} />
+                  <CustomSkeleton style={{ borderRadius: "16px" }} />
                 </S.CarouselWithText>
               ))
             : travelPlace?.map((item: placeApiProps) => (
