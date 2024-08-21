@@ -21,7 +21,7 @@ export default function ImageView({
 }: Props) {
   return (
     <ImageViewContainer $width={width} $height={height} onClick={handleClick}>
-      <img src={src} alt={alt} />
+      <img src={src} alt={alt} loading="lazy" />
 
       {!!topText && (
         <TopText>

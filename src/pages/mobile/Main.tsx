@@ -34,10 +34,6 @@ export default function Main() {
             );
           })}
         </FooterRow>
-
-        <FooterBottom>
-          <div />
-        </FooterBottom>
       </Footer>
     </MainContainer>
   );
@@ -58,7 +54,7 @@ const OutletBox = styled.div`
 `;
 
 const Footer = styled.div`
-  height: 80px;
+  height: 60px;
   width: 100%;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 `;
@@ -66,13 +62,12 @@ const Footer = styled.div`
 const FooterRow = styled.div`
   display: flex;
   justify-content: space-evenly;
-  height: calc(100% - 30px);
+  align-items: center;
 `;
 
 const FooterTab = styled.div`
   display: flex;
   width: 75px;
-  height: 50px;
   padding-top: 8px;
   flex-direction: column;
   align-items: center;
@@ -82,20 +77,5 @@ const FooterTab = styled.div`
     font-size: 10px;
     font-weight: 700;
     line-height: 20px;
-  }
-`;
-
-const FooterBottom = styled.div`
-  height: 30px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 17px 0 8px 0;
-
-  & > div {
-    width: 135px;
-    height: 5px;
-    background-color: ${(props) => props.theme.color.black};
-    border-radius: 100px;
   }
 `;

@@ -142,35 +142,32 @@ export default function HomeDetails() {
         indicators={false}
         autoPlay={false}
         swipe={true}
+        animation="fade"
       >
-        {loading ? (
-          <CustomSkeleton height="250px" borderRadius="0" />
-        ) : (
-          details?.photoUrls?.map((img, idx) => (
-            <S.DetailsImageBox key={idx}>
-              <img src={img} alt={img} />
+        {details?.photoUrls?.map((img, idx) => (
+          <S.DetailsImageBox key={idx}>
+            <img src={img} alt={img} loading="lazy" />
 
-              <S.ArrowLeftBox
-                onClick={() => {
-                  navigate(-1);
-                  clear();
-                }}
-              >
-                <ArrowLeftIcon stroke="#fff" />
-              </S.ArrowLeftBox>
+            <S.ArrowLeftBox
+              onClick={() => {
+                navigate(-1);
+                clear();
+              }}
+            >
+              <ArrowLeftIcon stroke="#fff" />
+            </S.ArrowLeftBox>
 
-              <S.LikeBox>
-                <HeartIcon />
-              </S.LikeBox>
+            <S.LikeBox>
+              <HeartIcon />
+            </S.LikeBox>
 
-              <S.ImagePageIndicatorBox>
-                <span>
-                  {idx + 1} / {details?.photoUrls.length}
-                </span>
-              </S.ImagePageIndicatorBox>
-            </S.DetailsImageBox>
-          ))
-        )}
+            <S.ImagePageIndicatorBox>
+              <span>
+                {idx + 1} / {details?.photoUrls.length}
+              </span>
+            </S.ImagePageIndicatorBox>
+          </S.DetailsImageBox>
+        ))}
       </Carousel>
 
       <S.DetailsBody>
@@ -218,7 +215,7 @@ export default function HomeDetails() {
         <S.NearPlaceCol>
           {nearbyPlaces.length === 0
             ? Array.from({ length: 3 }).map((_, index) => (
-                <CustomSkeleton height="83px" borderRadius="16px" />
+                <CustomSkeleton key={index} height="83px" borderRadius="16px" />
               ))
             : nearbyPlaces
                 ?.slice(0, 3)
