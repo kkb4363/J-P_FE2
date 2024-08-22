@@ -17,6 +17,10 @@ import BottomSheet from "../../components/mobile/BottomSheet";
 import styled from "styled-components";
 import CalendarIcon from "../../assets/icons/CalendarIcon";
 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
+
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
 export default function Home() {
@@ -82,6 +86,17 @@ export default function Home() {
     setIsSelect(true);
   };
 
+  // testing toast
+  const testToast = () =>
+    toast(
+      <AddScheduleSuccess>
+        <span>일정에 추가 되었습니다.</span>
+        <span>
+          내 일정 보기 <ArrowRightIcon stroke="#6979F8" />
+        </span>
+      </AddScheduleSuccess>
+    );
+
   return (
     <S.HomeContainer>
       {/* <BottomSheet minH={6} maxH={0.8}>
@@ -132,7 +147,7 @@ export default function Home() {
       </BottomSheet>
 
       <S.HomeHeader>
-        <div>Logo</div>
+        <div onClick={testToast}>Logo</div>
         <BellIcon />
       </S.HomeHeader>
 
@@ -491,5 +506,26 @@ const AddScheduleButton = styled.button`
     color: ${(props) => props.theme.color.gray700};
     font-size: 14px;
     font-weight: 700;
+  }
+`;
+
+const AddScheduleSuccess = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > span:first-child {
+    color: ${(props) => props.theme.color.gray900};
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  & > span:last-child {
+    color: ${(props) => props.theme.color.secondary};
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 3px;
   }
 `;
