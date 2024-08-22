@@ -5,11 +5,11 @@ import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 
 export const footerTabs = [
-  { icon: HomeIcon, label: "홈" },
-  { icon: SearchIcon, label: "검색" },
-  { icon: CalendarIcon, label: "일정" },
-  { icon: MessageIcon, label: "리뷰/여행기" },
-  { icon: ProfileIcon, label: "마이페이지" },
+  { icon: HomeIcon, label: "홈", route: "/home" },
+  { icon: SearchIcon, label: "검색", route: "/home/search" },
+  { icon: CalendarIcon, label: "일정", route: "/home" },
+  { icon: MessageIcon, label: "리뷰/여행기", route: "/home/travel-review"},
+  { icon: ProfileIcon, label: "마이페이지", route: "/home"},
 ];
 
 export const RECENT_SEARCH_KEY = "recentSearches";

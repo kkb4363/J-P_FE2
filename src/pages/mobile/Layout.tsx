@@ -1,11 +1,32 @@
 import styled from "styled-components";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { footerTabs } from "../../utils/staticDatas";
 import { TabProps, useDisplayStore } from "../../store/display.store";
+import { useEffect } from "react";
 
 export default function Layout() {
   const { getTabs, setTabs } = useDisplayStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const currentTab = footerTabs.find(
+      (tab) => tab.route === location.pathname
+    );
+    if (currentTab) {
+      setTabs(currentTab.label as TabProps);
+    }
+  }, [location.pathname, setTabs]);
+
+  const handleFooterClick = (label: string, route: string) => {
+    if (route === "/home/search") {
+      navigate(route);
+    } else {
+      navigate(route, { replace: true });
+    }
+    setTabs(label as TabProps);
+  };
 
   return (
     <MainContainer>
@@ -18,7 +39,10 @@ export default function Layout() {
           {footerTabs.map((tab, idx) => {
             const isCurrentTab = getTabs() === tab.label;
             return (
-              <FooterTab key={idx} onClick={() => setTabs(tab.label as TabProps)}>
+              <FooterTab
+                key={idx}
+                onClick={() => handleFooterClick(tab.label, tab.route)}
+              >
                 <tab.icon stroke={isCurrentTab ? "#ffc814" : "#4D4D4D"} />
                 <span
                   style={{
