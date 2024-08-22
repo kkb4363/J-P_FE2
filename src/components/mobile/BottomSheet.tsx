@@ -1,22 +1,56 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { BottomSheet as SheetContainer } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import styled from "styled-components";
 
 interface Props {
   children: ReactNode;
-  minH: number;
+  minH?: number;
   maxH: number;
+  isBlocking?: boolean;
+  isOpen?: boolean;
+  isDismiss?: boolean; // Bottom Sheet가 닫힐 지 여부
 }
 
-export default function BottomSheet({ children, minH, maxH }: Props) {
+export default function BottomSheet({
+  children,
+  minH,
+  maxH,
+  isBlocking = false,
+  isOpen = true,
+  isDismiss = false,
+}: Props) {
+  const [open, setOpen] = useState(false);
+
+  const handleDismiss = () => {
+    isDismiss ? setOpen(false) : undefined;
+  };
+
+  const minAndMax = (maxHeight: number) => {
+    const arr = [];
+
+    if (minH !== undefined) {
+      arr.push(maxHeight / minH);
+    }
+
+    if (maxH !== undefined) {
+      arr.push(maxHeight * maxH);
+    }
+
+    return arr;
+  };
+
+  useEffect(() => {
+    if (isOpen) setOpen(true);
+  }, []);
+
   return (
     <SheetContainer
-      blocking={false}
-      open={true}
-      // 첫번 째 -> 최소 높이 , 두번 째 -> 최대 높이
-      snapPoints={({ maxHeight }) => [maxHeight / minH, maxHeight * maxH]}
+      blocking={isBlocking}
+      open={open}
+      snapPoints={({ maxHeight }) => minAndMax(maxHeight)}
       defaultSnap={({ maxHeight }) => maxH * maxHeight}
+      onDismiss={handleDismiss}
     >
       <Container>{children}</Container>
     </SheetContainer>
