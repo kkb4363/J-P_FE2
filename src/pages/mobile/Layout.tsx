@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { footerTabs } from "../../utils/staticDatas";
 import { TabProps, useDisplayStore } from "../../store/display.store";
 
-export default function Main() {
+export default function Layout() {
   const { getTabs, setTabs } = useDisplayStore();
 
   return (
@@ -18,10 +18,7 @@ export default function Main() {
           {footerTabs.map((tab, idx) => {
             const isCurrentTab = getTabs() === tab.label;
             return (
-              <FooterTab
-                key={idx}
-                onClick={() => setTabs(tab.label as TabProps)}
-              >
+              <FooterTab key={idx} onClick={() => setTabs(tab.label as TabProps)}>
                 <tab.icon stroke={isCurrentTab ? "#ffc814" : "#4D4D4D"} />
                 <span
                   style={{
@@ -40,9 +37,8 @@ export default function Main() {
 }
 
 const MainContainer = styled.div`
-  // Todo: mobile 화면 보호 적용 - 기범
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
 `;
