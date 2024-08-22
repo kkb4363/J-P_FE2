@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import Main from "./Main";
+import Layout from "./Layout";
 import Home from "./Home";
 import Onboarding from "./Onboarding";
 import TravelPlace from "./TravelPlace";
 import City from "./City";
-import ThemePlace from "./ThemePlace";
+import More from "./More";
 import Survey from "./Survey";
 import HomeDetails from "./HomeDetails";
 import NearPlace from "./NearPlace";
@@ -16,28 +16,20 @@ export const router = createBrowserRouter([
     element: <Onboarding />,
   },
   {
+    path: "survey",
+    element: <Survey />,
+  },
+  {
     path: "/home",
-    element: <Main />,
+    element: <Layout />,
     children: [
       {
         path: "",
         element: <Home />,
       },
       {
-        path: "survey",
-        element: <Survey />,
-      },
-      {
-        path: "travel-place",
-        element: <TravelPlace />,
-      },
-      {
-        path: "city",
-        element: <City />,
-      },
-      {
-        path: "theme-place",
-        element: <ThemePlace />,
+        path: "more",
+        element: <More />,
       },
       {
         path: ":placeId",

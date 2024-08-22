@@ -24,6 +24,7 @@ const MoreBox = styled.div`
 
 const MoreBody = styled.div`
   height: calc(100% - 50px);
+  width: 100%;
   padding: 16px;
   display: flex;
   justify-content: flex-start;

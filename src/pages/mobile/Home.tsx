@@ -13,8 +13,9 @@ import * as S from "../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
 import testImg from "../../assets/images/testImg.png";
 import CustomSkeleton from "../../components/mobile/CustomSkeleton";
+import BottomSheet from "../../components/mobile/BottomSheet";
 
-type MoreProps = "travel-place" | "city" | "theme-place";
+export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -32,19 +33,23 @@ export default function Home() {
   // TODO : 사람들이 찜한 여행기 api = 아직 백엔드 개발 중
 
   const handleMoreClick = (type: MoreProps) => {
-    navigate(`${type}`);
+    // 모바일은 새로고침이 없으니깐 state 옵션을 써도 될 것 같아요.
+    navigate("more", {
+      state: {
+        type: type,
+      },
+    });
   };
 
   useEffect(() => {
     const requestApi = async () => {
       try {
-        const [travelPlaceRes, cityRes, themePlaceRes, reviewRes] =
-          await Promise.all([
-            axiosInstance.get("/place/page?page=1&placeType=TRAVEL_PLACE"),
-            axiosInstance.get("/place/page?page=1&placeType=CITY"),
-            axiosInstance.get("/place/page?page=1&placeType=THEME"),
-            axiosInstance.get("/reviews?page=1&sort=NEW"),
-          ]);
+        const [travelPlaceRes, cityRes, themePlaceRes, reviewRes] = await Promise.all([
+          axiosInstance.get("/place/page?page=1&placeType=TRAVEL_PLACE"),
+          axiosInstance.get("/place/page?page=1&placeType=CITY"),
+          axiosInstance.get("/place/page?page=1&placeType=THEME"),
+          axiosInstance.get("/reviews?page=1&sort=NEW"),
+        ]);
 
         if (travelPlaceRes.status === 200) {
           setTravelPlace(travelPlaceRes.data.data);
@@ -70,6 +75,9 @@ export default function Home() {
 
   return (
     <S.HomeContainer>
+      {/* <BottomSheet minH={6} maxH={0.8}>
+        <div>Testing Bottom Sheet...</div>
+      </BottomSheet> */}
       <S.HomeHeader>
         <div>Logo</div>
         <BellIcon />
@@ -84,9 +92,7 @@ export default function Home() {
       <S.HomeBody>
         <S.InfoRow>
           <S.InfoText>지금 가장 인기있는 여행지</S.InfoText>
-          <S.MoreText
-            onClick={() => handleMoreClick("travel-place" as MoreProps)}
-          >
+          <S.MoreText onClick={() => handleMoreClick("TRAVEL_PLACE" as MoreProps)}>
             더보기
           </S.MoreText>
         </S.InfoRow>
@@ -94,11 +100,7 @@ export default function Home() {
           {loading
             ? Array.from({ length: 3 }).map((_, index) => (
                 <S.CarouselWithText key={index}>
-                  <CustomSkeleton
-                    width="120px"
-                    height="120px"
-                    borderRadius="16px"
-                  />
+                  <CustomSkeleton width="120px" height="120px" borderRadius="16px" />
                   <CustomSkeleton style={{ borderRadius: "16px" }} />
                   <CustomSkeleton style={{ borderRadius: "16px" }} />
                 </S.CarouselWithText>
@@ -117,7 +119,7 @@ export default function Home() {
 
         <S.InfoRow>
           <S.InfoText>인기 여행 도시</S.InfoText>
-          <S.MoreText onClick={() => handleMoreClick("city" as MoreProps)}>
+          <S.MoreText onClick={() => handleMoreClick("CITY" as MoreProps)}>
             더보기
           </S.MoreText>
         </S.InfoRow>
@@ -125,11 +127,7 @@ export default function Home() {
           {loading
             ? Array.from({ length: 3 }).map((_, index) => (
                 <S.CarouselWithText key={index}>
-                  <CustomSkeleton
-                    width="120px"
-                    height="120px"
-                    borderRadius="16px"
-                  />
+                  <CustomSkeleton width="120px" height="120px" borderRadius="16px" />
                 </S.CarouselWithText>
               ))
             : city?.map((item: placeApiProps) => (
@@ -145,9 +143,7 @@ export default function Home() {
 
         <S.InfoRow>
           <S.InfoText>지금 가면 좋은 여행지</S.InfoText>
-          <S.MoreText
-            onClick={() => handleMoreClick("theme-place" as MoreProps)}
-          >
+          <S.MoreText onClick={() => handleMoreClick("THEME" as MoreProps)}>
             더보기
           </S.MoreText>
         </S.InfoRow>
@@ -155,11 +151,7 @@ export default function Home() {
           {loading
             ? Array.from({ length: 3 }).map((_, index) => (
                 <S.CarouselWithText key={index}>
-                  <CustomSkeleton
-                    width="120px"
-                    height="120px"
-                    borderRadius="16px"
-                  />
+                  <CustomSkeleton width="120px" height="120px" borderRadius="16px" />
                 </S.CarouselWithText>
               ))
             : themePlace?.map((item: placeApiProps) => (
@@ -176,12 +168,7 @@ export default function Home() {
         </S.InfoRow>
         <S.ReviewCol>
           <S.ReviewRow>
-            <ImageView
-              src={testImg}
-              alt={"소금산 출렁다리"}
-              width="85px"
-              height="80px"
-            />
+            <ImageView src={testImg} alt={"소금산 출렁다리"} width="85px" height="80px" />
 
             <S.ReviewTextCol>
               <S.ReviewTagRow>
@@ -216,12 +203,7 @@ export default function Home() {
             </S.ReviewTextCol>
           </S.ReviewRow>
           <S.ReviewRow>
-            <ImageView
-              src={testImg}
-              alt={"소금산 출렁다리"}
-              width="85px"
-              height="80px"
-            />
+            <ImageView src={testImg} alt={"소금산 출렁다리"} width="85px" height="80px" />
 
             <S.ReviewTextCol>
               <S.ReviewTagRow>
