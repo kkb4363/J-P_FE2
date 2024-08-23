@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
+<<<<<<< HEAD
 import Home from "./home/Home";
 import More from "./home/More";
 import Survey from "./onboarding/Survey";
@@ -13,6 +14,9 @@ import Calendar from "./schedule/Calendar";
 import SelectCity from "./schedule/SelectCity";
 import ScheduleLayout from "./schedule/ScheduleLayout";
 import Details from "./schedule/Details";
+import TravelReview from "./TravelReview";
+import Review from "./Review";
+import TravelLog from "./TravelLog";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +80,18 @@ export const router = createBrowserRouter([
       {
         path: "travels",
         element: <TravelMore />,
+      },
+      {
+        path: "travel-review",
+        element: <TravelReview />,
+      },
+      {
+        path: "review",
+        element: <Review />,
+      },
+      {
+        path: "travel-log",
+        element: <TravelLog />,
       },
     ],
   },
