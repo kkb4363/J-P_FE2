@@ -1,16 +1,19 @@
-import CustomHeader from "../../components/mobile/CustomHeader";
+import CustomHeader from "../../../components/mobile/CustomHeader";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../utils/axios";
-import { PlaceDetailAPiProps, SelectPlaceProps } from "../../types/home.details";
-import { useMapStore } from "../../store/map.store";
-import ImageView from "../../components/mobile/ImageView";
-import StarIcon from "../../assets/icons/StarIcon";
-import AlarmIcon from "../../assets/icons/AlarmIcon";
-import InfoIcon from "../../assets/icons/InfoIcon";
-import MarkIcon from "../../assets/icons/MarkIcon";
-import PlusIcon from "../../assets/icons/PlusIcon";
-import * as S from "../../assets/styles/nearplace.style";
+import { axiosInstance } from "../../../utils/axios";
+import {
+  PlaceDetailAPiProps,
+  SelectPlaceProps,
+} from "../../../types/home.details";
+import { useMapStore } from "../../../store/map.store";
+import ImageView from "../../../components/mobile/ImageView";
+import StarIcon from "../../../assets/icons/StarIcon";
+import AlarmIcon from "../../../assets/icons/AlarmIcon";
+import InfoIcon from "../../../assets/icons/InfoIcon";
+import MarkIcon from "../../../assets/icons/MarkIcon";
+import PlusIcon from "../../../assets/icons/PlusIcon";
+import * as S from "../../../assets/styles/nearplace.style";
 
 interface Props {
   photoUrl: string;
@@ -27,7 +30,9 @@ export default function NearPlace() {
   const mapStore = useMapStore();
   const navigate = useNavigate();
 
-  const [details, setDetails] = useState<PlaceDetailAPiProps>({} as PlaceDetailAPiProps);
+  const [details, setDetails] = useState<PlaceDetailAPiProps>(
+    {} as PlaceDetailAPiProps
+  );
   const [selectPlaceId, setSelectPlaceId] = useState("");
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
@@ -71,7 +76,8 @@ export default function NearPlace() {
             }
           };
 
-          script.onerror = () => reject(new Error("Google Maps script failed to load."));
+          script.onerror = () =>
+            reject(new Error("Google Maps script failed to load."));
         } else {
           if ((window as any).google) {
             resolve();
@@ -101,7 +107,10 @@ export default function NearPlace() {
             const markerLat = place.geometry.location.lat;
             const markerLng = place.geometry.location.lng;
 
-            if (typeof markerLat === "number" && typeof markerLng === "number") {
+            if (
+              typeof markerLat === "number" &&
+              typeof markerLng === "number"
+            ) {
               const marker = new (window as any).google.maps.Marker({
                 position: { lat: markerLat, lng: markerLng },
                 map: map,
@@ -121,7 +130,10 @@ export default function NearPlace() {
                 setSelectPlaceId(place.placeId);
               });
             } else {
-              console.error("Invalid marker coordinates:", place.geometry.location);
+              console.error(
+                "Invalid marker coordinates:",
+                place.geometry.location
+              );
             }
           });
 
@@ -165,11 +177,13 @@ export default function NearPlace() {
   }, [details]);
 
   useEffect(() => {
-    axiosInstance.get(`/googleplace/details?placeId=${selectPlaceId}`).then((res) => {
-      if (res.status === 200) {
-        setSelectPlace(res.data);
-      }
-    });
+    axiosInstance
+      .get(`/googleplace/details?placeId=${selectPlaceId}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setSelectPlace(res.data);
+        }
+      });
   }, [selectPlaceId]);
 
   return (
@@ -236,7 +250,13 @@ export default function NearPlace() {
   );
 }
 
-function NearPlaceCard({ photoUrl, name, rating, vicinity, height = "83px" }: Props) {
+function NearPlaceCard({
+  photoUrl,
+  name,
+  rating,
+  vicinity,
+  height = "83px",
+}: Props) {
   return (
     <S.NearPlaceBox $height={height}>
       <ImageView width="80px" height="80px" src={photoUrl} alt={"이미지없음"} />

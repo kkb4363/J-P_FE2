@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { footerTabs } from "../../utils/staticDatas";
 import { TabProps, useDisplayStore } from "../../store/display.store";
 import { useEffect } from "react";
+import StyledToast from "../../components/mobile/StyledToast";
 
 export default function Layout() {
   const { getTabs, setTabs } = useDisplayStore();
@@ -56,6 +57,7 @@ export default function Layout() {
           })}
         </FooterRow>
       </Footer>
+      <StyledToast />
     </MainContainer>
   );
 }

@@ -1,20 +1,20 @@
 import styled from "styled-components";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../utils/axios";
-import CustomHeader from "../../components/mobile/CustomHeader";
-import CustomInput from "../../components/mobile/CustomInput";
-import CancelIcon from "../../assets/icons/CancelIcon";
-import ImageView from "../../components/mobile/ImageView";
-import StarIcon from "../../assets/icons/StarIcon";
-import ActionButton from "../../components/mobile/ActionButton";
+import { axiosInstance } from "../../../utils/axios";
+import CustomHeader from "../../../components/mobile/CustomHeader";
+import CustomInput from "../../../components/mobile/CustomInput";
+import CancelIcon from "../../../assets/icons/CancelIcon";
+import ImageView from "../../../components/mobile/ImageView";
+import StarIcon from "../../../assets/icons/StarIcon";
+import ActionButton from "../../../components/mobile/ActionButton";
 import {
   realTimeWords,
   RECENT_SEARCH_KEY,
   testImg1,
-} from "../../utils/staticDatas";
-import { useModal } from "../../hooks/useModal";
-import TwoButtonsModal from "../../components/mobile/TwoButtonsModal";
-import { placeApiProps } from "../../types/home";
+} from "../../../utils/staticDatas";
+import { useModal } from "../../../hooks/useModal";
+import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
+import { placeApiProps } from "../../../types/home";
 
 export default function Search() {
   const [searchWord, setSearchWord] = useState("");

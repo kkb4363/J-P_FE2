@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import MoreContainer from "../../components/mobile/MoreContainer";
+import MoreContainer from "../../../components/mobile/MoreContainer";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../utils/axios";
-import { placeApiProps } from "../../types/home";
-import ImageView from "../../components/mobile/ImageView";
-import CarouselTitleBox from "../../components/mobile/CarouselTitleBox";
-import testImg from "../../assets/images/testImg.png";
+import { axiosInstance } from "../../../utils/axios";
+import { placeApiProps } from "../../../types/home";
+import ImageView from "../../../components/mobile/ImageView";
+import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
+import testImg from "../../../assets/images/testImg.png";
 import { useLocation } from "react-router-dom";
 
 export default function More() {
@@ -125,7 +125,11 @@ export default function More() {
             topText="여행지"
           />
 
-          <CarouselTitleBox paddingLeft="8px" name={item + ""} subName={item + "test"} />
+          <CarouselTitleBox
+            paddingLeft="8px"
+            name={item + ""}
+            subName={item + "test"}
+          />
         </PlaceCardWithText>
       ))}
     </MoreContainer>

@@ -1,26 +1,26 @@
-import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon";
-import HeartIcon from "../../assets/icons/HeartIcon";
+import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
+import HeartIcon from "../../../assets/icons/HeartIcon";
 import Carousel from "react-material-ui-carousel";
-import MarkIcon from "../../assets/icons/MarkIcon";
-import { ReviewTag, ReviewTagRow } from "../../assets/styles/home.style";
+import MarkIcon from "../../../assets/icons/MarkIcon";
+import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
 import { useEffect, useRef, useState } from "react";
-import StarIcon from "../../assets/icons/StarIcon";
-import PlusIcon from "../../assets/icons/PlusIcon";
-import CommentIcon from "../../assets/icons/CommentIcon";
+import StarIcon from "../../../assets/icons/StarIcon";
+import PlusIcon from "../../../assets/icons/PlusIcon";
+import CommentIcon from "../../../assets/icons/CommentIcon";
 import { useNavigate, useParams } from "react-router-dom";
-import { axiosInstance } from "../../utils/axios";
+import { axiosInstance } from "../../../utils/axios";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
   ReviewProps,
-} from "../../types/home.details";
-import { useMapStore } from "../../store/map.store";
-import ImageView from "../../components/mobile/ImageView";
-import ActionButton from "../../components/mobile/ActionButton";
-import * as S from "../../assets/styles/homeDetail.style";
-import { testImg2 } from "../../utils/staticDatas";
-import EditIcon from "../../assets/icons/EditIcon";
-import CustomSkeleton from "../../components/mobile/CustomSkeleton";
+} from "../../../types/home.details";
+import { useMapStore } from "../../../store/map.store";
+import ImageView from "../../../components/mobile/ImageView";
+import ActionButton from "../../../components/mobile/ActionButton";
+import * as S from "../../../assets/styles/homeDetail.style";
+import { testImg2 } from "../../../utils/staticDatas";
+import EditIcon from "../../../assets/icons/EditIcon";
+import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 
 interface Props {
   photoUrl: string;

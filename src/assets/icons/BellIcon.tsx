@@ -1,13 +1,20 @@
 interface Props {
   fill?: string;
   stroke?: string;
+  width?: string;
+  height?: string;
 }
 
-const BellIcon = ({ fill = "none", stroke = "#1A1A1A" }: Props) => {
+const BellIcon = ({
+  fill = "none",
+  stroke = "#1A1A1A",
+  width = "24",
+  height = "24",
+}: Props) => {
   return (
     <svg
-      width="24"
-      height="24"
+      width={width}
+      height={height}
       viewBox="0 0 24 24"
       fill={fill}
       xmlns="http://www.w3.org/2000/svg"

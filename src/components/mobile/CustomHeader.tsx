@@ -7,16 +7,26 @@ interface Props {
   title: string;
   children?: ReactNode;
   handleClick?: () => void;
+  hidePrevIcon?: boolean;
 }
 
-export default function CustomHeader({ title, children, handleClick }: Props) {
+export default function CustomHeader({
+  title,
+  children,
+  handleClick,
+  hidePrevIcon,
+}: Props) {
   const navigate = useNavigate();
   return (
     <CustomHeaderContainer>
-      <div onClick={handleClick ? handleClick : () => navigate(-1)}>
-        <ArrowLeftIcon />
-      </div>
-      <p>{title}</p>
+      {hidePrevIcon ? (
+        <EmptyBox />
+      ) : (
+        <div onClick={handleClick ? handleClick : () => navigate(-1)}>
+          <ArrowLeftIcon />
+        </div>
+      )}
+      <Title>{title}</Title>
       {children ? children : <EmptyBox />}
     </CustomHeaderContainer>
   );
@@ -29,13 +39,18 @@ const CustomHeaderContainer = styled.div`
   align-items: center;
   margin: 10px 0;
   padding: 0px 16px;
-
-  & > p {
-    font-weight: 700;
-    font-size: 20px;
-  }
+  position: relative;
 `;
 
 const EmptyBox = styled.div`
   width: 24px;
+`;
+
+const Title = styled.span`
+  font-weight: 700;
+  font-size: 20px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 `;
