@@ -99,3 +99,35 @@ img {
 .gm-style-iw-chr > button {
   display: none !important;
 }
+
+.rdrCalendarWrapper {
+  background-color: #fafafa !important;
+  position: relative !important;
+}
+
+.rdrMonth {
+  padding: 3px !important;
+  width: 100% !important;
+}
+
+.rdrNextPrevButton {
+  background-color: #fafafa !important;
+}
+
+.rdrDayNumber {
+  top: 0 !important;
+}
+
+.rdrDay {
+  height: 40px !important;
+}
+
+.rdrDayToday {
+  ::after {
+    display: none !important;
+  }
+}
+
+.rdrMonthAndYearPickers {
+  font-size: 16px;
+}

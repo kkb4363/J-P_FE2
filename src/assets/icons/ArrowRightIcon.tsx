@@ -1,14 +1,21 @@
 interface Props {
   fill?: string;
   stroke?: string;
+  width?: string;
+  height?: string;
 }
 
-const ArrowRightIcon = ({ fill = "none", stroke = "white" }: Props) => {
+const ArrowRightIcon = ({
+  fill = "none",
+  stroke = "white",
+  width = "8",
+  height = "13",
+}: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="8"
-      height="13"
+      width={width}
+      height={height}
       viewBox="0 0 8 13"
       fill={fill}
     >

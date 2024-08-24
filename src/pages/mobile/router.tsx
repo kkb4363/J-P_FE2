@@ -9,6 +9,9 @@ import Search from "./search/Search";
 import Schedule from "./schedule/Schedule";
 import Onboarding from "./onboarding/Onboarding";
 import TravelMore from "./schedule/TravelMore";
+import CreateSchedule from "./schedule/CreateSchedule";
+import Calendar from "../../components/mobile/schedule/Calendar";
+import SelectCity from "../../components/mobile/schedule/SelectCity";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +57,20 @@ export const router = createBrowserRouter([
       {
         path: "travels",
         element: <TravelMore />,
+      },
+      {
+        path: "createSchedule",
+        element: <CreateSchedule />,
+        children: [
+          {
+            path: "",
+            element: <Calendar />,
+          },
+          {
+            path: "city",
+            element: <SelectCity />,
+          },
+        ],
       },
     ],
   },
