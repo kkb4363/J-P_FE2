@@ -1,13 +1,20 @@
 interface Props {
   fill?: string;
   stroke?: string;
+  width?: string;
+  height?: string;
 }
 
-const CalendarIcon = ({ fill = "none", stroke = "#4D4D4D" }: Props) => {
+const CalendarIcon = ({
+  fill = "none",
+  stroke = "#4D4D4D",
+  width = "25",
+  height = "24",
+}: Props) => {
   return (
     <svg
-      width="25"
-      height="24"
+      width={width}
+      height={height}
       viewBox="0 0 25 24"
       fill={fill}
       xmlns="http://www.w3.org/2000/svg"

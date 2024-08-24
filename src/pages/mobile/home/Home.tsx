@@ -1,25 +1,25 @@
-import CustomInput from "../../components/mobile/CustomInput";
-import BellIcon from "../../assets/icons/BellIcon";
-import ImageView from "../../components/mobile/ImageView";
-import CommentIcon from "../../assets/icons/CommentIcon";
-import HeartIcon from "../../assets/icons/HeartIcon";
-import StarIcon from "../../assets/icons/StarIcon";
+import CustomInput from "../../../components/mobile/CustomInput";
+import BellIcon from "../../../assets/icons/BellIcon";
+import ImageView from "../../../components/mobile/ImageView";
+import CommentIcon from "../../../assets/icons/CommentIcon";
+import HeartIcon from "../../../assets/icons/HeartIcon";
+import StarIcon from "../../../assets/icons/StarIcon";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../utils/axios";
-import { placeApiProps, reviewApiProps } from "../../types/home";
-import CarouselTitleBox from "../../components/mobile/CarouselTitleBox";
-import * as S from "../../assets/styles/home.style";
+import { axiosInstance } from "../../../utils/axios";
+import { placeApiProps, reviewApiProps } from "../../../types/home";
+import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
+import * as S from "../../../assets/styles/home.style";
 
 import { useNavigate } from "react-router-dom";
-import testImg from "../../assets/images/testImg.png";
-import CustomSkeleton from "../../components/mobile/CustomSkeleton";
-import BottomSheet from "../../components/mobile/BottomSheet";
+import testImg from "../../../assets/images/testImg.png";
+import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import BottomSheet from "../../../components/mobile/BottomSheet";
 import styled from "styled-components";
-import CalendarIcon from "../../assets/icons/CalendarIcon";
+import CalendarIcon from "../../../assets/icons/CalendarIcon";
 
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
+import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 

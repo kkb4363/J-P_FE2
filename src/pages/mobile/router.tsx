@@ -1,14 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
-import Home from "./Home";
-import Onboarding from "./Onboarding";
-import TravelPlace from "./TravelPlace";
-import City from "./City";
-import More from "./More";
-import Survey from "./Survey";
-import HomeDetails from "./HomeDetails";
-import NearPlace from "./NearPlace";
-import Search from "./Search";
+import Home from "./home/Home";
+import More from "./home/More";
+import Survey from "./onboarding/Survey";
+import HomeDetails from "./details/HomeDetails";
+import NearPlace from "./details/NearPlace";
+import Search from "./search/Search";
+import Schedule from "./schedule/Schedule";
+import Onboarding from "./onboarding/Onboarding";
+import TravelMore from "./schedule/TravelMore";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +46,14 @@ export const router = createBrowserRouter([
       {
         path: "search",
         element: <Search />,
+      },
+      {
+        path: "schedule",
+        element: <Schedule />,
+      },
+      {
+        path: "travels",
+        element: <TravelMore />,
       },
     ],
   },
