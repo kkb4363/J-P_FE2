@@ -1,3 +1,5 @@
+import { commentResDto, userCompactResDto } from './res.dto';
+
 export interface PlaceDetailAPiProps {
   description: string;
   formattedAddress: string;
@@ -30,22 +32,6 @@ export interface NearByPlaceProps {
   vicinity: string;
 }
 
-export interface ReviewProps {
-  commentCnt: number;
-  content: string;
-  createdAt: string;
-  id: number;
-  likeCnt: number;
-  placeId: string;
-  star: number;
-  subject: string;
-  userCompactResDto: {
-    id: number;
-    nickname: string;
-    picture: string;
-  };
-}
-
 // 04. [구글 플레이스] /googleplace/details
 export interface SelectPlaceProps {
   businessStatus: string;
@@ -63,4 +49,17 @@ export interface SelectPlaceProps {
   weekdayText: string[];
   rating: number;
   shortAddress: string;
+}
+
+export interface ReviewDetailApiProps { 
+  id: number;
+  subject: string;
+  content: string;
+  userCompactResDto: userCompactResDto;
+  placeId: string;
+  star: number;
+  likeCnt: number;
+  viewCnt: number;
+  createdAt: string;
+  commentResDtoList: commentResDto[];
 }
