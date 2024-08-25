@@ -3,8 +3,8 @@ import { InfoRow, InfoText } from "../../../assets/styles/home.style";
 import ko from "date-fns/locale/ko";
 import { DateRange } from "react-date-range";
 import { useState } from "react";
-import { NextButtonBox } from "../../../pages/mobile/schedule/CreateSchedule";
 import { useNavigate } from "react-router-dom";
+import { NextButtonBox } from "./ScheduleLayout";
 
 interface DayProps {
   startDate: Date;
@@ -56,7 +56,7 @@ export default function Calendar() {
   );
 }
 
-const SubInfo = styled.p`
+export const SubInfo = styled.p`
   color: ${(props) => props.theme.color.gray700};
   font-size: 14px;
   font-weight: 400;

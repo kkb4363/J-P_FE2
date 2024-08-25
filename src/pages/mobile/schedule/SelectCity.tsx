@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import CustomInput from "../CustomInput";
 import { scrollHidden } from "../../../assets/styles/home.style";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import CustomInput from "../../../components/mobile/CustomInput";
+import { NextButtonBox } from "./ScheduleLayout";
 
 export default function SelectCity() {
   const location = useLocation();
+  const navigate = useNavigate();
   console.log(location?.state?.date[0]);
   return (
     <>
@@ -49,6 +51,10 @@ export default function SelectCity() {
           </CityGrid>
         ))}
       </CityGridBox>
+
+      <NextButtonBox>
+        <button onClick={() => navigate("/Schedule/details")}>다음</button>
+      </NextButtonBox>
     </>
   );
 }
@@ -98,6 +104,7 @@ const CityGridBox = styled.div`
   overflow-y: auto;
   ${scrollHidden};
   align-content: flex-start;
+  flex: 1;
 `;
 
 const CityGrid = styled.div<{ $isActive: boolean }>`

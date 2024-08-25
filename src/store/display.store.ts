@@ -6,15 +6,19 @@ export type TabProps = "홈" | "검색" | "일정" | "리뷰/여행기" | "마�
 
 interface State {
   currentTab: TabProps;
+  bottomSheetHeight: number;
 }
 
 interface Action {
   getTabs: () => TabProps;
   setTabs: (t: TabProps) => void;
+  getBottomSheetHeight: () => number;
+  setBottomSheetHeight: (h: number) => void;
 }
 
 const initData: State = {
   currentTab: "홈",
+  bottomSheetHeight: 0,
 };
 
 export const useDisplayStore = create<State & Action>()(
@@ -23,9 +27,14 @@ export const useDisplayStore = create<State & Action>()(
       ...initData,
       getTabs: () => get().currentTab,
       setTabs: (t: TabProps) => set({ currentTab: t }),
+      getBottomSheetHeight: () => get().bottomSheetHeight,
+      setBottomSheetHeight: (h: number) => {
+        if (h !== get().bottomSheetHeight) {
+          return set({ bottomSheetHeight: h });
+        }
+      },
     }),
 
-    // 새로고침해도 tab이 유지되게끔 세션 스토리지에 저장
     {
       name: "displayStore",
       storage: createJSONStorage(() => sessionStorage),

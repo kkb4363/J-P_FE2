@@ -1,25 +1,25 @@
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import styled from "styled-components";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 
-export default function CreateSchedule() {
+export default function ScheduleLayout() {
+  const param = useLocation();
+
   return (
-    <CreateScheduleContainer>
-      <CustomHeader title="일정"></CustomHeader>
+    <>
+      <CustomHeader title="일정">
+        {param.pathname.includes("details") && <InviteText>초대</InviteText>}
+      </CustomHeader>
 
       <Body>
         <Outlet />
       </Body>
-    </CreateScheduleContainer>
+    </>
   );
 }
 
-const CreateScheduleContainer = styled.div`
-  height: 100%;
-`;
-
 const Body = styled.div`
-  height: calc(100% - 50px - 20px);
+  height: calc(100dvh - 50px - 20px);
   padding: 0 20px;
   display: flex;
   flex-direction: column;
@@ -41,4 +41,10 @@ export const NextButtonBox = styled.div`
     font-size: 14px;
     font-weight: 700;
   }
+`;
+
+const InviteText = styled.span`
+  font-size: 14px;
+  font-weight: 700;
+  color: ${(props) => props.theme.color.secondary};
 `;
