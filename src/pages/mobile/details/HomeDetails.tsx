@@ -12,15 +12,15 @@ import { axiosInstance } from "../../../utils/axios";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
-} from "../../types/home.details";
-import { reviewApiProps } from "../../types/home";
-import { useMapStore } from "../../store/map.store";
-import ImageView from "../../components/mobile/ImageView";
-import ActionButton from "../../components/mobile/ActionButton";
-import * as S from "../../assets/styles/homeDetail.style";
-import { testImg2 } from "../../utils/staticDatas";
-import EditIcon from "../../assets/icons/EditIcon";
-import CustomSkeleton from "../../components/mobile/CustomSkeleton";
+} from "../../../types/home.details";
+import { reviewApiProps } from "../../../types/home";
+import { useMapStore } from "../../../store/map.store";
+import ImageView from "../../../components/mobile/ImageView";
+import ActionButton from "../../../components/mobile/ActionButton";
+import * as S from "../../../assets/styles/homeDetail.style";
+import { testImg2 } from "../../../utils/staticDatas";
+import EditIcon from "../../../assets/icons/EditIcon";
+import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 
 interface Props {
   photoUrl: string;
