@@ -19,10 +19,10 @@ export default function Schedule() {
   return (
     <ScheduleContainer>
       <CustomHeader title="일정" hidePrevIcon={true}>
-        <CreateSchedule onClick={() => navigate("/createSchedule")}>
+        <ScheduleLayout onClick={() => navigate("/Schedule")}>
           <ScheduleIcon />
           <span>일정 생성</span>
-        </CreateSchedule>
+        </ScheduleLayout>
       </CustomHeader>
 
       {/* 일정이 없는 경우 */}
@@ -165,7 +165,7 @@ const ScheduleContainer = styled.div`
   height: 100%;
 `;
 
-const CreateSchedule = styled.div`
+const ScheduleLayout = styled.div`
   min-width: 60px;
   display: flex;
   gap: 3px;

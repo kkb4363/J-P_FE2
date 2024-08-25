@@ -2,14 +2,15 @@ import { ReactNode, useEffect, useState } from "react";
 import { BottomSheet as SheetContainer } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import styled from "styled-components";
+import { useDisplayStore } from "../../store/display.store";
 
 interface Props {
   children: ReactNode;
   minH?: number;
   maxH: number;
-  isBlocking?: boolean;
+  isBlocking?: boolean; // overlay 여부
   isOpen?: boolean;
-  isDismiss?: boolean; // Bottom Sheet가 닫힐 지 여부
+  isDismiss?: boolean; // bottom sheet 닫힐 지 여부
 }
 
 export default function BottomSheet({
@@ -22,22 +23,29 @@ export default function BottomSheet({
 }: Props) {
   const [open, setOpen] = useState(false);
 
+  const { setBottomSheetHeight } = useDisplayStore();
+
   const handleDismiss = () => {
-    isDismiss ? setOpen(false) : undefined;
+    setOpen(false);
   };
 
-  const minAndMax = (maxHeight: number) => {
+  const setMinAndMax = (maxHeight: number) => {
     const arr = [];
-
     if (minH !== undefined) {
       arr.push(maxHeight / minH);
     }
-
-    if (maxH !== undefined) {
-      arr.push(maxHeight * maxH);
-    }
+    arr.push(maxHeight * maxH);
 
     return arr;
+  };
+
+  const setDefaultSnap = (maxHeight: number) => {
+    //  최솟값이 undefined가 아닐 때 store에 저장 (height 계산 하기 위함)
+    if (minH !== undefined) {
+      setBottomSheetHeight(maxHeight / minH + 43);
+    }
+
+    return maxH * maxHeight;
   };
 
   useEffect(() => {
@@ -48,9 +56,9 @@ export default function BottomSheet({
     <SheetContainer
       blocking={isBlocking}
       open={open}
-      snapPoints={({ maxHeight }) => minAndMax(maxHeight)}
-      defaultSnap={({ maxHeight }) => maxH * maxHeight}
-      onDismiss={handleDismiss}
+      snapPoints={({ maxHeight }) => setMinAndMax(maxHeight)}
+      defaultSnap={({ maxHeight }) => setDefaultSnap(maxH * maxHeight)}
+      onDismiss={isDismiss ? handleDismiss : undefined}
     >
       <Container>{children}</Container>
     </SheetContainer>

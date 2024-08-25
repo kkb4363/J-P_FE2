@@ -9,9 +9,10 @@ import Search from "./search/Search";
 import Schedule from "./schedule/Schedule";
 import Onboarding from "./onboarding/Onboarding";
 import TravelMore from "./schedule/TravelMore";
-import CreateSchedule from "./schedule/CreateSchedule";
 import Calendar from "./schedule/Calendar";
 import SelectCity from "./schedule/SelectCity";
+import ScheduleLayout from "./schedule/ScheduleLayout";
+import Details from "./schedule/Details";
 
 export const router = createBrowserRouter([
   {
@@ -23,8 +24,8 @@ export const router = createBrowserRouter([
     element: <Survey />,
   },
   {
-    path: "createSchedule",
-    element: <CreateSchedule />,
+    path: "Schedule",
+    element: <ScheduleLayout />,
     children: [
       {
         path: "",
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "city",
         element: <SelectCity />,
+      },
+      {
+        path: "details",
+        element: <Details />,
       },
     ],
   },

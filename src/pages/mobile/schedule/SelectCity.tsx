@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { scrollHidden } from "../../../assets/styles/home.style";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomInput from "../../../components/mobile/CustomInput";
-import { NextButtonBox } from "./CreateSchedule";
+import { NextButtonBox } from "./ScheduleLayout";
 
 export default function SelectCity() {
   const location = useLocation();
+  const navigate = useNavigate();
   console.log(location?.state?.date[0]);
   return (
     <>
@@ -52,7 +53,7 @@ export default function SelectCity() {
       </CityGridBox>
 
       <NextButtonBox>
-        <button>다음</button>
+        <button onClick={() => navigate("/Schedule/details")}>다음</button>
       </NextButtonBox>
     </>
   );
