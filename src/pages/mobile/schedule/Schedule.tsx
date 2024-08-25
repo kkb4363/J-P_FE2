@@ -19,7 +19,7 @@ export default function Schedule() {
   return (
     <ScheduleContainer>
       <CustomHeader title="일정" hidePrevIcon={true}>
-        <CreateSchedule onClick={() => navigate("/home/createSchedule")}>
+        <CreateSchedule onClick={() => navigate("/createSchedule")}>
           <ScheduleIcon />
           <span>일정 생성</span>
         </CreateSchedule>

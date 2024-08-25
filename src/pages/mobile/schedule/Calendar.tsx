@@ -3,7 +3,7 @@ import { InfoRow, InfoText } from "../../../assets/styles/home.style";
 import ko from "date-fns/locale/ko";
 import { DateRange } from "react-date-range";
 import { useState } from "react";
-import { NextButtonBox } from "../../../pages/mobile/schedule/CreateSchedule";
+import { NextButtonBox } from "./CreateSchedule";
 import { useNavigate } from "react-router-dom";
 
 interface DayProps {

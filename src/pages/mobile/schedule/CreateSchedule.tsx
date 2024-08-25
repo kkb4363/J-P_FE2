@@ -4,22 +4,18 @@ import { Outlet } from "react-router-dom";
 
 export default function CreateSchedule() {
   return (
-    <CreateScheduleContainer>
+    <>
       <CustomHeader title="일정"></CustomHeader>
 
       <Body>
         <Outlet />
       </Body>
-    </CreateScheduleContainer>
+    </>
   );
 }
 
-const CreateScheduleContainer = styled.div`
-  height: 100%;
-`;
-
 const Body = styled.div`
-  height: calc(100% - 50px - 20px);
+  height: calc(100dvh - 50px - 20px);
   padding: 0 20px;
   display: flex;
   flex-direction: column;
