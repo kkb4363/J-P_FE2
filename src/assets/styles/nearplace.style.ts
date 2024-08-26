@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { scrollHidden } from "./home.style";
 
 export const NearPlaceContainer = styled.div`
   width: 100%;
@@ -8,7 +9,7 @@ export const NearPlaceContainer = styled.div`
 
 export const NearPlaceMapBox = styled.div`
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100dvh - 50px);
 `;
 
 export const PlaceMarkerName = styled.div`
@@ -49,13 +50,16 @@ export const CardCol = styled.div`
   align-items: flex-start;
   justify-content: space-around;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
 
   & > p {
     color: ${(props) => props.theme.color.gray900};
     font-size: 16px;
     font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.048px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   & > span {

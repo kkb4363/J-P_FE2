@@ -24,6 +24,10 @@ export const router = createBrowserRouter([
     element: <Survey />,
   },
   {
+    path: "nearby/:placeId",
+    element: <NearPlace />,
+  },
+  {
     path: "Schedule",
     element: <ScheduleLayout />,
     children: [
@@ -61,10 +65,7 @@ export const router = createBrowserRouter([
         path: "city/:placeId",
         element: <HomeDetails />,
       },
-      {
-        path: "nearby/:placeId",
-        element: <NearPlace />,
-      },
+
       {
         path: "search",
         element: <Search />,
