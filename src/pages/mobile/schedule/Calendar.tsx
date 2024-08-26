@@ -36,7 +36,7 @@ export default function Calendar() {
           showMonthAndYearPickers={false}
           onChange={(item) => setState([item.selection] as DayProps[])}
           ranges={state as DayProps[]}
-          rangeColors={["#6979f8"]}
+          rangeColors={["#e7e9fe"]}
         />
       </CalendarBox>
       <NextButtonBox>
