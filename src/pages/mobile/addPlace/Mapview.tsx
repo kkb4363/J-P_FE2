@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import { useEffect, useRef } from "react";
+import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
+import { useModal } from "../../../hooks/useModal";
 
 export default function Mapview() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -42,14 +44,25 @@ export default function Mapview() {
     loadGoogleMapsScript();
   }, []);
 
+  const { isOpen, openModal: test, closeModal, modalRef } = useModal();
+
   return (
     <>
       <Header>
         <MarkIcon stroke="#6979f8" width="20" height="20" />
-        <span>주변 장소 더보기</span>
+        <span onClick={test}>주변 장소 더보기</span>
       </Header>
 
       <MapBox ref={mapRef} />
+
+      {isOpen && (
+        <TwoButtonsModal
+          text="일정을 삭제할까요?"
+          onClick={() => {}}
+          onClose={closeModal}
+          modalRef={modalRef}
+        />
+      )}
     </>
   );
 }
