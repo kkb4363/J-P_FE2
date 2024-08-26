@@ -114,10 +114,6 @@ export default function Schedule() {
         </SuggestionCol>
 
         <MoreButtonBox>
-          <button>
-            <span>더보기</span>
-          </button>
-
           <AlarmButton>
             <BellIcon stroke="#fff" width="18" height="18" />
             <span>초대 알림</span>
@@ -262,21 +258,6 @@ const MoreButtonBox = styled.div`
   align-items: center;
   padding: 40px 0 55px 0;
   position: relative;
-
-  & > button:first-child {
-    padding: 14px 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: 1px solid ${(props) => props.theme.color.gray200};
-
-    & > span {
-      color: ${(props) => props.theme.color.gray700};
-      font-size: 12px;
-      font-weight: 700;
-    }
-  }
 `;
 
 const AlarmButton = styled.button`

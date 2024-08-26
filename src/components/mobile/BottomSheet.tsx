@@ -11,6 +11,7 @@ interface Props {
   isBlocking?: boolean; // overlay 여부
   isOpen?: boolean;
   isDismiss?: boolean; // bottom sheet 닫힐 지 여부
+  handleClose?: () => void;
 }
 
 export default function BottomSheet({
@@ -20,6 +21,7 @@ export default function BottomSheet({
   isBlocking = false,
   isOpen = true,
   isDismiss = false,
+  handleClose,
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -27,6 +29,9 @@ export default function BottomSheet({
 
   const handleDismiss = () => {
     setOpen(false);
+    if (handleClose) {
+      handleClose();
+    }
   };
 
   const setMinAndMax = (maxHeight: number) => {
@@ -50,7 +55,7 @@ export default function BottomSheet({
 
   useEffect(() => {
     if (isOpen) setOpen(true);
-  }, []);
+  }, [isOpen]);
 
   return (
     <SheetContainer
@@ -59,6 +64,7 @@ export default function BottomSheet({
       snapPoints={({ maxHeight }) => setMinAndMax(maxHeight)}
       defaultSnap={({ maxHeight }) => setDefaultSnap(maxH * maxHeight)}
       onDismiss={isDismiss ? handleDismiss : undefined}
+      // header={<CustomHeader onClose={handleDismiss} />}
     >
       <Container>{children}</Container>
     </SheetContainer>
@@ -71,3 +77,17 @@ const Container = styled.div`
   flex-direction: column;
   gap: 12px;
 `;
+
+// const CloseButton = styled.button`
+//   position: absolute;
+//   top: -10px;
+//   right: 5px;
+//   font-size: 18px;
+//   cursor: pointer;
+// `;
+
+// const CustomHeader = ({ onClose }) => (
+//   <div style={{ position: "relative", padding: "16px 0" }}>
+//     <CloseButton onClick={onClose}>&times;</CloseButton>
+//   </div>
+// );

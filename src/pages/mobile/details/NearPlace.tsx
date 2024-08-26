@@ -1,5 +1,5 @@
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../../utils/axios";
 import {
@@ -14,18 +14,20 @@ import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import * as S from "../../../assets/styles/nearplace.style";
+import BottomSheet from "../../../components/mobile/BottomSheet";
 
 interface Props {
   photoUrl: string;
   name: string;
   rating: number;
-  handleClick?: () => void;
   vicinity: string;
   height?: string;
 }
 
 export default function NearPlace() {
   const param = useParams();
+  const location = useLocation();
+
   const mapRef = useRef<HTMLDivElement>(null);
   const mapStore = useMapStore();
   const navigate = useNavigate();
@@ -55,37 +57,27 @@ export default function NearPlace() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    const loadGoogleMapsScript = () => {
-      return new Promise<void>((resolve, reject) => {
-        const existingScript = document.getElementById("google-maps");
-        if (!existingScript) {
-          const script = document.createElement("script");
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${
-            import.meta.env.VITE_GOOGLE_API_KEY
-          }&callback=initMap`;
-          script.id = "google-maps";
-          script.async = true;
-          script.defer = true;
-          document.body.appendChild(script);
+    const loadGoogleMapsScript = async () => {
+      const existingScript = document.getElementById("google-maps");
+      if (!existingScript) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${
+          import.meta.env.VITE_GOOGLE_API_KEY
+        }&callback=initMap`;
+        script.id = "google-maps";
+        script.async = true;
+        document.body.appendChild(script);
 
-          script.onload = () => {
-            if ((window as any).google) {
-              resolve();
-            } else {
-              reject(new Error("Google Maps API failed to load."));
-            }
-          };
-
-          script.onerror = () =>
-            reject(new Error("Google Maps script failed to load."));
-        } else {
+        script.onload = () => {
           if ((window as any).google) {
-            resolve();
-          } else {
-            reject(new Error("Google Maps API is not available."));
+            initMap();
           }
+        };
+      } else {
+        if ((window as any).google && details?.location) {
+          initMap();
         }
-      });
+      }
     };
 
     const initMap = () => {
@@ -186,12 +178,17 @@ export default function NearPlace() {
       });
   }, [selectPlaceId]);
 
+  useEffect(() => {
+    if (location?.state?.selectedPlaceId) {
+      setSelectPlaceId(location?.state?.selectedPlaceId);
+    }
+  }, [location?.state]);
+
   return (
     <S.NearPlaceContainer>
       <CustomHeader title="주변 여행지" handleClick={handlePrev} />
-
-      {/* {!selectPlaceId ? (
-        <BottomSheet maxHeight={window.innerHeight - 100} key={"sheet1"}>
+      {!selectPlaceId ? (
+        <BottomSheet maxH={0.9} minH={7} key={"nearPlaces-bottom-sheet"}>
           {mapStore.getNearPlace().map((place) => (
             <NearPlaceCard
               height="100px"
@@ -204,7 +201,12 @@ export default function NearPlace() {
           ))}
         </BottomSheet>
       ) : (
-        <BottomSheet maxHeight={window.innerHeight - 500} key={"sheet2"}>
+        <BottomSheet
+          handleClose={() => setSelectPlaceId("")}
+          maxH={0.33}
+          isDismiss={true}
+          key={"nearPlaces-details-bottom-sheet"}
+        >
           <S.SelectPlaceCol>
             <S.SelectPlaceCard>
               <ImageView
@@ -243,7 +245,7 @@ export default function NearPlace() {
             </S.SelectPlaceDetailCol>
           </S.SelectPlaceCol>
         </BottomSheet>
-      )} */}
+      )}
 
       <S.NearPlaceMapBox ref={mapRef} />
     </S.NearPlaceContainer>

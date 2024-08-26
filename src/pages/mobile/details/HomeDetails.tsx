@@ -21,13 +21,14 @@ import * as S from "../../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../../utils/staticDatas";
 import EditIcon from "../../../assets/icons/EditIcon";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 
 interface Props {
   photoUrl: string;
   name: string;
   rating: number;
-  handleClick?: () => void;
   height?: string;
+  handleDetails?: () => void;
 }
 
 export default function HomeDetails() {
@@ -36,14 +37,14 @@ export default function HomeDetails() {
   const mapRef = useRef<HTMLDivElement>(null);
   const { clear } = useMapStore();
   const [loading, setLoading] = useState(true);
+  const [addScheduleState, setAddScheduleState] = useState(false);
+  const isCityDetailPage = location.pathname.includes("city");
 
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<ReviewProps[]>([]);
-
-  const isCityDetailPage = location.pathname.includes("city");
 
   useEffect(() => {
     const requestApi = async () => {
@@ -135,152 +136,172 @@ export default function HomeDetails() {
   }, [details]);
 
   return (
-    <S.HomeDetailsContainer>
-      <Carousel
-        cycleNavigation={true}
-        navButtonsAlwaysInvisible={true}
-        indicators={false}
-        autoPlay={false}
-        swipe={true}
-        animation="fade"
-      >
-        {details?.photoUrls?.map((img, idx) => (
-          <S.DetailsImageBox key={idx}>
-            <img src={img} alt={img} loading="lazy" />
+    <>
+      <S.HomeDetailsContainer>
+        <Carousel
+          cycleNavigation={true}
+          navButtonsAlwaysInvisible={true}
+          indicators={false}
+          autoPlay={false}
+          swipe={true}
+          animation="fade"
+        >
+          {details?.photoUrls?.map((img, idx) => (
+            <S.DetailsImageBox key={idx}>
+              <img src={img} alt={img} loading="lazy" />
 
-            <S.ArrowLeftBox
-              onClick={() => {
-                navigate(-1);
-                clear();
-              }}
-            >
-              <ArrowLeftIcon stroke="#fff" />
-            </S.ArrowLeftBox>
+              <S.ArrowLeftBox
+                onClick={() => {
+                  navigate(-1);
+                  clear();
+                }}
+              >
+                <ArrowLeftIcon stroke="#fff" />
+              </S.ArrowLeftBox>
 
-            <S.LikeBox>
-              <HeartIcon />
-            </S.LikeBox>
+              <S.LikeBox>
+                <HeartIcon />
+              </S.LikeBox>
 
-            <S.ImagePageIndicatorBox>
-              <span>
-                {idx + 1} / {details?.photoUrls.length}
-              </span>
-            </S.ImagePageIndicatorBox>
-          </S.DetailsImageBox>
-        ))}
-      </Carousel>
-
-      <S.DetailsBody>
-        <S.DetailsTitle>
-          <MarkIcon />
-          {details?.name}
-        </S.DetailsTitle>
-
-        <ReviewTagRow>
-          {details?.tags?.map((tag) => (
-            <ReviewTag key={tag}>
-              <span>#{tag}</span>
-            </ReviewTag>
+              <S.ImagePageIndicatorBox>
+                <span>
+                  {idx + 1} / {details?.photoUrls.length}
+                </span>
+              </S.ImagePageIndicatorBox>
+            </S.DetailsImageBox>
           ))}
-        </ReviewTagRow>
+        </Carousel>
 
-        <S.DetailsInfo>{details?.description}</S.DetailsInfo>
+        <S.DetailsBody>
+          <S.DetailsTitle>
+            <MarkIcon />
+            {details?.name}
+          </S.DetailsTitle>
 
-        {!isCityDetailPage && (
-          <>
-            <S.DetailsTitle>기본 정보</S.DetailsTitle>
-            <S.DetailsSubTitle>
-              <MarkIcon width="18" height="18" />
-              <span>{details?.formattedAddress}</span>
-            </S.DetailsSubTitle>
+          <ReviewTagRow>
+            {details?.tags?.map((tag) => (
+              <ReviewTag key={tag}>
+                <span>#{tag}</span>
+              </ReviewTag>
+            ))}
+          </ReviewTagRow>
 
-            {loading ? (
-              <CustomSkeleton height="146px" />
-            ) : (
-              <S.GoogleMapBox ref={mapRef} />
-            )}
-          </>
-        )}
+          <S.DetailsInfo>{details?.description}</S.DetailsInfo>
 
-        <S.DetailsTitleWithMoreText>
-          주변 여행지 추천
-          <span>지도로 보기</span>
-          <S.MoreTextAbsolute
-            onClick={() => navigate(`/home/nearby/${param?.placeId}`)}
-          >
-            더보기
-          </S.MoreTextAbsolute>
-        </S.DetailsTitleWithMoreText>
+          {!isCityDetailPage && (
+            <>
+              <S.DetailsTitle>기본 정보</S.DetailsTitle>
+              <S.DetailsSubTitle>
+                <MarkIcon width="18" height="18" />
+                <span>{details?.formattedAddress}</span>
+              </S.DetailsSubTitle>
 
-        <S.NearPlaceCol>
-          {nearbyPlaces.length === 0
-            ? Array.from({ length: 3 }).map((_, index) => (
-                <CustomSkeleton key={index} height="83px" borderRadius="16px" />
-              ))
-            : nearbyPlaces
-                ?.slice(0, 3)
-                .map((place) => (
+              {loading ? (
+                <CustomSkeleton height="146px" />
+              ) : (
+                <S.GoogleMapBox ref={mapRef} />
+              )}
+            </>
+          )}
+
+          <S.DetailsTitleWithMoreText>
+            주변 여행지 추천
+            <S.MoreTextAbsolute
+              onClick={() => navigate(`/nearby/${param?.placeId}`)}
+            >
+              더보기
+            </S.MoreTextAbsolute>
+          </S.DetailsTitleWithMoreText>
+
+          <S.NearPlaceCol>
+            {nearbyPlaces.length === 0
+              ? Array.from({ length: 3 }).map((_, index) => (
+                  <CustomSkeleton
+                    key={index}
+                    height="83px"
+                    borderRadius="16px"
+                  />
+                ))
+              : nearbyPlaces?.slice(0, 3).map((place) => (
                   <NearPlaceCard
+                    handleDetails={() =>
+                      navigate(`/nearby/${place.placeId}`, {
+                        state: {
+                          selectedPlaceId: place.placeId,
+                        },
+                      })
+                    }
                     key={place.placeId}
                     photoUrl={place.photoUrls[0]}
                     name={place.name}
                     rating={place.rating}
                   />
                 ))}
-        </S.NearPlaceCol>
+          </S.NearPlaceCol>
 
-        <S.DetailsTitleWithMoreText>
-          리뷰
-          <S.MoreTextAbsolute>
-            {reviews.length === 0 ? <EditIcon /> : "더보기"}
-          </S.MoreTextAbsolute>
-        </S.DetailsTitleWithMoreText>
+          <S.DetailsTitleWithMoreText>
+            리뷰
+            <S.MoreTextAbsolute>
+              {reviews.length === 0 ? <EditIcon /> : "더보기"}
+            </S.MoreTextAbsolute>
+          </S.DetailsTitleWithMoreText>
 
-        {reviews.length === 0 ? (
-          <S.DetailsNoReview>
-            <span>첫 리뷰를 남겨주세요!</span>
-          </S.DetailsNoReview>
-        ) : (
-          <S.DetailsReviewRow>
-            {reviews?.map((review) => (
-              <S.DetailsReviewBox key={review.id}>
-                <S.ReviewTitle>
-                  <div>
-                    <img src={testImg2} alt="user-img" />
-                    <span>{review.userCompactResDto.nickname} | </span>
-                    <span>24.4.1</span>
-                  </div>
-                  <div>
-                    <StarIcon />
-                    <span>{review.star}</span>
-                  </div>
-                </S.ReviewTitle>
-                <S.ReviewInfo>
-                  <span>{review.content}</span>
-                </S.ReviewInfo>
-                <S.ReviewMessageRow>
-                  <HeartIcon />
-                  <span>{review.likeCnt}</span>
-                  <CommentIcon />
-                  <span>{review.commentCnt}</span>
-                </S.ReviewMessageRow>
-              </S.DetailsReviewBox>
-            ))}
-          </S.DetailsReviewRow>
-        )}
+          {reviews.length === 0 ? (
+            <S.DetailsNoReview>
+              <span>첫 리뷰를 남겨주세요!</span>
+            </S.DetailsNoReview>
+          ) : (
+            <S.DetailsReviewRow>
+              {reviews?.map((review) => (
+                <S.DetailsReviewBox key={review.id}>
+                  <S.ReviewTitle>
+                    <div>
+                      <img src={testImg2} alt="user-img" />
+                      <span>{review.userCompactResDto.nickname} | </span>
+                      <span>24.4.1</span>
+                    </div>
+                    <div>
+                      <StarIcon />
+                      <span>{review.star}</span>
+                    </div>
+                  </S.ReviewTitle>
+                  <S.ReviewInfo>
+                    <span>{review.content}</span>
+                  </S.ReviewInfo>
+                  <S.ReviewMessageRow>
+                    <HeartIcon />
+                    <span>{review.likeCnt}</span>
+                    <CommentIcon />
+                    <span>{review.commentCnt}</span>
+                  </S.ReviewMessageRow>
+                </S.DetailsReviewBox>
+              ))}
+            </S.DetailsReviewRow>
+          )}
 
-        <S.AddScheduleBox>
-          <S.AddScheduleButton>
-            <PlusIcon stroke="#fff" />
-            <span>일정 추가</span>
-          </S.AddScheduleButton>
-        </S.AddScheduleBox>
-      </S.DetailsBody>
-    </S.HomeDetailsContainer>
+          <S.AddScheduleBox>
+            <S.AddScheduleButton onClick={() => setAddScheduleState(true)}>
+              <PlusIcon stroke="#fff" />
+              <span>일정 추가</span>
+            </S.AddScheduleButton>
+          </S.AddScheduleBox>
+        </S.DetailsBody>
+      </S.HomeDetailsContainer>
+
+      {addScheduleState && (
+        <CreateScheduleSheet handleClose={() => setAddScheduleState(false)} />
+      )}
+    </>
   );
 }
 
-function NearPlaceCard({ photoUrl, name, rating, height = "83px" }: Props) {
+function NearPlaceCard({
+  photoUrl,
+  name,
+  rating,
+  height = "83px",
+  handleDetails,
+}: Props) {
   return (
     <S.NearPlaceBox $height={height}>
       <ImageView width="60px" height="60px" src={photoUrl} alt={name} />
@@ -290,7 +311,7 @@ function NearPlaceCard({ photoUrl, name, rating, height = "83px" }: Props) {
 
         <div>
           <StarIcon />
-          {rating} | <span>주소보기</span>
+          {rating} | <span onClick={handleDetails}>위치보기</span>
         </div>
       </S.NearPlaceDetailCol>
 

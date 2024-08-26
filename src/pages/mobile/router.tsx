@@ -13,6 +13,9 @@ import Calendar from "./schedule/Calendar";
 import SelectCity from "./schedule/SelectCity";
 import ScheduleLayout from "./schedule/ScheduleLayout";
 import Details from "./schedule/Details";
+import AddPlaceLayout from "./addPlace/AddPlaceLayout";
+import ListView from "./addPlace/ListView";
+import Mapview from "./addPlace/Mapview";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +25,10 @@ export const router = createBrowserRouter([
   {
     path: "survey",
     element: <Survey />,
+  },
+  {
+    path: "nearby/:placeId",
+    element: <NearPlace />,
   },
   {
     path: "Schedule",
@@ -38,6 +45,20 @@ export const router = createBrowserRouter([
       {
         path: "details",
         element: <Details />,
+      },
+    ],
+  },
+  {
+    path: "addPlace",
+    element: <AddPlaceLayout />,
+    children: [
+      {
+        path: "",
+        element: <ListView />,
+      },
+      {
+        path: "map",
+        element: <Mapview />,
       },
     ],
   },
@@ -61,10 +82,7 @@ export const router = createBrowserRouter([
         path: "city/:placeId",
         element: <HomeDetails />,
       },
-      {
-        path: "nearby/:placeId",
-        element: <NearPlace />,
-      },
+
       {
         path: "search",
         element: <Search />,
