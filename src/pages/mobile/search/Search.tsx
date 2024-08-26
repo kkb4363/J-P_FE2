@@ -156,7 +156,7 @@ export default function Search() {
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={() => openDeleteModal()}>모두 삭제</p>
+                <p onClick={openDeleteModal}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {

@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import UserIcon from "../../../assets/icons/UserIcon";
 import ClipIcon from "../../../assets/icons/ClipIcon";
 import CustomInput from "../../../components/mobile/CustomInput";
+import { useNavigate } from "react-router-dom";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
@@ -19,6 +20,7 @@ export default function Details() {
   const mapRef = useRef<HTMLDivElement>(null);
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
+  const navigate = useNavigate();
 
   const handleInviteClose = () => {
     setSheetOpen("AddPlace");
@@ -92,7 +94,7 @@ export default function Details() {
 
       {sheetOpen === "AddPlace" && (
         <BottomSheet minH={6} maxH={0.75}>
-          <div>+ 장소 추가</div>
+          <div onClick={() => navigate("/addPlace")}>+ 장소 추가</div>
         </BottomSheet>
       )}
 
