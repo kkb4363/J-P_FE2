@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { scrollHidden } from "./home.style";
 
 export const NearPlaceContainer = styled.div`
   width: 100%;
