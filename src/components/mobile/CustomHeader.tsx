@@ -2,8 +2,10 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon";
 import { ReactNode } from "react";
+import MarkIcon from "../../assets/icons/MarkIcon";
 
 interface Props {
+  isPlace?: boolean;
   title: string;
   children?: ReactNode;
   handleClick?: () => void;
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export default function CustomHeader({
+  isPlace = false,
   title,
   children,
   handleClick,
@@ -26,7 +29,12 @@ export default function CustomHeader({
           <ArrowLeftIcon />
         </div>
       )}
-      <Title>{title}</Title>
+
+      <Title>
+        {isPlace && <MarkIcon />}
+        {title}
+      </Title>
+
       {children ? children : <EmptyBox />}
     </CustomHeaderContainer>
   );
@@ -53,4 +61,7 @@ const Title = styled.span`
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 `;
