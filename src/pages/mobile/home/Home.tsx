@@ -15,6 +15,8 @@ import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import "react-toastify/dist/ReactToastify.css";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import CustomProfile from "../../../components/mobile/CustomProfile";
+import Hashtags from "../../../components/mobile/Hashtags";
+import { travelLogTags } from "../../../utils/staticDatas";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -189,15 +191,7 @@ export default function Home() {
             />
 
             <S.ReviewTextCol>
-              <S.ReviewTagRow>
-                <S.ReviewTag>
-                  <span>#안동</span>
-                </S.ReviewTag>
-                <S.ReviewTag>
-                  <span>#2박3일</span>
-                </S.ReviewTag>
-              </S.ReviewTagRow>
-
+              <Hashtags hashTags={["안동", "2박3일"]} />
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
               <S.ReviewProfileRow>
@@ -230,14 +224,7 @@ export default function Home() {
             />
 
             <S.ReviewTextCol>
-              <S.ReviewTagRow>
-                <S.ReviewTag>
-                  <span>#안동</span>
-                </S.ReviewTag>
-                <S.ReviewTag>
-                  <span>#2박3일</span>
-                </S.ReviewTag>
-              </S.ReviewTagRow>
+              <Hashtags hashTags={["안동", "2박3일"]} />
 
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
