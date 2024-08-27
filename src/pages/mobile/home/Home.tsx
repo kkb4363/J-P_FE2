@@ -20,6 +20,7 @@ import CalendarIcon from "../../../assets/icons/CalendarIcon";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
+import CustomProfile from "../../../components/mobile/CustomProfile";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -270,10 +271,11 @@ export default function Home() {
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
               <S.ReviewProfileRow>
-                <S.ReviewProfile>
-                  <img src={testImg} />
-                  <span>coco1202</span>
-                </S.ReviewProfile>
+                <CustomProfile
+                  src={testImg}
+                  nickname="coco1202"
+                  fontSize="12px"
+                />
 
                 <S.ReviewLikeCommentRow>
                   <S.LikeCommentBox>
@@ -310,10 +312,11 @@ export default function Home() {
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
               <S.ReviewProfileRow>
-                <S.ReviewProfile>
-                  <img src={testImg} />
-                  <span>coco1202</span>
-                </S.ReviewProfile>
+                <CustomProfile
+                  src={testImg}
+                  nickname="coco1202"
+                  fontSize="12px"
+                />
 
                 <S.ReviewLikeCommentRow>
                   <S.LikeCommentBox>
