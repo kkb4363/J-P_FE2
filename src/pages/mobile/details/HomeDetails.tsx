@@ -12,8 +12,8 @@ import { axiosInstance } from "../../../utils/axios";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
-  ReviewProps,
 } from "../../../types/home.details";
+import { reviewApiProps } from "../../../types/home";
 import { useMapStore } from "../../../store/map.store";
 import ImageView from "../../../components/mobile/ImageView";
 import ActionButton from "../../../components/mobile/ActionButton";
@@ -44,7 +44,7 @@ export default function HomeDetails() {
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
-  const [reviews, setReviews] = useState<ReviewProps[]>([]);
+  const [reviews, setReviews] = useState<reviewApiProps[]>([]);
 
   useEffect(() => {
     const requestApi = async () => {

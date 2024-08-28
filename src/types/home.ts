@@ -1,3 +1,5 @@
+import { userCompactResDto } from "./res.dto";
+
 export interface placeApiProps {
   id: number;
   placeId: string;
@@ -16,9 +18,5 @@ export interface reviewApiProps {
   star: number;
   subject: string;
   content: string;
-  userCompactResDto: {
-    id: number;
-    nickname: string;
-    picture: string;
-  };
+  userCompactResDto: userCompactResDto;
 }

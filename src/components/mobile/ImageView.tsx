@@ -7,6 +7,7 @@ interface Props {
   bottomText?: string;
   width?: string;
   height?: string;
+  pointer?: boolean;
   handleClick?: () => void;
 }
 
@@ -17,10 +18,16 @@ export default function ImageView({
   bottomText,
   width,
   height,
+  pointer,
   handleClick,
 }: Props) {
   return (
-    <ImageViewContainer $width={width} $height={height} onClick={handleClick}>
+    <ImageViewContainer
+      $width={width}
+      $height={height}
+      $pointer={pointer}
+      onClick={handleClick}
+    >
       <img src={src} alt={alt} loading="lazy" />
 
       {!!topText && (
@@ -38,14 +45,19 @@ export default function ImageView({
   );
 }
 
-const ImageViewContainer = styled.div<{ $width?: string; $height?: string }>`
+const ImageViewContainer = styled.div<{
+  $width?: string;
+  $height?: string;
+  $pointer?: boolean;
+}>`
   position: relative;
-
+  cursor: ${({ $pointer }) => ($pointer ? "pointer" : "auto")};
   & > img {
     width: ${({ $width }) => ($width ? $width : "120px")};
     height: ${({ $height }) => ($height ? $height : "120px")};
     border-radius: 16px;
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+    object-fit: cover;
   }
 `;
 
