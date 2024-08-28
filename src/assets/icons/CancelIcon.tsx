@@ -1,14 +1,15 @@
 interface Props {
   stroke?: string;
+  size?: string;
   onClick?: (e: React.MouseEvent<HTMLOrSVGElement>) => void;
 }
 
-const CancelIcon = ({ stroke = "#1A1A1A", onClick }: Props) => {
+const CancelIcon = ({ stroke = "#1A1A1A", size = "22", onClick }: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
+      width={size}
+      height={size}
       viewBox="0 0 22 22"
       fill="none"
       onClick={onClick}
