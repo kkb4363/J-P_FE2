@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
-<<<<<<< HEAD
 import Home from "./home/Home";
 import More from "./home/More";
 import Survey from "./onboarding/Survey";
@@ -20,6 +19,8 @@ import Mapview from "./addPlace/Mapview";
 import TravelReview from "./TravelReview";
 import Review from "./Review";
 import TravelLog from "./TravelLog";
+import ReviewDetails from "./travel-review/ReviewDetails";
+import TravelLogDetails from "./travel-review/TravelLogDetails";
 
 export const router = createBrowserRouter([
   {
@@ -105,12 +106,20 @@ export const router = createBrowserRouter([
       },
       {
         path: "review",
-        element: <Review />,
+        element: <Review sort="NEW" />,
+      },
+      {
+        path: "review/:reviewId",
+        element: <ReviewDetails />,
       },
       {
         path: "travel-log",
         element: <TravelLog />,
       },
+      {
+        path: "travel-log/:travelLogId",
+        element: <TravelLogDetails />
+      }
     ],
   },
 ]);

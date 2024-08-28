@@ -6,6 +6,7 @@ import MarkIcon from "../../assets/icons/MarkIcon";
 
 interface Props {
   isPlace?: boolean;
+  fontSize?: string;
   title: string;
   children?: ReactNode;
   handleClick?: () => void;
@@ -14,6 +15,7 @@ interface Props {
 
 export default function CustomHeader({
   isPlace = false,
+  fontSize = "20px",
   title,
   children,
   handleClick,
@@ -30,7 +32,7 @@ export default function CustomHeader({
         </div>
       )}
 
-      <Title>
+      <Title $fontSize={fontSize}>
         {isPlace && <MarkIcon />}
         {title}
       </Title>
@@ -54,9 +56,9 @@ const EmptyBox = styled.div`
   width: 24px;
 `;
 
-const Title = styled.span`
+const Title = styled.span<{ $fontSize: string }>`
   font-weight: 700;
-  font-size: 20px;
+  font-size: ${({ $fontSize }) => $fontSize && $fontSize};
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
