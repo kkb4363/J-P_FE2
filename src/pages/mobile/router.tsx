@@ -17,7 +17,6 @@ import AddPlaceLayout from "./addPlace/AddPlaceLayout";
 import ListView from "./addPlace/ListView";
 import Mapview from "./addPlace/Mapview";
 import TravelReview from "./TravelReview";
-import Review from "./Review";
 import TravelLog from "./TravelLog";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import TravelLogDetails from "./travel-review/TravelLogDetails";
@@ -103,10 +102,6 @@ export const router = createBrowserRouter([
       {
         path: "travel-review",
         element: <TravelReview />,
-      },
-      {
-        path: "review",
-        element: <Review sort="NEW" />,
       },
       {
         path: "review/:reviewId",

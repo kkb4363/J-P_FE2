@@ -76,7 +76,7 @@ export default function Review({ sort }: Props) {
           }
         })}
     </ReviewContainer>
-  );
+  ); 
 }
 
 const ReviewContainer = styled.div`

@@ -63,7 +63,7 @@ export default function TravelReview() {
         {isReview ? (
           <Review sort={getSortByFilter(selectedFilter)} />
         ) : (
-          <TravelLog />
+          <TravelLog sort={getSortByFilter(selectedFilter)} />
         )}
       </>
       <BottomSheetContainer>
@@ -72,7 +72,7 @@ export default function TravelReview() {
           maxH={0.4}
           isOpen={isFilterOpen}
           isDismiss={true}
-          onDismiss={() => setIsFilterOpen(false)}
+          handleClose={() => setIsFilterOpen(false)}
         >
           <SelectFilterBox>
             <p>필터</p>

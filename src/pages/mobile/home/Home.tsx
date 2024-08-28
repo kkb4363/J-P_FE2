@@ -13,10 +13,8 @@ import { useNavigate } from "react-router-dom";
 import testImg from "../../../assets/images/testImg.png";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import "react-toastify/dist/ReactToastify.css";
-import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import CustomProfile from "../../../components/mobile/CustomProfile";
 import HashtagsBox from "../../../components/mobile/HashtagsBox";
-import { travelLogTags } from "../../../utils/staticDatas";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -191,7 +189,7 @@ export default function Home() {
             />
 
             <S.ReviewTextCol>
-              <Hashtags hashTags={["안동", "2박3일"]} />
+              <HashtagsBox hashTags={["안동", "2박3일"]} />
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
               <S.ReviewProfileRow>
@@ -224,7 +222,7 @@ export default function Home() {
             />
 
             <S.ReviewTextCol>
-              <Hashtags hashTags={["안동", "2박3일"]} />
+              <HashtagsBox hashTags={["안동", "2박3일"]} />
 
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
