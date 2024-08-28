@@ -34,7 +34,7 @@ const RoundProfileContainer = styled.div<{
   $fontSize?: string;
 }>`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
   white-space: nowrap;

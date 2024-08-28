@@ -11,6 +11,7 @@ interface Props {
   isBlocking?: boolean; // overlay 여부
   isOpen?: boolean;
   isDismiss?: boolean; // bottom sheet 닫힐 지 여부
+  onDismiss?: () => void; // 부모로부터 콜백함수 받아오기
 }
 
 export default function BottomSheet({
@@ -20,6 +21,7 @@ export default function BottomSheet({
   isBlocking = false,
   isOpen = true,
   isDismiss = false,
+  onDismiss,
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -27,6 +29,7 @@ export default function BottomSheet({
 
   const handleDismiss = () => {
     setOpen(false);
+    if (onDismiss) onDismiss();
   };
 
   const setMinAndMax = (maxHeight: number) => {
@@ -50,7 +53,7 @@ export default function BottomSheet({
 
   useEffect(() => {
     if (isOpen) setOpen(true);
-  }, []);
+  }, [isOpen]);
 
   return (
     <SheetContainer
