@@ -4,7 +4,7 @@ interface Props {
 	hashTags: string[];
 }
 
-export default function Hashtags({hashTags}:Props) {
+export default function HashtagsBox({hashTags}:Props) {
 	return (
 		<HashTagsContainer>
 			{hashTags.map((tag: string, index: number) => 

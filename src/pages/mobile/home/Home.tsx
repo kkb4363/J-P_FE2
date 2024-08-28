@@ -15,7 +15,7 @@ import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import "react-toastify/dist/ReactToastify.css";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import CustomProfile from "../../../components/mobile/CustomProfile";
-import Hashtags from "../../../components/mobile/Hashtags";
+import HashtagsBox from "../../../components/mobile/HashtagsBox";
 import { travelLogTags } from "../../../utils/staticDatas";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
