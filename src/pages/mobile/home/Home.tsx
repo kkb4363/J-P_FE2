@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import testImg from "../../../assets/images/testImg.png";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import "react-toastify/dist/ReactToastify.css";
+import CustomProfile from "../../../components/mobile/CustomProfile";
+import HashtagsBox from "../../../components/mobile/HashtagsBox";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -187,22 +189,15 @@ export default function Home() {
             />
 
             <S.ReviewTextCol>
-              <S.ReviewTagRow>
-                <S.ReviewTag>
-                  <span>#안동</span>
-                </S.ReviewTag>
-                <S.ReviewTag>
-                  <span>#2박3일</span>
-                </S.ReviewTag>
-              </S.ReviewTagRow>
-
+              <HashtagsBox hashTags={["안동", "2박3일"]} />
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
               <S.ReviewProfileRow>
-                <S.ReviewProfile>
-                  <img src={testImg} />
-                  <span>coco1202</span>
-                </S.ReviewProfile>
+                <CustomProfile
+                  src={testImg}
+                  nickname="coco1202"
+                  fontSize="12px"
+                />
 
                 <S.ReviewLikeCommentRow>
                   <S.LikeCommentBox>
@@ -227,22 +222,16 @@ export default function Home() {
             />
 
             <S.ReviewTextCol>
-              <S.ReviewTagRow>
-                <S.ReviewTag>
-                  <span>#안동</span>
-                </S.ReviewTag>
-                <S.ReviewTag>
-                  <span>#2박3일</span>
-                </S.ReviewTag>
-              </S.ReviewTagRow>
+              <HashtagsBox hashTags={["안동", "2박3일"]} />
 
               <p>안동 혼자 뚜벅이 여행 떠나기</p>
 
               <S.ReviewProfileRow>
-                <S.ReviewProfile>
-                  <img src={testImg} />
-                  <span>coco1202</span>
-                </S.ReviewProfile>
+                <CustomProfile
+                  src={testImg}
+                  nickname="coco1202"
+                  fontSize="12px"
+                />
 
                 <S.ReviewLikeCommentRow>
                   <S.LikeCommentBox>
