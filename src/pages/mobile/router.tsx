@@ -16,8 +16,7 @@ import Details from "./schedule/Details";
 import AddPlaceLayout from "./addPlace/AddPlaceLayout";
 import ListView from "./addPlace/ListView";
 import Mapview from "./addPlace/Mapview";
-import TravelReview from "./TravelReview";
-import TravelLog from "./TravelLog";
+import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import TravelLogDetails from "./travel-review/TravelLogDetails";
 
@@ -108,13 +107,9 @@ export const router = createBrowserRouter([
         element: <ReviewDetails />,
       },
       {
-        path: "travel-log",
-        element: <TravelLog />,
-      },
-      {
         path: "travel-log/:travelLogId",
-        element: <TravelLogDetails />
-      }
+        element: <TravelLogDetails />,
+      },
     ],
   },
 ]);
