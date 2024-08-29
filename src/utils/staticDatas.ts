@@ -1,6 +1,9 @@
 import CalendarIcon from "../assets/icons/CalendarIcon";
+import HeartIcon from "../assets/icons/HeartIcon";
 import HomeIcon from "../assets/icons/HomeIcon";
+import LuggageIcon from "../assets/icons/LuggageIcon";
 import MessageIcon from "../assets/icons/MessageIcon";
+import NoteIcon from "../assets/icons/NoteIcon";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import { userCompactResDto } from "../types/res.dto";
@@ -10,7 +13,21 @@ export const footerTabs = [
   { icon: SearchIcon, label: "검색", route: "/home/search" },
   { icon: CalendarIcon, label: "일정", route: "/home/schedule" },
   { icon: MessageIcon, label: "리뷰/여행기", route: "/home/travel-review" },
-  { icon: ProfileIcon, label: "마이페이지", route: "/home" },
+  { icon: ProfileIcon, label: "마이페이지", route: "/home/mypage" },
+];
+
+export const mypageTabs = [
+  { icon: LuggageIcon, label: "여행", route: "" },
+  { icon: NoteIcon, label: "여행기", route: "travelLog" },
+  { icon: MessageIcon, label: "리뷰", route: "review" },
+  { icon: HeartIcon, label: "찜 목록", route: "likes" },
+];
+
+export const mypageLikesTabs = [
+  { label: "전체", value: "" },
+  { label: "여행지", value: "place" },
+  { label: "도시", value: "city" },
+  { label: "여행기", value: "placeLog" },
 ];
 
 export const RECENT_SEARCH_KEY = "recentSearches";

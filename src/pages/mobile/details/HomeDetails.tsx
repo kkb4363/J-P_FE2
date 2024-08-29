@@ -51,8 +51,11 @@ export default function HomeDetails() {
       try {
         const [detailsRes, reviewsRes] = await Promise.all([
           axiosInstance.get(`/place/details/${param?.placeId}`),
+          // axiosInstance.get(
+          //   `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
+          // ),
           axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
+            `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
           ),
         ]);
 
@@ -242,7 +245,15 @@ export default function HomeDetails() {
           <S.DetailsTitleWithMoreText>
             리뷰
             <S.MoreTextAbsolute>
-              {reviews.length === 0 ? <EditIcon /> : "더보기"}
+              {reviews.length === 0 ? (
+                <EditIcon />
+              ) : (
+                <span
+                  onClick={() => navigate(`/home/reviews/${param?.placeId}`)}
+                >
+                  더보기
+                </span>
+              )}
             </S.MoreTextAbsolute>
           </S.DetailsTitleWithMoreText>
 

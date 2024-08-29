@@ -19,6 +19,13 @@ import Mapview from "./addPlace/Mapview";
 import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import TravelLogDetails from "./travel-review/TravelLogDetails";
+import Reviews from "./details/Reviews";
+import MyPageLayout from "./mypage/MyPageLayout";
+import Travel from "./mypage/Travel";
+import TravelLog from "./mypage/TravelLog";
+import Review from "./mypage/Review";
+import Likes from "./mypage/Likes";
+import EditProfile from "./mypage/EditProfile";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +40,7 @@ export const router = createBrowserRouter([
     path: "nearby/:placeId",
     element: <NearPlace />,
   },
+
   {
     path: "Schedule",
     element: <ScheduleLayout />,
@@ -85,7 +93,10 @@ export const router = createBrowserRouter([
         path: "city/:placeId",
         element: <HomeDetails />,
       },
-
+      {
+        path: "reviews/:placeId",
+        element: <Reviews />,
+      },
       {
         path: "search",
         element: <Search />,
@@ -109,6 +120,32 @@ export const router = createBrowserRouter([
       {
         path: "travel-log/:travelLogId",
         element: <TravelLogDetails />,
+      },
+      {
+        path: "mypage",
+        element: <MyPageLayout />,
+        children: [
+          {
+            path: "",
+            element: <Travel />,
+          },
+          {
+            path: "travelLog",
+            element: <TravelLog />,
+          },
+          {
+            path: "review",
+            element: <Review />,
+          },
+          {
+            path: "likes",
+            element: <Likes />,
+          },
+        ],
+      },
+      {
+        path: "editProfile",
+        element: <EditProfile />,
       },
     ],
   },

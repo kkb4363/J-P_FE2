@@ -17,7 +17,7 @@ export default function CustomProfile({
 }: Props) {
   return (
     <RoundProfileContainer $size={size} $fontSize={fontSize}>
-      <img src={src} />
+      <img src={src} alt="profile" />
       {nickname && <span>{nickname}</span>}
       {content && (
         <>
