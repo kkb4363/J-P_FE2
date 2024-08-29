@@ -116,7 +116,7 @@ const TravelLogHeader = styled(TravelHeader)`
   }
 `;
 
-const TravelLogGridBox = styled.div`
+export const TravelLogGridBox = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   place-items: center;

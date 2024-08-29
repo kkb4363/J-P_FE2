@@ -23,6 +23,13 @@ export const mypageTabs = [
   { icon: HeartIcon, label: "찜 목록", route: "likes" },
 ];
 
+export const mypageLikesTabs = [
+  { label: "전체", value: "" },
+  { label: "여행지", value: "place" },
+  { label: "도시", value: "city" },
+  { label: "여행기", value: "placeLog" },
+];
+
 export const RECENT_SEARCH_KEY = "recentSearches";
 
 export const realTimeWords: string[] = [
