@@ -29,16 +29,19 @@ export default function TravelLog() {
 
       <TravelLogGridBox>
         <TravelLogCard>
+          <img src={testImg} alt="travelLog" />
           <p>제주</p>
           <span>3.21 ~ 3.24</span>
           <div>공개</div>
         </TravelLogCard>
         <TravelLogCard>
+          <img src={testImg} alt="travelLog" />
           <p>제주</p>
           <span>3.21 ~ 3.24</span>
           <div>공개</div>
         </TravelLogCard>
         <TravelLogCard>
+          <img src={testImg} alt="travelLog" />
           <p>제주</p>
           <span>3.21 ~ 3.24</span>
           <div>공개</div>
@@ -133,13 +136,19 @@ const TravelLogCard = styled.div`
 
   position: relative;
   width: 100%;
+  height: 100%;
   min-width: 150px;
-  min-height: 130px;
-  border-radius: 16px;
+  min-height: 160px;
 
   gap: 12px;
-  background: no-repeat center url(${testImg});
-  background-size: cover;
+
+  & > img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    border-radius: 16px;
+  }
 
   & > p {
     color: ${(props) => props.theme.color.white};

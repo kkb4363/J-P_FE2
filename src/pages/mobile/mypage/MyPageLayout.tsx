@@ -34,7 +34,7 @@ export default function MyPageLayout() {
 
         <div>
           <p>닉네임</p>
-          <span>
+          <span onClick={() => navigate("/home/editProfile")}>
             <PenIcon />
             프로필 수정
           </span>

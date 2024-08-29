@@ -44,7 +44,7 @@ export default function Reviews() {
 }
 
 const ReviewsBody = styled.div`
-  height: calc(100% - 50px - 10px);
+  height: calc(100% - 60px);
   padding: 0 16px;
   overflow: scroll;
   ${scrollHidden};
