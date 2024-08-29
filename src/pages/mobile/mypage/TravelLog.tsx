@@ -56,7 +56,7 @@ export default function TravelLog() {
           <h1>여행을 선택해주세요.</h1>
           <p>내 여행</p>
           {/* 여행 일정이 있을 때 */}
-          {/* <ScheduleBox>
+          <ScheduleBox>
             <WriteTravelLogCard $isActive={true}>
               <span>제주</span>
               <div>
@@ -77,10 +77,10 @@ export default function TravelLog() {
                 <CheckOnlyIcon stroke="#e6e6e6" />
               </span>
             </WriteTravelLogCard>
-          </ScheduleBox> */}
+          </ScheduleBox>
 
           {/* 여행 일정이 없을 때*/}
-          <>
+          {/* <>
             <NoScheduleBox>
               <p>
                 <CalendarCheckIcon stroke="#b8b8b8" />
@@ -94,7 +94,7 @@ export default function TravelLog() {
                 <span>일정 생성</span>
               </AddScheduleButton>
             </NoScheduleAddBox>
-          </>
+          </> */}
         </WriteTravelogContainer>
       </BottomSheet>
     </>
