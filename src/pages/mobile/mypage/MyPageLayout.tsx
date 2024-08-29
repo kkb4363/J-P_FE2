@@ -130,4 +130,5 @@ const MypageOutletBox = styled.div`
   height: calc(100% - 60px - 140px - 35px);
   overflow: auto;
   ${scrollHidden};
+  padding: 16px;
 `;
