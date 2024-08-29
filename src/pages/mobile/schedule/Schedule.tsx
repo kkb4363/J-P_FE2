@@ -13,6 +13,7 @@ import ImageView from "../../../components/mobile/ImageView";
 import BellIcon from "../../../assets/icons/BellIcon";
 import CheckIcon from "../../../assets/icons/CheckIcon";
 import { useNavigate } from "react-router-dom";
+import CustomProfile from "../../../components/mobile/CustomProfile";
 
 export default function Schedule() {
   const navigate = useNavigate();
@@ -51,11 +52,12 @@ export default function Schedule() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -74,11 +76,12 @@ export default function Schedule() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -97,11 +100,12 @@ export default function Schedule() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 

@@ -8,6 +8,7 @@ import { SuggestionBox, SuggestTextCol } from "./Schedule";
 import ImageView from "../../../components/mobile/ImageView";
 import testImg from "../../../assets/images/testImg.png";
 import styled from "styled-components";
+import CustomProfile from "../../../components/mobile/CustomProfile";
 
 export default function TravelMore() {
   const navigate = useNavigate();
@@ -25,11 +26,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -48,11 +50,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -71,11 +74,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -94,11 +98,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -117,11 +122,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -140,11 +146,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -163,11 +170,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
@@ -186,11 +194,12 @@ export default function TravelMore() {
             />
 
             <SuggestTextCol>
-              <div>
-                <img src={testImg} alt="user" />
-                Minah
-                <span>| 1박 2일</span>
-              </div>
+              <CustomProfile
+                src={testImg}
+                nickname="Minah"
+                content="1박 2일"
+                fontSize="12px"
+              />
 
               <p>남해로 힐링 여행 떠나기</p>
 
