@@ -19,6 +19,7 @@ import Mapview from "./addPlace/Mapview";
 import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import TravelLogDetails from "./travel-review/TravelLogDetails";
+import Reviews from "./details/Reviews";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
     path: "nearby/:placeId",
     element: <NearPlace />,
   },
+
   {
     path: "Schedule",
     element: <ScheduleLayout />,
@@ -85,7 +87,10 @@ export const router = createBrowserRouter([
         path: "city/:placeId",
         element: <HomeDetails />,
       },
-
+      {
+        path: "reviews/:placeId",
+        element: <Reviews />,
+      },
       {
         path: "search",
         element: <Search />,
