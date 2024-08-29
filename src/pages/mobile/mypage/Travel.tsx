@@ -69,7 +69,7 @@ const TravelList = styled.div`
   gap: 12px;
 `;
 
-const TravelCard = styled.div`
+export const TravelCard = styled.div`
   min-height: 60px;
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
