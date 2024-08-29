@@ -20,6 +20,11 @@ import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import TravelLogDetails from "./travel-review/TravelLogDetails";
 import Reviews from "./details/Reviews";
+import MyPageLayout from "./mypage/MyPageLayout";
+import Travel from "./mypage/Travel";
+import TravelLog from "./mypage/TravelLog";
+import Review from "./mypage/Review";
+import Likes from "./mypage/Likes";
 
 export const router = createBrowserRouter([
   {
@@ -114,6 +119,28 @@ export const router = createBrowserRouter([
       {
         path: "travel-log/:travelLogId",
         element: <TravelLogDetails />,
+      },
+      {
+        path: "mypage",
+        element: <MyPageLayout />,
+        children: [
+          {
+            path: "",
+            element: <Travel />,
+          },
+          {
+            path: "travelLog",
+            element: <TravelLog />,
+          },
+          {
+            path: "review",
+            element: <Review />,
+          },
+          {
+            path: "likes",
+            element: <Likes />,
+          },
+        ],
       },
     ],
   },

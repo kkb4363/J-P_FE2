@@ -1,9 +1,16 @@
 interface Props {
   fill?: string;
   stroke?: string;
+  width?: string;
+  height?: string;
 }
 
-const HeartIcon = ({ fill = "none", stroke = "#B8B8B8" }: Props) => {
+const HeartIcon = ({
+  fill = "none",
+  stroke = "#B8B8B8",
+  width = "16",
+  height = "16",
+}: Props) => {
   return (
     <svg
       width="16"
