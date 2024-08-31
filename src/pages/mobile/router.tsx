@@ -26,6 +26,7 @@ import TravelLog from "./mypage/TravelLog";
 import Review from "./mypage/Review";
 import Likes from "./mypage/Likes";
 import EditProfile from "./mypage/EditProfile";
+import WriteReview from "./mypage/WriteReview";
 
 export const router = createBrowserRouter([
   {
@@ -148,5 +149,9 @@ export const router = createBrowserRouter([
         element: <EditProfile />,
       },
     ],
+  },
+  {
+    path: "writeReview",
+    element: <WriteReview />,
   },
 ]);
