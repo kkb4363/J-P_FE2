@@ -175,7 +175,7 @@ export default function ListView() {
   );
 }
 
-const PlaceCardCol = styled.ul`
+export const PlaceCardCol = styled.ul`
   height: calc(100% - 45px - 95px);
   padding: 8px 0;
   gap: 12px;
@@ -185,7 +185,7 @@ const PlaceCardCol = styled.ul`
   ${scrollHidden};
 `;
 
-const PlaceCard = styled.li`
+export const PlaceCard = styled.li`
   min-height: 100px;
   display: flex;
   justify-content: space-around;
@@ -201,7 +201,7 @@ const PlaceCard = styled.li`
   }
 `;
 
-const PlaceCardTextCol = styled.div`
+export const PlaceCardTextCol = styled.div`
   flex: 1;
   display: flex;
   height: 100%;
@@ -259,7 +259,7 @@ const CheckButton = styled(PlaceCardAddButton)`
   background-color: ${(props) => props.theme.color.secondary};
 `;
 
-const SaveButtonBox = styled.div`
+export const SaveButtonBox = styled.div`
   height: 95px;
   display: flex;
   justify-content: center;
