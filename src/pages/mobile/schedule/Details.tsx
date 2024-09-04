@@ -12,15 +12,56 @@ import UserIcon from "../../../assets/icons/UserIcon";
 import ClipIcon from "../../../assets/icons/ClipIcon";
 import CustomInput from "../../../components/mobile/CustomInput";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
+import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
+import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
+import { useJPStore } from "../../../store/JPType.store";
 
 type BottomSheetType = "AddPlace" | "Invite";
+
+function PrevArrow(props: any) {
+  const { onClick } = props;
+  return (
+    <ArrowBox className="left" onClick={onClick}>
+      <ArrowLeftIcon stroke="#6979F8" />
+    </ArrowBox>
+  );
+}
+
+function NextArrow(props: any) {
+  const { onClick } = props;
+  return (
+    <ArrowBox className="right" onClick={onClick}>
+      <ArrowRightIcon stroke="#6979F8" />
+    </ArrowBox>
+  );
+}
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
   const mapRef = useRef<HTMLDivElement>(null);
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
+  const [fillPlan, setFillPlan] = useState(false);
+  const { jpState } = useJPStore();
+
   const navigate = useNavigate();
+
+  const [currentDay, setCurrentDay] = useState(0);
+  const slickSettings = {
+    className: "center",
+    centerMode: true,
+    focusOnSelect: true,
+    infinite: false,
+    slidesToShow: 3,
+    swipeToSlide: true,
+    centerPadding: "0px",
+    speed: 500,
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
+    beforeChange: (current: number, next: number) => setCurrentDay(next),
+  };
 
   const handleInviteClose = () => {
     setSheetOpen("AddPlace");
@@ -94,7 +135,72 @@ export default function Details() {
 
       {sheetOpen === "AddPlace" && (
         <BottomSheet minH={6} maxH={0.75}>
-          <div onClick={() => navigate("/addPlace")}>+ 장소 추가</div>
+          <DetailsContainer>
+            <DetailsEditButton>
+              <PenIcon stroke="#808080" />
+              편집
+            </DetailsEditButton>
+            <DaySelector>
+              <StyledSlider {...slickSettings}>
+                <DayBox select={currentDay === 0}>Day 1</DayBox>
+                <DayBox select={currentDay === 1}>Day 2</DayBox>
+                <DayBox select={currentDay === 2}>Day 3</DayBox>
+                <DayBox select={currentDay === 3}>Day 4</DayBox>
+                <DayBox select={currentDay === 4}>Day 5</DayBox>
+                <DayBox select={currentDay === 5}>Day 6</DayBox>
+              </StyledSlider>
+            </DaySelector>
+            <PlanCol>
+              <Plan>
+                <TimeBox>10:10</TimeBox>
+                <PlaceBox>
+                  <PlaceIdx>1</PlaceIdx>
+                  <PlaceTitleCol>
+                    <p>금산 보리암</p>
+                    <span>명소</span>
+                  </PlaceTitleCol>
+                </PlaceBox>
+                {jpState === "J" && (
+                  <PlaceDetailsButton fill={true}>
+                    <FileCheckIcon />
+                  </PlaceDetailsButton>
+                )}
+              </Plan>
+              <Plan>
+                <TimeBox>12:00</TimeBox>
+                <PlaceBox>
+                  <PlaceIdx>2</PlaceIdx>
+                  <PlaceTitleCol>
+                    <p>물건항</p>
+                    <span>명소</span>
+                  </PlaceTitleCol>
+                </PlaceBox>
+                {jpState === "J" && (
+                  <PlaceDetailsButton>
+                    <FileCheckIcon stroke={fillPlan ? "#6979F8" : "#B8B8B8"} />
+                  </PlaceDetailsButton>
+                )}
+              </Plan>
+              <Plan>
+                <TimeBox>14:00</TimeBox>
+                <PlaceBox>
+                  <PlaceIdx>3</PlaceIdx>
+                  <PlaceTitleCol>
+                    <p>남해 보물섬전망대</p>
+                    <span>명소</span>
+                  </PlaceTitleCol>
+                </PlaceBox>
+                {jpState === "J" && (
+                  <PlaceDetailsButton fill={true}>
+                    <FileCheckIcon />
+                  </PlaceDetailsButton>
+                )}
+              </Plan>
+            </PlanCol>
+          </DetailsContainer>
+          <AddPlaceButton onClick={() => navigate("/addPlace")}>
+            + 장소 추가
+          </AddPlaceButton>
         </BottomSheet>
       )}
 
@@ -277,4 +383,126 @@ const FindedUser = styled.div`
     color: ${(props) => props.theme.color.gray300};
     font-size: 12px;
   }
+`;
+
+const DetailsContainer = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 15px;
+`;
+const DetailsEditButton = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  gap: 3px;
+  color: ${(props) => props.theme.color.gray500};
+`;
+
+const DaySelector = styled.div``;
+
+const StyledSlider = styled(Slider)`
+  text-align: center;
+  display: flex;
+`;
+
+const ArrowBox = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+const DayBox = styled.div<{ select: boolean }>`
+  width: 80px !important;
+  padding: 8px 22px;
+  white-space: nowrap;
+  background-color: ${(props) =>
+    props.select ? props.theme.color.secondary : props.theme.color.white};
+  color: ${(props) =>
+    props.select ? props.theme.color.white : props.theme.color.secondary};
+  border: 1px solid ${(props) => props.theme.color.secondary};
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+const PlanCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 13px;
+  gap: 24px;
+  overflow-y: auto;
+`;
+
+const Plan = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+`;
+
+const TimeBox = styled.div`
+  padding: 8px;
+  border-radius: 12px;
+  background-color: ${(props) => props.theme.color.secondaryLight};
+  font-size: 14px;
+`;
+
+const PlaceBox = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid ${(props) => props.theme.color.gray200};
+  border-radius: 16px;
+  gap: 16px;
+`;
+
+const PlaceIdx = styled.div`
+  padding: 5px 8px;
+  border-radius: 50px;
+  background-color: ${(props) => props.theme.color.pointCoral};
+  color: ${(props) => props.theme.color.white};
+  font-size: 12px;
+  font-weight: 700;
+`;
+
+const PlaceTitleCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-weight: 700;
+
+  & > span {
+    color: ${(props) => props.theme.color.gray400};
+    font-size: 12px;
+    font-weight: normal;
+  }
+`;
+
+const PlaceDetailsButton = styled.div<{ fill?: boolean }>`
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid
+    ${(props) =>
+      props.fill ? props.theme.color.secondary : props.theme.color.gray300};
+`;
+
+const AddPlaceButton = styled.div`
+  align-self: flex-end;
+  text-align: center;
+  padding: 13px 17px;
+  background-color: ${(props) => props.theme.color.secondary};
+  color: ${(props) => props.theme.color.white};
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0px 6px 8px 0px rgba(0, 0, 0, 0.08),
+    0px 4px 10px 0px rgba(0, 0, 0, 0.08);
 `;
