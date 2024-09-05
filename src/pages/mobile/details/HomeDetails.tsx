@@ -1,6 +1,5 @@
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import Carousel from "react-material-ui-carousel";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
 import { useEffect, useRef, useState } from "react";
@@ -22,6 +21,8 @@ import { testImg2 } from "../../../utils/staticDatas";
 import EditIcon from "../../../assets/icons/EditIcon";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
+import styled from "styled-components";
+import Slider from "react-slick";
 
 interface Props {
   photoUrl: string;
@@ -39,6 +40,7 @@ export default function HomeDetails() {
   const [loading, setLoading] = useState(true);
   const [addScheduleState, setAddScheduleState] = useState(false);
   const isCityDetailPage = location.pathname.includes("city");
+  const [imgLoading, setImgLoading] = useState(true);
 
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
@@ -70,6 +72,9 @@ export default function HomeDetails() {
         console.error("API Error:", error);
       } finally {
         setLoading(false);
+        setTimeout(() => {
+          setImgLoading(false);
+        }, 500);
       }
     };
 
@@ -139,42 +144,51 @@ export default function HomeDetails() {
     }
   }, [details]);
 
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const settings = {
+    arrows: false,
+    dots: false,
+    infinite: false,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+    beforeChange: (current: number, next: number) => setCurrentIndex(next),
+  };
+
   return (
     <>
       <S.HomeDetailsContainer>
-        <Carousel
-          cycleNavigation={true}
-          navButtonsAlwaysInvisible={true}
-          indicators={false}
-          autoPlay={false}
-          swipe={true}
-          animation="fade"
-        >
-          {details?.photoUrls?.map((img, idx) => (
-            <S.DetailsImageBox key={idx}>
-              <img src={img} alt={img} loading="lazy" />
+        {imgLoading ? (
+          <CustomSkeleton height="250px" />
+        ) : (
+          <S.DetailsImageBox>
+            <StyledSlider {...settings}>
+              {details?.photoUrls?.map((img, idx) => (
+                <img src={img} alt={img} key={idx} />
+              ))}
+            </StyledSlider>
 
-              <S.ArrowLeftBox
-                onClick={() => {
-                  navigate(-1);
-                  clear();
-                }}
-              >
-                <ArrowLeftIcon stroke="#fff" />
-              </S.ArrowLeftBox>
+            <S.ArrowLeftBox
+              onClick={() => {
+                navigate(-1);
+                clear();
+              }}
+            >
+              <ArrowLeftIcon stroke="#fff" />
+            </S.ArrowLeftBox>
 
-              <S.LikeBox>
-                <HeartIcon />
-              </S.LikeBox>
+            <S.LikeBox>
+              <HeartIcon />
+            </S.LikeBox>
 
-              <S.ImagePageIndicatorBox>
-                <span>
-                  {idx + 1} / {details?.photoUrls.length}
-                </span>
-              </S.ImagePageIndicatorBox>
-            </S.DetailsImageBox>
-          ))}
-        </Carousel>
+            <S.ImagePageIndicatorBox>
+              <span>
+                {currentIndex + 1} / {details?.photoUrls.length}
+              </span>
+            </S.ImagePageIndicatorBox>
+          </S.DetailsImageBox>
+        )}
 
         <S.DetailsBody>
           <S.DetailsTitle>
@@ -336,3 +350,28 @@ function NearPlaceCard({
     </S.NearPlaceBox>
   );
 }
+
+const StyledSlider = styled(Slider)`
+  .slick-list {
+    height: 250px !important;
+    object-fit: contain;
+    display: flex;
+  }
+  .slick-track {
+    display: flex;
+    align-items: center;
+  }
+  .slick-prev {
+    left: 6px;
+    z-index: 999;
+  }
+  .slick-next {
+    right: 6px;
+    z-index: 999;
+  }
+  .slick-slide {
+    & > div > img {
+      height: 250px !important;
+    }
+  }
+`;
