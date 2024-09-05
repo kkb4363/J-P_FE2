@@ -35,13 +35,15 @@ export default function ListView() {
     setList(newList);
   };
 
-  const { isOpen, openModal, closeModal, modalRef } = useModal();
+  const { isOpen, openModal, closeModal, modalRef } = useModal({
+    handleCloseCallback: () => {},
+  });
   const {
     isOpen: isTimerModalOpen,
     openModal: openTimerModal,
     closeModal: closeTimerModal,
     modalRef: timerModalRef,
-  } = useModal();
+  } = useModal({ handleCloseCallback: () => {} });
 
   return (
     <>
@@ -241,7 +243,7 @@ const PlaceCardAddButtonBox = styled.div`
   align-items: center;
 `;
 
-const PlaceCardAddButton = styled.button`
+export const PlaceCardAddButton = styled.button`
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.color.secondary};
   display: flex;

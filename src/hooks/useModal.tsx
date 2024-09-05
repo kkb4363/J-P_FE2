@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useModal = () => {
+interface Props {
+  handleCloseCallback: () => void;
+}
+
+export const useModal = ({ handleCloseCallback }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -10,6 +14,7 @@ export const useModal = () => {
   const handleClickOutside = (e: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
       closeModal();
+      handleCloseCallback();
     }
   };
 

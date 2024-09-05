@@ -44,7 +44,12 @@ export default function Mapview() {
     loadGoogleMapsScript();
   }, []);
 
-  const { isOpen, openModal: test, closeModal, modalRef } = useModal();
+  const {
+    isOpen,
+    openModal: test,
+    closeModal,
+    modalRef,
+  } = useModal({ handleCloseCallback: () => {} });
 
   return (
     <>

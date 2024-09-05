@@ -12,13 +12,7 @@ export const HomeDetailsContainer = styled.div`
 
 export const DetailsImageBox = styled.div`
   width: 100%;
-  min-height: 250px;
   position: relative;
-
-  & > img {
-    width: 100%;
-    height: 250px;
-  }
 `;
 
 export const ArrowLeftBox = styled.div`
