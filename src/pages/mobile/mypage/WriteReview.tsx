@@ -10,9 +10,12 @@ import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
 import useImageUploadHook from "../../../hooks/useImageUpload";
 import testImg from "../../../assets/images/testImg2.png";
 import XIcon from "../../../assets/icons/XIcon";
+import { useModal } from "../../../hooks/useModal";
+import NobuttonModal from "../../../components/mobile/NobuttonModal";
 
 export default function WriteReview() {
   const writeReviewStore = useWriteReviewStore();
+
   const {
     imageRef,
     images,
@@ -20,6 +23,11 @@ export default function WriteReview() {
     handleButtonClick,
     handleImageDelete,
   } = useImageUploadHook();
+
+  const { isOpen, openModal, closeModal, modalRef } = useModal({
+    handleCloseCallback: () => handleClose(),
+  });
+
   const navigate = useNavigate();
 
   const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +43,7 @@ export default function WriteReview() {
   const handleSubmit = () => {
     console.log(writeReviewStore.getTitle());
     console.log(writeReviewStore.getReviewText());
+    openModal();
   };
 
   const handlePrev = () => {
@@ -42,9 +51,15 @@ export default function WriteReview() {
     writeReviewStore.clear();
   };
 
+  const handleClose = () => {
+    handlePrev();
+    closeModal();
+  };
+
   return (
     <>
       <CustomHeader handleClick={handlePrev} title="리뷰 작성">
+        {/* TODO: 완료 시에 검증이 필요하면 추가하기*/}
         <HeaderText onClick={handleSubmit}>완료</HeaderText>
       </CustomHeader>
 
@@ -141,6 +156,15 @@ export default function WriteReview() {
           </ImgRow>
         </ImgAddBox>
       </WriteReviewBody>
+
+      {isOpen && (
+        <NobuttonModal onClose={handleClose} modalRef={modalRef}>
+          <ModalContainer>
+            <ModalTitle>리뷰 등록이 완료되었습니다!</ModalTitle>
+            <ModalText>다른 여행객들에게도 도움이 될 거에요.</ModalText>
+          </ModalContainer>
+        </NobuttonModal>
+      )}
     </>
   );
 }
@@ -363,4 +387,24 @@ const ShowImgBox = styled.div`
     align-items: center;
     background-color: ${(props) => props.theme.color.white};
   }
+`;
+
+const ModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+`;
+
+const ModalTitle = styled.p`
+  color: ${(props) => props.theme.color.gray900};
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+const ModalText = styled.span`
+  color: ${(props) => props.theme.color.gray500};
+  font-size: 14px;
 `;

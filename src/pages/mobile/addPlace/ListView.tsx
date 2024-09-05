@@ -35,13 +35,15 @@ export default function ListView() {
     setList(newList);
   };
 
-  const { isOpen, openModal, closeModal, modalRef } = useModal();
+  const { isOpen, openModal, closeModal, modalRef } = useModal({
+    handleCloseCallback: () => {},
+  });
   const {
     isOpen: isTimerModalOpen,
     openModal: openTimerModal,
     closeModal: closeTimerModal,
     modalRef: timerModalRef,
-  } = useModal();
+  } = useModal({ handleCloseCallback: () => {} });
 
   return (
     <>

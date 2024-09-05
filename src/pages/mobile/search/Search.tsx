@@ -31,7 +31,7 @@ export default function Search() {
     openModal: openDeleteModal,
     closeModal: closeDeleteModal,
     modalRef: deleteModalRef,
-  } = useModal();
+  } = useModal({ handleCloseCallback: () => {} });
 
   // 최근 검색어 불러오기
   useEffect(() => {
