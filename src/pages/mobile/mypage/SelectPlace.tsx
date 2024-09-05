@@ -3,6 +3,7 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import CustomInput from "../../../components/mobile/CustomInput";
 import {
   PlaceCard,
+  PlaceCardAddButton,
   PlaceCardCol,
   PlaceCardTextCol,
   SaveButtonBox,
@@ -10,8 +11,19 @@ import {
 import testImg from "../../../assets/images/testImg1.png";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { scrollHidden } from "../../../assets/styles/home.style";
+import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
+import { useNavigate } from "react-router-dom";
 
 export default function SelectPlace() {
+  const { setSelectedPlace } = useWriteReviewStore();
+  const navigate = useNavigate();
+
+  const test = () => {
+    setSelectedPlace("순천만 국가정원");
+    navigate(-1);
+  };
+
   return (
     <>
       <CustomHeader title="장소 등록" />
@@ -30,6 +42,12 @@ export default function SelectPlace() {
                 <span>4.9</span>
               </div>
             </PlaceCardTextCol>
+
+            <PlaceAddButtonBox>
+              <PlaceAddButton>
+                <CheckOnlyIcon stroke="#b8b8b8" />
+              </PlaceAddButton>
+            </PlaceAddButtonBox>
           </PlaceCard>
           <PlaceCard>
             <img src={testImg} alt="장소 등록" />
@@ -42,11 +60,17 @@ export default function SelectPlace() {
                 <span>4.9</span>
               </div>
             </PlaceCardTextCol>
+
+            <PlaceAddButtonBox>
+              <PlaceAddButton>
+                <CheckOnlyIcon stroke="#b8b8b8" />
+              </PlaceAddButton>
+            </PlaceAddButtonBox>
           </PlaceCard>
         </PlaceCardCol>
 
         <SelectPlaceSaveButtonBox>
-          <button>
+          <button onClick={test}>
             <span>완료</span>
           </button>
         </SelectPlaceSaveButtonBox>
@@ -64,4 +88,16 @@ const SelectPlaceBody = styled.div`
 
 const SelectPlaceSaveButtonBox = styled(SaveButtonBox)`
   border: none;
+`;
+
+const PlaceAddButtonBox = styled.div`
+  height: 100%;
+  margin-right: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PlaceAddButton = styled(PlaceCardAddButton)`
+  border: 1px solid ${(props) => props.theme.color.gray300};
 `;

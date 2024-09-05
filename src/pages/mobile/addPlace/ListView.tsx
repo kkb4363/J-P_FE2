@@ -241,7 +241,7 @@ const PlaceCardAddButtonBox = styled.div`
   align-items: center;
 `;
 
-const PlaceCardAddButton = styled.button`
+export const PlaceCardAddButton = styled.button`
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.color.secondary};
   display: flex;

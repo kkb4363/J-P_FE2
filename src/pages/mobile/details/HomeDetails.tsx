@@ -51,12 +51,13 @@ export default function HomeDetails() {
       try {
         const [detailsRes, reviewsRes] = await Promise.all([
           axiosInstance.get(`/place/details/${param?.placeId}`),
-          // axiosInstance.get(
-          //   `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
-          // ),
           axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
+            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
           ),
+          // 리뷰 있는 api
+          // axiosInstance.get(
+          //   `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
+          // ),
         ]);
 
         if (detailsRes.status === 200) {
@@ -246,7 +247,9 @@ export default function HomeDetails() {
             리뷰
             <S.MoreTextAbsolute>
               {reviews.length === 0 ? (
-                <EditIcon />
+                <div onClick={() => navigate("/writeReview")}>
+                  <EditIcon />
+                </div>
               ) : (
                 <span
                   onClick={() => navigate(`/home/reviews/${param?.placeId}`)}

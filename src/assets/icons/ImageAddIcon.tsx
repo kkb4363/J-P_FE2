@@ -3,7 +3,7 @@ interface Props {
   stroke?: string;
 }
 
-const ArrowLeftIcon = ({ fill = "none", stroke = "#1a1a1a" }: Props) => {
+const ImageAddIcon = ({ fill = "none", stroke = "#b8b8b8" }: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,4 +23,4 @@ const ArrowLeftIcon = ({ fill = "none", stroke = "#1a1a1a" }: Props) => {
   );
 };
 
-export default ArrowLeftIcon;
+export default ImageAddIcon;

@@ -3,58 +3,150 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import ActionButton from "../../../components/mobile/ActionButton";
 import StarIcon from "../../../assets/icons/StarIcon";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
+import PlusIcon from "../../../assets/icons/PlusIcon";
+import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
+import useImageUploadHook from "../../../hooks/useImageUpload";
+import testImg from "../../../assets/images/testImg2.png";
+import XIcon from "../../../assets/icons/XIcon";
 
 export default function WriteReview() {
-  const [star, setStar] = useState(0);
+  const writeReviewStore = useWriteReviewStore();
+  const {
+    imageRef,
+    images,
+    handleImageChange,
+    handleButtonClick,
+    handleImageDelete,
+  } = useImageUploadHook();
+  const navigate = useNavigate();
+
+  const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    writeReviewStore.setTitle(event.target.value);
+  };
+
+  const handleReviewText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    event.preventDefault();
+    writeReviewStore.setReviewText(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    console.log(writeReviewStore.getTitle());
+    console.log(writeReviewStore.getReviewText());
+  };
+
+  const handlePrev = () => {
+    navigate(-1);
+    writeReviewStore.clear();
+  };
 
   return (
     <>
-      <CustomHeader title="리뷰 작성">
-        <HeaderText>완료</HeaderText>
+      <CustomHeader handleClick={handlePrev} title="리뷰 작성">
+        <HeaderText onClick={handleSubmit}>완료</HeaderText>
       </CustomHeader>
 
       <WriteReviewBody>
         <MarkerBox>
-          <Marker>
-            <MarkIcon width="20" height="20" />
+          <Marker $isActive={!!writeReviewStore.getSelectedPlace()}>
+            <MarkIcon width="20" height="20" stroke="#6979f8" />
           </Marker>
         </MarkerBox>
 
-        <ActionButtonBox>
-          <ActionButton add={true}>+ 장소 등록</ActionButton>
-        </ActionButtonBox>
+        {!!writeReviewStore.getSelectedPlace() ? (
+          <SelectedPlaceText>
+            <MarkIcon width="18" height="18" stroke="#6979f8" />
+            {writeReviewStore.getSelectedPlace()}
+          </SelectedPlaceText>
+        ) : (
+          <ActionButtonBox>
+            <div onClick={() => navigate("/selectPlace")}>
+              <ActionButton add={true}>+ 장소 등록</ActionButton>
+            </div>
+          </ActionButtonBox>
+        )}
 
         <InfoText>방문한 여행지는 어떠셨나요?</InfoText>
 
         <StarRow>
           {Array.from({ length: 5 }).map((_, idx) => (
-            <div key={idx} onClick={() => setStar(idx + 1)}>
+            <div key={idx} onClick={() => writeReviewStore.setStar(idx + 1)}>
               <StarIcon
                 width="32"
                 height="32"
-                fill={idx < star ? "#ffd990" : "#e6e6e6"}
-                stroke={idx < star ? "#ffd990" : "#e6e6e6"}
+                fill={idx < writeReviewStore.getStar() ? "#ffd990" : "#e6e6e6"}
+                stroke={
+                  idx < writeReviewStore.getStar() ? "#ffd990" : "#e6e6e6"
+                }
               />
             </div>
           ))}
         </StarRow>
 
         <TitleInputBox>
-          <input placeholder="제목을 작성해주세요" />
+          <input
+            placeholder="제목을 작성해주세요"
+            value={writeReviewStore.getTitle()}
+            onChange={handleTitle}
+          />
         </TitleInputBox>
 
         <TextAreaBox>
-          <textarea placeholder="여행지의 리뷰를 남겨주세요!" />
+          <textarea
+            placeholder="여행지의 리뷰를 남겨주세요!"
+            value={writeReviewStore.getReviewText()}
+            onChange={handleReviewText}
+          />
           <span>최소 50자</span>
         </TextAreaBox>
+
+        <ImgAddBox>
+          <ImgAddButton onClick={handleButtonClick}>
+            <PlusIcon stroke="#b8b8b8" />
+            <input
+              hidden
+              ref={imageRef}
+              multiple
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </ImgAddButton>
+
+          <ImgRow>
+            <ImgInfoText>(최대 10장)</ImgInfoText>
+
+            {images?.length !== 0 ? (
+              <>
+                {images?.map((image: File) => (
+                  <ShowImgBox key={image.lastModified}>
+                    <img src={testImg} alt="선택된 이미지" />
+                    <div onClick={() => handleImageDelete(image.lastModified)}>
+                      <XIcon stroke="#e6e6e6" />
+                    </div>
+                  </ShowImgBox>
+                ))}
+              </>
+            ) : (
+              <ImgBox>
+                <div>
+                  <ImageAddIcon />
+                </div>
+
+                <span>이미지 첨부</span>
+              </ImgBox>
+            )}
+          </ImgRow>
+        </ImgAddBox>
       </WriteReviewBody>
     </>
   );
 }
 
 const HeaderText = styled.span`
-  color: ${(props) => props.theme.color.gray500};
+  color: ${(props) => props.theme.color.secondary};
   font-size: 14px;
   font-weight: 700;
 `;
@@ -63,6 +155,19 @@ const WriteReviewBody = styled.div`
   height: calc(100dvh - 50px - 20px);
   box-sizing: border-box;
   padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const SelectedPlaceText = styled.p`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: ${(props) => props.theme.color.secondary};
+  margin: 24px 0;
+  gap: 2px;
 `;
 
 const MarkerBox = styled.div`
@@ -72,7 +177,7 @@ const MarkerBox = styled.div`
   align-items: center;
 `;
 
-const Marker = styled.div`
+const Marker = styled.div<{ $isActive: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +185,10 @@ const Marker = styled.div`
 
   border-radius: 50px;
   border: 1px solid ${(props) => props.theme.color.gray100};
-  background-color: ${(props) => props.theme.color.gray100};
+  background-color: ${(props) =>
+    props.$isActive
+      ? props.theme.color.secondaryLight
+      : props.theme.color.gray100};
 `;
 
 const ActionButtonBox = styled.div`
@@ -130,7 +238,7 @@ const TitleInputBox = styled.div`
       font-weight: 400;
     }
 
-    &:hover {
+    &:focus {
       outline: none;
     }
   }
@@ -159,7 +267,7 @@ const TextAreaBox = styled.div`
       font-weight: 400;
     }
 
-    &:hover {
+    &:focus {
       outline: none;
     }
   }
@@ -175,4 +283,84 @@ const TextAreaBox = styled.div`
   }
 `;
 
-const ImgAddBox = styled.div``;
+const ImgAddBox = styled.div`
+  display: flex;
+  align-items: center;
+
+  position: relative;
+  overflow-y: hidden;
+  height: 160px;
+`;
+
+const ImgAddButton = styled.button`
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 8px;
+  background-color: ${(props) => props.theme.color.gray100};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 16px 0 8px;
+`;
+
+const ImgRow = styled.div`
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const ImgBox = styled.div`
+  width: 125px;
+  display: flex;
+  padding: 45px 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border-radius: 16px;
+  border: 1px solid ${(props) => props.theme.color.gray200};
+  background-color: ${(props) => props.theme.color.gray100};
+
+  & > span {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 12px;
+    white-space: nowrap;
+  }
+`;
+
+const ImgInfoText = styled.span`
+  bottom: 0px;
+  position: absolute;
+
+  color: ${(props) => props.theme.color.gray300};
+  font-size: 12px;
+`;
+
+const ShowImgBox = styled.div`
+  height: 115px;
+  width: 125px;
+  border-radius: 16px;
+  position: relative;
+
+  & > img {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+  }
+
+  & > div {
+    position: absolute;
+    top: -10px;
+    right: -15px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: ${(props) => props.theme.color.white};
+  }
+`;
