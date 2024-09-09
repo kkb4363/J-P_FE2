@@ -143,6 +143,8 @@ export const PlansEditButton = styled.div`
   align-self: flex-end;
   gap: 3px;
   color: ${(props) => props.theme.color.gray500};
+  font-size: 14px;
+  height: 16px;
 `;
 
 export const DaySelector = styled.div``;
