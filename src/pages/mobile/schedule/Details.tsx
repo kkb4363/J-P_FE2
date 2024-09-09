@@ -124,7 +124,9 @@ export default function Details() {
   };
 
   const handleTransportClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTransport(e.currentTarget.innerText);
+    if (isDetailsEdit) {
+      setTransport(e.currentTarget.innerText);
+    }
   };
   console.log(isDetailsMode);
 
@@ -212,12 +214,15 @@ export default function Details() {
               </D.PlanDetailsHeader>
               <D.PlanDetailsBody>
                 <D.DetailsInput>
-                  <textarea placeholder="여행 상세 일정" />
+                  <textarea
+                    placeholder="여행 상세 일정"
+                    readOnly={!isDetailsEdit}
+                  />
                 </D.DetailsInput>
                 <div>
                   <p>비용</p>
                   <D.CostInput>
-                    <input placeholder="금액 입력" />
+                    <input placeholder="금액 입력" readOnly={!isDetailsEdit} />
                   </D.CostInput>
                 </div>
                 <div>
