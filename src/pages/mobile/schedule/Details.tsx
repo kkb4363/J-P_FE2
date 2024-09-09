@@ -1,7 +1,5 @@
-import styled from "styled-components";
-import { InfoRow, InfoText } from "../../../assets/styles/home.style";
+import { InfoRow } from "../../../assets/styles/home.style";
 import PenIcon from "../../../assets/icons/PenIcon";
-import { SubInfo } from "./Calendar";
 import ScheduleIcon from "../../../assets/icons/ScheduleIcon";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import testImg from "../../../assets/images/testImg.png";
@@ -12,29 +10,32 @@ import UserIcon from "../../../assets/icons/UserIcon";
 import ClipIcon from "../../../assets/icons/ClipIcon";
 import CustomInput from "../../../components/mobile/CustomInput";
 import { useNavigate } from "react-router-dom";
-import Slider from "react-slick";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
-import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import { useJPStore } from "../../../store/JPType.store";
+import { planItemProps } from "../../../types/schedule";
+import { testPlanItems } from "../../../utils/staticDatas";
+import { arrayMoveImmutable } from "array-move";
+import { PlanList } from "../../../components/mobile/scheduleSort/PlanList";
+import * as D from "../../../assets/styles/scheduleDetail.style";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
 function PrevArrow(props: any) {
   const { onClick } = props;
   return (
-    <ArrowBox className="left" onClick={onClick}>
+    <D.ArrowBox className="left" onClick={onClick}>
       <ArrowLeftIcon stroke="#6979F8" />
-    </ArrowBox>
+    </D.ArrowBox>
   );
 }
 
 function NextArrow(props: any) {
   const { onClick } = props;
   return (
-    <ArrowBox className="right" onClick={onClick}>
+    <D.ArrowBox className="right" onClick={onClick}>
       <ArrowRightIcon stroke="#6979F8" />
-    </ArrowBox>
+    </D.ArrowBox>
   );
 }
 
@@ -44,10 +45,15 @@ export default function Details() {
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
   const [fillPlan, setFillPlan] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
+  const [isDetailsMode, setIsDetailsMode] = useState(false);
+  const [isDetailsEdit, setIsDetailsEdit] = useState(false);
+  const [transport, setTransport] = useState("");
   const { jpState } = useJPStore();
-
   const navigate = useNavigate();
 
+  // Day 설정
   const [currentDay, setCurrentDay] = useState(0);
   const slickSettings = {
     className: "center",
@@ -105,102 +111,147 @@ export default function Details() {
 
     loadGoogleMapsScript();
   }, []);
+
+  // 드래그 이벤트
+  const handleSortEnd = ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
+    setPlanItems(arrayMoveImmutable(planItems, oldIndex, newIndex));
+  };
+
+  const handleTransportClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    setTransport(e.currentTarget.innerText);
+  };
+  console.log(isDetailsMode);
+
   return (
     <>
       <InfoRow>
-        <DetailsInfoText>
+        <D.DetailsInfoText>
           남해 여행
           <div>
             <PenIcon />
           </div>
-        </DetailsInfoText>
+        </D.DetailsInfoText>
       </InfoRow>
 
-      <DetailsSubInfo>
+      <D.DetailsSubInfo>
         <ScheduleIcon stroke="#4d4d4d" />
         4.17 ~ 4.19(2박 3일)
-      </DetailsSubInfo>
+      </D.DetailsSubInfo>
 
-      <InviteRow>
+      <D.InviteRow>
         <InviteIcon handleClick={() => setSheetOpen("Invite")} />
 
-        <ParticipantsRow>
+        <D.ParticipantsRow>
           <img src={testImg} alt="참가자" />
           <img src={testImg} alt="참가자" />
           <img src={testImg} alt="참가자" />
-        </ParticipantsRow>
-      </InviteRow>
+        </D.ParticipantsRow>
+      </D.InviteRow>
 
-      <MapBox $bottomSheetHeight={getBottomSheetHeight()} ref={mapRef} />
+      <D.MapBox $bottomSheetHeight={getBottomSheetHeight()} ref={mapRef} />
 
       {sheetOpen === "AddPlace" && (
         <BottomSheet minH={6} maxH={0.75}>
-          <DetailsContainer>
-            <DetailsEditButton>
-              <PenIcon stroke="#808080" />
-              편집
-            </DetailsEditButton>
-            <DaySelector>
-              <StyledSlider {...slickSettings}>
-                <DayBox select={currentDay === 0}>Day 1</DayBox>
-                <DayBox select={currentDay === 1}>Day 2</DayBox>
-                <DayBox select={currentDay === 2}>Day 3</DayBox>
-                <DayBox select={currentDay === 3}>Day 4</DayBox>
-                <DayBox select={currentDay === 4}>Day 5</DayBox>
-                <DayBox select={currentDay === 5}>Day 6</DayBox>
-              </StyledSlider>
-            </DaySelector>
-            <PlanCol>
-              <Plan>
-                <TimeBox>10:10</TimeBox>
-                <PlaceBox>
-                  <PlaceIdx>1</PlaceIdx>
-                  <PlaceTitleCol>
-                    <p>금산 보리암</p>
-                    <span>명소</span>
-                  </PlaceTitleCol>
-                </PlaceBox>
-                {jpState === "J" && (
-                  <PlaceDetailsButton fill={true}>
-                    <FileCheckIcon />
-                  </PlaceDetailsButton>
+          {!isDetailsMode && (
+            <>
+              <D.PlansContainer>
+                <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
+                  <PenIcon stroke="#808080" />
+                  편집
+                </D.PlansEditButton>
+                <D.DaySelector>
+                  <D.StyledSlider {...slickSettings}>
+                    <D.DayBox $select={currentDay === 0}>Day 1</D.DayBox>
+                    <D.DayBox $select={currentDay === 1}>Day 2</D.DayBox>
+                    <D.DayBox $select={currentDay === 2}>Day 3</D.DayBox>
+                    <D.DayBox $select={currentDay === 3}>Day 4</D.DayBox>
+                  </D.StyledSlider>
+                </D.DaySelector>
+                <PlanList
+                  planItems={planItems}
+                  onSortEnd={handleSortEnd}
+                  helperClass="dragging-helper-class"
+                  isEdit={isEdit}
+                  jpState={jpState}
+                  setIsDetailsMode={() => setIsDetailsMode((prev) => !prev)}
+                  useWindowAsScrollContainer
+                  useDragHandle
+                />
+              </D.PlansContainer>
+              <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
+                + 장소 추가
+              </D.AddPlaceButton>
+            </>
+          )}
+
+          {isDetailsMode && (
+            <D.PlanDetailsContainer>
+              <D.PlansEditButton
+                onClick={() => setIsDetailsEdit((prev) => !prev)}
+              >
+                {!isDetailsEdit && (
+                  <>
+                    <PenIcon stroke="#808080" />
+                    편집
+                  </>
                 )}
-              </Plan>
-              <Plan>
-                <TimeBox>12:00</TimeBox>
-                <PlaceBox>
-                  <PlaceIdx>2</PlaceIdx>
-                  <PlaceTitleCol>
-                    <p>물건항</p>
-                    <span>명소</span>
-                  </PlaceTitleCol>
-                </PlaceBox>
-                {jpState === "J" && (
-                  <PlaceDetailsButton>
-                    <FileCheckIcon stroke={fillPlan ? "#6979F8" : "#B8B8B8"} />
-                  </PlaceDetailsButton>
-                )}
-              </Plan>
-              <Plan>
-                <TimeBox>14:00</TimeBox>
-                <PlaceBox>
-                  <PlaceIdx>3</PlaceIdx>
-                  <PlaceTitleCol>
-                    <p>남해 보물섬전망대</p>
-                    <span>명소</span>
-                  </PlaceTitleCol>
-                </PlaceBox>
-                {jpState === "J" && (
-                  <PlaceDetailsButton fill={true}>
-                    <FileCheckIcon />
-                  </PlaceDetailsButton>
-                )}
-              </Plan>
-            </PlanCol>
-          </DetailsContainer>
-          <AddPlaceButton onClick={() => navigate("/addPlace")}>
-            + 장소 추가
-          </AddPlaceButton>
+                {isDetailsEdit && <p>완료</p>}
+              </D.PlansEditButton>
+              <D.PlanDetailsHeader>
+                <div onClick={() => setIsDetailsMode(false)}>
+                  <ArrowLeftIcon />
+                </div>
+                <p>플랜 추가</p>
+                <D.EmptyBox />
+              </D.PlanDetailsHeader>
+              <D.PlanDetailsBody>
+                <D.DetailsInput>
+                  <textarea placeholder="여행 상세 일정" />
+                </D.DetailsInput>
+                <div>
+                  <p>비용</p>
+                  <D.CostInput>
+                    <input placeholder="금액 입력" />
+                  </D.CostInput>
+                </div>
+                <div>
+                  <p>이동 수단 선택</p>
+                  <D.TransportBox>
+                    <D.TransPortItem
+                      $select={transport === "자동차"}
+                      onClick={handleTransportClick}
+                    >
+                      자동차
+                    </D.TransPortItem>
+                    <D.TransPortItem
+                      $select={transport === "버스/지하철"}
+                      onClick={handleTransportClick}
+                    >
+                      버스/지하철
+                    </D.TransPortItem>
+                    <D.TransPortItem
+                      $select={transport === "기차"}
+                      onClick={handleTransportClick}
+                    >
+                      기차
+                    </D.TransPortItem>
+                    <D.TransPortItem
+                      $select={transport === "택시"}
+                      onClick={handleTransportClick}
+                    >
+                      택시
+                    </D.TransPortItem>
+                  </D.TransportBox>
+                </div>
+              </D.PlanDetailsBody>
+            </D.PlanDetailsContainer>
+          )}
         </BottomSheet>
       )}
 
@@ -213,23 +264,23 @@ export default function Details() {
         >
           {isIdAdd ? (
             <>
-              <FindedUsersCol>
+              <D.FindedUsersCol>
                 <CustomInput text="아이디를 입력해주세요." value="" />
-                <FindedUser>
+                <D.FindedUser>
                   <img src={testImg} alt="user" />
                   <span>mirae78</span>
                   <span>선택</span>
-                </FindedUser>
-                <FindedUser>
+                </D.FindedUser>
+                <D.FindedUser>
                   <img src={testImg} alt="user" />
                   <span>mirae78</span>
                   <span>선택</span>
-                </FindedUser>
-              </FindedUsersCol>
+                </D.FindedUser>
+              </D.FindedUsersCol>
             </>
           ) : (
             <>
-              <InviteBox>
+              <D.InviteBox>
                 <h1>남해 여행</h1>
 
                 <div>
@@ -238,8 +289,8 @@ export default function Details() {
                 </div>
 
                 <span>함께 여행 준비하는 여행 메이트를 초대해요.</span>
-              </InviteBox>
-              <InviteButtonRow>
+              </D.InviteBox>
+              <D.InviteButtonRow>
                 <button onClick={() => setIsIdAdd(true)}>
                   <UserIcon />
                   <span>아이디로 추가하기</span>
@@ -248,7 +299,7 @@ export default function Details() {
                   <ClipIcon />
                   <span>링크로 공유하기</span>
                 </button>
-              </InviteButtonRow>
+              </D.InviteButtonRow>
             </>
           )}
         </BottomSheet>
@@ -256,253 +307,3 @@ export default function Details() {
     </>
   );
 }
-
-const DetailsInfoText = styled(InfoText)`
-  display: flex;
-  gap: 3px;
-
-  & > div {
-    display: flex;
-    align-items: flex-end;
-  }
-`;
-
-const DetailsSubInfo = styled(SubInfo)`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  margin-bottom: 10px;
-`;
-
-const InviteRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-`;
-
-const ParticipantsRow = styled.div`
-  position: relative;
-  & > img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    position: absolute;
-    top: -12px;
-  }
-  & > img:nth-child(2) {
-    left: 10px;
-  }
-  & > img:nth-child(3) {
-    left: 20px;
-  }
-`;
-
-const MapBox = styled.div<{ $bottomSheetHeight?: number }>`
-  height: calc(
-    100% - 37px - 28px - 24px -
-      (${({ $bottomSheetHeight }) => `${$bottomSheetHeight || 0}px`})
-  );
-  width: calc(100% + 20px * 2);
-  margin: 10px 0 0 -20px;
-`;
-
-const InviteBox = styled.div`
-  & > h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: ${(props) => props.theme.color.gray900};
-  }
-
-  & > div {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 14px;
-    margin: 10px 0 18px 0;
-  }
-
-  & > span:last-child {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-  }
-
-  padding: 30px 0 15px 20px;
-  border-bottom: 1px solid ${(props) => props.theme.color.gray200};
-`;
-
-const InviteButtonRow = styled.div`
-  padding: 33px 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-  & > button {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-radius: 30px;
-    border: 1px solid ${(props) => props.theme.color.secondary};
-
-    & > span {
-      color: ${(props) => props.theme.color.secondary};
-      font-size: 14px;
-    }
-  }
-`;
-
-const FindedUsersCol = styled.div`
-  padding: 20px 10px 0 10px;
-  gap: 30px;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const FindedUser = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
-
-  & > img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-  }
-
-  & > span:nth-child(2) {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-    flex: 1;
-  }
-
-  & > span:last-child {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 12px;
-  }
-`;
-
-const DetailsContainer = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 15px;
-`;
-const DetailsEditButton = styled.div`
-  display: flex;
-  align-items: center;
-  align-self: flex-end;
-  gap: 3px;
-  color: ${(props) => props.theme.color.gray500};
-`;
-
-const DaySelector = styled.div``;
-
-const StyledSlider = styled(Slider)`
-  text-align: center;
-  display: flex;
-`;
-
-const ArrowBox = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
-const DayBox = styled.div<{ select: boolean }>`
-  width: 80px !important;
-  padding: 8px 22px;
-  white-space: nowrap;
-  background-color: ${(props) =>
-    props.select ? props.theme.color.secondary : props.theme.color.white};
-  color: ${(props) =>
-    props.select ? props.theme.color.white : props.theme.color.secondary};
-  border: 1px solid ${(props) => props.theme.color.secondary};
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 700;
-`;
-
-const PlanCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 13px;
-  gap: 24px;
-  overflow-y: auto;
-`;
-
-const Plan = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-`;
-
-const TimeBox = styled.div`
-  padding: 8px;
-  border-radius: 12px;
-  background-color: ${(props) => props.theme.color.secondaryLight};
-  font-size: 14px;
-`;
-
-const PlaceBox = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: ${(props) => props.theme.color.white};
-  border: 1px solid ${(props) => props.theme.color.gray200};
-  border-radius: 16px;
-  gap: 16px;
-`;
-
-const PlaceIdx = styled.div`
-  padding: 5px 8px;
-  border-radius: 50px;
-  background-color: ${(props) => props.theme.color.pointCoral};
-  color: ${(props) => props.theme.color.white};
-  font-size: 12px;
-  font-weight: 700;
-`;
-
-const PlaceTitleCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  font-weight: 700;
-
-  & > span {
-    color: ${(props) => props.theme.color.gray400};
-    font-size: 12px;
-    font-weight: normal;
-  }
-`;
-
-const PlaceDetailsButton = styled.div<{ fill?: boolean }>`
-  display: grid;
-  place-items: center;
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 8px;
-  border: 1px solid
-    ${(props) =>
-      props.fill ? props.theme.color.secondary : props.theme.color.gray300};
-`;
-
-const AddPlaceButton = styled.div`
-  align-self: flex-end;
-  text-align: center;
-  padding: 13px 17px;
-  background-color: ${(props) => props.theme.color.secondary};
-  color: ${(props) => props.theme.color.white};
-  border-radius: 30px;
-  font-size: 14px;
-  font-weight: 700;
-  box-shadow: 0px 6px 8px 0px rgba(0, 0, 0, 0.08),
-    0px 4px 10px 0px rgba(0, 0, 0, 0.08);
-`;
