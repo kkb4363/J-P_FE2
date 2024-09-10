@@ -11,22 +11,32 @@ import {
 export interface Props {
   id: number;
   isEdit: boolean;
-  setIsDetailsMode: () => void;
+  setIsPlanDetail: () => void;
+  setIsPlanPlace: () => void;
   planItem: planItemProps;
   jpState: string;
 }
 
 export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
   SortableElement(
-    ({ id, isEdit, setIsDetailsMode, planItem, jpState }: Props) => {
+    ({
+      id,
+      isEdit,
+      setIsPlanDetail,
+      setIsPlanPlace,
+      planItem,
+      jpState,
+    }: Props) => {
       const DragHandler = SortableHandle(() => {
         return <EditSelectText>선택</EditSelectText>;
       });
 
+      const handlePlaceClick = isEdit ? undefined : setIsPlanPlace;
+
       return (
         <PlanItemContainer>
           <TimeBox $isEdit={isEdit}>{planItem.time}</TimeBox>
-          <PlaceBox>
+          <PlaceBox onClick={handlePlaceClick}>
             <PlaceIdx $isEdit={isEdit}>{id + 1}</PlaceIdx>
             <PlaceTitleCol>
               <p>{planItem.title}</p>
@@ -35,7 +45,7 @@ export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
             {isEdit && <DragHandler />}
           </PlaceBox>
           {!isEdit && jpState === "J" && (
-            <PlaceDetailsButton $fill={true} onClick={setIsDetailsMode}>
+            <PlaceDetailsButton $fill={true} onClick={setIsPlanDetail}>
               <FileCheckIcon />
             </PlaceDetailsButton>
           )}

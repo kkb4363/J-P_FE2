@@ -17,7 +17,16 @@ import { planItemProps } from "../../../types/schedule";
 import { testPlanItems } from "../../../utils/staticDatas";
 import { arrayMoveImmutable } from "array-move";
 import { PlanList } from "../../../components/mobile/scheduleSort/PlanList";
+import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
+import CardIcon from "../../../assets/icons/CardIcon";
+import TrainIcon from "../../../assets/icons/TrainIcon";
+import ImageView from "../../../components/mobile/ImageView";
+import * as S from "../../../assets/styles/nearplace.style";
 import * as D from "../../../assets/styles/scheduleDetail.style";
+import AlarmIcon from "../../../assets/icons/AlarmIcon";
+import InfoIcon from "../../../assets/icons/InfoIcon";
+import MarkIcon from "../../../assets/icons/MarkIcon";
+import TicketIcon from "../../../assets/icons/TicketIcon";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
@@ -44,10 +53,10 @@ export default function Details() {
   const mapRef = useRef<HTMLDivElement>(null);
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
-  const [fillPlan, setFillPlan] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
-  const [isDetailsMode, setIsDetailsMode] = useState(false);
+  const [isPlanDetail, setIsPlanDetail] = useState(false);
+  const [isPlanPlace, setIsPlanPlace] = useState(false);
   const [isDetailsEdit, setIsDetailsEdit] = useState(false);
   const [transport, setTransport] = useState("");
   const { jpState } = useJPStore();
@@ -56,17 +65,19 @@ export default function Details() {
   // Day 설정
   const [currentDay, setCurrentDay] = useState(0);
   const slickSettings = {
-    className: "center",
     centerMode: true,
     focusOnSelect: true,
-    infinite: false,
+    infinite: true,
     slidesToShow: 3,
     swipeToSlide: true,
     centerPadding: "0px",
     speed: 500,
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
-    beforeChange: (current: number, next: number) => setCurrentDay(next),
+    beforeChange: (current: number, next: number) => {
+      console.log(current);
+      setCurrentDay(next);
+    },
   };
 
   const handleInviteClose = () => {
@@ -78,7 +89,7 @@ export default function Details() {
     const loadGoogleMapsScript = async () => {
       const existingScript = document.getElementById("google-maps");
       if (!existingScript) {
-        const script = document.createElement("script");
+        const script = document.createElement("sc ript");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${
           import.meta.env.VITE_GOOGLE_API_KEY
         }&callback=initMap`;
@@ -128,7 +139,6 @@ export default function Details() {
       setTransport(e.currentTarget.innerText);
     }
   };
-  console.log(isDetailsMode);
 
   return (
     <>
@@ -159,74 +169,122 @@ export default function Details() {
       <D.MapBox $bottomSheetHeight={getBottomSheetHeight()} ref={mapRef} />
 
       {sheetOpen === "AddPlace" && (
-        <BottomSheet minH={6} maxH={0.75}>
-          {!isDetailsMode && (
+        <BottomSheet maxH={isPlanPlace ? 0.4 : 0.75}>
+          {/* 일정 목록 */}
+          {!isPlanDetail && !isPlanPlace && (
             <>
-              <D.PlansContainer>
+              <D.PlansBox>
                 <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
                   <PenIcon stroke="#808080" />
-                  편집
+                  <p>편집</p>
                 </D.PlansEditButton>
-                <D.DaySelector>
+                <div>
                   <D.StyledSlider {...slickSettings}>
                     <D.DayBox $select={currentDay === 0}>Day 1</D.DayBox>
                     <D.DayBox $select={currentDay === 1}>Day 2</D.DayBox>
                     <D.DayBox $select={currentDay === 2}>Day 3</D.DayBox>
                     <D.DayBox $select={currentDay === 3}>Day 4</D.DayBox>
+                    <D.DayBox $select={currentDay === 4}>Day 5</D.DayBox>
+                    <D.DayBox $select={currentDay === 5}>Day 6</D.DayBox>
+                    <D.DayBox $select={currentDay === 6}>Day 7</D.DayBox>
                   </D.StyledSlider>
-                </D.DaySelector>
+                </div>
                 <PlanList
                   planItems={planItems}
                   onSortEnd={handleSortEnd}
                   helperClass="dragging-helper-class"
                   isEdit={isEdit}
                   jpState={jpState}
-                  setIsDetailsMode={() => setIsDetailsMode((prev) => !prev)}
+                  setIsPlanDetail={() => setIsPlanDetail((prev) => !prev)}
+                  setIsPlanPlace={() => setIsPlanPlace((prev) => !prev)}
                   useWindowAsScrollContainer
                   useDragHandle
                 />
-              </D.PlansContainer>
+              </D.PlansBox>
               <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
                 + 장소 추가
               </D.AddPlaceButton>
             </>
           )}
 
-          {isDetailsMode && (
-            <D.PlanDetailsContainer>
-              <D.PlansEditButton
-                onClick={() => setIsDetailsEdit((prev) => !prev)}
-              >
-                {!isDetailsEdit && (
-                  <>
-                    <PenIcon stroke="#808080" />
-                    편집
-                  </>
-                )}
-                {isDetailsEdit && <p>완료</p>}
-              </D.PlansEditButton>
+          {/* 일정 장소 상세 */}
+          {isPlanPlace && (
+            <div>
+              <div onClick={() => setIsPlanPlace(false)}>
+                <ArrowLeftIcon />
+              </div>
+              <D.PlanPlaceContainer>
+                <D.PlaceTitleBox>
+                  <ImageView
+                    src={testImg}
+                    alt="일정 장소 이미지"
+                    width="60px"
+                    height="60px"
+                  />
+                  <p>금산 보리암</p>
+                </D.PlaceTitleBox>
+                <D.Line />
+                <S.SelectPlaceDetailCol>
+                  <div>
+                    <AlarmIcon />
+                    <span>연중무휴</span>
+                  </div>
+                  <div>
+                    <TicketIcon />
+                    <span>개인 1,000원 단체 800원</span>
+                  </div>
+                  <div>
+                    <InfoIcon />
+                    <span>02-1111-1111</span>
+                  </div>
+                  <div>
+                    <MarkIcon width="18" height="18" />
+                    <span>전남 구례시</span>
+                  </div>
+                </S.SelectPlaceDetailCol>
+              </D.PlanPlaceContainer>
+            </div>
+          )}
+
+          {/* 일정 상세 */}
+          {isPlanDetail && (
+            <div>
               <D.PlanDetailsHeader>
-                <div onClick={() => setIsDetailsMode(false)}>
+                <div onClick={() => setIsPlanDetail(false)}>
                   <ArrowLeftIcon />
                 </div>
-                <p>플랜 추가</p>
-                <D.EmptyBox />
+                <span>플랜 추가</span>
+                <p onClick={() => setIsDetailsEdit((prev) => !prev)}>
+                  {isDetailsEdit ? "완료" : "수정"}
+                </p>
               </D.PlanDetailsHeader>
               <D.PlanDetailsBody>
-                <D.DetailsInput>
-                  <textarea
-                    placeholder="여행 상세 일정"
-                    readOnly={!isDetailsEdit}
-                  />
-                </D.DetailsInput>
                 <div>
-                  <p>비용</p>
+                  <D.SubTitleBox>
+                    <PlanCalendarIcon />
+                    <p>일정</p>
+                  </D.SubTitleBox>
+                  <D.DetailsInput>
+                    <textarea
+                      placeholder="여행 상세 일정"
+                      readOnly={!isDetailsEdit}
+                    />
+                  </D.DetailsInput>
+                </div>
+                <div>
+                  <D.SubTitleBox>
+                    <CardIcon />
+                    <p>비용</p>
+                  </D.SubTitleBox>
                   <D.CostInput>
                     <input placeholder="금액 입력" readOnly={!isDetailsEdit} />
                   </D.CostInput>
                 </div>
                 <div>
-                  <p>이동 수단 선택</p>
+                  <D.SubTitleBox>
+                    <TrainIcon />
+                    <p>이동 수단</p>
+                  </D.SubTitleBox>
                   <D.TransportBox>
                     <D.TransPortItem
                       $select={transport === "자동차"}
@@ -255,7 +313,7 @@ export default function Details() {
                   </D.TransportBox>
                 </div>
               </D.PlanDetailsBody>
-            </D.PlanDetailsContainer>
+            </div>
           )}
         </BottomSheet>
       )}
