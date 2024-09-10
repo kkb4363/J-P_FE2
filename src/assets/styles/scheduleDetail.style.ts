@@ -130,21 +130,26 @@ export const FindedUser = styled.div`
   }
 `;
 
-export const PlansContainer = styled.div`
+// 일정 목록
+export const PlansBox = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 15px;
 `;
+
 export const PlansEditButton = styled.div`
   display: flex;
   align-items: center;
   align-self: flex-end;
   gap: 3px;
-  color: ${(props) => props.theme.color.gray500};
-  font-size: 14px;
   height: 16px;
+
+  & > p {
+    color: ${(props) => props.theme.color.gray500};
+    font-size: 14px;
+  }
 `;
 
 export const DaySelector = styled.div``;
@@ -152,6 +157,10 @@ export const DaySelector = styled.div``;
 export const StyledSlider = styled(Slider)`
   text-align: center;
   display: flex;
+
+  .slick-slider {
+    position: relative;
+  }
 `;
 
 export const ArrowBox = styled.span`
@@ -188,39 +197,66 @@ export const AddPlaceButton = styled.div`
     0px 4px 10px 0px rgba(0, 0, 0, 0.08);
 `;
 
-export const PlanDetailsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+// 일정 장소 상세
+export const PlanPlaceContainer = styled.div`
+  padding: 8px 13px;
 `;
 
+export const PlaceTitleBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 6px;
+
+  & > p {
+    font-weight: 700;
+    font-size: 20px;
+    color: ${(props) => props.theme.color.secondary};
+  }
+`;
+
+export const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.color.gray200};
+  margin: 12px 0 16px;
+`
+
+// 일정 상세
 export const PlanDetailsHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  white-space: nowrap;
+  padding: 10px 0;
 
-  & > p {
+  & > span {
     width: 100%;
     font-weight: 700;
     text-align: center;
   }
-`;
-
-export const EmptyBox = styled.div`
-  width: 24px;
+  & > p {
+    font-size: 14px;
+    color: ${(props) => props.theme.color.secondary};
+  }
 `;
 
 export const PlanDetailsBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
-  padding: 30px 4px;
-  font-size: 14px;
+  padding: 20px 4px;
+`;
 
-  & > div > p {
-    color: ${(props) => props.theme.color.gray700};
+export const SubTitleBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  & > p {
     font-weight: 700;
-    margin-bottom: 12px;
   }
 `;
 
@@ -269,13 +305,11 @@ export const TransportBox = styled.div`
 export const TransPortItem = styled.div<{ $select: boolean }>`
   padding: 10px 15px;
   border-radius: 30px;
-  background-color: ${(props) =>
-    props.$select
-      ? props.theme.color.secondaryLight
-      : props.theme.color.gray100};
+  font-size: 14px;
+  background-color: ${(props) => props.theme.color.white};
   border: 1px solid
     ${(props) =>
       props.$select ? props.theme.color.secondary : props.theme.color.gray200};
   color: ${(props) =>
-    props.$select ? props.theme.color.secondary : props.theme.color.gray700};
+    props.$select ? props.theme.color.secondary : props.theme.color.gray500};
 `;

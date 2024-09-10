@@ -8,12 +8,13 @@ interface Props {
   planItems: planItemProps[];
   isEdit: boolean;
 	jpState: string;
-  setIsDetailsMode: () => void;
+  setIsPlanDetail: () => void;
+  setIsPlanPlace: () => void;
 }
 
 export const PlanList: ComponentClass<SortableContainerProps & Props> =
   SortableContainer(
-    ({ planItems, isEdit, jpState,  setIsDetailsMode }: Props) => {
+    ({ planItems, isEdit, jpState,  setIsPlanDetail, setIsPlanPlace }: Props) => {
       return (
         <PlanListContainer>
           {planItems.map((item, index) => (
@@ -21,8 +22,9 @@ export const PlanList: ComponentClass<SortableContainerProps & Props> =
               key={index}
               index={index}
               id={index}
-							isEdit={isEdit}
-              setIsDetailsMode={setIsDetailsMode}
+              isEdit={isEdit}
+              setIsPlanDetail={setIsPlanDetail}
+              setIsPlanPlace={setIsPlanPlace}
               planItem={item}
               jpState={jpState}
             />
