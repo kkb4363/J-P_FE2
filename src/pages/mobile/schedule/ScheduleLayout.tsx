@@ -1,13 +1,13 @@
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import styled from "styled-components";
 import { Outlet, useLocation, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useJPStore } from "../../../store/JPType.store";
 
-type JPType = "J" | "P";
 
 export default function ScheduleLayout() {
   const param = useLocation();
-  const [jpState, setJpState] = useState<JPType>("J");
+  const { jpState, setJpState } = useJPStore();
+
 
   return (
     <>

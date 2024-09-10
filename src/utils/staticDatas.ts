@@ -7,6 +7,7 @@ import NoteIcon from "../assets/icons/NoteIcon";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import { userCompactResDto } from "../types/res.dto";
+import { planItemProps } from "../types/schedule";
 
 export const footerTabs = [
   { icon: HomeIcon, label: "홈", route: "/home" },
@@ -86,3 +87,24 @@ export const testUserDto: userCompactResDto = {
   nickname: "coco1202",
   picture: "null",
 };
+
+export const testPlanItems: planItemProps[] = [
+  {
+    id: "1",
+    time: "10:10",
+    title: "금산 보리암",
+    subtitle: "명소",
+  },
+  {
+    id: "2",
+    time: "12:00",
+    title: "물건항",
+    subtitle: "명소",
+  },
+  {
+    id: "3",
+    time: "14:00",
+    title: "남해 보물섬전망대",
+    subtitle: "명소",
+  },
+];

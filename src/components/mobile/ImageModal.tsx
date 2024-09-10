@@ -2,8 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import CancelIcon from "../../assets/icons/CancelIcon";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 interface Props {
   imageList: string[];
