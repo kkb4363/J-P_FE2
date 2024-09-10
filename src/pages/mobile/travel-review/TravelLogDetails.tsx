@@ -18,7 +18,7 @@ import {
 } from "../../../utils/staticDatas";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
-import ImageModal from "../../../components/mobile/ImageModal";
+import ImageSlider from "../../../components/mobile/ImageSlider";
 
 export default function TravelLogDetails() {
   const [fillHeart, setFillHeart] = useState(false);
@@ -34,7 +34,7 @@ export default function TravelLogDetails() {
   return (
     <TravelLogDetailsContainer>
       {isModalOpen && (
-        <ImageModal
+        <ImageSlider
           imageList={testImageList}
           onClose={() => setIsModalOpen(false)}
         />
