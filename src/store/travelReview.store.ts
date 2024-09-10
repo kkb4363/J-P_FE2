@@ -1,10 +1,16 @@
 import { create } from "zustand";
 
-interface ReviewState {
+interface State {
   isReview: boolean;
-  toggleReview: (toggle: boolean) => void;
 }
-export const useReviewStore = create<ReviewState>((set) => ({
+
+interface Action { 
+  getIsReview: () => boolean;
+  setIsReview: (toggle: boolean) => void;
+}
+
+export const useReviewStore = create<State & Action>((set, get) => ({
   isReview: true,
-  toggleReview: (toggle: boolean) => set(() => ({ isReview: toggle })),
+  getIsReview: () => get().isReview,
+  setIsReview: (toggle: boolean) => set(() => ({ isReview: toggle })),
 }));

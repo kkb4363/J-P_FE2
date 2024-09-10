@@ -16,7 +16,7 @@ const FilterOptions = [
 type FilterType = (typeof FilterOptions)[number];
 
 export default function TravelReview() {
-  const { isReview, toggleReview } = useReviewStore();
+  const reviewStore = useReviewStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("최신순");
   const [pendingFilter, setPendingFilter] = useState<FilterType>("최신순");
@@ -49,10 +49,14 @@ export default function TravelReview() {
   return (
     <TravelReviewContainer>
       <ToggleLabelBox>
-        <ToggleLabel onClick={() => toggleReview(true)}>리뷰</ToggleLabel>
-        <ToggleLabel onClick={() => toggleReview(false)}>여행기</ToggleLabel>
-        <ToggleButton isReview={isReview}>
-          {isReview ? "리뷰" : "여행기"}
+        <ToggleLabel onClick={() => reviewStore.setIsReview(true)}>
+          리뷰
+        </ToggleLabel>
+        <ToggleLabel onClick={() => reviewStore.setIsReview(false)}>
+          여행기
+        </ToggleLabel>
+        <ToggleButton isReview={reviewStore.getIsReview()}>
+          {reviewStore.getIsReview() ? "리뷰" : "여행기"}
         </ToggleButton>
       </ToggleLabelBox>
       <FilterBox onClick={() => setIsFilterOpen(!isFilterOpen)}>
@@ -60,7 +64,7 @@ export default function TravelReview() {
         <ArrowDownIcon />
       </FilterBox>
       <>
-        {isReview ? (
+        {reviewStore.getIsReview() ? (
           <Review sort={getSortByFilter(selectedFilter)} />
         ) : (
           <TravelLog sort={getSortByFilter(selectedFilter)} />

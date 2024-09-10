@@ -13,7 +13,7 @@ import CommentIcon from "../../../assets/icons/CommentIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
 import { commentResDto } from "../../../types/res.dto";
 import { testImageList } from "../../../utils/staticDatas";
-import ImageModal from "../../../components/mobile/ImageModal";
+import ImageSlider from "../../../components/mobile/ImageSlider";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -54,7 +54,7 @@ export default function ReviewDetails() {
       <CustomHeader title="오대산 선재길" isPlace fontSize="16px" />
       {loading && <NoResultsText>로딩중...</NoResultsText>}
       {isModalOpen && (
-        <ImageModal
+        <ImageSlider
           imageList={testImageList}
           onClose={() => setIsModalOpen(false)}
         />
