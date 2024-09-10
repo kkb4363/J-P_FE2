@@ -1,7 +1,5 @@
-import styled from "styled-components";
-import { InfoRow, InfoText } from "../../../assets/styles/home.style";
+import { InfoRow } from "../../../assets/styles/home.style";
 import PenIcon from "../../../assets/icons/PenIcon";
-import { SubInfo } from "./Calendar";
 import ScheduleIcon from "../../../assets/icons/ScheduleIcon";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import testImg from "../../../assets/images/testImg.png";
@@ -12,15 +10,75 @@ import UserIcon from "../../../assets/icons/UserIcon";
 import ClipIcon from "../../../assets/icons/ClipIcon";
 import CustomInput from "../../../components/mobile/CustomInput";
 import { useNavigate } from "react-router-dom";
+import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
+import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
+import { useJPStore } from "../../../store/JPType.store";
+import { planItemProps } from "../../../types/schedule";
+import { testPlanItems } from "../../../utils/staticDatas";
+import { arrayMoveImmutable } from "array-move";
+import { PlanList } from "../../../components/mobile/scheduleSort/PlanList";
+import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
+import CardIcon from "../../../assets/icons/CardIcon";
+import TrainIcon from "../../../assets/icons/TrainIcon";
+import ImageView from "../../../components/mobile/ImageView";
+import * as S from "../../../assets/styles/nearplace.style";
+import * as D from "../../../assets/styles/scheduleDetail.style";
+import AlarmIcon from "../../../assets/icons/AlarmIcon";
+import InfoIcon from "../../../assets/icons/InfoIcon";
+import MarkIcon from "../../../assets/icons/MarkIcon";
+import TicketIcon from "../../../assets/icons/TicketIcon";
 
 type BottomSheetType = "AddPlace" | "Invite";
+
+function PrevArrow(props: any) {
+  const { onClick } = props;
+  return (
+    <D.ArrowBox className="left" onClick={onClick}>
+      <ArrowLeftIcon stroke="#6979F8" />
+    </D.ArrowBox>
+  );
+}
+
+function NextArrow(props: any) {
+  const { onClick } = props;
+  return (
+    <D.ArrowBox className="right" onClick={onClick}>
+      <ArrowRightIcon stroke="#6979F8" />
+    </D.ArrowBox>
+  );
+}
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
   const mapRef = useRef<HTMLDivElement>(null);
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
+  const [isPlanDetail, setIsPlanDetail] = useState(false);
+  const [isPlanPlace, setIsPlanPlace] = useState(false);
+  const [isDetailsEdit, setIsDetailsEdit] = useState(false);
+  const [transport, setTransport] = useState("");
+  const { jpState } = useJPStore();
   const navigate = useNavigate();
+
+  // Day 설정
+  const [currentDay, setCurrentDay] = useState(0);
+  const slickSettings = {
+    centerMode: true,
+    focusOnSelect: true,
+    infinite: true,
+    slidesToShow: 3,
+    swipeToSlide: true,
+    centerPadding: "0px",
+    speed: 500,
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
+    beforeChange: (current: number, next: number) => {
+      console.log(current);
+      setCurrentDay(next);
+    },
+  };
 
   const handleInviteClose = () => {
     setSheetOpen("AddPlace");
@@ -31,7 +89,7 @@ export default function Details() {
     const loadGoogleMapsScript = async () => {
       const existingScript = document.getElementById("google-maps");
       if (!existingScript) {
-        const script = document.createElement("script");
+        const script = document.createElement("sc ript");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${
           import.meta.env.VITE_GOOGLE_API_KEY
         }&callback=initMap`;
@@ -64,37 +122,199 @@ export default function Details() {
 
     loadGoogleMapsScript();
   }, []);
+
+  // 드래그 이벤트
+  const handleSortEnd = ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
+    setPlanItems(arrayMoveImmutable(planItems, oldIndex, newIndex));
+  };
+
+  const handleTransportClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isDetailsEdit) {
+      setTransport(e.currentTarget.innerText);
+    }
+  };
+
   return (
     <>
       <InfoRow>
-        <DetailsInfoText>
+        <D.DetailsInfoText>
           남해 여행
           <div>
             <PenIcon />
           </div>
-        </DetailsInfoText>
+        </D.DetailsInfoText>
       </InfoRow>
 
-      <DetailsSubInfo>
+      <D.DetailsSubInfo>
         <ScheduleIcon stroke="#4d4d4d" />
         4.17 ~ 4.19(2박 3일)
-      </DetailsSubInfo>
+      </D.DetailsSubInfo>
 
-      <InviteRow>
+      <D.InviteRow>
         <InviteIcon handleClick={() => setSheetOpen("Invite")} />
 
-        <ParticipantsRow>
+        <D.ParticipantsRow>
           <img src={testImg} alt="참가자" />
           <img src={testImg} alt="참가자" />
           <img src={testImg} alt="참가자" />
-        </ParticipantsRow>
-      </InviteRow>
+        </D.ParticipantsRow>
+      </D.InviteRow>
 
-      <MapBox $bottomSheetHeight={getBottomSheetHeight()} ref={mapRef} />
+      <D.MapBox $bottomSheetHeight={getBottomSheetHeight()} ref={mapRef} />
 
       {sheetOpen === "AddPlace" && (
-        <BottomSheet minH={6} maxH={0.75}>
-          <div onClick={() => navigate("/addPlace")}>+ 장소 추가</div>
+        <BottomSheet maxH={isPlanPlace ? 0.4 : 0.75}>
+          {/* 일정 목록 */}
+          {!isPlanDetail && !isPlanPlace && (
+            <>
+              <D.PlansBox>
+                <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
+                  <PenIcon stroke="#808080" />
+                  <p>편집</p>
+                </D.PlansEditButton>
+                <div>
+                  <D.StyledSlider {...slickSettings}>
+                    <D.DayBox $select={currentDay === 0}>Day 1</D.DayBox>
+                    <D.DayBox $select={currentDay === 1}>Day 2</D.DayBox>
+                    <D.DayBox $select={currentDay === 2}>Day 3</D.DayBox>
+                    <D.DayBox $select={currentDay === 3}>Day 4</D.DayBox>
+                    <D.DayBox $select={currentDay === 4}>Day 5</D.DayBox>
+                    <D.DayBox $select={currentDay === 5}>Day 6</D.DayBox>
+                    <D.DayBox $select={currentDay === 6}>Day 7</D.DayBox>
+                  </D.StyledSlider>
+                </div>
+                <PlanList
+                  planItems={planItems}
+                  onSortEnd={handleSortEnd}
+                  helperClass="dragging-helper-class"
+                  isEdit={isEdit}
+                  jpState={jpState}
+                  setIsPlanDetail={() => setIsPlanDetail((prev) => !prev)}
+                  setIsPlanPlace={() => setIsPlanPlace((prev) => !prev)}
+                  useWindowAsScrollContainer
+                  useDragHandle
+                />
+              </D.PlansBox>
+              <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
+                + 장소 추가
+              </D.AddPlaceButton>
+            </>
+          )}
+
+          {/* 일정 장소 상세 */}
+          {isPlanPlace && (
+            <div>
+              <div onClick={() => setIsPlanPlace(false)}>
+                <ArrowLeftIcon />
+              </div>
+              <D.PlanPlaceContainer>
+                <D.PlaceTitleBox>
+                  <ImageView
+                    src={testImg}
+                    alt="일정 장소 이미지"
+                    width="60px"
+                    height="60px"
+                  />
+                  <p>금산 보리암</p>
+                </D.PlaceTitleBox>
+                <D.Line />
+                <S.SelectPlaceDetailCol>
+                  <div>
+                    <AlarmIcon />
+                    <span>연중무휴</span>
+                  </div>
+                  <div>
+                    <TicketIcon />
+                    <span>개인 1,000원 단체 800원</span>
+                  </div>
+                  <div>
+                    <InfoIcon />
+                    <span>02-1111-1111</span>
+                  </div>
+                  <div>
+                    <MarkIcon width="18" height="18" />
+                    <span>전남 구례시</span>
+                  </div>
+                </S.SelectPlaceDetailCol>
+              </D.PlanPlaceContainer>
+            </div>
+          )}
+
+          {/* 일정 상세 */}
+          {isPlanDetail && (
+            <div>
+              <D.PlanDetailsHeader>
+                <div onClick={() => setIsPlanDetail(false)}>
+                  <ArrowLeftIcon />
+                </div>
+                <span>플랜 추가</span>
+                <p onClick={() => setIsDetailsEdit((prev) => !prev)}>
+                  {isDetailsEdit ? "완료" : "수정"}
+                </p>
+              </D.PlanDetailsHeader>
+              <D.PlanDetailsBody>
+                <div>
+                  <D.SubTitleBox>
+                    <PlanCalendarIcon />
+                    <p>일정</p>
+                  </D.SubTitleBox>
+                  <D.DetailsInput>
+                    <textarea
+                      placeholder="여행 상세 일정"
+                      readOnly={!isDetailsEdit}
+                    />
+                  </D.DetailsInput>
+                </div>
+                <div>
+                  <D.SubTitleBox>
+                    <CardIcon />
+                    <p>비용</p>
+                  </D.SubTitleBox>
+                  <D.CostInput>
+                    <input placeholder="금액 입력" readOnly={!isDetailsEdit} />
+                  </D.CostInput>
+                </div>
+                <div>
+                  <D.SubTitleBox>
+                    <TrainIcon />
+                    <p>이동 수단</p>
+                  </D.SubTitleBox>
+                  <D.TransportBox>
+                    <D.TransPortItem
+                      $select={transport === "자동차"}
+                      onClick={handleTransportClick}
+                    >
+                      자동차
+                    </D.TransPortItem>
+                    <D.TransPortItem
+                      $select={transport === "버스/지하철"}
+                      onClick={handleTransportClick}
+                    >
+                      버스/지하철
+                    </D.TransPortItem>
+                    <D.TransPortItem
+                      $select={transport === "기차"}
+                      onClick={handleTransportClick}
+                    >
+                      기차
+                    </D.TransPortItem>
+                    <D.TransPortItem
+                      $select={transport === "택시"}
+                      onClick={handleTransportClick}
+                    >
+                      택시
+                    </D.TransPortItem>
+                  </D.TransportBox>
+                </div>
+              </D.PlanDetailsBody>
+            </div>
+          )}
         </BottomSheet>
       )}
 
@@ -107,23 +327,23 @@ export default function Details() {
         >
           {isIdAdd ? (
             <>
-              <FindedUsersCol>
+              <D.FindedUsersCol>
                 <CustomInput text="아이디를 입력해주세요." value="" />
-                <FindedUser>
+                <D.FindedUser>
                   <img src={testImg} alt="user" />
                   <span>mirae78</span>
                   <span>선택</span>
-                </FindedUser>
-                <FindedUser>
+                </D.FindedUser>
+                <D.FindedUser>
                   <img src={testImg} alt="user" />
                   <span>mirae78</span>
                   <span>선택</span>
-                </FindedUser>
-              </FindedUsersCol>
+                </D.FindedUser>
+              </D.FindedUsersCol>
             </>
           ) : (
             <>
-              <InviteBox>
+              <D.InviteBox>
                 <h1>남해 여행</h1>
 
                 <div>
@@ -132,8 +352,8 @@ export default function Details() {
                 </div>
 
                 <span>함께 여행 준비하는 여행 메이트를 초대해요.</span>
-              </InviteBox>
-              <InviteButtonRow>
+              </D.InviteBox>
+              <D.InviteButtonRow>
                 <button onClick={() => setIsIdAdd(true)}>
                   <UserIcon />
                   <span>아이디로 추가하기</span>
@@ -142,7 +362,7 @@ export default function Details() {
                   <ClipIcon />
                   <span>링크로 공유하기</span>
                 </button>
-              </InviteButtonRow>
+              </D.InviteButtonRow>
             </>
           )}
         </BottomSheet>
@@ -150,131 +370,3 @@ export default function Details() {
     </>
   );
 }
-
-const DetailsInfoText = styled(InfoText)`
-  display: flex;
-  gap: 3px;
-
-  & > div {
-    display: flex;
-    align-items: flex-end;
-  }
-`;
-
-const DetailsSubInfo = styled(SubInfo)`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  margin-bottom: 10px;
-`;
-
-const InviteRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-`;
-
-const ParticipantsRow = styled.div`
-  position: relative;
-  & > img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    position: absolute;
-    top: -12px;
-  }
-  & > img:nth-child(2) {
-    left: 10px;
-  }
-  & > img:nth-child(3) {
-    left: 20px;
-  }
-`;
-
-const MapBox = styled.div<{ $bottomSheetHeight?: number }>`
-  height: calc(
-    100% - 37px - 28px - 24px -
-      (${({ $bottomSheetHeight }) => `${$bottomSheetHeight || 0}px`})
-  );
-  width: calc(100% + 20px * 2);
-  margin: 10px 0 0 -20px;
-`;
-
-const InviteBox = styled.div`
-  & > h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: ${(props) => props.theme.color.gray900};
-  }
-
-  & > div {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 14px;
-    margin: 10px 0 18px 0;
-  }
-
-  & > span:last-child {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-  }
-
-  padding: 30px 0 15px 20px;
-  border-bottom: 1px solid ${(props) => props.theme.color.gray200};
-`;
-
-const InviteButtonRow = styled.div`
-  padding: 33px 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-  & > button {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-radius: 30px;
-    border: 1px solid ${(props) => props.theme.color.secondary};
-
-    & > span {
-      color: ${(props) => props.theme.color.secondary};
-      font-size: 14px;
-    }
-  }
-`;
-
-const FindedUsersCol = styled.div`
-  padding: 20px 10px 0 10px;
-  gap: 30px;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const FindedUser = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
-
-  & > img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-  }
-
-  & > span:nth-child(2) {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-    flex: 1;
-  }
-
-  & > span:last-child {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 12px;
-  }
-`;
