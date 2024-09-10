@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { SortableContainer, SortableContainerProps } from "react-sortable-hoc";
 import { planItemProps } from "../../../types/schedule";
-import { PlanItem } from "../PlanItem";
+import { PlanItem } from "./PlanItem";
 import styled from "styled-components";
 
 interface Props {
