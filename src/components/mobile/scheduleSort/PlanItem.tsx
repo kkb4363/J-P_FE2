@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import FileCheckIcon from "../../assets/icons/FileCheckIcon";
-import TrashIcon from "../../assets/icons/TrashIcon";
-import { planItemProps } from "../../types/schedule";
+import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
+import TrashIcon from "../../../assets/icons/TrashIcon";
+import { planItemProps } from "../../../types/schedule";
 import {
   SortableElement,
   SortableElementProps,
