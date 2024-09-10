@@ -8,7 +8,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function ImageModal({ imageList, onClose }: Props) {
+export default function ImageSlider({ imageList, onClose }: Props) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const settings = {
     arrows: false,
@@ -24,23 +24,23 @@ export default function ImageModal({ imageList, onClose }: Props) {
   console.log(currentIndex);
 
   return (
-    <ImageModalContainer>
-      <ImageModalHeader>
+    <ImageSliderContainer>
+      <ImageSliderHeader>
         <CancelIcon size="26" onClick={onClose} />
         <span>{`사진 ${currentIndex + 1} / ${imageList.length}`}</span>
         <EmptyBox />
-      </ImageModalHeader>
-      <ImageModalBody>
+      </ImageSliderHeader>
+      <ImageSliderBody>
         <StyledSlider {...settings}>
           {imageList.map((url, i) => (
             <img key={i} src={url} alt={`slide-${i}`} width="100%" />
           ))}
         </StyledSlider>
-      </ImageModalBody>
-    </ImageModalContainer>
+      </ImageSliderBody>
+    </ImageSliderContainer>
   );
 }
-const ImageModalContainer = styled.div`
+const ImageSliderContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -52,7 +52,7 @@ const ImageModalContainer = styled.div`
   z-index: 9;
 `;
 
-const ImageModalHeader = styled.div`
+const ImageSliderHeader = styled.div`
   height: 50px;
   display: flex;
   justify-content: space-between;
@@ -72,7 +72,7 @@ const EmptyBox = styled.div`
   width: 24px;
 `;
 
-const ImageModalBody = styled.div`
+const ImageSliderBody = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
