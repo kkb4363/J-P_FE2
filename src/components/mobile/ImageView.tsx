@@ -9,6 +9,10 @@ interface Props {
   height?: string;
   pointer?: boolean;
   handleClick?: () => void;
+  onLoad?: () => void;
+  onError?: () => void;
+  minWidth?: string;
+  minHeight?: string;
 }
 
 export default function ImageView({
@@ -20,15 +24,21 @@ export default function ImageView({
   height,
   pointer,
   handleClick,
+  onLoad,
+  onError,
+  minWidth,
+  minHeight,
 }: Props) {
   return (
     <ImageViewContainer
       $width={width}
       $height={height}
       $pointer={pointer}
+      $minWidth={minWidth}
+      $minHeight={minHeight}
       onClick={handleClick}
     >
-      <img src={src} alt={alt} loading="lazy" />
+      <img src={src} alt={alt} onLoad={onLoad} onError={onError} />
 
       {!!topText && (
         <TopText>
@@ -49,6 +59,8 @@ const ImageViewContainer = styled.div<{
   $width?: string;
   $height?: string;
   $pointer?: boolean;
+  $minWidth?: string;
+  $minHeight?: string;
 }>`
   position: relative;
   cursor: ${({ $pointer }) => ($pointer ? "pointer" : "auto")};
@@ -59,6 +71,9 @@ const ImageViewContainer = styled.div<{
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
     object-fit: cover;
   }
+
+  min-width: ${(props) => props.$minWidth && props.$minWidth};
+  min-height: ${(props) => props.$minHeight && props.$minHeight};
 `;
 
 const TopText = styled.div`

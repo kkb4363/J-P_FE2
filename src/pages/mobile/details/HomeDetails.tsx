@@ -22,23 +22,26 @@ import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateS
 import styled from "styled-components";
 import Slider from "react-slick";
 import NearPlaceCard from "../../../components/mobile/home/NearPlaceCard";
+import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
-  const mapRef = useRef<HTMLDivElement>(null);
   const { clear } = useMapStore();
+
+  const mapRef = useRef<HTMLDivElement>(null);
+  const isCityDetailPage = location.pathname.includes("city");
+
   const [loading, setLoading] = useState(true);
   const [addScheduleState, setAddScheduleState] = useState(false);
-  const isCityDetailPage = location.pathname.includes("city");
-  const [imgLoading, setImgLoading] = useState(true);
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const settings = {
+
+  const [imageIndex, setImageIndex] = useState<number>(0);
+  const imageSliderSetting = {
     arrows: false,
     dots: false,
     infinite: false,
@@ -46,12 +49,12 @@ export default function HomeDetails() {
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
-    beforeChange: (current: number, next: number) => setCurrentIndex(next),
+    beforeChange: (current: number, next: number) => setImageIndex(next),
   };
 
-  const loadGoogleMapsScript = async () => {
-    const existingScript = document.getElementById("google-maps");
-    if (!existingScript) {
+  const loadGoogleMap = async () => {
+    const exist = document.getElementById("google-maps");
+    if (!exist) {
       const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=${
         import.meta.env.VITE_GOOGLE_API_KEY
@@ -66,27 +69,9 @@ export default function HomeDetails() {
         }
       };
     } else {
-      if ((window as any).google && details?.location) {
+      if ((window as any).google) {
         initMap();
       }
-    }
-  };
-
-  const getNearPlace = async () => {
-    try {
-      if (details?.location) {
-        axiosInstance
-          .get(
-            `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
-          )
-          .then((res) => {
-            if (res.status === 200) {
-              setNearbyPlaces(res.data.results);
-            }
-          });
-      }
-    } catch (error) {
-      console.error("nearbyPlace Api Error=", error);
     }
   };
 
@@ -105,6 +90,22 @@ export default function HomeDetails() {
     }
   };
 
+  const getNearPlace = async () => {
+    try {
+      axiosInstance
+        .get(
+          `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            setNearbyPlaces(res.data.results);
+          }
+        });
+    } catch (error) {
+      console.error("nearbyPlace Api Error=", error);
+    }
+  };
+
   useEffect(() => {
     const requestApi = async () => {
       try {
@@ -113,25 +114,17 @@ export default function HomeDetails() {
           axiosInstance.get(
             `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
           ),
-          // 리뷰 있는 api
-          // axiosInstance.get(
-          //   `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
-          // ),
         ]);
 
         if (detailsRes.status === 200) {
           setDetails(detailsRes.data);
+          setLoading(false);
         }
         if (reviewsRes.status === 200) {
           setReviews(reviewsRes.data.data);
         }
       } catch (error) {
-        console.error("API Error:", error);
-      } finally {
-        setLoading(false);
-        setTimeout(() => {
-          setImgLoading(false);
-        }, 1000);
+        console.error("homeDetail api error=", error);
       }
     };
 
@@ -140,7 +133,7 @@ export default function HomeDetails() {
 
   useEffect(() => {
     if (details) {
-      loadGoogleMapsScript();
+      loadGoogleMap();
       getNearPlace();
     }
   }, [details]);
@@ -148,11 +141,11 @@ export default function HomeDetails() {
   return (
     <>
       <S.HomeDetailsContainer>
-        {imgLoading ? (
+        {loading ? (
           <CustomSkeleton height="250px" />
         ) : (
           <S.DetailsImageBox>
-            <StyledSlider {...settings}>
+            <StyledSlider {...imageSliderSetting}>
               {details?.photoUrls?.map((img, idx) => (
                 <img aria-placeholder="loading" src={img} alt={img} key={idx} />
               ))}
@@ -173,7 +166,7 @@ export default function HomeDetails() {
 
             <S.ImagePageIndicatorBox>
               <span>
-                {currentIndex + 1} / {details?.photoUrls.length}
+                {imageIndex + 1} / {details?.photoUrls.length}
               </span>
             </S.ImagePageIndicatorBox>
           </S.DetailsImageBox>
@@ -211,14 +204,10 @@ export default function HomeDetails() {
             </>
           )}
 
-          <S.DetailsTitleWithMoreText>
-            주변 여행지 추천
-            <S.MoreTextAbsolute
-              onClick={() => navigate(`/nearby/${param?.placeId}`)}
-            >
-              더보기
-            </S.MoreTextAbsolute>
-          </S.DetailsTitleWithMoreText>
+          <TitleMoreBox
+            title="주변 여행지 추천"
+            handleClick={() => navigate(`/nearby/${param?.placeId}`)}
+          />
 
           <S.NearPlaceCol>
             {nearbyPlaces.length === 0

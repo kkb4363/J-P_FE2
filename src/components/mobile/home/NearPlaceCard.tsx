@@ -3,6 +3,8 @@ import ImageView from "../ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
 import ActionButton from "../ActionButton";
 import PlusIcon from "../../../assets/icons/PlusIcon";
+import { useState } from "react";
+import CustomSkeleton from "../CustomSkeleton";
 
 interface Props {
   photoUrl: string;
@@ -19,9 +21,25 @@ export default function NearPlaceCard({
   height = "83px",
   handleDetails,
 }: Props) {
+  const [imgLoading, setImgLoading] = useState(true);
+
   return (
     <NearPlaceBox $height={height}>
-      <ImageView width="60px" height="60px" src={photoUrl} alt={name} />
+      <ImageView
+        width="60px"
+        height="60px"
+        src={photoUrl}
+        alt={name}
+        onLoad={() => setImgLoading(false)}
+        minWidth="60px"
+        minHeight="60px"
+      />
+
+      {imgLoading && (
+        <SkeletonBox>
+          <CustomSkeleton width="62px" height="62px" borderRadius="8px" />
+        </SkeletonBox>
+      )}
 
       <NearPlaceDetailCol>
         <p>{name}</p>
@@ -47,7 +65,14 @@ export const NearPlaceBox = styled.div<{ $height: string }>`
   background-color: ${(props) => props.theme.color.white};
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+  position: relative;
+  padding: 0 10px;
+`;
+
+const SkeletonBox = styled.div`
+  position: absolute;
+  left: 10px;
 `;
 
 export const NearPlaceDetailCol = styled.div`

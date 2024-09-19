@@ -17,6 +17,14 @@ export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 export default function Home() {
   const navigate = useNavigate();
 
+  const handleMore = (type: MoreProps) => {
+    navigate("more", {
+      state: {
+        type: type,
+      },
+    });
+  };
+
   return (
     <S.HomeContainer>
       <S.HomeHeader>
@@ -33,17 +41,23 @@ export default function Home() {
       <S.HomeBody>
         <TitleMoreBox
           title="지금 가장 인기있는 여행지"
-          moreType="TRAVEL_PLACE"
+          handleClick={() => handleMore("TRAVEL_PLACE")}
         />
         <CardSlide placeType="TRAVEL_PLACE" />
 
-        <TitleMoreBox title="인기 여행 도시" moreType="CITY" />
+        <TitleMoreBox
+          title="인기 여행 도시"
+          handleClick={() => handleMore("CITY")}
+        />
         <CardSlide placeType="CITY" isCity={true} bottomText={true} />
 
-        <TitleMoreBox title="지금 가면 좋은 여행지" moreType="THEME" />
+        <TitleMoreBox
+          title="지금 가면 좋은 여행지"
+          handleClick={() => handleMore("THEME")}
+        />
         <CardSlide placeType="THEME" topText={true} />
 
-        <TitleMoreBox title="사람들이 찜한 여행기" moreType="CITY" />
+        <TitleMoreBox title="사람들이 찜한 여행기" handleClick={() => {}} />
         <S.ReviewCol>
           <S.ReviewRow>
             <ImageView
@@ -114,7 +128,7 @@ export default function Home() {
           </S.ReviewRow>
         </S.ReviewCol>
 
-        <TitleMoreBox title="지금 뜨는 리뷰" moreType="CITY" />
+        <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} />
         {/* <S.ReviewCol>
           {review?.slice(0, 2).map((item: reviewApiProps) => (
             <S.ReviewRow key={item.id}>
