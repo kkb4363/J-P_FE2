@@ -14,8 +14,6 @@ import {
 } from "../../../types/home.details";
 import { reviewApiProps } from "../../../types/home";
 import { useMapStore } from "../../../store/map.store";
-import ImageView from "../../../components/mobile/ImageView";
-import ActionButton from "../../../components/mobile/ActionButton";
 import * as S from "../../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../../utils/staticDatas";
 import EditIcon from "../../../assets/icons/EditIcon";
@@ -23,14 +21,7 @@ import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 import styled from "styled-components";
 import Slider from "react-slick";
-
-interface Props {
-  photoUrl: string;
-  name: string;
-  rating: number;
-  height?: string;
-  handleDetails?: () => void;
-}
+import NearPlaceCard from "../../../components/mobile/home/NearPlaceCard";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
@@ -41,12 +32,78 @@ export default function HomeDetails() {
   const [addScheduleState, setAddScheduleState] = useState(false);
   const isCityDetailPage = location.pathname.includes("city");
   const [imgLoading, setImgLoading] = useState(true);
-
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const settings = {
+    arrows: false,
+    dots: false,
+    infinite: false,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+    beforeChange: (current: number, next: number) => setCurrentIndex(next),
+  };
+
+  const loadGoogleMapsScript = async () => {
+    const existingScript = document.getElementById("google-maps");
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${
+        import.meta.env.VITE_GOOGLE_API_KEY
+      }&callback=initMap`;
+      script.id = "google-maps";
+      script.async = true;
+      document.body.appendChild(script);
+
+      script.onload = () => {
+        if ((window as any).google) {
+          initMap();
+        }
+      };
+    } else {
+      if ((window as any).google && details?.location) {
+        initMap();
+      }
+    }
+  };
+
+  const getNearPlace = async () => {
+    try {
+      if (details?.location) {
+        axiosInstance
+          .get(
+            `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
+          )
+          .then((res) => {
+            if (res.status === 200) {
+              setNearbyPlaces(res.data.results);
+            }
+          });
+      }
+    } catch (error) {
+      console.error("nearbyPlace Api Error=", error);
+    }
+  };
+
+  const initMap = () => {
+    if (mapRef.current) {
+      const map = new (window as any).google.maps.Map(mapRef.current, {
+        center: { lat: details.location.lat, lng: details.location.lng },
+        zoom: 16,
+      });
+
+      const marker = new (window as any).google.maps.Marker({
+        position: { lat: details.location.lat, lng: details.location.lng },
+        map: map,
+        title: details.name,
+      });
+    }
+  };
 
   useEffect(() => {
     const requestApi = async () => {
@@ -74,7 +131,7 @@ export default function HomeDetails() {
         setLoading(false);
         setTimeout(() => {
           setImgLoading(false);
-        }, 500);
+        }, 1000);
       }
     };
 
@@ -82,79 +139,11 @@ export default function HomeDetails() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    const loadGoogleMapsScript = async () => {
-      const existingScript = document.getElementById("google-maps");
-      if (!existingScript) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${
-          import.meta.env.VITE_GOOGLE_API_KEY
-        }&callback=initMap`;
-        script.id = "google-maps";
-        script.async = true;
-        document.body.appendChild(script);
-
-        script.onload = () => {
-          if ((window as any).google) {
-            initMap();
-          }
-        };
-      } else {
-        if ((window as any).google && details?.location) {
-          initMap();
-        }
-      }
-    };
-
-    const getNearPlace = async () => {
-      try {
-        if (details?.location) {
-          axiosInstance
-            .get(
-              `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
-            )
-            .then((res) => {
-              if (res.status === 200) {
-                setNearbyPlaces(res.data.results);
-              }
-            });
-        }
-      } catch (error) {
-        console.error("nearbyPlace Api Error=", error);
-      }
-    };
-
-    const initMap = () => {
-      if (mapRef.current) {
-        const map = new (window as any).google.maps.Map(mapRef.current, {
-          center: { lat: details.location.lat, lng: details.location.lng },
-          zoom: 16,
-        });
-
-        const marker = new (window as any).google.maps.Marker({
-          position: { lat: details.location.lat, lng: details.location.lng },
-          map: map,
-          title: details.name,
-        });
-      }
-    };
-
     if (details) {
       loadGoogleMapsScript();
       getNearPlace();
     }
   }, [details]);
-
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const settings = {
-    arrows: false,
-    dots: false,
-    infinite: false,
-    speed: 300,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: true,
-    beforeChange: (current: number, next: number) => setCurrentIndex(next),
-  };
 
   return (
     <>
@@ -165,7 +154,7 @@ export default function HomeDetails() {
           <S.DetailsImageBox>
             <StyledSlider {...settings}>
               {details?.photoUrls?.map((img, idx) => (
-                <img src={img} alt={img} key={idx} />
+                <img aria-placeholder="loading" src={img} alt={img} key={idx} />
               ))}
             </StyledSlider>
 
@@ -320,34 +309,6 @@ export default function HomeDetails() {
         <CreateScheduleSheet handleClose={() => setAddScheduleState(false)} />
       )}
     </>
-  );
-}
-
-function NearPlaceCard({
-  photoUrl,
-  name,
-  rating,
-  height = "83px",
-  handleDetails,
-}: Props) {
-  return (
-    <S.NearPlaceBox $height={height}>
-      <ImageView width="60px" height="60px" src={photoUrl} alt={name} />
-
-      <S.NearPlaceDetailCol>
-        <p>{name}</p>
-
-        <div>
-          <StarIcon />
-          {rating} | <span onClick={handleDetails}>위치보기</span>
-        </div>
-      </S.NearPlaceDetailCol>
-
-      <ActionButton>
-        <PlusIcon />
-        <span>추가</span>
-      </ActionButton>
-    </S.NearPlaceBox>
   );
 }
 
