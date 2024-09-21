@@ -76,4 +76,9 @@ export const CommentWriteButton = styled.button<{ fill: boolean }>`
   padding: 8.5px 17px;
   font-size: 12px;
   font-weight: 700;
+
+  &:active {
+    opacity: ${(props) => props.fill && 0.5};
+    background-color: ${(props) => !props.fill && props.theme.color.gray100}
+  }
 `;

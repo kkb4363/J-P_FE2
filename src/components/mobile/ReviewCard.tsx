@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import ImageView from "./ImageView";
 import * as R from "../../assets/styles/travelReview.style";
 import { testImageList } from "../../utils/staticDatas";
+import MarkIcon from "../../assets/icons/MarkIcon";
 
 interface Props {
   item: reviewApiProps;
@@ -18,6 +19,10 @@ export default function ReviewCard({ item, ref }: Props) {
   const navigate = useNavigate();
   return (
     <ReviewCardContainer key={item.id} ref={ref}>
+      <ReviewPlaceBox>
+        <MarkIcon stroke="#6979F8" width="18" height="18" />
+        <p>오대산 선재길</p>
+      </ReviewPlaceBox>
       <R.ProfileHeader>
         <CustomProfile
           src="/src/assets/images/testImg.png"
@@ -55,7 +60,6 @@ export default function ReviewCard({ item, ref }: Props) {
 }
 
 const ReviewCardContainer = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -74,6 +78,22 @@ const ReviewCardContainer = styled.div`
     width: 100%;
     height: 1px;
     background-color: ${(props) => props.theme.color.gray200};
+  }
+`;
+
+const ReviewPlaceBox = styled.div`
+  width: fit-content;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  padding: 4px 10px;
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid ${(props) => props.theme.color.gray700};
+  border-radius: 16px;
+
+  & > p {
+    font-size: 14px;
+    color: ${(props) => props.theme.color.gray700};
   }
 `;
 
