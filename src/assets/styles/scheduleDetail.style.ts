@@ -202,9 +202,9 @@ export const AddPlaceButton = styled.div`
 
 // 일정 장소 상세
 export const CancelIconBox = styled.div`
-display: flex;
-justify-content: flex-end;
-`
+  display: flex;
+  justify-content: flex-end;
+`;
 
 export const PlanPlaceContainer = styled.div`
   padding: 0 13px;
@@ -253,7 +253,7 @@ export const PlanDetailsHeader = styled.div`
 export const PlanDetailsBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
   padding: 20px 4px;
 `;
 
@@ -268,12 +268,15 @@ export const SubTitleBox = styled.div`
   }
 `;
 
-export const DetailsInput = styled.div`
+export const DetailsInput = styled.div<{ isDetailsEdit: boolean }>`
   background-color: ${(props) => props.theme.color.white};
-  border: 1px solid ${(props) => props.theme.color.gray200};
+  border: ${(props) =>
+    props.isDetailsEdit && `1px solid ${props.theme.color.gray200}`};
   border-radius: 16px;
   padding: 20px 27px;
   height: 98px;
+  box-shadow: ${(props) =>
+    !props.isDetailsEdit && "0px 2px 10px 0px rgba(0, 0, 0, 0.04)"};
 
   & > textarea {
     padding: 0;
@@ -281,6 +284,7 @@ export const DetailsInput = styled.div`
     border: none;
     width: 100%;
     height: 100%;
+    resize: none;
 
     &::placeholder {
       color: ${(props) => props.theme.color.gray300};
@@ -288,12 +292,46 @@ export const DetailsInput = styled.div`
   }
 `;
 
+export const CostTitleBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const SelectCostText = styled.p`
+  color: ${(props) => props.theme.color.gray300};
+  font-size: 12px;
+  line-height: 150%;
+`;
+
+export const SelectCostBox = styled.div`
+  display: flex;
+  gap: 12px;
+  margin: 8px 0 16px;
+`;
+
+const RoundIconBox = styled.div`
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 30px;
+`;
+
+export const SelectCostItem = styled(RoundIconBox)<{ isCategorySelect: boolean; }>`
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid
+    ${(props) =>
+      props.isCategorySelect
+        ? props.theme.color.secondary
+        : props.theme.color.gray200};
+`;
+
 export const CostInput = styled.div`
   background-color: ${(props) => props.theme.color.white};
   border: 1px solid ${(props) => props.theme.color.gray200};
   border-radius: 16px;
   height: 52px;
-  padding: 15.5px 27px;
+  padding: 15.5px 24px;
 
   & > input {
     outline: none;
@@ -305,15 +343,44 @@ export const CostInput = styled.div`
   }
 `;
 
+export const CostBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 17px 18px;
+  background-color: ${(props) => props.theme.color.white};
+  border-radius: 16px;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.04);
+`;
+
+export const CostItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: ${(props) => props.theme.color.gray700};
+`;
+
+export const CostCategory = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+export const CostCategoryIcon = styled(RoundIconBox)`
+  background-color: ${(props) => props.theme.color.secondaryLight};
+`;
+
 export const TransportBox = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 8px;
 `;
 
 export const TransPortItem = styled.div<{ $select: boolean }>`
-  padding: 10px 15px;
+  padding: 10px;
   border-radius: 30px;
   font-size: 14px;
+  white-space: nowrap;
   background-color: ${(props) => props.theme.color.white};
   border: 1px solid
     ${(props) =>
