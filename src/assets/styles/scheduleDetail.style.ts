@@ -145,10 +145,13 @@ export const PlansEditButton = styled.div`
   align-self: flex-end;
   gap: 3px;
   height: 16px;
+  font-size: 14px;
 
   & > p {
+    color: ${(props) => props.theme.color.secondary};
+  }
+  & > span {
     color: ${(props) => props.theme.color.gray500};
-    font-size: 14px;
   }
 `;
 

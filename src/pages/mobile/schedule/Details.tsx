@@ -176,8 +176,14 @@ export default function Details() {
             <>
               <D.PlansBox>
                 <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
-                  <PenIcon stroke="#808080" />
-                  <p>편집</p>
+                  {isEdit ? (
+                    <p>완료</p>
+                  ) : (
+                    <>
+                      <PenIcon stroke="#808080" />
+                      <span>편집</span>
+                    </>
+                  )}
                 </D.PlansEditButton>
                 <div>
                   <D.StyledSlider {...slickSettings}>
