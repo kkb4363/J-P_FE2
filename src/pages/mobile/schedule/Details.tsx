@@ -27,6 +27,7 @@ import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
+import CancelIcon from "../../../assets/icons/CancelIcon";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
@@ -210,9 +211,9 @@ export default function Details() {
           {/* 일정 장소 상세 */}
           {isPlanPlace && (
             <div>
-              <div onClick={() => setIsPlanPlace(false)}>
-                <ArrowLeftIcon />
-              </div>
+              <D.CancelIconBox>
+                <CancelIcon size="24" onClick={() => setIsPlanPlace(false)} />
+              </D.CancelIconBox>
               <D.PlanPlaceContainer>
                 <D.PlaceTitleBox>
                   <ImageView

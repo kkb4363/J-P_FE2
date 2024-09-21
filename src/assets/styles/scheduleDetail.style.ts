@@ -198,8 +198,13 @@ export const AddPlaceButton = styled.div`
 `;
 
 // 일정 장소 상세
+export const CancelIconBox = styled.div`
+display: flex;
+justify-content: flex-end;
+`
+
 export const PlanPlaceContainer = styled.div`
-  padding: 8px 13px;
+  padding: 0 13px;
 `;
 
 export const PlaceTitleBox = styled.div`
@@ -220,7 +225,7 @@ export const Line = styled.div`
   height: 1px;
   background-color: ${(props) => props.theme.color.gray200};
   margin: 12px 0 16px;
-`
+`;
 
 // 일정 상세
 export const PlanDetailsHeader = styled.div`
