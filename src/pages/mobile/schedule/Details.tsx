@@ -14,7 +14,11 @@ import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { useJPStore } from "../../../store/JPType.store";
 import { planItemProps } from "../../../types/schedule";
-import { testPlanItems } from "../../../utils/staticDatas";
+import {
+  testDayList,
+  testPlanItems,
+  testTransportList,
+} from "../../../utils/staticDatas";
 import { arrayMoveImmutable } from "array-move";
 import { PlanList } from "../../../components/mobile/scheduleSort/PlanList";
 import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
@@ -27,26 +31,13 @@ import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
+import PrevArrow from "../../../components/mobile/SlideArrows/PrevArrow";
+import NextArrow from "../../../components/mobile/SlideArrows/NextArrow";
+import CancelIcon from "../../../assets/icons/CancelIcon";
+import CarIcon from "../../../assets/icons/CarIcon";
+import AddSquareIcon from "../../../assets/icons/AddSquareIcon";
 
 type BottomSheetType = "AddPlace" | "Invite";
-
-function PrevArrow(props: any) {
-  const { onClick } = props;
-  return (
-    <D.ArrowBox className="left" onClick={onClick}>
-      <ArrowLeftIcon stroke="#6979F8" />
-    </D.ArrowBox>
-  );
-}
-
-function NextArrow(props: any) {
-  const { onClick } = props;
-  return (
-    <D.ArrowBox className="right" onClick={onClick}>
-      <ArrowRightIcon stroke="#6979F8" />
-    </D.ArrowBox>
-  );
-}
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
@@ -59,30 +50,19 @@ export default function Details() {
   const [isPlanPlace, setIsPlanPlace] = useState(false);
   const [isDetailsEdit, setIsDetailsEdit] = useState(false);
   const [transport, setTransport] = useState("");
+  const [costCategory, setCostCategory] = useState("Car");
+  const [currentDay, setCurrentDay] = useState(0);
   const { jpState } = useJPStore();
   const navigate = useNavigate();
-
-  // Day 설정
-  const [currentDay, setCurrentDay] = useState(0);
-  const slickSettings = {
-    centerMode: true,
+  const daySlideSettings = {
+    infinite: false,
     focusOnSelect: true,
-    infinite: true,
+    focusOnChange: true,
     slidesToShow: 3,
     swipeToSlide: true,
-    centerPadding: "0px",
     speed: 500,
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
-    beforeChange: (current: number, next: number) => {
-      console.log(current);
-      setCurrentDay(next);
-    },
-  };
-
-  const handleInviteClose = () => {
-    setSheetOpen("AddPlace");
-    setIsIdAdd(false);
   };
 
   useEffect(() => {
@@ -123,6 +103,15 @@ export default function Details() {
     loadGoogleMapsScript();
   }, []);
 
+  const handleInviteClose = () => {
+    setSheetOpen("AddPlace");
+    setIsIdAdd(false);
+  };
+
+  const handleDayClick = (day: number) => {
+    setCurrentDay(day);
+  };
+
   // 드래그 이벤트
   const handleSortEnd = ({
     oldIndex,
@@ -134,10 +123,15 @@ export default function Details() {
     setPlanItems(arrayMoveImmutable(planItems, oldIndex, newIndex));
   };
 
-  const handleTransportClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTransportClick = (item: string) => {
     if (isDetailsEdit) {
-      setTransport(e.currentTarget.innerText);
+      setTransport(item);
     }
+  };
+
+  const handleDetailsClose = () => {
+    setIsPlanDetail(false);
+    setIsDetailsEdit(false);
   };
 
   return (
@@ -175,18 +169,24 @@ export default function Details() {
             <>
               <D.PlansBox>
                 <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
-                  <PenIcon stroke="#808080" />
-                  <p>편집</p>
+                  {isEdit ? (
+                    <p>완료</p>
+                  ) : (
+                    <>
+                      <PenIcon stroke="#808080" />
+                      <span>편집</span>
+                    </>
+                  )}
                 </D.PlansEditButton>
                 <div>
-                  <D.StyledSlider {...slickSettings}>
-                    <D.DayBox $select={currentDay === 0}>Day 1</D.DayBox>
-                    <D.DayBox $select={currentDay === 1}>Day 2</D.DayBox>
-                    <D.DayBox $select={currentDay === 2}>Day 3</D.DayBox>
-                    <D.DayBox $select={currentDay === 3}>Day 4</D.DayBox>
-                    <D.DayBox $select={currentDay === 4}>Day 5</D.DayBox>
-                    <D.DayBox $select={currentDay === 5}>Day 6</D.DayBox>
-                    <D.DayBox $select={currentDay === 6}>Day 7</D.DayBox>
+                  <D.StyledSlider {...daySlideSettings}>
+                    {testDayList.map((day, i) => (
+                      <D.DayBox
+                        key={i}
+                        onClick={() => handleDayClick(day)}
+                        $select={currentDay === day}
+                      >{`Day ${day + 1}`}</D.DayBox>
+                    ))}
                   </D.StyledSlider>
                 </div>
                 <PlanList
@@ -210,9 +210,9 @@ export default function Details() {
           {/* 일정 장소 상세 */}
           {isPlanPlace && (
             <div>
-              <div onClick={() => setIsPlanPlace(false)}>
-                <ArrowLeftIcon />
-              </div>
+              <D.CancelIconBox>
+                <CancelIcon size="24" onClick={() => setIsPlanPlace(false)} />
+              </D.CancelIconBox>
               <D.PlanPlaceContainer>
                 <D.PlaceTitleBox>
                   <ImageView
@@ -250,7 +250,7 @@ export default function Details() {
           {isPlanDetail && (
             <div>
               <D.PlanDetailsHeader>
-                <div onClick={() => setIsPlanDetail(false)}>
+                <div onClick={handleDetailsClose}>
                   <ArrowLeftIcon />
                 </div>
                 <span>플랜 추가</span>
@@ -264,7 +264,7 @@ export default function Details() {
                     <PlanCalendarIcon />
                     <p>일정</p>
                   </D.SubTitleBox>
-                  <D.DetailsInput>
+                  <D.DetailsInput isDetailsEdit={isDetailsEdit}>
                     <textarea
                       placeholder="여행 상세 일정"
                       readOnly={!isDetailsEdit}
@@ -272,13 +272,74 @@ export default function Details() {
                   </D.DetailsInput>
                 </div>
                 <div>
-                  <D.SubTitleBox>
-                    <CardIcon />
-                    <p>비용</p>
-                  </D.SubTitleBox>
-                  <D.CostInput>
-                    <input placeholder="금액 입력" readOnly={!isDetailsEdit} />
-                  </D.CostInput>
+                  <D.CostTitleBox>
+                    <D.SubTitleBox>
+                      <CardIcon />
+                      <p>비용</p>
+                    </D.SubTitleBox>
+                    {isDetailsEdit && (
+                      <div>
+                        <AddSquareIcon />
+                      </div>
+                    )}
+                  </D.CostTitleBox>
+                  {isDetailsEdit ? (
+                    <>
+                      <D.SelectCostText>항목을 선택해주세요.</D.SelectCostText>
+                      <D.SelectCostBox>
+                        <D.SelectCostItem
+                          isCategorySelect={costCategory === "Car"}
+                          onClick={() => setCostCategory("Car")}
+                        >
+                          <CarIcon
+                            stroke={
+                              costCategory === "Car" ? "#6979F8" : "#B8B8B8"
+                            }
+                          />
+                        </D.SelectCostItem>
+                        <D.SelectCostItem
+                          isCategorySelect={costCategory === "Ticket"}
+                          onClick={() => setCostCategory("Ticket")}
+                        >
+                          <TicketIcon
+                            stroke={
+                              costCategory === "Ticket" ? "#6979F8" : "#B8B8B8"
+                            }
+                          />
+                        </D.SelectCostItem>
+                      </D.SelectCostBox>
+                      <D.CostInput>
+                        <input
+                          placeholder="금액 입력"
+                          readOnly={!isDetailsEdit}
+                        />
+                      </D.CostInput>
+                    </>
+                  ) : (
+                    <>
+                      <D.CostBox>
+                        <D.CostItem>
+                          <D.CostCategory>
+                            <D.CostCategoryIcon>
+                              <CarIcon />
+                            </D.CostCategoryIcon>
+                            <p>버스</p>
+                          </D.CostCategory>
+                          <p>7,900원</p>
+                        </D.CostItem>
+
+                        <D.CostItem>
+                          <D.CostCategory>
+                            <D.CostCategoryIcon>
+                              <TicketIcon stroke="#6979F8" />
+                            </D.CostCategoryIcon>
+                            <p>입장료</p>
+                          </D.CostCategory>
+                          <p>10,500원</p>
+                        </D.CostItem>
+                      </D.CostBox>
+                    </>
+                  )}
                 </div>
                 <div>
                   <D.SubTitleBox>
@@ -286,30 +347,21 @@ export default function Details() {
                     <p>이동 수단</p>
                   </D.SubTitleBox>
                   <D.TransportBox>
-                    <D.TransPortItem
-                      $select={transport === "자동차"}
-                      onClick={handleTransportClick}
-                    >
-                      자동차
-                    </D.TransPortItem>
-                    <D.TransPortItem
-                      $select={transport === "버스/지하철"}
-                      onClick={handleTransportClick}
-                    >
-                      버스/지하철
-                    </D.TransPortItem>
-                    <D.TransPortItem
-                      $select={transport === "기차"}
-                      onClick={handleTransportClick}
-                    >
-                      기차
-                    </D.TransPortItem>
-                    <D.TransPortItem
-                      $select={transport === "택시"}
-                      onClick={handleTransportClick}
-                    >
-                      택시
-                    </D.TransPortItem>
+                    {isDetailsEdit &&
+                      testTransportList.map((item, i) => (
+                        <D.TransPortItem
+                          key={i}
+                          onClick={() => handleTransportClick(item)}
+                          $select={transport === item}
+                        >
+                          {item}
+                        </D.TransPortItem>
+                      ))}
+                    {!isDetailsEdit && transport && (
+                      <D.TransPortItem $select={true}>
+                        {transport}
+                      </D.TransPortItem>
+                    )}
                   </D.TransportBox>
                 </div>
               </D.PlanDetailsBody>
