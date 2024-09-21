@@ -14,7 +14,7 @@ import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { useJPStore } from "../../../store/JPType.store";
 import { planItemProps } from "../../../types/schedule";
-import { testPlanItems } from "../../../utils/staticDatas";
+import { testDayList, testPlanItems } from "../../../utils/staticDatas";
 import { arrayMoveImmutable } from "array-move";
 import { PlanList } from "../../../components/mobile/scheduleSort/PlanList";
 import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
@@ -27,27 +27,11 @@ import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
+import PrevArrow from "../../../components/mobile/SlideArrows/PrevArrow";
+import NextArrow from "../../../components/mobile/SlideArrows/NextArrow";
 import CancelIcon from "../../../assets/icons/CancelIcon";
 
 type BottomSheetType = "AddPlace" | "Invite";
-
-function PrevArrow(props: any) {
-  const { onClick } = props;
-  return (
-    <D.ArrowBox className="left" onClick={onClick}>
-      <ArrowLeftIcon stroke="#6979F8" />
-    </D.ArrowBox>
-  );
-}
-
-function NextArrow(props: any) {
-  const { onClick } = props;
-  return (
-    <D.ArrowBox className="right" onClick={onClick}>
-      <ArrowRightIcon stroke="#6979F8" />
-    </D.ArrowBox>
-  );
-}
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
@@ -60,30 +44,27 @@ export default function Details() {
   const [isPlanPlace, setIsPlanPlace] = useState(false);
   const [isDetailsEdit, setIsDetailsEdit] = useState(false);
   const [transport, setTransport] = useState("");
+  const [currentDay, setCurrentDay] = useState(0);
   const { jpState } = useJPStore();
   const navigate = useNavigate();
-
-  // Day 설정
-  const [currentDay, setCurrentDay] = useState(0);
-  const slickSettings = {
-    centerMode: true,
+  const daySlideSettings = {
+    infinite: false,
     focusOnSelect: true,
-    infinite: true,
+    focusOnChange: true,
     slidesToShow: 3,
     swipeToSlide: true,
-    centerPadding: "0px",
     speed: 500,
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
-    beforeChange: (current: number, next: number) => {
-      console.log(current);
-      setCurrentDay(next);
-    },
   };
 
   const handleInviteClose = () => {
     setSheetOpen("AddPlace");
     setIsIdAdd(false);
+  };
+
+  const handleDayClick = (day: number) => {
+    setCurrentDay(day);
   };
 
   useEffect(() => {
@@ -186,14 +167,14 @@ export default function Details() {
                   )}
                 </D.PlansEditButton>
                 <div>
-                  <D.StyledSlider {...slickSettings}>
-                    <D.DayBox $select={currentDay === 0}>Day 1</D.DayBox>
-                    <D.DayBox $select={currentDay === 1}>Day 2</D.DayBox>
-                    <D.DayBox $select={currentDay === 2}>Day 3</D.DayBox>
-                    <D.DayBox $select={currentDay === 3}>Day 4</D.DayBox>
-                    <D.DayBox $select={currentDay === 4}>Day 5</D.DayBox>
-                    <D.DayBox $select={currentDay === 5}>Day 6</D.DayBox>
-                    <D.DayBox $select={currentDay === 6}>Day 7</D.DayBox>
+                  <D.StyledSlider {...daySlideSettings}>
+                    {testDayList.map((day, i) => (
+                      <D.DayBox
+                        key={i}
+                        onClick={() => handleDayClick(day)}
+                        $select={currentDay === day}
+                      >{`Day ${day + 1}`}</D.DayBox>
+                    ))}
                   </D.StyledSlider>
                 </div>
                 <PlanList
