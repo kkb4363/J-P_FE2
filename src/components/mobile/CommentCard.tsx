@@ -4,6 +4,8 @@ import CustomProfile from "./CustomProfile";
 import { commentResDto, userCompactResDto } from "../../types/res.dto";
 import ReplyIcon from "../../assets/icons/ReplyIcon";
 import { useEffect, useState } from "react";
+import PencilIcon from "../../assets/icons/PencilIcon";
+import TrashIcon from "../../assets/icons/TrashIcon";
 
 interface Props {
   isReply?: boolean;
@@ -45,16 +47,27 @@ export default function CommentCard({
       <p>{content}</p>
       {!isReply && (
         <>
-          <R.IconBox>
-            <ReplyIcon />
-            {replyList && replyList.length > 0 ? (
-              <span>{replyList && replyList.length}</span>
-            ) : (
-              <span onClick={() => setWriteReply((prev) => !prev)}>
-                답글달기
-              </span>
-            )}
-          </R.IconBox>
+          <CommentFooter>
+            <R.IconBox>
+              <ReplyIcon />
+              {replyList && replyList.length > 0 ? (
+                <span>{replyList && replyList.length}</span>
+              ) : (
+                <span onClick={() => setWriteReply((prev) => !prev)}>
+                  답글달기
+                </span>
+              )}
+            </R.IconBox>
+            <CommentEditIconBox>
+              <PencilIcon />
+              <TrashIcon
+                stroke="#808080"
+                strokeWidth={1.8}
+                width={16}
+                height={16}
+              />
+            </CommentEditIconBox>
+          </CommentFooter>
           {replyList &&
             replyList.map((item: commentResDto) => {
               return (
@@ -88,6 +101,19 @@ export default function CommentCard({
           </R.CommentWriteButton>
         </R.CommentInputBox>
       )}
+      {isReply && (
+        <>
+          <CommentEditIconBox>
+            <PencilIcon />
+            <TrashIcon
+              stroke="#808080"
+              strokeWidth={1.8}
+              width={16}
+              height={16}
+            />
+          </CommentEditIconBox>
+        </>
+      )}
     </CommentCardContainer>
   );
 }
@@ -96,7 +122,7 @@ const CommentCardContainer = styled.div<{ reply?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 9px;
+  gap: 10px;
   padding: 16px;
   font-size: 12px;
   color: ${(props) => props.theme.color.gray900};
@@ -107,4 +133,16 @@ const CommentCardContainer = styled.div<{ reply?: boolean }>`
   & > p {
     font-size: 14px;
   }
+`;
+
+const CommentFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CommentEditIconBox = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
 `;
