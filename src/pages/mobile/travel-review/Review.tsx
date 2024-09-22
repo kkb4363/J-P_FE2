@@ -78,7 +78,7 @@ export default function Review({ sort }: Props) {
         })} */}
       <ReviewCard key={1} item={testReviewItem} />
     </ReviewContainer>
-  ); 
+  );
 }
 
 const ReviewContainer = styled.div`

@@ -78,11 +78,11 @@ const ImageViewContainer = styled.div<{
 
 const TopText = styled.div`
   position: absolute;
-  top: 15px; // 필요하다면 임의
-  right: 11px; // 여기도 똑같이
+  top: 25px;
+  right: 19px;
   border-radius: 30px;
   background: rgba(255, 255, 255, 0.6);
-  padding: 2px 8px;
+  padding: 3px 12px;
 
   & > span {
     color: ${(props) => props.theme.color.gray900};
@@ -95,10 +95,11 @@ const TopText = styled.div`
 
 const BottomText = styled.div`
   position: absolute;
-  bottom: 13px;
-  right: 11px;
+  bottom: 26px;
+  right: 21px;
   height: 25px;
-  padding: 4px 10px;
+  padding: 20px 18px;
+  display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;

@@ -2,7 +2,7 @@ import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
@@ -14,8 +14,6 @@ import {
 } from "../../../types/home.details";
 import { reviewApiProps } from "../../../types/home";
 import { useMapStore } from "../../../store/map.store";
-import ImageView from "../../../components/mobile/ImageView";
-import ActionButton from "../../../components/mobile/ActionButton";
 import * as S from "../../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../../utils/staticDatas";
 import EditIcon from "../../../assets/icons/EditIcon";
@@ -23,30 +21,52 @@ import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 import styled from "styled-components";
 import Slider from "react-slick";
-
-interface Props {
-  photoUrl: string;
-  name: string;
-  rating: number;
-  height?: string;
-  handleDetails?: () => void;
-}
+import NearPlaceCard from "../../../components/mobile/home/NearPlaceCard";
+import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
-  const mapRef = useRef<HTMLDivElement>(null);
   const { clear } = useMapStore();
+
+  const isCityDetailPage = location.pathname.includes("city");
+
   const [loading, setLoading] = useState(true);
   const [addScheduleState, setAddScheduleState] = useState(false);
-  const isCityDetailPage = location.pathname.includes("city");
-  const [imgLoading, setImgLoading] = useState(true);
-
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
+
+  const [imageIndex, setImageIndex] = useState<number>(0);
+  const imageSliderSetting = {
+    arrows: false,
+    dots: false,
+    infinite: false,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+    beforeChange: (current: number, next: number) => setImageIndex(next),
+  };
+
+  const getNearPlace = async () => {
+    try {
+      axiosInstance
+        .get(
+          `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            setNearbyPlaces(res.data.results);
+          }
+        });
+    } catch (error) {
+      console.error("nearbyPlace Api Error=", error);
+    }
+  };
 
   useEffect(() => {
     const requestApi = async () => {
@@ -56,25 +76,17 @@ export default function HomeDetails() {
           axiosInstance.get(
             `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
           ),
-          // 리뷰 있는 api
-          // axiosInstance.get(
-          //   `/reviews?page=1&sort=HOT&placeId=ChIJda9gFeQmYzURIsXnKaOqStY`
-          // ),
         ]);
 
         if (detailsRes.status === 200) {
           setDetails(detailsRes.data);
+          setLoading(false);
         }
         if (reviewsRes.status === 200) {
           setReviews(reviewsRes.data.data);
         }
       } catch (error) {
-        console.error("API Error:", error);
-      } finally {
-        setLoading(false);
-        setTimeout(() => {
-          setImgLoading(false);
-        }, 500);
+        console.error("homeDetail api error=", error);
       }
     };
 
@@ -82,90 +94,21 @@ export default function HomeDetails() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    const loadGoogleMapsScript = async () => {
-      const existingScript = document.getElementById("google-maps");
-      if (!existingScript) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${
-          import.meta.env.VITE_GOOGLE_API_KEY
-        }&callback=initMap`;
-        script.id = "google-maps";
-        script.async = true;
-        document.body.appendChild(script);
-
-        script.onload = () => {
-          if ((window as any).google) {
-            initMap();
-          }
-        };
-      } else {
-        if ((window as any).google && details?.location) {
-          initMap();
-        }
-      }
-    };
-
-    const getNearPlace = async () => {
-      try {
-        if (details?.location) {
-          axiosInstance
-            .get(
-              `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
-            )
-            .then((res) => {
-              if (res.status === 200) {
-                setNearbyPlaces(res.data.results);
-              }
-            });
-        }
-      } catch (error) {
-        console.error("nearbyPlace Api Error=", error);
-      }
-    };
-
-    const initMap = () => {
-      if (mapRef.current) {
-        const map = new (window as any).google.maps.Map(mapRef.current, {
-          center: { lat: details.location.lat, lng: details.location.lng },
-          zoom: 16,
-        });
-
-        const marker = new (window as any).google.maps.Marker({
-          position: { lat: details.location.lat, lng: details.location.lng },
-          map: map,
-          title: details.name,
-        });
-      }
-    };
-
-    if (details) {
-      loadGoogleMapsScript();
+    if (details.id) {
       getNearPlace();
     }
-  }, [details]);
-
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const settings = {
-    arrows: false,
-    dots: false,
-    infinite: false,
-    speed: 300,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: true,
-    beforeChange: (current: number, next: number) => setCurrentIndex(next),
-  };
+  }, [details?.id]);
 
   return (
     <>
       <S.HomeDetailsContainer>
-        {imgLoading ? (
+        {loading ? (
           <CustomSkeleton height="250px" />
         ) : (
           <S.DetailsImageBox>
-            <StyledSlider {...settings}>
+            <StyledSlider {...imageSliderSetting}>
               {details?.photoUrls?.map((img, idx) => (
-                <img src={img} alt={img} key={idx} />
+                <img aria-placeholder="loading" src={img} alt={img} key={idx} />
               ))}
             </StyledSlider>
 
@@ -184,7 +127,7 @@ export default function HomeDetails() {
 
             <S.ImagePageIndicatorBox>
               <span>
-                {currentIndex + 1} / {details?.photoUrls.length}
+                {imageIndex + 1} / {details?.photoUrls.length}
               </span>
             </S.ImagePageIndicatorBox>
           </S.DetailsImageBox>
@@ -214,22 +157,21 @@ export default function HomeDetails() {
                 <span>{details?.formattedAddress}</span>
               </S.DetailsSubTitle>
 
-              {loading ? (
-                <CustomSkeleton height="146px" />
-              ) : (
-                <S.GoogleMapBox ref={mapRef} />
+              {!loading && (
+                <CustomGoogleMap
+                  width="100%"
+                  height="146px"
+                  lat={details?.location.lat}
+                  lng={details?.location.lng}
+                />
               )}
             </>
           )}
 
-          <S.DetailsTitleWithMoreText>
-            주변 여행지 추천
-            <S.MoreTextAbsolute
-              onClick={() => navigate(`/nearby/${param?.placeId}`)}
-            >
-              더보기
-            </S.MoreTextAbsolute>
-          </S.DetailsTitleWithMoreText>
+          <TitleMoreBox
+            title="주변 여행지 추천"
+            handleClick={() => navigate(`/nearby/${param?.placeId}`)}
+          />
 
           <S.NearPlaceCol>
             {nearbyPlaces.length === 0
@@ -320,34 +262,6 @@ export default function HomeDetails() {
         <CreateScheduleSheet handleClose={() => setAddScheduleState(false)} />
       )}
     </>
-  );
-}
-
-function NearPlaceCard({
-  photoUrl,
-  name,
-  rating,
-  height = "83px",
-  handleDetails,
-}: Props) {
-  return (
-    <S.NearPlaceBox $height={height}>
-      <ImageView width="60px" height="60px" src={photoUrl} alt={name} />
-
-      <S.NearPlaceDetailCol>
-        <p>{name}</p>
-
-        <div>
-          <StarIcon />
-          {rating} | <span onClick={handleDetails}>위치보기</span>
-        </div>
-      </S.NearPlaceDetailCol>
-
-      <ActionButton>
-        <PlusIcon />
-        <span>추가</span>
-      </ActionButton>
-    </S.NearPlaceBox>
   );
 }
 

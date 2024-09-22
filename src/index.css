@@ -1,5 +1,7 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
+@import "react-multi-carousel/lib/styles.css";
+@import "react-toastify/dist/ReactToastify.css";
 
 /* css 초기화  */
 * {
@@ -162,4 +164,24 @@ img {
   font-size: 16px;
   color: #b8b8b8;
   text-align: center;
+}
+
+.react-multi-carousel-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.react-multiple-carousel__arrow--left {
+  left: calc(4% - 25px);
+}
+
+.react-multiple-carousel__arrow--right {
+  right: calc(4% - 25px);
+}
+
+.react-multiple-carousel__arrow {
+  min-width: 30px !important;
+  min-height: 30px !important;
 }

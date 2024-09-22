@@ -50,7 +50,7 @@ export default function CustomInput({
 
 const CustomInputContainer = styled.div<{ $height: string; $width: string }>`
   height: ${({ $height }) => $height && $height};
-  width: 100%;
+  width: ${({ $width }) => $width && $width};
   padding: 10.5px 30px 10.5px 22px;
   display: flex;
   justify-content: center;

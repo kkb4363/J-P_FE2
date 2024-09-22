@@ -1,55 +1,20 @@
 import styled from "styled-components";
 import MarkIcon from "../../../assets/icons/MarkIcon";
-import { useEffect, useRef } from "react";
 import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
 import { useModal } from "../../../hooks/useModal";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 
 export default function Mapview() {
-  const mapRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const loadGoogleMapsScript = async () => {
-      const existingScript = document.getElementById("google-maps");
-      if (!existingScript) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${
-          import.meta.env.VITE_GOOGLE_API_KEY
-        }&callback=initMap`;
-        script.id = "google-maps";
-        script.async = true;
-        document.body.appendChild(script);
-
-        script.onload = () => {
-          if ((window as any).google) {
-            initMap();
-          }
-        };
-      } else {
-        if ((window as any).google) {
-          initMap();
-        }
-      }
-    };
-
-    const initMap = () => {
-      if (mapRef.current) {
-        const map = new (window as any).google.maps.Map(mapRef.current, {
-          // publishing with 임시 좌표 값
-          center: { lat: 37.579617, lng: 126.977041 },
-          zoom: 16,
-          mapTypeControl: false,
-        });
-      }
-    };
-
-    loadGoogleMapsScript();
-  }, []);
-
   const {
     isOpen,
     openModal: test,
     closeModal,
     modalRef,
   } = useModal({ handleCloseCallback: () => {} });
+
+  const mapStyle = {
+    marginLeft: "-20px",
+  };
 
   return (
     <>
@@ -58,7 +23,13 @@ export default function Mapview() {
         <span onClick={test}>주변 장소 더보기</span>
       </Header>
 
-      <MapBox ref={mapRef} />
+      <CustomGoogleMap
+        width="calc(100% + 20px * 2)"
+        height="calc(100% - 30px - 10px)"
+        lat={37.579617}
+        lng={126.977041}
+        style={mapStyle}
+      />
 
       {isOpen && (
         <TwoButtonsModal

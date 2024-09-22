@@ -1,79 +1,23 @@
 import CustomInput from "../../../components/mobile/CustomInput";
 import BellIcon from "../../../assets/icons/BellIcon";
-import ImageView from "../../../components/mobile/ImageView";
-import CommentIcon from "../../../assets/icons/CommentIcon";
-import HeartIcon from "../../../assets/icons/HeartIcon";
-import StarIcon from "../../../assets/icons/StarIcon";
-import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
-import { placeApiProps, reviewApiProps } from "../../../types/home";
-import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import * as S from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
-import testImg from "../../../assets/images/testImg.png";
-import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
-import "react-toastify/dist/ReactToastify.css";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import HashtagsBox from "../../../components/mobile/HashtagsBox";
+import CardSlide from "../../../components/mobile/home/CardSlide";
+import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
+import TravelLogCard from "../../../components/mobile/home/TravelLogCard";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
 export default function Home() {
   const navigate = useNavigate();
 
-  // 인기 여행지
-  const [travelPlace, setTravelPlace] = useState([]);
-  // 인기 도시
-  const [city, setCity] = useState([]);
-  // 테마별 여행지
-  const [themePlace, setThemePlace] = useState([]);
-  // 지금 뜨는 리뷰
-  const [review, setReview] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-  // TODO : 사람들이 찜한 여행기 api = 아직 백엔드 개발 중
-
-  const handleMoreClick = (type: MoreProps) => {
-    // 모바일은 새로고침이 없으니깐 state 옵션을 써도 될 것 같아요.
+  const handleMore = (type: MoreProps) => {
     navigate("more", {
       state: {
         type: type,
       },
     });
   };
-
-  useEffect(() => {
-    const requestApi = async () => {
-      try {
-        const [travelPlaceRes, cityRes, themePlaceRes, reviewRes] =
-          await Promise.all([
-            axiosInstance.get("/place/page?page=1&placeType=TRAVEL_PLACE"),
-            axiosInstance.get("/place/page?page=1&placeType=CITY"),
-            axiosInstance.get("/place/page?page=1&placeType=THEME"),
-            axiosInstance.get("/reviews?page=1&sort=NEW"),
-          ]);
-
-        if (travelPlaceRes.status === 200) {
-          setTravelPlace(travelPlaceRes.data.data);
-        }
-        if (cityRes.status === 200) {
-          setCity(cityRes.data.data);
-        }
-        if (themePlaceRes.status === 200) {
-          setThemePlace(themePlaceRes.data.data);
-        }
-        if (reviewRes.status === 200) {
-          setReview(reviewRes.data.data);
-        }
-      } catch (error) {
-        console.error("api error=", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    requestApi();
-  }, []);
 
   return (
     <S.HomeContainer>
@@ -89,171 +33,32 @@ export default function Home() {
       />
 
       <S.HomeBody>
-        <S.InfoRow>
-          <S.InfoText>지금 가장 인기있는 여행지</S.InfoText>
-          <S.MoreText
-            onClick={() => handleMoreClick("TRAVEL_PLACE" as MoreProps)}
-          >
-            더보기
-          </S.MoreText>
-        </S.InfoRow>
-        <S.CarouselRow>
-          {loading
-            ? Array.from({ length: 3 }).map((_, index) => (
-                <S.CarouselWithText key={index}>
-                  <CustomSkeleton
-                    width="120px"
-                    height="120px"
-                    borderRadius="16px"
-                  />
-                  <CustomSkeleton style={{ borderRadius: "16px" }} />
-                  <CustomSkeleton style={{ borderRadius: "16px" }} />
-                </S.CarouselWithText>
-              ))
-            : travelPlace?.map((item: placeApiProps) => (
-                <S.CarouselWithText key={item.id}>
-                  <ImageView
-                    src={testImg}
-                    alt={item.name}
-                    handleClick={() => navigate(`${item.placeId}`)}
-                  />
-                  <CarouselTitleBox name={item.name} subName={item.subName} />
-                </S.CarouselWithText>
-              ))}
-        </S.CarouselRow>
+        <TitleMoreBox
+          title="지금 가장 인기있는 여행지"
+          handleClick={() => handleMore("TRAVEL_PLACE")}
+        />
+        <CardSlide placeType="TRAVEL_PLACE" />
 
-        <S.InfoRow>
-          <S.InfoText>인기 여행 도시</S.InfoText>
-          <S.MoreText onClick={() => handleMoreClick("CITY" as MoreProps)}>
-            더보기
-          </S.MoreText>
-        </S.InfoRow>
-        <S.CarouselRow>
-          {loading
-            ? Array.from({ length: 3 }).map((_, index) => (
-                <S.CarouselWithText key={index}>
-                  <CustomSkeleton
-                    width="120px"
-                    height="120px"
-                    borderRadius="16px"
-                  />
-                </S.CarouselWithText>
-              ))
-            : city?.map((item: placeApiProps) => (
-                <ImageView
-                  key={item.id}
-                  src={testImg}
-                  alt={item.name}
-                  bottomText={item.name}
-                  handleClick={() => navigate(`city/${item.placeId}`)}
-                />
-              ))}
-        </S.CarouselRow>
+        <TitleMoreBox
+          title="인기 여행 도시"
+          handleClick={() => handleMore("CITY")}
+        />
+        <CardSlide placeType="CITY" isCity={true} bottomText={true} />
 
-        <S.InfoRow>
-          <S.InfoText>지금 가면 좋은 여행지</S.InfoText>
-          <S.MoreText onClick={() => handleMoreClick("THEME" as MoreProps)}>
-            더보기
-          </S.MoreText>
-        </S.InfoRow>
-        <S.CarouselRow>
-          {loading
-            ? Array.from({ length: 3 }).map((_, index) => (
-                <S.CarouselWithText key={index}>
-                  <CustomSkeleton
-                    width="120px"
-                    height="120px"
-                    borderRadius="16px"
-                  />
-                </S.CarouselWithText>
-              ))
-            : themePlace?.map((item: placeApiProps) => (
-                <S.CarouselWithText key={item.id}>
-                  <ImageView src={testImg} alt={item.name} topText="여행지" />
-                  <CarouselTitleBox name={item.name} subName={item.subName} />
-                </S.CarouselWithText>
-              ))}
-        </S.CarouselRow>
+        <TitleMoreBox
+          title="지금 가면 좋은 여행지"
+          handleClick={() => handleMore("THEME")}
+        />
+        <CardSlide placeType="THEME" topText={true} />
 
-        <S.InfoRow>
-          <S.InfoText>사람들이 찜한 여행기</S.InfoText>
-          <S.MoreText>더보기</S.MoreText>
-        </S.InfoRow>
+        <TitleMoreBox title="사람들이 찜한 여행기" handleClick={() => {}} />
         <S.ReviewCol>
-          <S.ReviewRow>
-            <ImageView
-              src={testImg}
-              alt={"소금산 출렁다리"}
-              width="85px"
-              height="80px"
-            />
-
-            <S.ReviewTextCol>
-              <HashtagsBox hashTags={["안동", "2박3일"]} />
-              <p>안동 혼자 뚜벅이 여행 떠나기</p>
-
-              <S.ReviewProfileRow>
-                <CustomProfile
-                  src={testImg}
-                  nickname="coco1202"
-                  fontSize="12px"
-                />
-
-                <S.ReviewLikeCommentRow>
-                  <S.LikeCommentBox>
-                    <HeartIcon />
-                    <span>26</span>
-                  </S.LikeCommentBox>
-
-                  <S.LikeCommentBox>
-                    <CommentIcon />
-                    <span>16</span>
-                  </S.LikeCommentBox>
-                </S.ReviewLikeCommentRow>
-              </S.ReviewProfileRow>
-            </S.ReviewTextCol>
-          </S.ReviewRow>
-          <S.ReviewRow>
-            <ImageView
-              src={testImg}
-              alt={"소금산 출렁다리"}
-              width="85px"
-              height="80px"
-            />
-
-            <S.ReviewTextCol>
-              <HashtagsBox hashTags={["안동", "2박3일"]} />
-
-              <p>안동 혼자 뚜벅이 여행 떠나기</p>
-
-              <S.ReviewProfileRow>
-                <CustomProfile
-                  src={testImg}
-                  nickname="coco1202"
-                  fontSize="12px"
-                />
-
-                <S.ReviewLikeCommentRow>
-                  <S.LikeCommentBox>
-                    <HeartIcon />
-                    <span>26</span>
-                  </S.LikeCommentBox>
-
-                  <S.LikeCommentBox>
-                    <CommentIcon />
-                    <span>16</span>
-                  </S.LikeCommentBox>
-                </S.ReviewLikeCommentRow>
-              </S.ReviewProfileRow>
-            </S.ReviewTextCol>
-          </S.ReviewRow>
+          <TravelLogCard />
+          <TravelLogCard />
         </S.ReviewCol>
 
-        <S.InfoRow>
-          <S.InfoText>지금 뜨는 리뷰</S.InfoText>
-          <S.MoreText>더보기</S.MoreText>
-        </S.InfoRow>
-        <S.ReviewCol>
+        <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} />
+        {/* <S.ReviewCol>
           {review?.slice(0, 2).map((item: reviewApiProps) => (
             <S.ReviewRow key={item.id}>
               <ImageView src={testImg} alt={""} width="85px" height="80px" />
@@ -282,7 +87,7 @@ export default function Home() {
               </S.ReviewTextCol>
             </S.ReviewRow>
           ))}
-        </S.ReviewCol>
+        </S.ReviewCol> */}
       </S.HomeBody>
     </S.HomeContainer>
   );

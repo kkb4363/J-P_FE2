@@ -17,8 +17,6 @@ export default function More() {
   const observer = useRef<IntersectionObserver | null>(null);
   const type = location?.state?.type;
 
-  console.log(type);
-
   const getTitle = () => {
     switch (type) {
       case "TRAVEL_PLACE":
@@ -47,29 +45,31 @@ export default function More() {
     [hasMore, loading]
   );
 
-  // const requestApi = async () => {
-  //   try {
-  //     const res = await axiosInstance.get(`/place/page?page=${page}&placeType=${type}`);
+  const requestApi = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/place/page?page=${page}&placeType=${type}`
+      );
 
-  //     if (res.status === 200) {
-  //       const newData = res.data.data;
-  //       setData((prev) => [...prev, ...newData]);
-  //       setHasMore(newData.length > 0);
-  //     }
-  //   } catch (error) {
-  //     console.error("api error=", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      if (res.status === 200) {
+        const newData = res.data.data;
+        setData((prev) => [...prev, ...newData]);
+        setHasMore(newData.length > 0);
+      }
+    } catch (error) {
+      console.error("api error=", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   requestApi();
-  // }, [page]);
+  useEffect(() => {
+    requestApi();
+  }, [page]);
 
   return (
     <MoreContainer title={getTitle() + ""}>
-      {/* {data?.map((item: placeApiProps, index: number) => {
+      {data?.map((item: placeApiProps, index: number) => {
         if (data?.length === index + 1) {
           // 마지막 요소에 ref 설정
           return (
@@ -113,25 +113,7 @@ export default function More() {
             </PlaceCardWithText>
           );
         }
-      })} */}
-
-      {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((item, idx) => (
-        <PlaceCardWithText key={idx}>
-          <ImageView
-            src={testImg}
-            alt={item + ""}
-            width="100%"
-            height="156px"
-            topText="여행지"
-          />
-
-          <CarouselTitleBox
-            paddingLeft="8px"
-            name={item + ""}
-            subName={item + "test"}
-          />
-        </PlaceCardWithText>
-      ))}
+      })}
     </MoreContainer>
   );
 }
