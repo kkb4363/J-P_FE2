@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../../utils/axios";
 import { reviewApiProps } from "../../../types/home";
 import ReviewCard from "../../../components/mobile/ReviewCard";
+import { testReviewItem } from './../../../utils/staticDatas';
 
 interface Props {
   sort: string;
@@ -60,7 +61,7 @@ export default function Review({ sort }: Props) {
 
   return (
     <ReviewContainer>
-      {data.length === 0 && !loading && (
+      {/* {data.length === 0 && !loading && (
         <NoResultsText>리뷰가 없습니다.</NoResultsText>
       )}
       {loading && <NoResultsText>로딩중...</NoResultsText>}
@@ -74,7 +75,8 @@ export default function Review({ sort }: Props) {
           } else {
             return <ReviewCard key={item.id} item={item} />;
           }
-        })}
+        })} */}
+      <ReviewCard key={1} item={testReviewItem} />
     </ReviewContainer>
   );
 }

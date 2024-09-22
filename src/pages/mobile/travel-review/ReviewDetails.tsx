@@ -23,6 +23,7 @@ export default function ReviewDetails() {
   const [comment, setComment] = useState("");
   const [commentCnt, setCommentCnt] = useState(-1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [focusImgIdx, setFocusImgIdx] = useState(0);
 
   useEffect(() => {
     const requestApi = async () => {
@@ -57,6 +58,7 @@ export default function ReviewDetails() {
         <ImageSlider
           imageList={testImageList}
           onClose={() => setIsModalOpen(false)}
+          focusIndex={focusImgIdx}
         />
       )}
       {!loading && (
@@ -82,13 +84,21 @@ export default function ReviewDetails() {
                   alt="review img"
                   width="100%"
                   height="129px"
+                  handleClick={() => {
+                    setIsModalOpen(true);
+                    setFocusImgIdx(i);
+                  }}
                 />
-                <ImageOverlay
-                  isLast={i === 3}
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <span>{`+ ${testImageList.length - 3}`}</span>
-                </ImageOverlay>
+                {i === 3 && (
+                  <ImageOverlay
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setFocusImgIdx(0);
+                    }}
+                  >
+                    <span>{`+ ${testImageList.length - 3}`}</span>
+                  </ImageOverlay>
+                )}
               </ImageWrapper>
             ))}
           </ReviewDetailsImageBox>
@@ -193,17 +203,15 @@ const ImageWrapper = styled.div`
   display: inline-block; /* Ensure the wrapper sizes to the image */
 `;
 
-const ImageOverlay = styled.div<{ isLast: boolean }>`
+const ImageOverlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
-  visibility: ${(props) => (props.isLast ? "visible" : "hidden")};
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
   border-radius: 16px;
-  cursor: pointer;
 
   display: grid;
   place-items: center;

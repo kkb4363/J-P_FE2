@@ -6,10 +6,11 @@ import Slider from "react-slick";
 interface Props {
   imageList: string[];
   onClose: () => void;
+  focusIndex?: number;
 }
 
-export default function ImageSlider({ imageList, onClose }: Props) {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+export default function ImageSlider({ imageList, onClose, focusIndex = 0 }: Props) {
+  const [currentIndex, setCurrentIndex] = useState<number>(focusIndex);
   const settings = {
     arrows: false,
     dots: false,
@@ -18,10 +19,9 @@ export default function ImageSlider({ imageList, onClose }: Props) {
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
+    initialSlide: focusIndex,
     beforeChange: (current: number, next: number) => setCurrentIndex(next),
   };
-
-  console.log(currentIndex);
 
   return (
     <ImageSliderContainer>

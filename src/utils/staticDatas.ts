@@ -6,6 +6,7 @@ import MessageIcon from "../assets/icons/MessageIcon";
 import NoteIcon from "../assets/icons/NoteIcon";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
+import { reviewApiProps } from "../types/home";
 import { userCompactResDto } from "../types/res.dto";
 import { planItemProps } from "../types/schedule";
 
@@ -108,3 +109,20 @@ export const testPlanItems: planItemProps[] = [
     subtitle: "명소",
   },
 ];
+
+export const testReviewItem: reviewApiProps = {
+  commentCnt: 1,
+  id: 1,
+  createdAt: "24.9.15",
+  likeCnt: 8,
+  placeId: "placeId",
+  star: 4.9,
+  subject: "d",
+  content:
+    "오대산 선재길에서 산책하기 자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요!",
+  userCompactResDto: testUserDto,
+};
+
+export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
+
+export const testTransportList: string[] = ["자동차", "버스/지하철", "기차", "택시", "도보"]
