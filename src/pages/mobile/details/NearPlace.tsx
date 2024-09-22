@@ -1,6 +1,6 @@
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { axiosInstance } from "../../../utils/axios";
 import {
   PlaceDetailAPiProps,
@@ -15,104 +15,42 @@ import MarkIcon from "../../../assets/icons/MarkIcon";
 import * as S from "../../../assets/styles/nearplace.style";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import NearPlaceCard from "../../../components/mobile/detail/NearPlaceCard";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 
 export default function NearPlace() {
   const param = useParams();
   const location = useLocation();
 
-  const mapRef = useRef<HTMLDivElement>(null);
   const mapStore = useMapStore();
   const navigate = useNavigate();
 
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
+
   const [selectPlaceId, setSelectPlaceId] = useState("");
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
   );
 
   const handlePrev = () => {
-    !selectPlaceId ? navigate(-1) : setSelectPlaceId("");
-  };
-
-  const loadGoogleMapsScript = async () => {
-    const existingScript = document.getElementById("google-maps");
-    if (!existingScript) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${
-        import.meta.env.VITE_GOOGLE_API_KEY
-      }&callback=initMap`;
-      script.id = "google-maps";
-      script.async = true;
-      document.body.appendChild(script);
-
-      script.onload = () => {
-        if ((window as any).google) {
-          initMap();
-        }
-      };
+    if (selectPlaceId && details.id) {
+      setSelectPlaceId("");
     } else {
-      if ((window as any).google && details?.location) {
-        initMap();
-      }
+      navigate(-1);
+      mapStore.clear();
     }
   };
 
-  const initMap = () => {
-    if (mapRef.current && details?.location) {
-      const lat = details.location.lat;
-      const lng = details.location.lng;
-
-      if (typeof lat === "number" && typeof lng === "number") {
-        const map = new (window as any).google.maps.Map(mapRef.current, {
-          center: { lat, lng },
-          zoom: 16,
-          mapTypeControl: false,
-        });
-
-        const infoWindow = new (window as any).google.maps.InfoWindow();
-        const nearPlaces = mapStore.getNearPlace();
-
-        nearPlaces.forEach((place) => {
-          const markerLat = place.geometry.location.lat;
-          const markerLng = place.geometry.location.lng;
-
-          if (typeof markerLat === "number" && typeof markerLng === "number") {
-            const marker = new (window as any).google.maps.Marker({
-              position: { lat: markerLat, lng: markerLng },
-              map: map,
-              title: place.name,
-            });
-
-            marker.addListener("click", () => {
-              const contentString = `
-                <div class="${S.PlaceMarkerName.styledComponentId}">
-                  <strong>${place.name}</strong>
-                </div>
-              `;
-              infoWindow.setContent(contentString);
-              infoWindow.open(map, marker);
-
-              map.setCenter(marker.getPosition());
-              setSelectPlaceId(place.placeId);
-            });
-          } else {
-            console.error(
-              "Invalid marker coordinates:",
-              place.geometry.location
-            );
-          }
-        });
-
-        console.log("Google Maps init");
-      } else {
-        console.error("Invalid map coordinates:", details.location);
-      }
+  const handleBottomSheetClose = () => {
+    if (details.id) {
+      setSelectPlaceId("");
+    } else {
+      navigate(-1);
     }
   };
 
-  const getNearPlace = async () => {
+  const getSurroundingPlaces = async () => {
     try {
       if (details?.location) {
         const res = await axiosInstance.get(
@@ -140,38 +78,28 @@ export default function NearPlace() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    const loadMapAndNearbyPlaces = async () => {
-      try {
-        await getNearPlace();
-        await loadGoogleMapsScript();
-        initMap();
-      } catch (error) {
-        console.error("Error loading map or nearby places:", error);
-      } finally {
-        // loading 관련 부분
-      }
-    };
-
-    if (details) {
-      loadMapAndNearbyPlaces();
+    if (details.id) {
+      getSurroundingPlaces();
     }
-  }, [details]);
-
-  useEffect(() => {
-    axiosInstance
-      .get(`/googleplace/details?placeId=${selectPlaceId}`)
-      .then((res) => {
-        if (res.status === 200) {
-          setSelectPlace(res.data);
-        }
-      });
-  }, [selectPlaceId]);
+  }, [details.id]);
 
   useEffect(() => {
     if (location?.state?.selectedPlaceId) {
       setSelectPlaceId(location?.state?.selectedPlaceId);
     }
   }, [location?.state]);
+
+  useEffect(() => {
+    if (selectPlaceId) {
+      axiosInstance
+        .get(`/googleplace/details?placeId=${selectPlaceId}`)
+        .then((res) => {
+          if (res.status === 200) {
+            setSelectPlace(res.data);
+          }
+        });
+    }
+  }, [selectPlaceId]);
 
   return (
     <S.NearPlaceContainer>
@@ -191,7 +119,7 @@ export default function NearPlace() {
         </BottomSheet>
       ) : (
         <BottomSheet
-          handleClose={() => setSelectPlaceId("")}
+          handleClose={handleBottomSheetClose}
           maxH={0.33}
           isDismiss={true}
           key={"nearPlaces-details-bottom-sheet"}
@@ -236,7 +164,25 @@ export default function NearPlace() {
         </BottomSheet>
       )}
 
-      <S.NearPlaceMapBox ref={mapRef} />
+      {details?.id ? (
+        <CustomGoogleMap
+          width="100%"
+          height="calc(100dvh - 50px)"
+          lat={details.location.lat}
+          lng={details.location.lng}
+          handleMarkerClick={setSelectPlaceId}
+        />
+      ) : (
+        selectPlace.placeId && (
+          <CustomGoogleMap
+            width="100%"
+            height="calc(100dvh - 50px)"
+            lat={selectPlace?.location.lat}
+            lng={selectPlace?.location.lng}
+            handleMarkerClick={setSelectPlaceId}
+          />
+        )
+      )}
     </S.NearPlaceContainer>
   );
 }

@@ -74,15 +74,6 @@ export default function Home() {
       </InputBox>
 
       <CarouselTitle>지금 가장 인기있는 여행지</CarouselTitle>
-      <Slider {...sliderSettings}>
-        {travelPlace.slice(0, 8).map((place: placeApiProps) => (
-          <CarouselBox key={place.id}>
-            <img src={testImg} alt="place" />
-            <p>{place.name}</p>
-            <span>{place.subName}</span>
-          </CarouselBox>
-        ))}
-      </Slider>
     </>
   );
 }

@@ -2,7 +2,7 @@ import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
@@ -23,13 +23,13 @@ import styled from "styled-components";
 import Slider from "react-slick";
 import NearPlaceCard from "../../../components/mobile/home/NearPlaceCard";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
   const { clear } = useMapStore();
 
-  const mapRef = useRef<HTMLDivElement>(null);
   const isCityDetailPage = location.pathname.includes("city");
 
   const [loading, setLoading] = useState(true);
@@ -50,44 +50,6 @@ export default function HomeDetails() {
     slidesToScroll: 1,
     adaptiveHeight: true,
     beforeChange: (current: number, next: number) => setImageIndex(next),
-  };
-
-  const loadGoogleMap = async () => {
-    const exist = document.getElementById("google-maps");
-    if (!exist) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${
-        import.meta.env.VITE_GOOGLE_API_KEY
-      }&callback=initMap`;
-      script.id = "google-maps";
-      script.async = true;
-      document.body.appendChild(script);
-
-      script.onload = () => {
-        if ((window as any).google) {
-          initMap();
-        }
-      };
-    } else {
-      if ((window as any).google) {
-        initMap();
-      }
-    }
-  };
-
-  const initMap = () => {
-    if (mapRef.current) {
-      const map = new (window as any).google.maps.Map(mapRef.current, {
-        center: { lat: details.location.lat, lng: details.location.lng },
-        zoom: 16,
-      });
-
-      const marker = new (window as any).google.maps.Marker({
-        position: { lat: details.location.lat, lng: details.location.lng },
-        map: map,
-        title: details.name,
-      });
-    }
   };
 
   const getNearPlace = async () => {
@@ -132,11 +94,10 @@ export default function HomeDetails() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    if (details) {
-      loadGoogleMap();
+    if (details.id) {
       getNearPlace();
     }
-  }, [details]);
+  }, [details?.id]);
 
   return (
     <>
@@ -196,10 +157,13 @@ export default function HomeDetails() {
                 <span>{details?.formattedAddress}</span>
               </S.DetailsSubTitle>
 
-              {loading ? (
-                <CustomSkeleton height="146px" />
-              ) : (
-                <S.GoogleMapBox ref={mapRef} />
+              {!loading && (
+                <CustomGoogleMap
+                  width="100%"
+                  height="146px"
+                  lat={details?.location.lat}
+                  lng={details?.location.lng}
+                />
               )}
             </>
           )}
