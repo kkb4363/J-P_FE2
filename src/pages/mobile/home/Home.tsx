@@ -1,16 +1,10 @@
 import CustomInput from "../../../components/mobile/CustomInput";
 import BellIcon from "../../../assets/icons/BellIcon";
-import ImageView from "../../../components/mobile/ImageView";
-import CommentIcon from "../../../assets/icons/CommentIcon";
-import HeartIcon from "../../../assets/icons/HeartIcon";
 import * as S from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
-import testImg from "../../../assets/images/testImg.png";
-import "react-toastify/dist/ReactToastify.css";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import HashtagsBox from "../../../components/mobile/HashtagsBox";
 import CardSlide from "../../../components/mobile/home/CardSlide";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
+import TravelLogCard from "../../../components/mobile/home/TravelLogCard";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -59,73 +53,8 @@ export default function Home() {
 
         <TitleMoreBox title="사람들이 찜한 여행기" handleClick={() => {}} />
         <S.ReviewCol>
-          <S.ReviewRow>
-            <ImageView
-              src={testImg}
-              alt={"소금산 출렁다리"}
-              width="85px"
-              height="80px"
-            />
-
-            <S.ReviewTextCol>
-              <HashtagsBox hashTags={["안동", "2박3일"]} />
-              <p>안동 혼자 뚜벅이 여행 떠나기</p>
-
-              <S.ReviewProfileRow>
-                <CustomProfile
-                  src={testImg}
-                  nickname="coco1202"
-                  fontSize="12px"
-                />
-
-                <S.ReviewLikeCommentRow>
-                  <S.LikeCommentBox>
-                    <HeartIcon />
-                    <span>26</span>
-                  </S.LikeCommentBox>
-
-                  <S.LikeCommentBox>
-                    <CommentIcon />
-                    <span>16</span>
-                  </S.LikeCommentBox>
-                </S.ReviewLikeCommentRow>
-              </S.ReviewProfileRow>
-            </S.ReviewTextCol>
-          </S.ReviewRow>
-          <S.ReviewRow>
-            <ImageView
-              src={testImg}
-              alt={"소금산 출렁다리"}
-              width="85px"
-              height="80px"
-            />
-
-            <S.ReviewTextCol>
-              <HashtagsBox hashTags={["안동", "2박3일"]} />
-
-              <p>안동 혼자 뚜벅이 여행 떠나기</p>
-
-              <S.ReviewProfileRow>
-                <CustomProfile
-                  src={testImg}
-                  nickname="coco1202"
-                  fontSize="12px"
-                />
-
-                <S.ReviewLikeCommentRow>
-                  <S.LikeCommentBox>
-                    <HeartIcon />
-                    <span>26</span>
-                  </S.LikeCommentBox>
-
-                  <S.LikeCommentBox>
-                    <CommentIcon />
-                    <span>16</span>
-                  </S.LikeCommentBox>
-                </S.ReviewLikeCommentRow>
-              </S.ReviewProfileRow>
-            </S.ReviewTextCol>
-          </S.ReviewRow>
+          <TravelLogCard />
+          <TravelLogCard />
         </S.ReviewCol>
 
         <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} />

@@ -1,70 +1,51 @@
 import styled from "styled-components";
 import CustomInput from "../../../components/mobile/CustomInput";
-import Slider from "react-slick";
-import testImg from "../../../assets/images/testImg.png";
-import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
-import { placeApiProps } from "../../../types/home";
-
-function SampleNextArrow() {
-  return <div style={{ display: "block", background: "red" }} />;
-}
+import Carousel from "react-multi-carousel";
+import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
+import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
+import TravelLogCard from "../../../components/web/home/TravelLogCard";
+import CardSlide from "../../../components/web/home/CardSlide";
 
 export default function Home() {
-  const [travelPlace, setTravelPlace] = useState([]);
-  // 인기 도시
-  const [city, setCity] = useState([]);
-  // 테마별 여행지
-  const [themePlace, setThemePlace] = useState([]);
-  // 지금 뜨는 리뷰
-  const [review, setReview] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-  // TODO : 사람들이 찜한 여행기 api = 아직 백엔드 개발 중
-
-  const sliderSettings = {
-    dots: false,
-    infinite: false,
-    speed: 300,
-    slidesToShow: 4,
-    draggable: false,
-    arrows: true,
+  const bigResponsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1442 },
+      items: 4,
+      slidesToSlide: 4,
+    },
+    tablet: {
+      breakpoint: { max: 1442, min: 464 },
+      items: 4,
+      slidesToSlide: 4,
+    },
   };
 
-  useEffect(() => {
-    const requestApi = async () => {
-      try {
-        const [travelPlaceRes, cityRes, themePlaceRes, reviewRes] =
-          await Promise.all([
-            axiosInstance.get("/place/page?page=1&placeType=TRAVEL_PLACE"),
-            axiosInstance.get("/place/page?page=1&placeType=CITY"),
-            axiosInstance.get("/place/page?page=1&placeType=THEME"),
-            axiosInstance.get("/reviews?page=1&sort=NEW"),
-          ]);
+  const smallResponsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1800 },
+      items: 4,
+      slidesToSlide: 4,
+    },
+    tablet: {
+      breakpoint: { max: 1800, min: 464 },
+      items: 3,
+      slidesToSlide: 3,
+    },
+  };
 
-        if (travelPlaceRes.status === 200) {
-          setTravelPlace(travelPlaceRes.data.data);
-        }
-        if (cityRes.status === 200) {
-          setCity(cityRes.data.data);
-        }
-        if (themePlaceRes.status === 200) {
-          setThemePlace(themePlaceRes.data.data);
-        }
-        if (reviewRes.status === 200) {
-          setReview(reviewRes.data.data);
-        }
-      } catch (error) {
-        console.error("api error=", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const CustomLeftArrow = ({ onClick }: { onClick: any }) => (
+    <CustomArrow style={{ left: 0 }} onClick={onClick}>
+      <ArrowLeftIcon />
+    </CustomArrow>
+  );
+  const CustomRightArrow = ({ onClick }: { onClick: any }) => {
+    return (
+      <CustomArrow style={{ right: 0 }} onClick={onClick}>
+        <ArrowRightIcon stroke="black" />
+      </CustomArrow>
+    );
+  };
 
-    requestApi();
-  }, []);
-
-  console.log(travelPlace);
   return (
     <>
       <HomeTitle>어디로 떠날까요?</HomeTitle>
@@ -74,6 +55,56 @@ export default function Home() {
       </InputBox>
 
       <CarouselTitle>지금 가장 인기있는 여행지</CarouselTitle>
+      <CardSlide
+        responsive={bigResponsive}
+        placeType="TRAVEL_PLACE"
+        title={true}
+        subTitle={true}
+      />
+
+      <CarouselTitle>인기 여행 도시 추천</CarouselTitle>
+      <CardSlide
+        responsive={bigResponsive}
+        placeType="CITY"
+        bottomText={true}
+      />
+
+      <CarouselTitle>지금 가면 좋은 여행지</CarouselTitle>
+      <CardSlide
+        responsive={bigResponsive}
+        placeType="THEME"
+        topText={true}
+        title={true}
+        subTitle={true}
+      />
+
+      <CarouselTitle>
+        사람들이 찜한 여행기
+        <div>
+          <span>인기순</span>
+          <span>최신순</span>
+        </div>
+        <div>
+          <span>더보기</span>
+        </div>
+      </CarouselTitle>
+
+      <Carousel
+        responsive={smallResponsive}
+        swipeable={false}
+        draggable={false}
+        showDots={false}
+        ssr={false}
+        infinite={false}
+        autoPlay={false}
+        customLeftArrow={<CustomLeftArrow onClick={() => {}} />}
+        customRightArrow={<CustomRightArrow onClick={() => {}} />}
+      >
+        <TravelLogCard />
+        <TravelLogCard />
+        <TravelLogCard />
+        <TravelLogCard />
+      </Carousel>
     </>
   );
 }
@@ -96,36 +127,51 @@ const InputBox = styled.div`
   align-items: center;
 `;
 
-const CarouselTitle = styled.p`
+const CarouselTitle = styled.div`
   color: ${(props) => props.theme.color.gray900};
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin: 40px 0 24px 0;
+  display: flex;
+  align-items: center;
+
+  & > div:first-child {
+    display: flex;
+    margin-left: 30px;
+    align-items: center;
+    gap: 14px;
+
+    & > span {
+      color: ${(props) => props.theme.color.gray300};
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  }
+
+  & > div:last-child {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    & > span {
+      color: ${(props) => props.theme.color.gray300};
+      font-size: 20px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+  }
 `;
 
-const CarouselBox = styled.div`
+const CustomArrow = styled.div`
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.color.white};
+  cursor: pointer;
 
-  & > img {
-    min-width: 270px;
-    min-height: 240px;
-    width: 95%;
-    border-radius: 16px;
-    box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.08),
-      2px 2px 20px 0px rgba(0, 0, 0, 0.06);
-  }
-
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 20px;
-    font-weight: 700;
-    margin: 14px 0 4px 0;
-  }
-
-  & > span {
-    color: ${(props) => props.theme.color.gray600};
-    font-size: 16px;
-    font-weight: 700;
-  }
+  position: absolute;
 `;

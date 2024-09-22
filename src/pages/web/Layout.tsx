@@ -32,6 +32,7 @@ export default function Layout() {
 const LayoutContainer = styled.div`
   width: 100vw;
   height: 100vh;
+  overflow: auto;
 
   background-color: ${(props) => props.theme.color.background};
 `;
@@ -39,6 +40,7 @@ const LayoutContainer = styled.div`
 const Header = styled.div`
   width: 100%;
   height: 90px;
+  min-width: 1440px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,6 +103,8 @@ const LoginButton = styled.button`
 
 const OutletBox = styled.div`
   width: 100%;
+  min-width: 1440px;
   height: calc(100% - 90px);
-  padding: 0 120px;
+  padding: 0 120px 80px 120px;
+  overflow: auto;
 `;
