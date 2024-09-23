@@ -1,10 +1,7 @@
 import styled from "styled-components";
 import CustomInput from "../../../components/mobile/CustomInput";
-import Carousel from "react-multi-carousel";
-import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
-import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
-import TravelLogCard from "../../../components/web/home/TravelLogCard";
 import CardSlide from "../../../components/web/home/CardSlide";
+import TravelogueCardSlide from "../../../components/web/home/TravelogueCardSlide";
 
 export default function Home() {
   const bigResponsive = {
@@ -31,19 +28,6 @@ export default function Home() {
       items: 3,
       slidesToSlide: 3,
     },
-  };
-
-  const CustomLeftArrow = ({ onClick }: { onClick: any }) => (
-    <CustomArrow style={{ left: 0 }} onClick={onClick}>
-      <ArrowLeftIcon />
-    </CustomArrow>
-  );
-  const CustomRightArrow = ({ onClick }: { onClick: any }) => {
-    return (
-      <CustomArrow style={{ right: 0 }} onClick={onClick}>
-        <ArrowRightIcon stroke="black" />
-      </CustomArrow>
-    );
   };
 
   return (
@@ -88,23 +72,19 @@ export default function Home() {
           <span>더보기</span>
         </div>
       </CarouselTitle>
+      <TravelogueCardSlide responsive={smallResponsive} isReviewCard={false} />
 
-      <Carousel
-        responsive={smallResponsive}
-        swipeable={false}
-        draggable={false}
-        showDots={false}
-        ssr={false}
-        infinite={false}
-        autoPlay={false}
-        customLeftArrow={<CustomLeftArrow onClick={() => {}} />}
-        customRightArrow={<CustomRightArrow onClick={() => {}} />}
-      >
-        <TravelLogCard />
-        <TravelLogCard />
-        <TravelLogCard />
-        <TravelLogCard />
-      </Carousel>
+      <CarouselTitle>
+        지금 뜨는 리뷰
+        <div>
+          <span>인기순</span>
+          <span>최신순</span>
+        </div>
+        <div>
+          <span>더보기</span>
+        </div>
+      </CarouselTitle>
+      <TravelogueCardSlide responsive={smallResponsive} isReviewCard={true} />
     </>
   );
 }
@@ -161,17 +141,4 @@ const CarouselTitle = styled.div`
       cursor: pointer;
     }
   }
-`;
-
-const CustomArrow = styled.div`
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.color.white};
-  cursor: pointer;
-
-  position: absolute;
 `;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { mypageLikesTabs } from "../../../utils/staticDatas";
 import { useState } from "react";
-import { TravelLogGridBox } from "./TravelLog";
+import { TravelogueGridBox } from "./Travelogue";
 import { CarouselWithText } from "../../../assets/styles/home.style";
 import testImg from "../../../assets/images/testImg3.png";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
@@ -24,7 +24,7 @@ export default function Likes() {
         ))}
       </LikesTabRow>
 
-      <TravelLogGridBox>
+      <TravelogueGridBox>
         <LikeBox>
           <img src={testImg} alt="likes" />
           <CarouselTitleBox name="양평 두물머리" subName="경기 양평" />
@@ -46,7 +46,7 @@ export default function Likes() {
             <HeartIcon width="24" height="24" fill="#ff5757" stroke="#ff5757" />
           </Heart>
         </LikeBox>
-      </TravelLogGridBox>
+      </TravelogueGridBox>
     </>
   );
 }

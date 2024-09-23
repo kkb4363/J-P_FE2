@@ -13,6 +13,7 @@ export interface Props {
   isEdit: boolean;
   setIsPlanDetail: () => void;
   setIsPlanPlace: () => void;
+  handleDeleteOpen: () => void;
   planItem: planItemProps;
   jpState: string;
 }
@@ -24,6 +25,7 @@ export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
       isEdit,
       setIsPlanDetail,
       setIsPlanPlace,
+      handleDeleteOpen,
       planItem,
       jpState,
     }: Props) => {
@@ -50,7 +52,7 @@ export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
             </PlaceDetailsButton>
           )}
           {isEdit && (
-            <div onClick={() => console.log("trash")}>
+            <div onClick={handleDeleteOpen}>
               <TrashIcon />
             </div>
           )}

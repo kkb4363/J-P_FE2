@@ -7,29 +7,40 @@ import styled from "styled-components";
 interface Props {
   planItems: planItemProps[];
   isEdit: boolean;
-	jpState: string;
+  jpState: string;
   setIsPlanDetail: () => void;
   setIsPlanPlace: () => void;
+  handleDeleteOpen: () => void;
 }
 
 export const PlanList: ComponentClass<SortableContainerProps & Props> =
   SortableContainer(
-    ({ planItems, isEdit, jpState,  setIsPlanDetail, setIsPlanPlace }: Props) => {
+    ({
+      planItems,
+      isEdit,
+      jpState,
+      setIsPlanDetail,
+      setIsPlanPlace,
+      handleDeleteOpen,
+    }: Props) => {
       return (
-        <PlanListContainer>
-          {planItems.map((item, index) => (
-            <PlanItem
-              key={index}
-              index={index}
-              id={index}
-              isEdit={isEdit}
-              setIsPlanDetail={setIsPlanDetail}
-              setIsPlanPlace={setIsPlanPlace}
-              planItem={item}
-              jpState={jpState}
-            />
-          ))}
-        </PlanListContainer>
+        <>
+          <PlanListContainer>
+            {planItems.map((item, index) => (
+              <PlanItem
+                key={index}
+                index={index}
+                id={index}
+                isEdit={isEdit}
+                setIsPlanDetail={setIsPlanDetail}
+                setIsPlanPlace={setIsPlanPlace}
+                planItem={item}
+                jpState={jpState}
+                handleDeleteOpen={handleDeleteOpen}
+              />
+            ))}
+          </PlanListContainer>
+        </>
       );
     }
   );

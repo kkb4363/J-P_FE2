@@ -20,7 +20,7 @@ export const footerTabs = [
 
 export const mypageTabs = [
   { icon: LuggageIcon, label: "여행", route: "" },
-  { icon: NoteIcon, label: "여행기", route: "travelLog" },
+  { icon: NoteIcon, label: "여행기", route: "Travelogue" },
   { icon: MessageIcon, label: "리뷰", route: "review" },
   { icon: HeartIcon, label: "찜 목록", route: "likes" },
 ];
@@ -125,4 +125,10 @@ export const testReviewItem: reviewApiProps = {
 
 export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
 
-export const testTransportList: string[] = ["자동차", "버스/지하철", "기차", "택시", "도보"]
+export const testTransportList: string[] = [
+  "자동차",
+  "버스/지하철",
+  "기차",
+  "택시",
+  "도보",
+];

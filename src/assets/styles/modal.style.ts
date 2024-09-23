@@ -10,6 +10,7 @@ export const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 4;
 `;
 
 export const ModalWrapper = styled.div`
@@ -20,6 +21,6 @@ export const ModalWrapper = styled.div`
   position: relative;
   width: 320px;
   height: 230px;
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 `;

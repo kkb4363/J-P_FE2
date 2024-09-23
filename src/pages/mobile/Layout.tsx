@@ -30,35 +30,37 @@ export default function Layout() {
   };
 
   return (
-    <MainContainer>
-      <OutletBox>
-        <Outlet />
-      </OutletBox>
+    <>
+      <MainContainer>
+        <OutletBox>
+          <Outlet />
+        </OutletBox>
 
-      <Footer>
-        <FooterRow>
-          {footerTabs.map((tab, idx) => {
-            const isCurrentTab = getTabs() === tab.label;
-            return (
-              <FooterTab
-                key={idx}
-                onClick={() => handleFooterClick(tab.label, tab.route)}
-              >
-                <tab.icon stroke={isCurrentTab ? "#ffc814" : "#4D4D4D"} />
-                <span
-                  style={{
-                    color: isCurrentTab ? "#ffc814" : "#666",
-                  }}
+        <Footer>
+          <FooterRow>
+            {footerTabs.map((tab, idx) => {
+              const isCurrentTab = getTabs() === tab.label;
+              return (
+                <FooterTab
+                  key={idx}
+                  onClick={() => handleFooterClick(tab.label, tab.route)}
                 >
-                  {tab.label}
-                </span>
-              </FooterTab>
-            );
-          })}
-        </FooterRow>
-      </Footer>
-      <StyledToast />
-    </MainContainer>
+                  <tab.icon stroke={isCurrentTab ? "#ffc814" : "#4D4D4D"} />
+                  <span
+                    style={{
+                      color: isCurrentTab ? "#ffc814" : "#666",
+                    }}
+                  >
+                    {tab.label}
+                  </span>
+                </FooterTab>
+              );
+            })}
+          </FooterRow>
+        </Footer>
+        <StyledToast />
+      </MainContainer>
+    </>
   );
 }
 

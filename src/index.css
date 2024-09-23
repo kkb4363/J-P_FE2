@@ -185,3 +185,9 @@ img {
   min-width: 30px !important;
   min-height: 30px !important;
 }
+
+/* bottomsheet container bar container  */
+[data-rsbs-header]:before {
+  background-color: tomato;
+  display: none !important;
+}

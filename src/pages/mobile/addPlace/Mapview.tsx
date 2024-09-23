@@ -1,17 +1,8 @@
 import styled from "styled-components";
 import MarkIcon from "../../../assets/icons/MarkIcon";
-import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
-import { useModal } from "../../../hooks/useModal";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 
 export default function Mapview() {
-  const {
-    isOpen,
-    openModal: test,
-    closeModal,
-    modalRef,
-  } = useModal({ handleCloseCallback: () => {} });
-
   const mapStyle = {
     marginLeft: "-20px",
   };
@@ -20,7 +11,7 @@ export default function Mapview() {
     <>
       <Header>
         <MarkIcon stroke="#6979f8" width="20" height="20" />
-        <span onClick={test}>주변 장소 더보기</span>
+        <span>주변 장소 더보기</span>
       </Header>
 
       <CustomGoogleMap
@@ -30,15 +21,6 @@ export default function Mapview() {
         lng={126.977041}
         style={mapStyle}
       />
-
-      {isOpen && (
-        <TwoButtonsModal
-          text="일정을 삭제할까요?"
-          onClick={() => {}}
-          onClose={closeModal}
-          modalRef={modalRef}
-        />
-      )}
     </>
   );
 }
@@ -56,10 +38,4 @@ const Header = styled.div`
     font-size: 14px;
     font-weight: 700;
   }
-`;
-
-const MapBox = styled.div`
-  height: calc(100% - 30px - 10px);
-  width: calc(100% + 20px * 2);
-  margin-left: -20px;
 `;
