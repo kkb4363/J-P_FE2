@@ -36,12 +36,15 @@ import NextArrow from "../../../components/mobile/SlideArrows/NextArrow";
 import CancelIcon from "../../../assets/icons/CancelIcon";
 import CarIcon from "../../../assets/icons/CarIcon";
 import AddSquareIcon from "../../../assets/icons/AddSquareIcon";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
+import { useModal } from "../../../hooks/useModal";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
-  const mapRef = useRef<HTMLDivElement>(null);
+
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -53,6 +56,7 @@ export default function Details() {
   const [costCategory, setCostCategory] = useState("Car");
   const [currentDay, setCurrentDay] = useState(0);
   const { jpState } = useJPStore();
+
   const navigate = useNavigate();
   const daySlideSettings = {
     infinite: false,
@@ -64,44 +68,9 @@ export default function Details() {
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
   };
-
-  useEffect(() => {
-    const loadGoogleMapsScript = async () => {
-      const existingScript = document.getElementById("google-maps");
-      if (!existingScript) {
-        const script = document.createElement("sc ript");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${
-          import.meta.env.VITE_GOOGLE_API_KEY
-        }&callback=initMap`;
-        script.id = "google-maps";
-        script.async = true;
-        document.body.appendChild(script);
-
-        script.onload = () => {
-          if ((window as any).google) {
-            initMap();
-          }
-        };
-      } else {
-        if ((window as any).google) {
-          initMap();
-        }
-      }
-    };
-
-    const initMap = () => {
-      if (mapRef.current) {
-        const map = new (window as any).google.maps.Map(mapRef.current, {
-          // publishing with 임시 좌표 값
-          center: { lat: 37.579617, lng: 126.977041 },
-          zoom: 16,
-          mapTypeControl: false,
-        });
-      }
-    };
-
-    loadGoogleMapsScript();
-  }, []);
+  const mapStyle = {
+    margin: "10px 0 0 -20px",
+  };
 
   const handleInviteClose = () => {
     setSheetOpen("AddPlace");
@@ -134,6 +103,16 @@ export default function Details() {
     setIsDetailsEdit(false);
   };
 
+  // 일정 삭제 모달 관련입니당
+  // 세연's TODO = 일정 삭제 확인 눌렀을 때 -> 일정이 삭제되었습니다 모달 구현
+  // -> 확인 누르고 창 닫히게끔
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+    modalRef: deleteModalRef,
+  } = useModal({ handleCloseCallback: () => {} });
+
   return (
     <>
       <InfoRow>
@@ -160,7 +139,14 @@ export default function Details() {
         </D.ParticipantsRow>
       </D.InviteRow>
 
-      <D.MapBox $bottomSheetHeight={getBottomSheetHeight()} ref={mapRef} />
+      <CustomGoogleMap
+        width="calc(100% + 20px * 2)"
+        height={`calc(
+    100% - 37px - 28px - 24px - ${getBottomSheetHeight()}px)`}
+        lat={37.579617}
+        lng={126.977041}
+        style={mapStyle}
+      />
 
       {sheetOpen === "AddPlace" && (
         <BottomSheet maxH={isPlanPlace ? 0.4 : 0.75}>
@@ -197,6 +183,7 @@ export default function Details() {
                   jpState={jpState}
                   setIsPlanDetail={() => setIsPlanDetail((prev) => !prev)}
                   setIsPlanPlace={() => setIsPlanPlace((prev) => !prev)}
+                  handleDeleteOpen={openDeleteModal}
                   useWindowAsScrollContainer
                   useDragHandle
                 />
@@ -418,6 +405,15 @@ export default function Details() {
             </>
           )}
         </BottomSheet>
+      )}
+
+      {isDeleteModalOpen && (
+        <TwoButtonsModal
+          text="일정을 삭제할까요?"
+          onClick={() => {}}
+          onClose={closeDeleteModal}
+          modalRef={deleteModalRef}
+        />
       )}
     </>
   );

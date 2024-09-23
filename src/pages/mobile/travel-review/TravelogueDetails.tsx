@@ -20,7 +20,7 @@ import MarkIcon from "../../../assets/icons/MarkIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
 import ImageSlider from "../../../components/mobile/ImageSlider";
 
-export default function TravelLogDetails() {
+export default function TravelogueDetails() {
   const [fillHeart, setFillHeart] = useState(false);
   const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");
@@ -32,7 +32,7 @@ export default function TravelLogDetails() {
   };
 
   return (
-    <TravelLogDetailsContainer>
+    <TravelogueDetailsContainer>
       {isModalOpen && (
         <ImageSlider
           imageList={testImageList}
@@ -47,10 +47,10 @@ export default function TravelLogDetails() {
           />
         </HeartBox>
       </CustomHeader>
-      <TravelLogDetailsBody>
+      <TravelogueDetailsBody>
         <ImageView
           src="/src/assets/images/testImg.png"
-          alt="travelLog"
+          alt="Travelogue"
           width="100%"
           height="191px"
           bottomText={`+${testImageList.length - 1}`}
@@ -119,12 +119,12 @@ export default function TravelLogDetails() {
             replyList={[]}
           />
         </R.CommentsBox>
-      </TravelLogDetailsBody>
-    </TravelLogDetailsContainer>
+      </TravelogueDetailsBody>
+    </TravelogueDetailsContainer>
   );
 }
 
-const TravelLogDetailsContainer = styled.div`
+const TravelogueDetailsContainer = styled.div`
   height: 100%;
   min-height: 360px;
 `;
@@ -136,7 +136,7 @@ const HeartBox = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.06);
 `;
 
-const TravelLogDetailsBody = styled.div`
+const TravelogueDetailsBody = styled.div`
   height: calc(100% - 60px);
   display: flex;
   flex-direction: column;

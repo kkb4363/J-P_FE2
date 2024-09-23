@@ -18,16 +18,16 @@ import ListView from "./addPlace/ListView";
 import Mapview from "./addPlace/Mapview";
 import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
-import TravelLogDetails from "./travel-review/TravelLogDetails";
 import Reviews from "./details/Reviews";
 import MyPageLayout from "./mypage/MyPageLayout";
 import Travel from "./mypage/Travel";
-import TravelLog from "./mypage/TravelLog";
 import Review from "./mypage/Review";
 import Likes from "./mypage/Likes";
 import EditProfile from "./mypage/EditProfile";
 import WriteReview from "./mypage/WriteReview";
 import SelectPlace from "./mypage/SelectPlace";
+import Travelogue from "./mypage/Travelogue";
+import TravelogueDetails from "./travel-review/TravelogueDetails";
 
 export const router = createBrowserRouter([
   {
@@ -120,8 +120,8 @@ export const router = createBrowserRouter([
         element: <ReviewDetails />,
       },
       {
-        path: "travel-log/:travelLogId",
-        element: <TravelLogDetails />,
+        path: "travel-log/:TravelogueId",
+        element: <TravelogueDetails />,
       },
       {
         path: "mypage",
@@ -132,8 +132,8 @@ export const router = createBrowserRouter([
             element: <Travel />,
           },
           {
-            path: "travelLog",
-            element: <TravelLog />,
+            path: "Travelogue",
+            element: <Travelogue />,
           },
           {
             path: "review",

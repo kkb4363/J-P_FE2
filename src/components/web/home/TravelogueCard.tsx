@@ -1,31 +1,44 @@
 import styled from "styled-components";
-import ImageView from "../ImageView";
-import testImg from "../../../assets/images/testImg2.png";
-import HashtagsBox from "../HashtagsBox";
-import CustomProfile from "../CustomProfile";
-import HeartIcon from "../../../assets/icons/HeartIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
+import HeartIcon from "../../../assets/icons/HeartIcon";
+import ImageView from "../../mobile/ImageView";
+import HashtagsBox from "../../mobile/HashtagsBox";
+import CustomProfile from "../../mobile/CustomProfile";
+import testImg from "../../../assets/images/testImg.png";
+import LikeIcon from "../../../assets/icons/LikeIcon";
 
-export default function TravelLogCard() {
+interface Props {
+  isReviewCard: boolean;
+}
+
+export default function TravelogueCard({ isReviewCard }: Props) {
   return (
-    <TravelLogCardContainer>
+    <TravelogueCardContainer>
       <ImageView
         src={testImg}
         alt={"소금산 출렁다리"}
         width="85px"
-        height="80px"
+        height="89px"
       />
 
       <ReviewTextCol>
-        <HashtagsBox hashTags={["안동", "2박3일"]} />
-        <p>안동 혼자 뚜벅이 여행 떠나기</p>
+        {isReviewCard ? (
+          <span>
+            오대산 선재길에서 산책하기 자연의 힐링을 동시에 누릴 수 있는
+          </span>
+        ) : (
+          <>
+            <HashtagsBox hashTags={["안동", "2박3일"]} />
+            <p>안동 혼자 뚜벅이 여행 떠나기</p>
+          </>
+        )}
 
         <ReviewProfileRow>
           <CustomProfile src={testImg} nickname="coco1202" fontSize="12px" />
 
           <ReviewLikeCommentRow>
             <LikeCommentBox>
-              <HeartIcon />
+              {isReviewCard ? <LikeIcon /> : <HeartIcon />}
               <span>26</span>
             </LikeCommentBox>
 
@@ -36,13 +49,20 @@ export default function TravelLogCard() {
           </ReviewLikeCommentRow>
         </ReviewProfileRow>
       </ReviewTextCol>
-    </TravelLogCardContainer>
+    </TravelogueCardContainer>
   );
 }
 
-const TravelLogCardContainer = styled.div`
+const TravelogueCardContainer = styled.div`
   display: flex;
   gap: 10px;
+  min-width: 380px;
+  width: 95%;
+  height: 130px;
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid ${(props) => props.theme.color.gray200};
+  border-radius: 16px;
+  padding: 21px 12px;
 `;
 
 const ReviewTextCol = styled.div`
@@ -53,9 +73,13 @@ const ReviewTextCol = styled.div`
   overflow: hidden;
 
   & > span {
-    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     overflow: hidden;
-    white-space: nowrap;
+    text-overflow: ellipsis;
+    white-space: normal;
+    width: 100%;
   }
 
   & > p {

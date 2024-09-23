@@ -1,19 +1,19 @@
 import styled from "styled-components";
-import CommentIcon from "../../../assets/icons/CommentIcon";
+import ImageView from "../ImageView";
+import testImg from "../../../assets/images/testImg2.png";
+import HashtagsBox from "../HashtagsBox";
+import CustomProfile from "../CustomProfile";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import ImageView from "../../mobile/ImageView";
-import HashtagsBox from "../../mobile/HashtagsBox";
-import CustomProfile from "../../mobile/CustomProfile";
-import testImg from "../../../assets/images/testImg.png";
+import CommentIcon from "../../../assets/icons/CommentIcon";
 
-export default function TravelLogCard() {
+export default function TravelogueCard() {
   return (
-    <TravelLogCardContainer>
+    <TravelogueCardContainer>
       <ImageView
         src={testImg}
         alt={"소금산 출렁다리"}
         width="85px"
-        height="89px"
+        height="80px"
       />
 
       <ReviewTextCol>
@@ -36,19 +36,13 @@ export default function TravelLogCard() {
           </ReviewLikeCommentRow>
         </ReviewProfileRow>
       </ReviewTextCol>
-    </TravelLogCardContainer>
+    </TravelogueCardContainer>
   );
 }
 
-const TravelLogCardContainer = styled.div`
+const TravelogueCardContainer = styled.div`
   display: flex;
   gap: 10px;
-  min-width: 380px;
-  height: 130px;
-  background-color: ${(props) => props.theme.color.white};
-  border: 1px solid ${(props) => props.theme.color.gray200};
-  border-radius: 16px;
-  padding: 21px 12px;
 `;
 
 const ReviewTextCol = styled.div`

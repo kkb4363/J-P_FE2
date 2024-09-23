@@ -8,19 +8,29 @@ import { useEffect, useState } from "react";
 import { placeApiProps } from "../../../types/home";
 import ImageView from "../ImageView";
 
-interface Props {
-  responsive: {
-    desktop: {
-      breakpoint: { max: number; min: number };
-      items: number;
-      slidesToSlide: number;
-    };
-    tablet: {
-      breakpoint: { max: number; min: number };
-      items: number;
-      slidesToSlide: number;
-    };
+export interface ReactMultiCarouselProps {
+  [key: string]: {
+    breakpoint: { max: number; min: number };
+    items: number;
+    slidesToSlide: number;
   };
+}
+
+export const CustomLeftArrow = ({ onClick }: { onClick: any }) => (
+  <CustomArrow style={{ left: 0 }} onClick={onClick}>
+    <ArrowLeftIcon />
+  </CustomArrow>
+);
+export const CustomRightArrow = ({ onClick }: { onClick: any }) => {
+  return (
+    <CustomArrow style={{ right: 0 }} onClick={onClick}>
+      <ArrowRightIcon stroke="black" />
+    </CustomArrow>
+  );
+};
+
+interface Props {
+  responsive: ReactMultiCarouselProps;
   placeType: string;
   bottomText?: boolean;
   topText?: boolean;
@@ -38,19 +48,6 @@ export default function CardSlide({
 }: Props) {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
-
-  const CustomLeftArrow = ({ onClick }: { onClick: any }) => (
-    <CustomArrow style={{ left: 0 }} onClick={onClick}>
-      <ArrowLeftIcon />
-    </CustomArrow>
-  );
-  const CustomRightArrow = ({ onClick }: { onClick: any }) => {
-    return (
-      <CustomArrow style={{ right: 0 }} onClick={onClick}>
-        <ArrowRightIcon stroke="black" />
-      </CustomArrow>
-    );
-  };
 
   const requestApi = async () => {
     try {

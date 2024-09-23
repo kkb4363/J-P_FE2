@@ -1,24 +1,24 @@
 import styled from "styled-components";
-import TravelLogCard from "../../../components/mobile/TravelLogCard";
+import TravelogueCard from "../../../components/mobile/TravelogueCard";
 
 interface Props {
   sort: string;
 }
 
-export default function TravelLog({ sort }: Props) {
+export default function Travelogue({ sort }: Props) {
   // [TODO]: api 연동 후 데이터 가져와서 연결
 
   return (
-    <TravelLogContainer>
-      <TravelLogCard />
-      <TravelLogCard />
-      <TravelLogCard />
-      <TravelLogCard />
-    </TravelLogContainer>
+    <TravelogueContainer>
+      <TravelogueCard />
+      <TravelogueCard />
+      <TravelogueCard />
+      <TravelogueCard />
+    </TravelogueContainer>
   );
 }
 
-const TravelLogContainer = styled.div`
+const TravelogueContainer = styled.div`
   width: 100%;
   height: calc(100% - 80px);
   padding: 0 16px;

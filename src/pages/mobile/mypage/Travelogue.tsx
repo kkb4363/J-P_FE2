@@ -13,40 +13,40 @@ import {
 } from "../../../assets/styles/homeDetail.style";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 
-export default function TravelLog() {
+export default function Travelogue() {
   const [isWrite, setIsWrite] = useState(false);
 
   return (
     <>
-      <TravelLogHeader>
+      <TravelogueHeader>
         <span>목록</span>
 
         <div onClick={() => setIsWrite(true)}>
           <EditIcon />
           <span>작성하기</span>
         </div>
-      </TravelLogHeader>
+      </TravelogueHeader>
 
-      <TravelLogGridBox>
-        <TravelLogCard>
-          <img src={testImg} alt="travelLog" />
+      <TravelogueGridBox>
+        <TravelogueCard>
+          <img src={testImg} alt="Travelogue" />
           <p>제주</p>
           <span>3.21 ~ 3.24</span>
           <div>공개</div>
-        </TravelLogCard>
-        <TravelLogCard>
-          <img src={testImg} alt="travelLog" />
+        </TravelogueCard>
+        <TravelogueCard>
+          <img src={testImg} alt="Travelogue" />
           <p>제주</p>
           <span>3.21 ~ 3.24</span>
           <div>공개</div>
-        </TravelLogCard>
-        <TravelLogCard>
-          <img src={testImg} alt="travelLog" />
+        </TravelogueCard>
+        <TravelogueCard>
+          <img src={testImg} alt="Travelogue" />
           <p>제주</p>
           <span>3.21 ~ 3.24</span>
           <div>공개</div>
-        </TravelLogCard>
-      </TravelLogGridBox>
+        </TravelogueCard>
+      </TravelogueGridBox>
 
       <BottomSheet
         isBlocking={true}
@@ -60,7 +60,7 @@ export default function TravelLog() {
           <p>내 여행</p>
           {/* 여행 일정이 있을 때 */}
           <ScheduleBox>
-            <WriteTravelLogCard $isActive={true}>
+            <WriteTravelogueCard $isActive={true}>
               <span>제주</span>
               <div>
                 <CalendarCheckIcon />
@@ -69,8 +69,8 @@ export default function TravelLog() {
               <span>
                 <CheckOnlyIcon stroke="#6979f8" />
               </span>
-            </WriteTravelLogCard>
-            <WriteTravelLogCard $isActive={false}>
+            </WriteTravelogueCard>
+            <WriteTravelogueCard $isActive={false}>
               <span>제주</span>
               <div>
                 <CalendarCheckIcon />
@@ -79,7 +79,7 @@ export default function TravelLog() {
               <span>
                 <CheckOnlyIcon stroke="#e6e6e6" />
               </span>
-            </WriteTravelLogCard>
+            </WriteTravelogueCard>
           </ScheduleBox>
 
           {/* 여행 일정이 없을 때*/}
@@ -104,7 +104,7 @@ export default function TravelLog() {
   );
 }
 
-const TravelLogHeader = styled(TravelHeader)`
+const TravelogueHeader = styled(TravelHeader)`
   & > div {
     display: flex;
     justify-content: center;
@@ -119,7 +119,7 @@ const TravelLogHeader = styled(TravelHeader)`
   }
 `;
 
-export const TravelLogGridBox = styled.div`
+export const TravelogueGridBox = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   place-items: center;
@@ -127,7 +127,7 @@ export const TravelLogGridBox = styled.div`
   gap: 16px;
 `;
 
-const TravelLogCard = styled.div`
+const TravelogueCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -204,7 +204,7 @@ const ScheduleBox = styled.div`
   padding: 16px 0;
 `;
 
-const WriteTravelLogCard = styled(TravelCard)<{ $isActive: boolean }>`
+const WriteTravelogueCard = styled(TravelCard)<{ $isActive: boolean }>`
   border: 1px solid
     ${(props) =>
       props.$isActive

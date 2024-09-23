@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import Review from "./Review";
-import TravelLog from "./TravelLog";
+import Travelogue from "./Travelogue";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import { useReviewStore } from "../../../store/travelReview.store";
 
@@ -67,7 +67,7 @@ export default function TravelReview() {
         {reviewStore.getIsReview() ? (
           <Review sort={getSortByFilter(selectedFilter)} />
         ) : (
-          <TravelLog sort={getSortByFilter(selectedFilter)} />
+          <Travelogue sort={getSortByFilter(selectedFilter)} />
         )}
       </>
       <BottomSheetContainer>

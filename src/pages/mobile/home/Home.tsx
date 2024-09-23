@@ -4,7 +4,7 @@ import * as S from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
 import CardSlide from "../../../components/mobile/home/CardSlide";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
-import TravelLogCard from "../../../components/mobile/home/TravelLogCard";
+import TravelogueCard from "../../../components/mobile/home/TravelogueCard";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -53,8 +53,8 @@ export default function Home() {
 
         <TitleMoreBox title="사람들이 찜한 여행기" handleClick={() => {}} />
         <S.ReviewCol>
-          <TravelLogCard />
-          <TravelLogCard />
+          <TravelogueCard />
+          <TravelogueCard />
         </S.ReviewCol>
 
         <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} />

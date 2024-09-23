@@ -8,11 +8,11 @@ import CommentIcon from "../../assets/icons/CommentIcon";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import { useNavigate } from "react-router-dom";
 
-export default function TravelLogCard() {
-	const navigate = useNavigate();
-	// [TODO]: api 연동해서 데이터 연결
-	return (
-    <TravelLogCardContainer>
+export default function TravelogueCard() {
+  const navigate = useNavigate();
+  // [TODO]: api 연동해서 데이터 연결
+  return (
+    <TravelogueCardContainer>
       <R.ProfileHeader>
         <CustomProfile
           src="/src/assets/images/testImg.png"
@@ -21,13 +21,13 @@ export default function TravelLogCard() {
         />
       </R.ProfileHeader>
       <HashtagsBox hashTags={testLogTags} />
-      <TravelLogTitleBox>
+      <TravelogueTitleBox>
         <p>안동 혼자 뚜벅이 여행 떠나기</p>
         <span onClick={() => navigate(`/home/travel-log/123`)}>자세히보기</span>
-      </TravelLogTitleBox>
+      </TravelogueTitleBox>
       <ImageView
         src={testImageList[0]}
-        alt="travelLog"
+        alt="Travelogue"
         width="100%"
         height="191px"
         bottomText={`+${testImageList.length - 1}`}
@@ -42,11 +42,11 @@ export default function TravelLogCard() {
           <span>2</span>
         </R.IconBox>
       </R.LikeCommentBox>
-    </TravelLogCardContainer>
+    </TravelogueCardContainer>
   );
 }
 
-const TravelLogCardContainer = styled.div`
+const TravelogueCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -68,7 +68,7 @@ const TravelLogCardContainer = styled.div`
   }
 `;
 
-const TravelLogTitleBox = styled.div`
+const TravelogueTitleBox = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 28.5px;
