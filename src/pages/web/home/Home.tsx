@@ -6,12 +6,7 @@ import TravelogueCardSlide from "../../../components/web/home/TravelogueCardSlid
 export default function Home() {
   const bigResponsive = {
     desktop: {
-      breakpoint: { max: 3000, min: 1442 },
-      items: 4,
-      slidesToSlide: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1442, min: 464 },
+      breakpoint: { max: 3000, min: 464 },
       items: 4,
       slidesToSlide: 4,
     },
@@ -19,12 +14,7 @@ export default function Home() {
 
   const smallResponsive = {
     desktop: {
-      breakpoint: { max: 3000, min: 1800 },
-      items: 4,
-      slidesToSlide: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1800, min: 464 },
+      breakpoint: { max: 3000, min: 464 },
       items: 3,
       slidesToSlide: 3,
     },

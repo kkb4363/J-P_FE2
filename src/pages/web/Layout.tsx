@@ -1,5 +1,8 @@
 import { Outlet } from "react-router-dom";
 import styled, { css } from "styled-components";
+import { scrollHidden } from "../../assets/styles/home.style";
+
+const minWidth = "1440px";
 
 export default function Layout() {
   return (
@@ -39,12 +42,13 @@ const LayoutContainer = styled.div`
 
 const Header = styled.div`
   width: 100%;
+  min-width: ${minWidth};
   height: 90px;
-  min-width: 1440px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  box-sizing: border-box;
   padding: 0 100px;
   background-color: ${(props) => props.theme.color.white};
 `;
@@ -102,9 +106,10 @@ const LoginButton = styled.button`
 `;
 
 const OutletBox = styled.div`
-  width: 100%;
-  min-width: 1440px;
+  width: ${minWidth};
+  margin: 0 auto;
   height: calc(100% - 90px);
   padding: 0 120px 80px 120px;
   overflow: auto;
+  ${scrollHidden};
 `;
