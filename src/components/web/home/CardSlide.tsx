@@ -7,6 +7,7 @@ import { axiosInstance } from "../../../utils/axios";
 import { useEffect, useState } from "react";
 import { placeApiProps } from "../../../types/home";
 import ImageView from "../ImageView";
+import { useNavigate } from "react-router-dom";
 
 export interface ReactMultiCarouselProps {
   [key: string]: {
@@ -46,6 +47,7 @@ export default function CardSlide({
   bottomText,
   topText,
 }: Props) {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
@@ -91,6 +93,8 @@ export default function CardSlide({
                 minHeight="240px"
                 bottomText={bottomText ? item.name : ""}
                 topText={topText ? "여행지" : ""}
+                pointer={true}
+                handleClick={() => navigate(`${item.placeId}`)}
               />
               {title && <p>{item.name}</p>}
               {subTitle && <span>{item.subName}</span>}
