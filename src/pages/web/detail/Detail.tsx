@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { axiosInstance } from "../../../utils/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
@@ -21,6 +21,7 @@ import {
 } from "../../../assets/styles/homeDetail.style";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import SearchIcon from "../../../assets/icons/SearchIcon";
 
 export default function Detail() {
   const param = useParams();
@@ -101,10 +102,18 @@ export default function Detail() {
                 <CustomSkeleton key={index} width="276px" height="200px" />
               ))
             : detail?.photoUrls
-                ?.slice(1, 5)
+                ?.slice(1, 4)
                 .map((photo) => (
                   <SmallPhoto key={photo} src={photo} alt="small-photo" />
                 ))}
+          {!loading && (
+            <ImageSearchBox
+              to={`https://www.google.com/search?q=${detail?.name}`}
+            >
+              <SearchIcon stroke="#b8b8b8" />
+              <span>이미지 검색 더보기</span>
+            </ImageSearchBox>
+          )}
         </PhotoBoxGrid>
       </PhotoBoxRow>
 
@@ -324,6 +333,22 @@ const SmallPhoto = styled.img`
   width: 276px;
   height: 200px;
   object-fit: cover;
+`;
+
+const ImageSearchBox = styled(Link)`
+  width: 276px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  background-color: ${(props) => props.theme.color.gray100};
+  cursor: pointer;
+
+  & > span {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 14px;
+  }
 `;
 
 const TitleBox = styled.div`
