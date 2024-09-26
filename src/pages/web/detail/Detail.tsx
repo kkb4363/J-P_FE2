@@ -20,11 +20,13 @@ import {
   ReviewTitle,
 } from "../../../assets/styles/homeDetail.style";
 import CommentIcon from "../../../assets/icons/CommentIcon";
+import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 
 export default function Detail() {
   const param = useParams();
   const navigate = useNavigate();
 
+  const isCityDetailPage = location.pathname.includes("city");
   const [loading, setLoading] = useState(true);
   const [detail, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
@@ -87,12 +89,22 @@ export default function Detail() {
     <>
       <PhotoBoxRow>
         <PhotoBox>
-          <BigPhoto src={detail?.photoUrls?.[0]} alt="big-photo" />
+          {loading ? (
+            <CustomSkeleton height="100%" />
+          ) : (
+            <BigPhoto src={detail?.photoUrls?.[0]} alt="big-photo" />
+          )}
         </PhotoBox>
         <PhotoBoxGrid>
-          {detail?.photoUrls?.slice(1, 5).map((photo) => (
-            <SmallPhoto key={photo} src={photo} alt="small-photo" />
-          ))}
+          {loading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <CustomSkeleton key={index} width="276px" height="200px" />
+              ))
+            : detail?.photoUrls
+                ?.slice(1, 5)
+                .map((photo) => (
+                  <SmallPhoto key={photo} src={photo} alt="small-photo" />
+                ))}
         </PhotoBoxGrid>
       </PhotoBoxRow>
 
@@ -123,22 +135,26 @@ export default function Detail() {
         <span>{detail?.description}</span>
       </InfoBox>
 
-      <SubTitle>
-        <span>기본 정보</span>
-      </SubTitle>
+      {!isCityDetailPage && (
+        <>
+          <SubTitle>
+            <span>기본 정보</span>
+          </SubTitle>
 
-      <MapTitle>
-        <MarkIcon />
-        <span>{detail?.formattedAddress}</span>
-      </MapTitle>
+          <MapTitle>
+            <MarkIcon />
+            <span>{detail?.formattedAddress}</span>
+          </MapTitle>
 
-      {detail?.id && (
-        <CustomGoogleMap
-          width="100%"
-          height="450px"
-          lat={detail?.location?.lat}
-          lng={detail?.location?.lng}
-        />
+          {detail?.id && (
+            <CustomGoogleMap
+              width="100%"
+              height="450px"
+              lat={detail?.location?.lat}
+              lng={detail?.location?.lng}
+            />
+          )}
+        </>
       )}
 
       <SubTitle>
@@ -147,23 +163,32 @@ export default function Detail() {
       </SubTitle>
 
       <SurroundingPlaceCardRow>
-        {surrondingPlace?.slice(0, 5)?.map((place) => (
-          <SurroundingPlaceCard>
-            <img src={place?.photoUrls[0]} alt="surrounding-place-img" />
+        {surrondingPlace?.length === 0
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <CustomSkeleton
+                key={index}
+                width="224px"
+                height="190px"
+                borderRadius="16px"
+              />
+            ))
+          : surrondingPlace?.slice(0, 5)?.map((place) => (
+              <SurroundingPlaceCard key={place.placeId}>
+                <img src={place?.photoUrls[0]} alt="surrounding-place-img" />
 
-            <SurroundingPlaceCardBottomBox>
-              <p>{place?.name}</p>
-              <div>
-                <StarIcon width="14" height="14" />
-                &nbsp; 4.9 | 위치보기
-              </div>
-              <SurrondingPlaceAddButton>
-                <PlusIcon />
-                <span>추가</span>
-              </SurrondingPlaceAddButton>
-            </SurroundingPlaceCardBottomBox>
-          </SurroundingPlaceCard>
-        ))}
+                <SurroundingPlaceCardBottomBox>
+                  <p>{place?.name}</p>
+                  <div>
+                    <StarIcon width="14" height="14" />
+                    &nbsp; 4.9 | 위치보기
+                  </div>
+                  <SurrondingPlaceAddButton>
+                    <PlusIcon />
+                    <span>추가</span>
+                  </SurrondingPlaceAddButton>
+                </SurroundingPlaceCardBottomBox>
+              </SurroundingPlaceCard>
+            ))}
       </SurroundingPlaceCardRow>
 
       <SubTitle>
@@ -470,7 +495,7 @@ const SurrondingPlaceAddButton = styled.button`
   position: absolute;
   right: 10px;
   bottom: 18px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   display: flex;
   justify-content: center;
   align-items: center;

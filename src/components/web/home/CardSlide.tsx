@@ -37,6 +37,7 @@ interface Props {
   topText?: boolean;
   title?: boolean;
   subTitle?: boolean;
+  isCity?: boolean;
 }
 
 export default function CardSlide({
@@ -46,6 +47,7 @@ export default function CardSlide({
   subTitle,
   bottomText,
   topText,
+  isCity,
 }: Props) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -61,6 +63,10 @@ export default function CardSlide({
     } catch (error) {
       console.error("cardSlide api error=", error);
     }
+  };
+
+  const handleClick = (placeId: string) => {
+    isCity ? navigate(`city/${placeId}`) : navigate(`${placeId}`);
   };
 
   useEffect(() => {
@@ -94,7 +100,7 @@ export default function CardSlide({
                 bottomText={bottomText ? item.name : ""}
                 topText={topText ? "여행지" : ""}
                 pointer={true}
-                handleClick={() => navigate(`${item.placeId}`)}
+                handleClick={() => handleClick(`${item.placeId}`)}
               />
               {title && <p>{item.name}</p>}
               {subTitle && <span>{item.subName}</span>}

@@ -16,6 +16,10 @@ export const router = createBrowserRouter([
         path: ":placeId",
         element: <Detail />,
       },
+      {
+        path: "city/:placeId",
+        element: <Detail />,
+      },
     ],
   },
 ]);
