@@ -118,11 +118,20 @@ export default function Detail() {
       </PhotoBoxRow>
 
       <TitleBox>
-        <MarkIcon width="32" height="32" />
-        <span>{detail?.name}</span>
-        <HeartBox>
-          <HeartIcon />
-        </HeartBox>
+        <div>
+          <MarkIcon width="32" height="32" />
+          <span>
+            {detail?.name}
+            <HeartBox>
+              <HeartIcon />
+            </HeartBox>
+          </span>
+        </div>
+
+        <AddScheduleButton>
+          <PlusIcon stroke="#fff" />
+          <span>일정추가</span>
+        </AddScheduleButton>
       </TitleBox>
 
       <TagRowBox>
@@ -133,11 +142,6 @@ export default function Detail() {
             </Tag>
           ))}
         </TagRow>
-
-        <AddScheduleButton>
-          <PlusIcon stroke="#fff" />
-          <span>일정추가</span>
-        </AddScheduleButton>
       </TagRowBox>
 
       <InfoBox>
@@ -354,20 +358,26 @@ const ImageSearchBox = styled(Link)`
 const TitleBox = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin: 40px 0 24px 0;
   position: relative;
 
-  & > span {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 32px;
-    font-weight: 700;
+  & > div:first-child {
+    display: flex;
+    align-items: center;
+    & > span {
+      color: ${(props) => props.theme.color.gray900};
+      font-size: 32px;
+      font-weight: 700;
+
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
   }
 `;
 
 const HeartBox = styled.div`
-  position: absolute;
-  right: 30px;
-
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -375,6 +385,7 @@ const HeartBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 const TagRowBox = styled.div`
