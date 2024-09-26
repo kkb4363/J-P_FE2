@@ -32,6 +32,12 @@ export const mypageLikesTabs = [
   { label: "여행기", value: "placeLog" },
 ];
 
+export const webHeaderTabs = [
+  { label: "홈", route: "" },
+  { label: "일정", route: "" },
+  { label: "리뷰", route: "" },
+];
+
 export const RECENT_SEARCH_KEY = "recentSearches";
 
 export const realTimeWords: string[] = [

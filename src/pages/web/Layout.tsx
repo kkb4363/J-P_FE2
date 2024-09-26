@@ -1,10 +1,12 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { scrollHidden } from "../../assets/styles/home.style";
+import { webHeaderTabs } from "../../utils/staticDatas";
 
 const minWidth = "1440px";
 
 export default function Layout() {
+  const navigate = useNavigate();
   return (
     <LayoutContainer>
       <Header>
@@ -12,9 +14,11 @@ export default function Layout() {
           <Logo>Logo</Logo>
 
           <HeaderTabRow>
-            <span>홈</span>
-            <span>일정</span>
-            <span>리뷰</span>
+            {webHeaderTabs.map((tab) => (
+              <span onClick={() => navigate(tab.route)} key={tab.label}>
+                {tab.label}
+              </span>
+            ))}
           </HeaderTabRow>
         </HeaderLeft>
 

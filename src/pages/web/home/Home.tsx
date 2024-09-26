@@ -28,7 +28,12 @@ export default function Home() {
         <CustomInput text="여행지를 입력해주세요" value="" width="500px" />
       </InputBox>
 
-      <CarouselTitle>지금 가장 인기있는 여행지</CarouselTitle>
+      <CarouselTitle>
+        지금 가장 인기있는 여행지
+        <div>
+          <span>더보기</span>
+        </div>
+      </CarouselTitle>
       <CardSlide
         responsive={bigResponsive}
         placeType="TRAVEL_PLACE"
@@ -36,14 +41,25 @@ export default function Home() {
         subTitle={true}
       />
 
-      <CarouselTitle>인기 여행 도시 추천</CarouselTitle>
+      <CarouselTitle>
+        인기 여행 도시 추천
+        <div>
+          <span>더보기</span>
+        </div>
+      </CarouselTitle>
       <CardSlide
         responsive={bigResponsive}
         placeType="CITY"
+        isCity={true}
         bottomText={true}
       />
 
-      <CarouselTitle>지금 가면 좋은 여행지</CarouselTitle>
+      <CarouselTitle>
+        지금 가면 좋은 여행지
+        <div>
+          <span>더보기</span>
+        </div>
+      </CarouselTitle>
       <CardSlide
         responsive={bigResponsive}
         placeType="THEME"
