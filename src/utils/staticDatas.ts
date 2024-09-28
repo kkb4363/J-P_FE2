@@ -38,6 +38,20 @@ export const webHeaderTabs = [
   { label: "리뷰", route: "" },
 ];
 
+export const webHomeTabs = [
+  {
+    title: "지금 가장 인기있는 여행지는 어디?",
+    value: "TRAVEL_PLACE",
+    label: "인기 여행지",
+  },
+  { title: "요즘 많이 가는 도시 추천", value: "CITY", label: "인기 도시" },
+  {
+    title: "여기 어때요? 지금 가면 딱 좋은 여행지!",
+    value: "THEME",
+    label: "테마 여행지",
+  },
+];
+
 export const RECENT_SEARCH_KEY = "recentSearches";
 
 export const realTimeWords: string[] = [
