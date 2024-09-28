@@ -1,13 +1,12 @@
 import Carousel from "react-multi-carousel";
 import styled, { keyframes } from "styled-components";
-import testImg from "../../../assets/images/testImg.png";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { axiosInstance } from "../../../utils/axios";
 import { useEffect, useState } from "react";
 import { placeApiProps } from "../../../types/home";
-import ImageView from "../ImageView";
 import { useNavigate } from "react-router-dom";
+import PlaceCard from "./PlaceCard";
 
 export interface ReactMultiCarouselProps {
   [key: string]: {
@@ -90,52 +89,17 @@ export default function CardSlide({
             <CustomSkeleton key={index} />
           ))
         : data?.map((item: placeApiProps) => (
-            <CarouselBox key={item.id}>
-              <ImageView
-                src={testImg}
-                alt="image"
-                width="100%"
-                height="100%"
-                minHeight="240px"
-                bottomText={bottomText ? item.name : ""}
-                topText={topText ? "여행지" : ""}
-                pointer={true}
-                handleClick={() => handleClick(`${item.placeId}`)}
-              />
-              {title && <p>{item.name}</p>}
-              {subTitle && <span>{item.subName}</span>}
-            </CarouselBox>
+            <PlaceCard
+              bottomText={bottomText ? item.name : ""}
+              topText={topText ? "여행지" : ""}
+              title={title ? item.name : ""}
+              subTitle={subTitle ? item.subName : ""}
+              handleClick={() => handleClick(`${item.placeId}`)}
+            />
           ))}
     </Carousel>
   );
 }
-
-const CarouselBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 95%;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 20px;
-    font-weight: 700;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  & > span {
-    color: ${(props) => props.theme.color.gray600};
-    font-size: 16px;
-    font-weight: 700;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-  }
-`;
 
 const CustomArrow = styled.div`
   width: 45px;
