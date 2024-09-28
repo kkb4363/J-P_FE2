@@ -22,6 +22,7 @@ import {
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
+import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
 
 export default function Detail() {
   const param = useParams();
@@ -172,7 +173,7 @@ export default function Detail() {
 
       <SubTitle>
         <span>주변 여행지 추천</span>
-        <p>더보기</p>
+        <p onClick={() => navigate(`/surrounding/${param?.placeId}`)}>더보기</p>
       </SubTitle>
 
       <SurroundingPlaceCardRow>
@@ -185,23 +186,16 @@ export default function Detail() {
                 borderRadius="16px"
               />
             ))
-          : surrondingPlace?.slice(0, 5)?.map((place) => (
-              <SurroundingPlaceCard key={place.placeId}>
-                <img src={place?.photoUrls[0]} alt="surrounding-place-img" />
-
-                <SurroundingPlaceCardBottomBox>
-                  <p>{place?.name}</p>
-                  <div>
-                    <StarIcon width="14" height="14" />
-                    &nbsp; 4.9 | 위치보기
-                  </div>
-                  <SurrondingPlaceAddButton>
-                    <PlusIcon />
-                    <span>추가</span>
-                  </SurrondingPlaceAddButton>
-                </SurroundingPlaceCardBottomBox>
-              </SurroundingPlaceCard>
-            ))}
+          : surrondingPlace
+              ?.slice(0, 5)
+              ?.map((place) => (
+                <SurroundingPlaceCard
+                  key={place.placeId}
+                  imgSrc={place?.photoUrls[0]}
+                  title={place?.name}
+                  rating="4.9"
+                />
+              ))}
       </SurroundingPlaceCardRow>
 
       <SubTitle>
@@ -488,61 +482,6 @@ const SurroundingPlaceCardRow = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-`;
-
-const SurroundingPlaceCard = styled.div`
-  width: 224px;
-  height: 190px;
-  border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.gray200};
-  background-color: ${(props) => props.theme.color.white};
-
-  & > img {
-    width: 100%;
-    height: 100px;
-    border-radius: 16px 16px 0 0;
-  }
-`;
-
-const SurroundingPlaceCardBottomBox = styled.div`
-  border-radius: 0 0 16px 16px;
-  padding: 13px 17px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 90px;
-  position: relative;
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  & > div {
-    color: ${(props) => props.theme.color.gray500};
-    font-size: 12px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const SurrondingPlaceAddButton = styled.button`
-  position: absolute;
-  right: 10px;
-  bottom: 18px;
-  padding: 6px 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 30px;
-  border: 1px solid ${(props) => props.theme.color.gray700};
-
-  & > span {
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 12px;
-    font-weight: 700;
-  }
 `;
 
 const ReviewCardRow = styled.div`

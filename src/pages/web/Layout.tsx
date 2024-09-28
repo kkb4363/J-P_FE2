@@ -114,6 +114,7 @@ const OutletBox = styled.div`
   margin: 0 auto;
   height: calc(100% - 90px);
   padding: 0 120px 80px 120px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   ${scrollHidden};
 `;
