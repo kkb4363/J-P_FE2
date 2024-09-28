@@ -9,6 +9,7 @@ import ImageView from "./ImageView";
 import * as R from "../../assets/styles/travelReview.style";
 import { testImageList } from "../../utils/staticDatas";
 import MarkIcon from "../../assets/icons/MarkIcon";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   item: reviewApiProps;
@@ -17,12 +18,42 @@ interface Props {
 
 export default function ReviewCard({ item, ref }: Props) {
   const navigate = useNavigate();
+  const reviewCardRef = useRef(null) as any;
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    if (reviewCardRef.current) {
+      const container = reviewCardRef.current;
+      const maxWidth = container?.offsetWidth - 36;
+      let totalWidth = 0;
+      let count = 0;
+
+      Array.from(container?.children).forEach((child: any) => {
+        const childWidth = child?.offsetWidth;
+        totalWidth += childWidth;
+
+        if (totalWidth <= maxWidth) {
+          count += 1;
+        }
+      });
+
+      setVisibleCount(count);
+    }
+  }, []);
+
   return (
-    <ReviewCardContainer key={item.id} ref={ref}>
-      <ReviewPlaceBox>
-        <MarkIcon stroke="#6979F8" width="18" height="18" />
-        <p>오대산 선재길</p>
-      </ReviewPlaceBox>
+    <ReviewCardContainer>
+      <ReviewPlaceBoxRow ref={reviewCardRef}>
+        {[...Array(4)].slice(0, visibleCount).map((_, idx) => (
+          <ReviewPlaceBox key={idx}>
+            <MarkIcon stroke="#6979F8" width="18" height="18" />
+            <span>오대산 선재길</span>
+          </ReviewPlaceBox>
+        ))}
+
+        {visibleCount < 4 && <PlusIndicator>+{4 - visibleCount}</PlusIndicator>}
+      </ReviewPlaceBoxRow>
+
       <R.ProfileHeader>
         <CustomProfile
           src="/src/assets/images/testImg.png"
@@ -81,6 +112,13 @@ const ReviewCardContainer = styled.div`
   }
 `;
 
+const ReviewPlaceBoxRow = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
 const ReviewPlaceBox = styled.div`
   width: fit-content;
   display: flex;
@@ -91,9 +129,10 @@ const ReviewPlaceBox = styled.div`
   border: 1px solid ${(props) => props.theme.color.gray700};
   border-radius: 16px;
 
-  & > p {
+  & > span {
     font-size: 14px;
     color: ${(props) => props.theme.color.gray700};
+    white-space: nowrap;
   }
 `;
 
@@ -113,4 +152,18 @@ const ReviewContentBox = styled.div`
     color: ${(props) => props.theme.color.gray300};
     cursor: pointer;
   }
+`;
+
+const PlusIndicator = styled.div`
+  background-color: ${(props) => props.theme.color.white};
+  color: ${(props) => props.theme.color.gray500};
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 16px;
+  border: 1px solid ${(props) => props.theme.color.gray500};
+  min-height: 28px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

@@ -102,8 +102,6 @@ export default function NearPlace() {
     }
   }, [selectPlaceId]);
 
-  console.log(details?.id);
-
   return (
     <S.NearPlaceContainer>
       <CustomHeader title="주변 여행지" handleClick={handlePrev} />

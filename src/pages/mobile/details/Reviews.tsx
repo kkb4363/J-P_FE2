@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import EditIcon from "../../../assets/icons/EditIcon";
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { reviewApiProps } from "../../../types/home";
 import { axiosInstance } from "../../../utils/axios";
 import ReviewCard from "../../../components/mobile/ReviewCard";
