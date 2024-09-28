@@ -1,4 +1,4 @@
-import { commentResDto, userCompactResDto } from './res.dto';
+import { commentResDto, userCompactResDto } from "./res.dto";
 
 export interface PlaceDetailAPiProps {
   description: string;
@@ -30,6 +30,7 @@ export interface NearByPlaceProps {
   rating: number;
   userRatingsTotal: number;
   vicinity: string;
+  shortAddress: string;
 }
 
 // 04. [구글 플레이스] /googleplace/details
@@ -51,7 +52,7 @@ export interface SelectPlaceProps {
   shortAddress: string;
 }
 
-export interface ReviewDetailApiProps { 
+export interface ReviewDetailApiProps {
   id: number;
   subject: string;
   content: string;

@@ -4,6 +4,7 @@ import Home from "./home/Home";
 import Detail from "./detail/Detail";
 import More from "./home/More";
 import SurrondingPlace from "./detail/SurrondingPlace";
+import SurroundingMore from "./detail/SurroundingMore";
 
 export const router = createBrowserRouter([
   {
@@ -27,8 +28,12 @@ export const router = createBrowserRouter([
         element: <More />,
       },
       {
-        path: "surrounding/:placeId",
+        path: "surrounding/:lng/:lat",
         element: <SurrondingPlace />,
+      },
+      {
+        path: "surroundingMore/:lng/:lat",
+        element: <SurroundingMore />,
       },
     ],
   },

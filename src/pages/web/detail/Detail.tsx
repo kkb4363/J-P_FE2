@@ -173,7 +173,15 @@ export default function Detail() {
 
       <SubTitle>
         <span>주변 여행지 추천</span>
-        <p onClick={() => navigate(`/surrounding/${param?.placeId}`)}>더보기</p>
+        <p
+          onClick={() =>
+            navigate(
+              `/surrounding/${detail?.location.lng}/${detail?.location.lat}`
+            )
+          }
+        >
+          더보기
+        </p>
       </SubTitle>
 
       <SurroundingPlaceCardRow>

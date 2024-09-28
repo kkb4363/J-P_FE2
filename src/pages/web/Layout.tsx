@@ -3,13 +3,15 @@ import styled, { css } from "styled-components";
 import { scrollHidden } from "../../assets/styles/home.style";
 import { webHeaderTabs } from "../../utils/staticDatas";
 
-const minWidth = "1440px";
+interface Props {
+  minWidth?: string;
+}
 
-export default function Layout() {
+export default function Layout({ minWidth = "1440px" }: Props) {
   const navigate = useNavigate();
   return (
     <LayoutContainer>
-      <Header>
+      <Header $minWidth={minWidth}>
         <HeaderLeft>
           <Logo>Logo</Logo>
 
@@ -29,7 +31,7 @@ export default function Layout() {
         </HeaderRight>
       </Header>
 
-      <OutletBox>
+      <OutletBox $minWidth={minWidth}>
         <Outlet />
       </OutletBox>
     </LayoutContainer>
@@ -44,9 +46,9 @@ const LayoutContainer = styled.div`
   background-color: ${(props) => props.theme.color.background};
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ $minWidth: string }>`
   width: 100%;
-  min-width: ${minWidth};
+  min-width: ${(props) => props.$minWidth && props.$minWidth};
   height: 90px;
   display: flex;
   justify-content: space-between;
@@ -109,8 +111,8 @@ const LoginButton = styled.button`
   }
 `;
 
-const OutletBox = styled.div`
-  width: ${minWidth};
+const OutletBox = styled.div<{ $minWidth: string }>`
+  width: ${(props) => props.$minWidth && props.$minWidth};
   margin: 0 auto;
   height: calc(100% - 90px);
   padding: 0 120px 80px 120px;

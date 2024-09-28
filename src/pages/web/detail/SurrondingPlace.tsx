@@ -1,40 +1,25 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { axiosInstance } from "../../../utils/axios";
-import { useParams } from "react-router-dom";
-import {
-  NearByPlaceProps,
-  PlaceDetailAPiProps,
-} from "../../../types/home.details";
+import { useNavigate, useParams } from "react-router-dom";
+import { NearByPlaceProps } from "../../../types/home.details";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 
 export default function SurrondingPlace() {
+  const navigate = useNavigate();
   const param = useParams();
   const [isRec, setIsRec] = useState(true);
-  const [detail, setDetail] = useState<PlaceDetailAPiProps>(
-    {} as PlaceDetailAPiProps
-  );
-  const [isLoading, setLoading] = useState(true);
+
   const [surrondingPlace, setSurroundingPlace] = useState<NearByPlaceProps[]>(
     []
   );
-
-  const getDetail = async () => {
-    try {
-      const data = await axiosInstance.get(`/place/details/${param?.placeId}`);
-      setDetail(data.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("cardSlide api error=", error);
-    }
-  };
 
   const getSurroundingPlace = async () => {
     try {
       axiosInstance
         .get(
-          `/googleplace/nearby-search/page?lat=${detail?.location.lat}&lng=${detail?.location.lng}&radius=10`
+          `/googleplace/nearby-search/page?lat=${param?.lat}&lng=${param?.lng}&radius=10`
         )
         .then((res) => {
           if (res.status === 200) {
@@ -47,18 +32,10 @@ export default function SurrondingPlace() {
   };
 
   useEffect(() => {
-    if (param.placeId) {
-      getDetail();
-    }
-  }, [param.placeId]);
-
-  useEffect(() => {
-    if (detail.id) {
+    if (param.lng && param.lat) {
       getSurroundingPlace();
     }
-  }, [detail?.id]);
-
-  console.log(surrondingPlace);
+  }, [param?.lng, param?.lat]);
 
   return (
     <>
@@ -95,7 +72,11 @@ export default function SurrondingPlace() {
               ))}
       </SurrondingCardGridBox>
       <MoreButtonBox>
-        <MoreButton>
+        <MoreButton
+          onClick={() =>
+            navigate(`/surroundingMore/${param?.lng}/${param?.lat}`)
+          }
+        >
           <span>더보기</span>
         </MoreButton>
       </MoreButtonBox>
