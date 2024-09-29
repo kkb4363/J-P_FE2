@@ -3,6 +3,10 @@ import img from "../../../assets/images/onboarding.png";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import GoogleIcon from "../../../assets/icons/GoogleIcon";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -12,6 +16,12 @@ export default function Onboarding() {
       import.meta.env.VITE_GOOGLE_CLIENT_ID
     }&redirect_uri=http://localhost:3000/survey`;
   };
+
+  useEffect(() => {
+    if (!!cookies.get("userToken")) {
+      navigate("/home");
+    }
+  }, [cookies]);
 
   return (
     <>

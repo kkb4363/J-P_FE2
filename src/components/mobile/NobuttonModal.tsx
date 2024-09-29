@@ -6,13 +6,20 @@ import { ModalOverlay, ModalWrapper } from "../../assets/styles/modal.style";
 interface Props {
   onClose?: () => void;
   children: React.ReactNode;
+  width?: string;
+  height?: string;
 }
 
-export default function NobuttonModal({ onClose, children }: Props) {
+export default function NobuttonModal({
+  onClose,
+  children,
+  width,
+  height,
+}: Props) {
   return (
     <>
       <ModalOverlay onClick={onClose} />
-      <ModalWrapper>
+      <ModalWrapper $width={width} $height={height}>
         <ModalHeader>
           <EmptyBox />
           <CancelIcon onClick={onClose} />

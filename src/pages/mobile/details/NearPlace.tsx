@@ -1,7 +1,12 @@
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
+import {
+  axiosInstance,
+  getGooglePlaceDetail,
+  getPlaceDetail,
+  getSurroundingPlace,
+} from "../../../utils/axios";
 import {
   PlaceDetailAPiProps,
   SelectPlaceProps,
@@ -21,14 +26,12 @@ import PlusIcon from "../../../assets/icons/PlusIcon";
 export default function NearPlace() {
   const param = useParams();
   const location = useLocation();
-
   const mapStore = useMapStore();
   const navigate = useNavigate();
 
   const [details, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
-
   const [selectPlaceId, setSelectPlaceId] = useState("");
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
@@ -51,30 +54,32 @@ export default function NearPlace() {
     }
   };
 
+  const getDetail = async () => {
+    getPlaceDetail({ placeId: param?.placeId + "" }).then((res) => {
+      setDetails(res?.data);
+    });
+  };
+
   const getSurroundingPlaces = async () => {
-    try {
-      if (details?.location) {
-        const res = await axiosInstance.get(
-          `/googleplace/nearby-search/page?lat=${details.location.lat}&lng=${details.location.lng}&radius=5`
-        );
-        if (res.status === 200) {
-          mapStore.setNearPlace(res.data.results);
-        }
-      }
-    } catch (error) {
-      console.error("nearbyPlace Api Error=", error);
+    if (details?.location) {
+      getSurroundingPlace({
+        lat: details.location.lat + "",
+        lng: details.location.lng + "",
+      }).then((res) => {
+        mapStore.setNearPlace(res?.data.results);
+      });
     }
   };
 
+  const getGooglePlace = async () => {
+    getGooglePlaceDetail({ placeId: selectPlaceId }).then((res) => {
+      setSelectPlace(res?.data);
+    });
+  };
+
   useEffect(() => {
-    try {
-      axiosInstance.get(`/place/details/${param?.placeId}`).then((res) => {
-        if (res.status === 200) {
-          setDetails(res.data);
-        }
-      });
-    } catch (error) {
-      console.error("API Error=", error);
+    if (param?.placeId) {
+      getDetail();
     }
   }, [param?.placeId]);
 
@@ -85,22 +90,16 @@ export default function NearPlace() {
   }, [details.id]);
 
   useEffect(() => {
+    if (selectPlaceId) {
+      getGooglePlace();
+    }
+  }, [selectPlaceId]);
+
+  useEffect(() => {
     if (location?.state?.selectedPlaceId) {
       setSelectPlaceId(location?.state?.selectedPlaceId);
     }
   }, [location?.state]);
-
-  useEffect(() => {
-    if (selectPlaceId) {
-      axiosInstance
-        .get(`/googleplace/details?placeId=${selectPlaceId}`)
-        .then((res) => {
-          if (res.status === 200) {
-            setSelectPlace(res.data);
-          }
-        });
-    }
-  }, [selectPlaceId]);
 
   return (
     <S.NearPlaceContainer>
