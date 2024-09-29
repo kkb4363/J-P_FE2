@@ -7,11 +7,11 @@ import { useNavigate } from "react-router-dom";
 export default function Onboarding() {
   const navigate = useNavigate();
 
-  // 아래는 제가 생각한 방법 입니다!
-  // 구글 계정으로 로그인 성공시
-  // 1. 예시로 userId가 서버로부터 넘어옴
-  // 2. zustand - store에 저장
-  // 3. userId 정보가 null이 아니면 survey page 띄우기
+  const handleGoogleLogin = () => {
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
+      import.meta.env.VITE_GOOGLE_CLIENT_ID
+    }&redirect_uri=http://localhost:3000/survey`;
+  };
 
   return (
     <>
@@ -25,7 +25,7 @@ export default function Onboarding() {
           </OnboardingTitle>
         </OnBoardingTopBox>
         <OnBoardingBottomBox>
-          <GoogleLoginButton>
+          <GoogleLoginButton onClick={handleGoogleLogin}>
             <GoogleIcon />
             <p>구글 계정으로 시작하기</p>
           </GoogleLoginButton>

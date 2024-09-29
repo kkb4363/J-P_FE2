@@ -1,14 +1,23 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import LogoutIcon from "../../../assets/icons/LogoutIcon";
 import PrimaryButton from "../../../components/mobile/PrimaryButton";
+import { axiosInstance, updateUser } from "../../../utils/axios";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useUserStore } from "../../../store/user.store";
 
 type JPProps = "J" | "P";
 
 export default function Survey() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
+  const [_, setCookie] = useCookies(["userToken"]);
+  const { setUserName, setUserType } = useUserStore();
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -18,12 +27,44 @@ export default function Survey() {
     setType(type);
   };
 
-  const handleSubmit = () => {
-    // 닉네임이 중복되진 않았는지 & jp선택은 되어있는지 확인후
-    // 이상 없으면 /home 페이지로 이동
-    console.log(nickname);
-    console.log(type);
+  const handleSubmit = async () => {
+    if (!!nickname && !!type) {
+      updateUser({
+        name: nickname,
+        type: type as JPProps,
+      }).then((res) => {
+        if (res) {
+          setUserName(nickname);
+          setUserType(type as JPProps);
+          navigate("/home");
+        }
+      });
+    }
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/login/oauth2/code/google?code=${code}`
+      );
+      const accessToken = res.headers.authorization;
+      setCookie("userToken", accessToken);
+
+      if (res.status === 200) {
+        res.data.isSignUp ? navigate("/home") : null;
+      }
+    } catch (err) {
+      console.error("구글 oauth 에러=", err);
+    }
+  };
+
+  useEffect(() => {
+    if (code) {
+      handleGoogleLogin();
+    } else {
+      console.log("로그인 에러");
+    }
+  }, [code]);
 
   return (
     <>
