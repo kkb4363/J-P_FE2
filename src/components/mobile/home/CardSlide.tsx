@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
+import { getPlaceList } from "../../../utils/axios";
 import { placeApiProps } from "../../../types/home";
 import ImageView from "../ImageView";
 import testImg from "../../../assets/images/testImg.png";
@@ -13,7 +13,7 @@ interface Props {
   placeType: string;
   bottomText?: boolean;
   topText?: boolean;
-  isCity?: boolean; // city page로 이동할 지? (구글 맵 표시 여부 때문)
+  isCity?: boolean;
 }
 
 export default function CardSlide({
@@ -27,15 +27,10 @@ export default function CardSlide({
   const [isLoading, setLoading] = useState(true);
 
   const requestApi = async () => {
-    try {
-      const data = await axiosInstance.get(
-        `/place/page?page=1&placeType=${placeType}`
-      );
-      setData(data.data.data);
+    getPlaceList({ type: placeType }).then((res) => {
+      setData(res?.data.data);
       setLoading(false);
-    } catch (error) {
-      console.error("cardSlide api error=", error);
-    }
+    });
   };
 
   const handleClick = (placeId: string) => {

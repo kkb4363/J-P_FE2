@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { axiosInstance } from "../../../utils/axios";
+import {
+  getPlaceDetail,
+  getReviews,
+  getSurroundingPlace,
+} from "../../../utils/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   NearByPlaceProps,
@@ -38,55 +42,41 @@ export default function Detail() {
   );
   const [review, setReviews] = useState<reviewApiProps[]>([]);
 
-  const getSurroundingPlace = async () => {
-    try {
-      axiosInstance
-        .get(
-          `/googleplace/nearby-search/page?lat=${detail?.location.lat}&lng=${detail?.location.lng}&radius=10`
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            setSurroundingPlace(res.data.results);
-          }
-        });
-    } catch (error) {
-      console.error("nearbyPlace Api Error=", error);
-    }
+  const getDetail = async () => {
+    getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
+      setDetails(res?.data);
+      setLoading(false);
+    });
+  };
+
+  const getReview = async () => {
+    getReviews({ placeId: param.placeId + "" }).then((res) => {
+      setReviews(res?.data.data);
+    });
+  };
+
+  const getNearPlace = async () => {
+    getSurroundingPlace({
+      lat: detail?.location.lat + "",
+      lng: detail?.location.lng + "",
+    }).then((res) => {
+      setSurroundingPlace(res?.data.results);
+    });
   };
 
   useEffect(() => {
-    const requestApi = async () => {
-      try {
-        const [detailsRes, reviewsRes] = await Promise.all([
-          axiosInstance.get(`/place/details/${param?.placeId}`),
-          axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
-          ),
-        ]);
-
-        if (detailsRes.status === 200) {
-          setDetails(detailsRes.data);
-          setLoading(false);
-        }
-        if (reviewsRes.status === 200) {
-          setReviews(reviewsRes.data.data);
-        }
-      } catch (error) {
-        console.error("homeDetail api error=", error);
-      }
-    };
-
-    requestApi();
+    if (param?.placeId) {
+      getDetail();
+      getReview();
+    }
   }, [param?.placeId]);
 
   useEffect(() => {
     if (detail.id) {
-      getSurroundingPlace();
+      getNearPlace();
     }
   }, [detail?.id]);
 
-  console.log(detail);
-  console.log(surrondingPlace);
   return (
     <>
       <PhotoBoxRow>

@@ -3,7 +3,7 @@ import { HomeTabType, useDisplayStore } from "../../../store/display.store";
 import { webHomeTabs } from "../../../utils/staticDatas";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../../utils/axios";
+import { getPlaceList } from "../../../utils/axios";
 import { placeApiProps } from "../../../types/home";
 import PlaceCard from "../../../components/web/home/PlaceCard";
 import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
@@ -19,15 +19,10 @@ export default function More() {
   };
 
   const requestApi = async () => {
-    try {
-      const data = await axiosInstance.get(
-        `/place/page?page=1&placeType=${getHomeTab()}`
-      );
-      setData(data.data.data);
+    getPlaceList({ type: getHomeTab() }).then((res) => {
+      setData(res?.data.data);
       setLoading(false);
-    } catch (error) {
-      console.error("cardSlide api error=", error);
-    }
+    });
   };
 
   const handleClick = (placeId: string) => {

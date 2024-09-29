@@ -3,8 +3,29 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import testImg from "../../../assets/images/testImg2.png";
 import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
+import { useUserStore } from "../../../store/user.store";
+import { useRef } from "react";
+import { updateUser } from "../../../utils/axios";
 
 export default function EditProfile() {
+  const userStore = useUserStore();
+  const editedNameRef = useRef<HTMLInputElement>(null);
+
+  const handleUserName = async () => {
+    if (editedNameRef?.current) {
+      if (editedNameRef?.current.value !== userStore.getUserName()) {
+        updateUser({
+          name: editedNameRef.current.value,
+          type: userStore.getUserType(),
+        }).then((res) => {
+          if (res && editedNameRef.current) {
+            userStore.setUserName(editedNameRef.current.value);
+          }
+        });
+      }
+    }
+  };
+
   return (
     <>
       <CustomHeader title="마이페이지" />
@@ -18,7 +39,12 @@ export default function EditProfile() {
         </ImgBox>
 
         <NicknameInputBox>
-          <input placeholder="" type="text" defaultValue={"닉네임"} />
+          <input
+            ref={editedNameRef}
+            placeholder=""
+            type="text"
+            defaultValue={userStore.getUserName()}
+          />
 
           <XIconBox>
             <XIcon />
@@ -26,7 +52,7 @@ export default function EditProfile() {
         </NicknameInputBox>
 
         <SaveButtonBox>
-          <button>저장</button>
+          <button onClick={handleUserName}>저장</button>
         </SaveButtonBox>
       </EditProfileContainer>
     </>

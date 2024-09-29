@@ -8,10 +8,11 @@ import { mypageTabs } from "../../../utils/staticDatas";
 import { useState } from "react";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../store/user.store";
 
 export default function MyPageLayout() {
   const navigate = useNavigate();
-
+  const userStore = useUserStore();
   const [currentTab, setCurrentTab] = useState("");
 
   const getTabSvgColor = ($isActive: boolean) => {
@@ -33,7 +34,7 @@ export default function MyPageLayout() {
         <img src={testImg} alt="마이페이지" />
 
         <div>
-          <p>닉네임</p>
+          <p>{userStore.getUserName()}</p>
           <span onClick={() => navigate("/home/editProfile")}>
             <PenIcon />
             프로필 수정

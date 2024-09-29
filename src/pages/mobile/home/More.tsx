@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import MoreContainer from "../../../components/mobile/MoreContainer";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
+import { getPlaceList } from "../../../utils/axios";
 import { placeApiProps } from "../../../types/home";
 import ImageView from "../../../components/mobile/ImageView";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
@@ -45,26 +45,17 @@ export default function More() {
     [hasMore, loading]
   );
 
-  const requestApi = async () => {
-    try {
-      const res = await axiosInstance.get(
-        `/place/page?page=${page}&placeType=${type}`
-      );
-
-      if (res.status === 200) {
-        const newData = res.data.data;
-        setData((prev) => [...prev, ...newData]);
-        setHasMore(newData.length > 0);
-      }
-    } catch (error) {
-      console.error("api error=", error);
-    } finally {
+  const getPlace = async () => {
+    getPlaceList({ type: type, page: page }).then((res) => {
+      const newData = res?.data.data;
+      setData((p) => [...p, ...newData]);
+      setHasMore(newData.length > 0);
       setLoading(false);
-    }
+    });
   };
 
   useEffect(() => {
-    requestApi();
+    getPlace();
   }, [page]);
 
   return (

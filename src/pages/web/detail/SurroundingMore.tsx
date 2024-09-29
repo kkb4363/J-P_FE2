@@ -4,12 +4,19 @@ import MarkIcon from "../../../assets/icons/MarkIcon";
 import SurroundingMoreAddCard from "../../../components/web/home/SurroundingMoreAddCard";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useParams } from "react-router-dom";
-import { axiosInstance } from "../../../utils/axios";
+import {
+  getGooglePlaceDetail,
+  getSurroundingPlace,
+} from "../../../utils/axios";
 import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
-
 import NobuttonModal from "../../../components/mobile/NobuttonModal";
 import { SelectPlaceProps } from "../../../types/home.details";
+import InfoModal from "../../../components/web/surroundingPlace/InfoModal";
+
+import NoScheduleModal from "../../../components/web/surroundingPlace/NoScheduleModal";
+import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
+import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 
 export default function SurroundingMore() {
   const param = useParams();
@@ -18,39 +25,23 @@ export default function SurroundingMore() {
     {} as SelectPlaceProps
   );
 
-  const getSurroundingPlace = async () => {
-    try {
-      axiosInstance
-        .get(
-          `/googleplace/nearby-search/page?lat=${param?.lat}&lng=${param?.lng}&radius=10`
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            mapStore.setNearPlace(res.data.results);
-          }
-        });
-    } catch (error) {
-      console.error("nearbyPlace Api Error=", error);
-    }
+  const getPlace = async () => {
+    getSurroundingPlace({ lat: param?.lat + "", lng: param?.lng + "" }).then(
+      (res) => {
+        mapStore.setNearPlace(res?.data.results);
+      }
+    );
   };
 
   const handlePlaceClick = async (placeId: string) => {
-    try {
-      axiosInstance
-        .get(`/googleplace/details?placeId=${placeId}`)
-        .then((res) => {
-          if (res.status === 200) {
-            setSelectPlace(res.data);
-          }
-        });
-    } catch (err) {
-      console.error("place marker click error=", err);
-    }
+    getGooglePlaceDetail({ placeId: placeId }).then((res) => {
+      setSelectPlace(res!.data);
+    });
   };
 
   useEffect(() => {
     if (param.lng && param.lat) {
-      getSurroundingPlace();
+      getPlace();
     }
   }, [param?.lng, param?.lat]);
 
@@ -86,9 +77,30 @@ export default function SurroundingMore() {
           />
         )}
       </MoreContainer>
+
       {!!selectPlace?.placeId && (
-        <NobuttonModal onClose={() => setSelectPlace({} as SelectPlaceProps)}>
-          <div>test</div>
+        <NobuttonModal
+          width="530px"
+          height="380px"
+          onClose={() => setSelectPlace({} as SelectPlaceProps)}
+        >
+          <ModalContainer>
+            <InfoModal
+              imgSrc={selectPlace?.photoUrls[0]}
+              title={selectPlace?.name}
+              shortAddress={selectPlace?.shortAddress}
+              rating={selectPlace?.rating}
+              businessStatus={selectPlace?.businessStatus}
+              phoneNumber={selectPlace?.formattedPhoneNumber}
+              fullAddress={selectPlace?.fullAddress}
+            />
+
+            {/* <NoScheduleModal /> */}
+
+            {/* <ScheduleModal /> */}
+
+            {/* <SuccessModal /> */}
+          </ModalContainer>
         </NobuttonModal>
       )}
     </>
@@ -138,4 +150,14 @@ const CardCol = styled.div`
   height: 100%;
   overflow-y: scroll;
   ${scrollHidden};
+`;
+
+const ModalContainer = styled.div`
+  width: 530px;
+  height: 380px;
+  border-radius: 30px;
+  padding: 0 38px 58px 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 `;

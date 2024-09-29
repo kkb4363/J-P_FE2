@@ -7,7 +7,11 @@ import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import { useNavigate, useParams } from "react-router-dom";
-import { axiosInstance } from "../../../utils/axios";
+import {
+  getPlaceDetail,
+  getReviews,
+  getSurroundingPlace,
+} from "../../../utils/axios";
 import {
   NearByPlaceProps,
   PlaceDetailAPiProps,
@@ -29,17 +33,7 @@ export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
   const { clear } = useMapStore();
-
   const isCityDetailPage = location.pathname.includes("city");
-
-  const [loading, setLoading] = useState(true);
-  const [addScheduleState, setAddScheduleState] = useState(false);
-  const [details, setDetails] = useState<PlaceDetailAPiProps>(
-    {} as PlaceDetailAPiProps
-  );
-  const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
-  const [reviews, setReviews] = useState<reviewApiProps[]>([]);
-
   const [imageIndex, setImageIndex] = useState<number>(0);
   const imageSliderSetting = {
     arrows: false,
@@ -51,50 +45,46 @@ export default function HomeDetails() {
     adaptiveHeight: true,
     beforeChange: (current: number, next: number) => setImageIndex(next),
   };
+  const [details, setDetails] = useState<PlaceDetailAPiProps>(
+    {} as PlaceDetailAPiProps
+  );
+  const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
+  const [reviews, setReviews] = useState<reviewApiProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [addScheduleState, setAddScheduleState] = useState(false);
+
+  const getDetail = async () => {
+    getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
+      setDetails(res?.data);
+      setLoading(false);
+    });
+  };
+
+  const getReview = async () => {
+    getReviews({ placeId: param.placeId + "" }).then((res) => {
+      setReviews(res?.data.data);
+    });
+  };
 
   const getNearPlace = async () => {
-    try {
-      axiosInstance
-        .get(
-          `/googleplace/nearby-search/page?lat=${details?.location.lat}&lng=${details?.location.lng}&radius=10`
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            setNearbyPlaces(res.data.results);
-          }
-        });
-    } catch (error) {
-      console.error("nearbyPlace Api Error=", error);
-    }
+    getSurroundingPlace({
+      lat: details?.location.lat + "",
+      lng: details?.location.lng + "",
+    }).then((res) => {
+      setNearbyPlaces(res?.data.results);
+    });
   };
 
   useEffect(() => {
-    const requestApi = async () => {
-      try {
-        const [detailsRes, reviewsRes] = await Promise.all([
-          axiosInstance.get(`/place/details/${param?.placeId}`),
-          axiosInstance.get(
-            `/reviews?page=1&sort=HOT&placeId=${param?.placeId}`
-          ),
-        ]);
-
-        if (detailsRes.status === 200) {
-          setDetails(detailsRes.data);
-          setLoading(false);
-        }
-        if (reviewsRes.status === 200) {
-          setReviews(reviewsRes.data.data);
-        }
-      } catch (error) {
-        console.error("homeDetail api error=", error);
-      }
-    };
-
-    requestApi();
+    if (param?.placeId) {
+      getDetail();
+      getReview();
+    }
   }, [param?.placeId]);
 
   useEffect(() => {
-    if (details.id) {
+    if (details?.id) {
       getNearPlace();
     }
   }, [details?.id]);

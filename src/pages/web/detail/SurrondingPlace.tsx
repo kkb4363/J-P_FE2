@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { axiosInstance } from "../../../utils/axios";
+import { getSurroundingPlace } from "../../../utils/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { NearByPlaceProps } from "../../../types/home.details";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
@@ -15,25 +15,17 @@ export default function SurrondingPlace() {
     []
   );
 
-  const getSurroundingPlace = async () => {
-    try {
-      axiosInstance
-        .get(
-          `/googleplace/nearby-search/page?lat=${param?.lat}&lng=${param?.lng}&radius=10`
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            setSurroundingPlace(res.data.results);
-          }
-        });
-    } catch (error) {
-      console.error("nearbyPlace Api Error=", error);
-    }
+  const getSurroundPlace = async () => {
+    getSurroundingPlace({ lat: param?.lat + "", lng: param?.lng + "" }).then(
+      (res) => {
+        setSurroundingPlace(res?.data.results);
+      }
+    );
   };
 
   useEffect(() => {
     if (param.lng && param.lat) {
-      getSurroundingPlace();
+      getSurroundPlace();
     }
   }, [param?.lng, param?.lat]);
 

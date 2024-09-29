@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { footerTabs } from "../../utils/staticDatas";
-import { TabProps, useDisplayStore } from "../../store/display.store";
+import { TabType, useDisplayStore } from "../../store/display.store";
 import { useEffect } from "react";
 import StyledToast from "../../components/mobile/StyledToast";
 
@@ -16,7 +16,7 @@ export default function Layout() {
       (tab) => tab.route === location.pathname
     );
     if (currentTab) {
-      setTabs(currentTab.label as TabProps);
+      setTabs(currentTab.label as TabType);
     }
   }, [location.pathname, setTabs]);
 
@@ -26,7 +26,7 @@ export default function Layout() {
     } else {
       navigate(route, { replace: true });
     }
-    setTabs(label as TabProps);
+    setTabs(label as TabType);
   };
 
   return (
