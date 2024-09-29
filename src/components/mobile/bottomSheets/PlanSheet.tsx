@@ -78,6 +78,13 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
     }
   };
 
+  const handleDeleteModalClick = () => {
+    setOpenModal({
+      deleteSchedule: false,
+      deleteScheduleSuccess: true,
+    });
+  };
+
   return (
     <>
       <BottomSheet maxH={0.75} minH={3.5}>
@@ -252,7 +259,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
       {openModal.deleteSchedule && (
         <TwoButtonsModal
           text="일정을 삭제할까요?"
-          onClick={() => {}}
+          onClick={handleDeleteModalClick}
           onClose={() => setOpenModal((p) => ({ ...p, deleteSchedule: false }))}
         />
       )}
