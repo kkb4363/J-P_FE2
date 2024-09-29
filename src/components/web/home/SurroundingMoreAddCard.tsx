@@ -17,12 +17,7 @@ export default function SurroundingMoreAddCard({
 }: Props) {
   return (
     <MoreAddCardContainer>
-      <ImageView
-        src={imgSrc}
-        alt="주변여행지이미지"
-        width="90px"
-        height="95px"
-      />
+      <ImageView src={imgSrc} alt="이미지없음" width="90px" height="95px" />
       <MoreAddCardTextCol>
         <div>
           <span>주변 여행지</span>

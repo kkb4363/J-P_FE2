@@ -58,10 +58,10 @@ export default function RenderGoogleMap({
 
         marker.addListener("click", () => {
           const content = `
-            <div class="${MarkerName.styledComponentId}">
-            <strong>${place.name}</strong>
-            </div>
-          `;
+              <div class="${MarkerName.styledComponentId}">
+              <strong>${place.name}</strong>
+              </div>
+            `;
           infoWindow.setContent(content);
           infoWindow.open(map, marker);
 

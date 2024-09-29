@@ -5,7 +5,6 @@ import testImg from "../../../assets/images/testImg.png";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { useState } from "react";
 import OneButtonModal from "../../../components/mobile/OneButtonModal";
-import { useModal } from "../../../hooks/useModal";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import "swiper/css";
@@ -35,15 +34,14 @@ export default function ListView() {
     setList(newList);
   };
 
-  const { isOpen, openModal, closeModal, modalRef } = useModal({
-    handleCloseCallback: () => {},
+  const [openModal, setOpenModal] = useState({
+    selectDay: false,
+    selectTime: false,
   });
-  const {
-    isOpen: isTimerModalOpen,
-    openModal: openTimerModal,
-    closeModal: closeTimerModal,
-    modalRef: timerModalRef,
-  } = useModal({ handleCloseCallback: () => {} });
+
+  const handleDaySelect = () => {
+    setOpenModal((p) => ({ ...p, selectDay: false, selectTime: true }));
+  };
 
   return (
     <>
@@ -79,22 +77,21 @@ export default function ListView() {
       </PlaceCardCol>
 
       <SaveButtonBox>
-        <button disabled={list.length === 0} onClick={openModal}>
+        <button
+          disabled={list.length === 0}
+          onClick={() => setOpenModal((p) => ({ ...p, selectDay: true }))}
+        >
           <span>완료</span>
         </button>
       </SaveButtonBox>
 
-      {isOpen && (
+      {openModal.selectDay && (
         <OneButtonModal
           key={"날짜 선택 모달"}
           title="날짜 선택"
           buttonText="다음"
-          onClick={() => {
-            closeModal();
-            openTimerModal();
-          }}
-          onClose={closeModal}
-          modalRef={modalRef}
+          onClick={handleDaySelect}
+          onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
           <SelectDateRow>
             <LeftArrow>
@@ -119,14 +116,13 @@ export default function ListView() {
         </OneButtonModal>
       )}
 
-      {isTimerModalOpen && (
+      {openModal.selectTime && (
         <OneButtonModal
           key={"시간 설정 모달"}
           title="시간 설정"
           buttonText="완료"
           onClick={() => {}}
-          onClose={closeTimerModal}
-          modalRef={timerModalRef}
+          onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
           <TimeModalContainer>
             <Swiper

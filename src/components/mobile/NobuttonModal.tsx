@@ -4,22 +4,22 @@ import CancelIcon from "../../assets/icons/CancelIcon";
 import { ModalOverlay, ModalWrapper } from "../../assets/styles/modal.style";
 
 interface Props {
-  onClose: () => void;
-  modalRef: React.RefObject<HTMLDivElement>;
+  onClose?: () => void;
   children: React.ReactNode;
 }
 
-export default function NobuttonModal({ onClose, modalRef, children }: Props) {
+export default function NobuttonModal({ onClose, children }: Props) {
   return (
-    <ModalOverlay>
-      <ModalWrapper ref={modalRef}>
+    <>
+      <ModalOverlay onClick={onClose} />
+      <ModalWrapper>
         <ModalHeader>
           <EmptyBox />
           <CancelIcon onClick={onClose} />
         </ModalHeader>
         <ModalBody>{children}</ModalBody>
       </ModalWrapper>
-    </ModalOverlay>
+    </>
   );
 }
 

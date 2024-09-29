@@ -5,12 +5,18 @@ import SurroundingMoreAddCard from "../../../components/web/home/SurroundingMore
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useParams } from "react-router-dom";
 import { axiosInstance } from "../../../utils/axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
+
+import NobuttonModal from "../../../components/mobile/NobuttonModal";
+import { SelectPlaceProps } from "../../../types/home.details";
 
 export default function SurroundingMore() {
   const param = useParams();
   const mapStore = useMapStore();
+  const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
+    {} as SelectPlaceProps
+  );
 
   const getSurroundingPlace = async () => {
     try {
@@ -28,6 +34,20 @@ export default function SurroundingMore() {
     }
   };
 
+  const handlePlaceClick = async (placeId: string) => {
+    try {
+      axiosInstance
+        .get(`/googleplace/details?placeId=${placeId}`)
+        .then((res) => {
+          if (res.status === 200) {
+            setSelectPlace(res.data);
+          }
+        });
+    } catch (err) {
+      console.error("place marker click error=", err);
+    }
+  };
+
   useEffect(() => {
     if (param.lng && param.lat) {
       getSurroundingPlace();
@@ -35,35 +55,43 @@ export default function SurroundingMore() {
   }, [param?.lng, param?.lat]);
 
   return (
-    <MoreContainer>
-      <SideBar>
-        <h1>주변 여행지</h1>
-        <h2>
-          <MarkIcon width="16" height="16" />
-          섬진강 벚꽃길
-        </h2>
-        <CardCol>
-          {mapStore.getNearPlace()?.map((card) => (
-            <SurroundingMoreAddCard
-              key={card.placeId}
-              imgSrc={card.photoUrls[0]}
-              name={card.name}
-              subName={card.shortAddress}
-              rating={card.rating}
-            />
-          ))}
-        </CardCol>
-      </SideBar>
+    <>
+      <MoreContainer>
+        <SideBar>
+          <h1>주변 여행지</h1>
+          <h2>
+            <MarkIcon width="16" height="16" />
+            섬진강 벚꽃길
+          </h2>
+          <CardCol>
+            {mapStore.getNearPlace()?.map((card) => (
+              <SurroundingMoreAddCard
+                key={card.placeId}
+                imgSrc={card.photoUrls[0]}
+                name={card.name}
+                subName={card.shortAddress}
+                rating={card.rating}
+              />
+            ))}
+          </CardCol>
+        </SideBar>
 
-      {param?.lng && (
-        <CustomGoogleMap
-          width="100%"
-          height="98%"
-          lat={Number(param?.lat)}
-          lng={Number(param?.lng)}
-        />
+        {param?.lng && (
+          <CustomGoogleMap
+            width="100%"
+            height="98%"
+            lat={Number(param?.lat)}
+            lng={Number(param?.lng)}
+            handleMarkerClick={handlePlaceClick}
+          />
+        )}
+      </MoreContainer>
+      {!!selectPlace?.placeId && (
+        <NobuttonModal onClose={() => setSelectPlace({} as SelectPlaceProps)}>
+          <div>test</div>
+        </NobuttonModal>
       )}
-    </MoreContainer>
+    </>
   );
 }
 
