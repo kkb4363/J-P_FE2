@@ -69,16 +69,22 @@ export const CardCol = styled.div`
     letter-spacing: -0.036px;
   }
 
-  & > div {
-    color: ${(props) => props.theme.color.gray500};
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 150%;
-    letter-spacing: -0.036px;
-
+  & > div:last-child {
     display: flex;
     align-items: center;
-    gap: 3px;
+    justify-content: space-between;
+    width: 100%;
+    & > div {
+      color: ${(props) => props.theme.color.gray500};
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: -0.036px;
+
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
   }
 `;
 
@@ -207,5 +213,21 @@ export const RatingBox = styled.div`
 
     font-weight: 400;
     line-height: 140%; /* 16.8px */
+  }
+`;
+
+export const PlaceAddButton = styled.button`
+  height: 34px;
+  padding: 4px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.color.main};
+  border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.color.main};
+  & > span {
+    color: ${(props) => props.theme.color.white};
+    font-size: 12px;
+    font-weight: 700;
   }
 `;

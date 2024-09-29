@@ -16,6 +16,7 @@ import * as S from "../../../assets/styles/nearplace.style";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import NearPlaceCard from "../../../components/mobile/detail/NearPlaceCard";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import PlusIcon from "../../../assets/icons/PlusIcon";
 
 export default function NearPlace() {
   const param = useParams();
@@ -101,13 +102,11 @@ export default function NearPlace() {
     }
   }, [selectPlaceId]);
 
-  console.log(details?.id);
-
   return (
     <S.NearPlaceContainer>
       <CustomHeader title="주변 여행지" handleClick={handlePrev} />
       {!selectPlaceId ? (
-        <BottomSheet maxH={0.9} minH={7} key={"nearPlaces-bottom-sheet"}>
+        <BottomSheet maxH={0.9} minH={7} key={"surroundingPlace-bottom-sheet"}>
           {mapStore.getNearPlace().map((place) => (
             <NearPlaceCard
               height="100px"
@@ -124,7 +123,7 @@ export default function NearPlace() {
           handleClose={handleBottomSheetClose}
           maxH={0.33}
           isDismiss={true}
-          key={"nearPlaces-details-bottom-sheet"}
+          key={"surroundingPlace-details-bottom-sheet2"}
         >
           <S.SelectPlaceCol>
             <S.SelectPlaceCard>
@@ -138,8 +137,14 @@ export default function NearPlace() {
                 <p>{selectPlace?.name}</p>
                 <span>{selectPlace?.shortAddress}</span>
                 <div>
-                  <StarIcon />
-                  <span>{selectPlace?.rating}</span>
+                  <div>
+                    <StarIcon />
+                    <span>{selectPlace?.rating}</span>
+                  </div>
+                  <S.PlaceAddButton>
+                    <PlusIcon stroke="white" />
+                    <span>여행지 추가</span>
+                  </S.PlaceAddButton>
                 </div>
               </S.CardCol>
             </S.SelectPlaceCard>

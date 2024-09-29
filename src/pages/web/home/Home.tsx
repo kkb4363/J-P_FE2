@@ -2,32 +2,32 @@ import styled from "styled-components";
 import CustomInput from "../../../components/mobile/CustomInput";
 import CardSlide from "../../../components/web/home/CardSlide";
 import TravelogueCardSlide from "../../../components/web/home/TravelogueCardSlide";
+import { useNavigate } from "react-router-dom";
+import { HomeTabType, useDisplayStore } from "../../../store/display.store";
+
+const responsive4 = {
+  desktop: {
+    breakpoint: { max: 3000, min: 464 },
+    items: 4,
+    slidesToSlide: 4,
+  },
+};
+
+const responsive3 = {
+  desktop: {
+    breakpoint: { max: 3000, min: 464 },
+    items: 3,
+    slidesToSlide: 3,
+  },
+};
 
 export default function Home() {
-  const bigResponsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1442 },
-      items: 4,
-      slidesToSlide: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1442, min: 464 },
-      items: 4,
-      slidesToSlide: 4,
-    },
-  };
+  const navigate = useNavigate();
+  const { setHomeTab } = useDisplayStore();
 
-  const smallResponsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1800 },
-      items: 4,
-      slidesToSlide: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1800, min: 464 },
-      items: 3,
-      slidesToSlide: 3,
-    },
+  const handleMore = (t: HomeTabType) => {
+    setHomeTab(t);
+    navigate("/more");
   };
 
   return (
@@ -38,24 +38,40 @@ export default function Home() {
         <CustomInput text="여행지를 입력해주세요" value="" width="500px" />
       </InputBox>
 
-      <CarouselTitle>지금 가장 인기있는 여행지</CarouselTitle>
+      <CarouselTitle>
+        지금 가장 인기있는 여행지
+        <div>
+          <span onClick={() => handleMore("TRAVEL_PLACE")}>더보기</span>
+        </div>
+      </CarouselTitle>
       <CardSlide
-        responsive={bigResponsive}
+        responsive={responsive4}
         placeType="TRAVEL_PLACE"
         title={true}
         subTitle={true}
       />
 
-      <CarouselTitle>인기 여행 도시 추천</CarouselTitle>
+      <CarouselTitle>
+        인기 여행 도시 추천
+        <div>
+          <span onClick={() => handleMore("CITY")}>더보기</span>
+        </div>
+      </CarouselTitle>
       <CardSlide
-        responsive={bigResponsive}
+        responsive={responsive4}
         placeType="CITY"
+        isCity={true}
         bottomText={true}
       />
 
-      <CarouselTitle>지금 가면 좋은 여행지</CarouselTitle>
+      <CarouselTitle>
+        지금 가면 좋은 여행지
+        <div>
+          <span onClick={() => handleMore("THEME")}>더보기</span>
+        </div>
+      </CarouselTitle>
       <CardSlide
-        responsive={bigResponsive}
+        responsive={responsive4}
         placeType="THEME"
         topText={true}
         title={true}
@@ -72,7 +88,7 @@ export default function Home() {
           <span>더보기</span>
         </div>
       </CarouselTitle>
-      <TravelogueCardSlide responsive={smallResponsive} isReviewCard={false} />
+      <TravelogueCardSlide responsive={responsive3} isReviewCard={false} />
 
       <CarouselTitle>
         지금 뜨는 리뷰
@@ -84,7 +100,7 @@ export default function Home() {
           <span>더보기</span>
         </div>
       </CarouselTitle>
-      <TravelogueCardSlide responsive={smallResponsive} isReviewCard={true} />
+      <TravelogueCardSlide responsive={responsive3} isReviewCard={true} />
     </>
   );
 }

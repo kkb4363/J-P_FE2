@@ -9,7 +9,7 @@ interface Props {
   buttonText: string;
   onClick: () => void;
   onClose: () => void;
-  modalRef: React.RefObject<HTMLDivElement>;
+  modalRef?: React.RefObject<HTMLDivElement>;
   children: React.ReactNode;
 }
 
@@ -18,25 +18,25 @@ export default function OneButtonModal({
   buttonText,
   onClick,
   onClose,
-  modalRef,
-  children
+  children,
 }: Props) {
   return (
-    <ModalOverlay>
-      <ModalWrapper ref={modalRef}>
+    <>
+      <ModalOverlay onClick={onClose} />
+      <ModalWrapper>
         <ModalHeader>
           <EmptyBox />
           <p>{title}</p>
           <CancelIcon onClick={onClose} />
         </ModalHeader>
         <ModalBody>
-            {children}
+          {children}
           <ModalButtonBox>
             <PrimaryButton text={buttonText} blue onClick={onClick} />
           </ModalButtonBox>
         </ModalBody>
       </ModalWrapper>
-    </ModalOverlay>
+    </>
   );
 }
 

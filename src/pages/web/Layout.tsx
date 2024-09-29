@@ -1,17 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
+import { scrollHidden } from "../../assets/styles/home.style";
+import { webHeaderTabs } from "../../utils/staticDatas";
 
-export default function Layout() {
+interface Props {
+  minWidth?: string;
+}
+
+export default function Layout({ minWidth = "1440px" }: Props) {
+  const navigate = useNavigate();
   return (
     <LayoutContainer>
-      <Header>
+      <Header $minWidth={minWidth}>
         <HeaderLeft>
           <Logo>Logo</Logo>
 
           <HeaderTabRow>
-            <span>홈</span>
-            <span>일정</span>
-            <span>리뷰</span>
+            {webHeaderTabs.map((tab) => (
+              <span onClick={() => navigate(tab.route)} key={tab.label}>
+                {tab.label}
+              </span>
+            ))}
           </HeaderTabRow>
         </HeaderLeft>
 
@@ -22,7 +31,7 @@ export default function Layout() {
         </HeaderRight>
       </Header>
 
-      <OutletBox>
+      <OutletBox $minWidth={minWidth}>
         <Outlet />
       </OutletBox>
     </LayoutContainer>
@@ -37,14 +46,15 @@ const LayoutContainer = styled.div`
   background-color: ${(props) => props.theme.color.background};
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ $minWidth: string }>`
   width: 100%;
+  min-width: ${(props) => props.$minWidth && props.$minWidth};
   height: 90px;
-  min-width: 1440px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  box-sizing: border-box;
   padding: 0 100px;
   background-color: ${(props) => props.theme.color.white};
 `;
@@ -101,10 +111,12 @@ const LoginButton = styled.button`
   }
 `;
 
-const OutletBox = styled.div`
-  width: 100%;
-  min-width: 1440px;
+const OutletBox = styled.div<{ $minWidth: string }>`
+  width: ${(props) => props.$minWidth && props.$minWidth};
+  margin: 0 auto;
   height: calc(100% - 90px);
   padding: 0 120px 80px 120px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  ${scrollHidden};
 `;

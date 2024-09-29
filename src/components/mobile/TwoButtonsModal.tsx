@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import CancelIcon from "../../assets/icons/CancelIcon";
 import PrimaryButton from "./PrimaryButton";
@@ -8,30 +7,25 @@ interface Props {
   text: string;
   onClick: () => void;
   onClose: () => void;
-  modalRef: React.RefObject<HTMLDivElement>;
 }
 
-export default function TwoButtonsModal({
-  text,
-  onClick,
-  onClose,
-  modalRef,
-}: Props) {
+export default function TwoButtonsModal({ text, onClick, onClose }: Props) {
   return (
-    <ModalOverlay>
-      <ModalWrapper ref={modalRef}>
+    <>
+      <ModalOverlay onClick={onClose} />
+      <ModalWrapper>
         <ModalHeader>
           <CancelIcon onClick={onClose} />
         </ModalHeader>
-				<ModalBody>
-					<p>{text}</p>
+        <ModalBody>
+          <p>{text}</p>
           <ModalButtonBox>
             <PrimaryButton text="아니오" secondary onClick={onClose} />
             <PrimaryButton text="예" blue onClick={onClick} />
           </ModalButtonBox>
         </ModalBody>
       </ModalWrapper>
-    </ModalOverlay>
+    </>
   );
 }
 
@@ -60,6 +54,6 @@ const ModalBody = styled.div`
 
 const ModalButtonBox = styled.div`
   width: 100%;
-	display: flex;
-	gap: 16px;
+  display: flex;
+  gap: 16px;
 `;

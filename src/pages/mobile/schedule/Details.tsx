@@ -5,13 +5,12 @@ import InviteIcon from "../../../assets/icons/InviteIcon";
 import testImg from "../../../assets/images/testImg.png";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import { useDisplayStore } from "../../../store/display.store";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import UserIcon from "../../../assets/icons/UserIcon";
 import ClipIcon from "../../../assets/icons/ClipIcon";
 import CustomInput from "../../../components/mobile/CustomInput";
 import { useNavigate } from "react-router-dom";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
-import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { useJPStore } from "../../../store/JPType.store";
 import { planItemProps } from "../../../types/schedule";
 import {
@@ -38,7 +37,6 @@ import CarIcon from "../../../assets/icons/CarIcon";
 import AddSquareIcon from "../../../assets/icons/AddSquareIcon";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
-import { useModal } from "../../../hooks/useModal";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
@@ -106,12 +104,10 @@ export default function Details() {
   // 일정 삭제 모달 관련입니당
   // 세연's TODO = 일정 삭제 확인 눌렀을 때 -> 일정이 삭제되었습니다 모달 구현
   // -> 확인 누르고 창 닫히게끔
-  const {
-    isOpen: isDeleteModalOpen,
-    openModal: openDeleteModal,
-    closeModal: closeDeleteModal,
-    modalRef: deleteModalRef,
-  } = useModal({ handleCloseCallback: () => {} });
+  const [openModal, setOpenModal] = useState({
+    deleteSchedule: false,
+    deleteScheduleSuccess: false,
+  });
 
   return (
     <>
@@ -183,7 +179,9 @@ export default function Details() {
                   jpState={jpState}
                   setIsPlanDetail={() => setIsPlanDetail((prev) => !prev)}
                   setIsPlanPlace={() => setIsPlanPlace((prev) => !prev)}
-                  handleDeleteOpen={openDeleteModal}
+                  handleDeleteOpen={() =>
+                    setOpenModal((p) => ({ ...p, deleteSchedule: true }))
+                  }
                   useWindowAsScrollContainer
                   useDragHandle
                 />
@@ -407,12 +405,11 @@ export default function Details() {
         </BottomSheet>
       )}
 
-      {isDeleteModalOpen && (
+      {openModal.deleteSchedule && (
         <TwoButtonsModal
           text="일정을 삭제할까요?"
           onClick={() => {}}
-          onClose={closeDeleteModal}
-          modalRef={deleteModalRef}
+          onClose={() => setOpenModal((p) => ({ ...p, deleteSchedule: false }))}
         />
       )}
     </>

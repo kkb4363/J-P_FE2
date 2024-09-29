@@ -12,7 +12,6 @@ import {
   RECENT_SEARCH_KEY,
   testImg1,
 } from "../../../utils/staticDatas";
-import { useModal } from "../../../hooks/useModal";
 import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
 import { placeApiProps } from "../../../types/home";
 
@@ -26,12 +25,7 @@ export default function Search() {
   const [isSubmit, setIsSubmit] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  const {
-    isOpen: isDeleteModalOpen,
-    openModal: openDeleteModal,
-    closeModal: closeDeleteModal,
-    modalRef: deleteModalRef,
-  } = useModal({ handleCloseCallback: () => {} });
+  const [openModal, setOpenModal] = useState(false);
 
   // 최근 검색어 불러오기
   useEffect(() => {
@@ -122,7 +116,7 @@ export default function Search() {
   const handleAllDeleteClick = () => {
     setRecentWords([]);
     localStorage.removeItem(RECENT_SEARCH_KEY);
-    closeDeleteModal();
+    setOpenModal(false);
   };
 
   const handleWordDelete = (deleteWord: string) => {
@@ -143,12 +137,11 @@ export default function Search() {
           onSubmit={handleSearchSubmit}
           onDelete={() => setSearchWord("")}
         />
-        {isDeleteModalOpen && (
+        {openModal && (
           <TwoButtonsModal
             text="검색 기록을 모두 삭제하시겠습니까?"
             onClick={handleAllDeleteClick}
-            onClose={closeDeleteModal}
-            modalRef={deleteModalRef}
+            onClose={() => setOpenModal(false)}
           />
         )}
         {searchWord === "" && (
@@ -156,7 +149,7 @@ export default function Search() {
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={openDeleteModal}>모두 삭제</p>
+                <p onClick={() => setOpenModal(true)}>모두 삭제</p>
               </SearchRecentTitleBox>
               <SearchWordBox>
                 {recentWords.map((word) => {
