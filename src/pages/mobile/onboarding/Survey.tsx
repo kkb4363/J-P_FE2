@@ -58,6 +58,10 @@ export default function Survey() {
     }
   };
 
+  const handleGoogleLogout = () => { 
+
+  }
+
   useEffect(() => {
     if (code) {
       handleGoogleLogin();
@@ -67,56 +71,58 @@ export default function Survey() {
   }, [code]);
 
   return (
-    <>
-      <SurveyContainer>
-        <SurveyHeader>
+    <SurveyContainer>
+      <SurveyHeader>
+        <div onClick={handleGoogleLogout}>
           <LogoutIcon />
-        </SurveyHeader>
-        <SurveyBody>
-          <SurveyBox>
-            <SurveyInputBox>
-              <p>닉네임을 입력해주세요.</p>
-              <SurveyNicknameInput>
-                <NicknameIcon />
-                <input
-                  type="text"
-                  name="nickname"
-                  placeholder="닉네임을 입력해주세요."
-                  value={nickname}
-                  onChange={handleNicknameChange}
-                />
-              </SurveyNicknameInput>
-            </SurveyInputBox>
-            <SurveyInputBox>
-              <p>성향을 선택해주세요.</p>
-              <SurveyTypeBox>
-                <SurveyTypeButton
-                  isSelected={type === ("J" as JPProps)}
-                  onClick={() => handleJPSelect("J" as JPProps)}
-                >
-                  J 형/계획형
-                </SurveyTypeButton>
-                <SurveyTypeButton
-                  isSelected={type === ("P" as JPProps)}
-                  onClick={() => handleJPSelect("P" as JPProps)}
-                >
-                  P 형/즉흥형
-                </SurveyTypeButton>
-              </SurveyTypeBox>
-            </SurveyInputBox>
-          </SurveyBox>
-          <SurveyButtonBox>
-            <PrimaryButton text="시작하기" onClick={handleSubmit} />
-          </SurveyButtonBox>
-        </SurveyBody>
-      </SurveyContainer>
-    </>
+        </div>
+      </SurveyHeader>
+      <SurveyBody>
+        <SurveyBox>
+          <SurveyInputBox>
+            <p>닉네임을 입력해주세요.</p>
+            <SurveyNicknameInput>
+              <NicknameIcon />
+              <input
+                type="text"
+                name="nickname"
+                placeholder="닉네임을 입력해주세요."
+                value={nickname}
+                onChange={handleNicknameChange}
+              />
+            </SurveyNicknameInput>
+          </SurveyInputBox>
+          <SurveyInputBox>
+            <p>성향을 선택해주세요.</p>
+            <SurveyTypeBox>
+              <SurveyTypeButton
+                isSelected={type === ("J" as JPProps)}
+                type={type as JPProps}
+                onClick={() => handleJPSelect("J" as JPProps)}
+              >
+                J 형/계획형
+              </SurveyTypeButton>
+              <SurveyTypeButton
+                isSelected={type === ("P" as JPProps)}
+                type={type as JPProps}
+                onClick={() => handleJPSelect("P" as JPProps)}
+              >
+                P 형/즉흥형
+              </SurveyTypeButton>
+            </SurveyTypeBox>
+          </SurveyInputBox>
+        </SurveyBox>
+        <SurveyButtonBox>
+          <PrimaryButton text="시작하기" onClick={handleSubmit} />
+        </SurveyButtonBox>
+      </SurveyBody>
+    </SurveyContainer>
   );
 }
 
 const SurveyContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 `;
@@ -134,9 +140,10 @@ const SurveyBody = styled.div`
   height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  gap: 34px;
+  gap: 150px;
+  margin-bottom: 50px;
 `;
 
 const SurveyBox = styled.div`
@@ -188,15 +195,20 @@ const SurveyTypeBox = styled.div`
   gap: 7px;
 `;
 
-const SurveyTypeButton = styled.button<{ isSelected: boolean }>`
+const SurveyTypeButton = styled.button<{ isSelected: boolean; type: JPProps }>`
   width: 100%;
-  padding: 18px 0;
+  padding: 16px 0;
   white-space: nowrap;
   background-color: ${(props) =>
-    props.isSelected ? props.theme.color.gray200 : props.theme.color.white};
+    props.isSelected
+      ? props.type === "J"
+        ? props.theme.color.main
+        : props.theme.color.secondary
+      : props.theme.color.white};
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
   font-size: 14px;
+  color: ${(props) => props.isSelected && props.theme.color.white};
 `;
 
 const SurveyButtonBox = styled.div`
