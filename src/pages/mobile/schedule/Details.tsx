@@ -145,7 +145,7 @@ export default function Details() {
       />
 
       {sheetOpen === "AddPlace" && (
-        <BottomSheet maxH={isPlanPlace ? 0.4 : 0.75}>
+        <BottomSheet maxH={isPlanPlace ? 0.4 : 0.75} minH={3.5}>
           {/* 일정 목록 */}
           {!isPlanDetail && !isPlanPlace && (
             <>
