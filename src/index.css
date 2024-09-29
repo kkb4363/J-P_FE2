@@ -187,7 +187,11 @@ img {
 }
 
 /* bottomsheet container bar container  */
-[data-rsbs-header]:before {
-  background-color: tomato;
-  display: none !important;
+[data-rsbs-header] {
+  background-color: #fafafa;
+}
+
+[data-rsbs-scroll] {
+  background-color: #fafafa;
+  height: 100%;
 }

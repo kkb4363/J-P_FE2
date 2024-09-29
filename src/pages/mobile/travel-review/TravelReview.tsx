@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import Review from "./Review";
@@ -19,7 +19,7 @@ export default function TravelReview() {
   const reviewStore = useReviewStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("최신순");
-  const [pendingFilter, setPendingFilter] = useState<FilterType>("최신순");
+
 
   const getSortByFilter = (filter: FilterType): SortProps => {
     switch (filter) {
@@ -37,14 +37,9 @@ export default function TravelReview() {
   };
 
   const handleFilterChange = (filter: FilterType) => {
-    setPendingFilter(filter);
+    setSelectedFilter(filter);
+    setIsFilterOpen(false);
   };
-
-  useEffect(() => {
-    if (!isFilterOpen) {
-      setSelectedFilter(pendingFilter);
-    }
-  }, [isFilterOpen]);
 
   return (
     <TravelReviewContainer>
@@ -70,7 +65,7 @@ export default function TravelReview() {
           <Travelogue sort={getSortByFilter(selectedFilter)} />
         )}
       </>
-      <BottomSheetContainer>
+      {isFilterOpen && (
         <BottomSheet
           isBlocking={true}
           maxH={0.4}
@@ -88,7 +83,7 @@ export default function TravelReview() {
                     type="radio"
                     name="filter"
                     value={option}
-                    checked={pendingFilter === option}
+                    checked={selectedFilter === option}
                     onChange={() => handleFilterChange(option)}
                   />
                   <FilterText>{option}</FilterText>
@@ -97,7 +92,7 @@ export default function TravelReview() {
             </FilterContainer>
           </SelectFilterBox>
         </BottomSheet>
-      </BottomSheetContainer>
+      )}
     </TravelReviewContainer>
   );
 }
@@ -164,10 +159,10 @@ const FilterBox = styled.div`
   }
 `;
 
-const BottomSheetContainer = styled.div`
-  width: 100%;
-  z-index: 2;
-`;
+// const BottomSheetContainer = styled.div`
+//   width: 100%;
+//   z-index: 2;
+// `;
 
 const SelectFilterBox = styled.div`
   display: flex;
