@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
+import { getSearchPlaceList } from "../../../utils/axios";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import CustomInput from "../../../components/mobile/CustomInput";
 import CancelIcon from "../../../assets/icons/CancelIcon";
@@ -18,86 +18,30 @@ import { placeApiProps } from "../../../types/home";
 export default function Search() {
   const [searchWord, setSearchWord] = useState("");
   const [recentWords, setRecentWords] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchData, setSearchData] = useState<placeApiProps[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
-
   const [openModal, setOpenModal] = useState(false);
 
-  // 최근 검색어 불러오기
-  useEffect(() => {
-    const storedWords = localStorage.getItem(RECENT_SEARCH_KEY);
-    if (storedWords) {
-      setRecentWords(JSON.parse(storedWords));
-    }
-  }, []);
-
-  // 검색 api 불러오기
-  // [TODO]: google api 이슈로 잘 불러와지는지 확인해야함
-  useEffect(() => {
-    if (searchWord.trim() !== "") {
-      const requestApi = async () => {
-        setLoading(true);
-        try {
-          const response = await axiosInstance.get(
-            `/place/page?page=${page}&searchString=${searchWord}`
-          );
-
-          if (response.status === 200) {
-            const data = response.data;
-            if (page === 1) {
-              setSearchData(data.results);
-            } else {
-              setSearchData((prev) => [...prev, ...data.results]);
-            }
-            setHasMore(data.results.length > 0);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      requestApi();
-    }
-  }, [isSubmit, page]);
-
-  // 검색 data 초기화
-  useEffect(() => {
-    setIsSubmit(false);
-    if (searchWord.trim() === "") {
-      setSearchData([]);
-      setPage(1);
-    }
-  }, [searchWord]);
-
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMore) {
-            setPage((prevPage) => prevPage + 1);
-          }
-        },
-        {
-          threshold: 0.5, // 요소의 50% 이상이 보여야 트리거
-        }
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [hasMore, loading]
-  );
+  const getSearchPlace = async () => {
+    setIsLoading(true);
+    await getSearchPlaceList({ searchString: searchWord, page: page }).then(
+      (res) => {
+        const newData = res?.data.data;
+        setSearchData((p) => [...p, ...newData]);
+        setHasMore(newData.length > 0);
+      }
+    );
+    setIsLoading(false);
+  };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmit(true);
+    getSearchPlace();
     setPage(1);
 
     if (searchWord.trim() !== "") {
@@ -125,6 +69,50 @@ export default function Search() {
     localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(updatedWords));
   };
 
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasMore) {
+            setPage((prevPage) => prevPage + 1);
+          }
+        },
+        {
+          threshold: 0.1, // 요소의 10% 이상이 보여야 트리거
+        }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [hasMore, isLoading]
+  );
+
+  // 최근 검색어 불러오기
+  useEffect(() => {
+    const storedWords = localStorage.getItem(RECENT_SEARCH_KEY);
+    if (storedWords) {
+      setRecentWords(JSON.parse(storedWords));
+    }
+  }, []);
+
+  // 검색 data 초기화
+  useEffect(() => {
+    setIsSubmit(false);
+    if (searchWord.trim() === "") {
+      setSearchData([]);
+      setPage(1);
+    }
+  }, [searchWord]);
+
+  useEffect(() => {
+    if (page !== 1) {
+      getSearchPlace();
+    }
+  }, [isSubmit, page]);
+
   return (
     <>
       <CustomHeader title="검색" />
@@ -144,6 +132,7 @@ export default function Search() {
             onClose={() => setOpenModal(false)}
           />
         )}
+
         {searchWord === "" && (
           <>
             <SearchWordContainer>
@@ -179,9 +168,10 @@ export default function Search() {
         )}
         {searchWord !== "" && (
           <SearchBody>
-            {searchData.length === 0 && !loading && isSubmit && (
-              <NoResultsText>검색 결과가 없습니다.</NoResultsText>
+            {searchData.length === 0 && !isLoading && isSubmit && (
+              <CenterText>검색 결과가 없습니다.</CenterText>
             )}
+            {isLoading && <CenterText>로딩중..</CenterText>}
             {searchData.map((item: placeApiProps, index: number) => {
               if (searchData.length === index + 1) {
                 // 마지막 요소에 ref 설정
@@ -280,7 +270,7 @@ const SearchBody = styled.div`
   overflow-y: auto;
 `;
 
-const NoResultsText = styled.div`
+const CenterText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
