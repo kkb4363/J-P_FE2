@@ -110,3 +110,24 @@ export const getGooglePlaceDetail = async ({
     console.error("구글플레이스 상세 정보 API 에러", err);
   }
 };
+
+
+export const getSearchPlaceList = async ({
+  searchString,
+  page = 1,
+}: {
+  searchString: string,
+  page?: number;
+  }) => { 
+  try {
+    const res = await axiosInstance.get(
+      `/place/page?page=${page}&searchString=${searchString}`
+    );
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("검색 장소 페이징 조회 API 에러", err);
+  }
+}

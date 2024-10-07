@@ -131,11 +131,17 @@ export const FindedUser = styled.div`
 `;
 
 // 일정 목록
-export const PlansBox = styled.div`
-  height: 100%;
+export const PlanContainer = styled.div`
+  height: calc(100dvh * 0.75);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-bottom: 60px;
+`;
+
+export const PlansBox = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 15px;
 `;
 
@@ -191,6 +197,7 @@ export const AddPlaceButton = styled.div`
   align-self: flex-end;
   text-align: center;
   padding: 13px 17px;
+  margin-right: 20px;
   background-color: ${(props) => props.theme.color.secondary};
   color: ${(props) => props.theme.color.white};
   border-radius: 30px;

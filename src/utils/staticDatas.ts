@@ -7,7 +7,7 @@ import NoteIcon from "../assets/icons/NoteIcon";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import { reviewApiProps } from "../types/home";
-import { userCompactResDto } from "../types/res.dto";
+import { commentResDto, userCompactResDto } from "../types/res.dto";
 import { planItemProps } from "../types/schedule";
 
 export const footerTabs = [
@@ -65,6 +65,18 @@ export const realTimeWords: string[] = [
   "진천",
   "담양",
   "곡성",
+];
+
+export interface Filter {
+  name: string;
+  state: string;
+}
+
+export const filter: Filter[] = [
+  { name: "최신순", state: "NEW" },
+  { name: "인기순", state: "HOT" },
+  { name: "별점 높은순", state: "STAR_HIGH" },
+  { name: "별점 낮은순", state: "STAR_LOW" },
 ];
 
 export const testLogTags: string[] = ["안동", "2박3일", "월영교", "혼행"];
@@ -137,9 +149,18 @@ export const testReviewItem: reviewApiProps = {
   star: 4.9,
   subject: "d",
   content:
-    "오대산 선재길에서 산책하기 자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요!",
+    "오대산 선재길에서 산책하기 좋은 자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요! 오대산 선재길에서 산책하기 좋은 자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요! 오대산 선재길에서 산책하기 좋은 자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요! 오대산 선재길 좋은 자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요!",
   userCompactResDto: testUserDto,
 };
+
+export const textCommentItem: commentResDto = {
+  id: 1,
+  content: "좋은 리뷰네요!",
+  userCompactResDto: testUserDto,
+  createdAt: "24.3.20",
+  replyList: []
+}
+
 
 export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
 
