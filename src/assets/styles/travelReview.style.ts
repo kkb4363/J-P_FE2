@@ -65,7 +65,7 @@ export const CommentInput = styled.form`
   }
 `;
 
-export const CommentWriteButton = styled.button<{ fill: boolean }>`
+export const CommentWriteButton = styled.button<{ fill: boolean, fontsize?: string }>`
   background-color: ${(props) =>
     props.fill ? props.theme.color.main : props.theme.color.white};
   color: ${(props) =>
@@ -74,7 +74,7 @@ export const CommentWriteButton = styled.button<{ fill: boolean }>`
   white-space: nowrap;
   border-radius: 30px;
   padding: 8.5px 17px;
-  font-size: 12px;
+  font-size: ${({fontsize}) => fontsize ? fontsize : "12px"};
   font-weight: 700;
 
   &:active {

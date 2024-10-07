@@ -11,14 +11,16 @@ import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
 import LikeIcon from "../../../assets/icons/LikeIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   item: reviewApiProps;
 }
 
 export default function ReviewCard({ item }: Props) {
+  const navigate = useNavigate();
   return (
-    <ReviewCardContainer>
+    <ReviewCardContainer onClick={() => navigate(`/review/${item.id}`)}>
       <ReviewHeader>
         <ReviewPlaceBox>
           <MarkIcon stroke="#6979F8" width="18" height="18" />
@@ -72,6 +74,7 @@ const ReviewCardContainer = styled.div`
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
   background-color: ${(props) => props.theme.color.white};
+  cursor: pointer;
 `;
 
 const ReviewHeader = styled.div`
