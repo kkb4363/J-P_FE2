@@ -44,6 +44,19 @@ export const router = createBrowserRouter([
   },
 
   {
+    path: "travelReview",
+    element: <TravelReview />,
+  },
+  {
+    path: "review/:reviewId",
+    element: <ReviewDetails />,
+  },
+  {
+    path: "travelogue/:TravelogueId",
+    element: <TravelogueDetails />,
+  },
+
+  {
     path: "Schedule",
     element: <ScheduleLayout />,
     children: [
@@ -111,18 +124,7 @@ export const router = createBrowserRouter([
         path: "travels",
         element: <TravelMore />,
       },
-      {
-        path: "travel-review",
-        element: <TravelReview />,
-      },
-      {
-        path: "review/:reviewId",
-        element: <ReviewDetails />,
-      },
-      {
-        path: "travel-log/:TravelogueId",
-        element: <TravelogueDetails />,
-      },
+
       {
         path: "mypage",
         element: <MyPageLayout />,
