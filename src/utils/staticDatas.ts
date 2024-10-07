@@ -67,7 +67,7 @@ export const realTimeWords: string[] = [
   "곡성",
 ];
 
-interface Filter {
+export interface Filter {
   name: string;
   state: string;
 }

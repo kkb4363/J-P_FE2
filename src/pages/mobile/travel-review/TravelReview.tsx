@@ -5,38 +5,14 @@ import Review from "./Review";
 import Travelogue from "./Travelogue";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import { useReviewStore } from "../../../store/travelReview.store";
-
-type SortProps = "NEW" | "HOT" | "STAR_HIGH" | "STAR_LOW";
-const FilterOptions = [
-  "최신순",
-  "인기순",
-  "별점 낮은순",
-  "별점 높은순",
-] as const;
-type FilterType = (typeof FilterOptions)[number];
+import { Filter, filter } from "../../../utils/staticDatas";
 
 export default function TravelReview() {
   const reviewStore = useReviewStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>("최신순");
+  const [selectedFilter, setSelectedFilter] = useState(filter[0]);
 
-
-  const getSortByFilter = (filter: FilterType): SortProps => {
-    switch (filter) {
-      case "최신순":
-        return "NEW";
-      case "인기순":
-        return "HOT";
-      case "별점 낮은순":
-        return "STAR_LOW";
-      case "별점 높은순":
-        return "STAR_HIGH";
-      default:
-        return "NEW";
-    }
-  };
-
-  const handleFilterChange = (filter: FilterType) => {
+  const handleFilterChange = (filter: Filter) => {
     setSelectedFilter(filter);
     setIsFilterOpen(false);
   };
@@ -55,14 +31,14 @@ export default function TravelReview() {
         </ToggleButton>
       </ToggleLabelBox>
       <FilterBox onClick={() => setIsFilterOpen(!isFilterOpen)}>
-        <span>{selectedFilter}</span>
+        <span>{selectedFilter.name}</span>
         <ArrowDownIcon />
       </FilterBox>
       <>
         {reviewStore.getIsReview() ? (
-          <Review sort={getSortByFilter(selectedFilter)} />
+          <Review sort={selectedFilter.state} />
         ) : (
-          <Travelogue sort={getSortByFilter(selectedFilter)} />
+          <Travelogue sort={selectedFilter.state} />
         )}
       </>
       {isFilterOpen && (
@@ -77,16 +53,15 @@ export default function TravelReview() {
             <p>필터</p>
             <RowLine />
             <FilterContainer>
-              {FilterOptions.map((option) => (
-                <FilterLabel key={option}>
+              {filter.map((option, idx) => (
+                <FilterLabel key={idx}>
                   <FilterInput
                     type="radio"
                     name="filter"
-                    value={option}
                     checked={selectedFilter === option}
                     onChange={() => handleFilterChange(option)}
                   />
-                  <FilterText>{option}</FilterText>
+                  <FilterText>{option.name}</FilterText>
                 </FilterLabel>
               ))}
             </FilterContainer>
@@ -198,8 +173,8 @@ const FilterLabel = styled.label`
 `;
 
 const FilterInput = styled.input`
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   margin-right: 8px;
   border: 2px solid ${(props) => props.theme.color.gray200};
   border-radius: 50%;

@@ -67,7 +67,7 @@ export default function ReviewCard({ item, ref }: Props) {
       </R.ProfileHeader>
       <ReviewContentBox>
         <p>{item.content}</p>
-        <span onClick={() => navigate(`/home/review/${item.id}`)}>더보기</span>
+        <span onClick={() => navigate(`/review/${item.id}`)}>더보기</span>
       </ReviewContentBox>
       <ImageView
         src={testImageList[0]}
