@@ -84,18 +84,19 @@ export default function CommentCard({
       )}
       {!isReply && writeReply && (
         <R.CommentInputBox>
-          <R.CommentInput>
+          <CommentInput>
             <input
               type="text"
               placeholder="답글을 작성해주세요."
               value={reply}
               onChange={(e) => setReply(e.target.value)}
             />
-          </R.CommentInput>
+          </CommentInput>
           <R.CommentWriteButton
             type="submit"
-            onClick={handleWriteReplySubmit}
             fill={false}
+            fontsize="14px"
+            onClick={handleWriteReplySubmit}
           >
             등록
           </R.CommentWriteButton>
@@ -132,6 +133,7 @@ const CommentCardContainer = styled.div<{ reply?: boolean }>`
 
   & > p {
     font-size: 14px;
+    line-height: 140%;
   }
 `;
 
@@ -145,4 +147,26 @@ const CommentEditIconBox = styled.div`
   gap: 12px;
   align-items: center;
   justify-content: flex-end;
+`;
+
+const CommentInput = styled.form`
+  width: 100%;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  background-color: ${(props) => props.theme.color.white};
+  color: ${(props) => props.theme.color.gray900};
+  padding: 12.5px 30px;
+  border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.color.gray200};
+
+  & > input {
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+    &::placeholder {
+      color: ${(props) => props.theme.color.gray300};
+      font-size: 14px;
+    }
+  }
 `;

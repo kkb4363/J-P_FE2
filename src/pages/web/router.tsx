@@ -5,6 +5,8 @@ import Detail from "./detail/Detail";
 import More from "./home/More";
 import SurrondingPlace from "./detail/SurrondingPlace";
 import SurroundingMore from "./detail/SurroundingMore";
+import TravelReview from "./travel-review/TravelReview";
+import ReviewDetails from "./travel-review/ReviewDetails";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +37,14 @@ export const router = createBrowserRouter([
         path: "surroundingMore/:lng/:lat",
         element: <SurroundingMore />,
       },
+      {
+        path: "travelReview",
+        element: <TravelReview />,
+      },
+      {
+        path: "review/:reviewId",
+        element: <ReviewDetails />
+      }
     ],
   },
 ]);
