@@ -86,7 +86,7 @@ export default function TravelReview() {
           )}
         </FilterBox>
       </>
-      {reviewStore.isReview ? <Review /> : <Travelogue />}
+      {reviewStore.isReview ? <Review sort={selectedFilter.state} /> : <Travelogue />}
     </TravelReviewContainer>
   );
 }
