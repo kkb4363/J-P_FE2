@@ -30,13 +30,15 @@ export default function MypageLayout() {
         ))}
       </TabRow>
 
-      <Outlet />
+      <OutletBox>
+        <Outlet />
+      </OutletBox>
     </Container>
   );
 }
 
 const Container = styled.div`
-  padding-top: 45px;
+  padding: 45px 200px 0 200px;
 `;
 
 const Title = styled.h1`
@@ -88,6 +90,8 @@ const TabRow = styled.div`
   align-items: center;
   justify-content: center;
   gap: 61px;
+  padding-bottom: 49px;
+  border-bottom: 1px solid ${(props) => props.theme.color.gray200};
 `;
 
 const Tab = styled.div`
@@ -101,4 +105,8 @@ const Tab = styled.div`
     font-size: 16px;
     font-weight: 700;
   }
+`;
+
+const OutletBox = styled.div`
+  margin-top: 45px;
 `;
