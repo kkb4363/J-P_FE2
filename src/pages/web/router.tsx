@@ -5,6 +5,11 @@ import Detail from "./detail/Detail";
 import More from "./home/More";
 import SurrondingPlace from "./detail/SurrondingPlace";
 import SurroundingMore from "./detail/SurroundingMore";
+import MypageLayout from "./mypage/MypageLayout";
+import MyReviews from "./mypage/MyReviews";
+import MyLikes from "./mypage/MyLikes";
+import MyTravel from "./mypage/MyTravel";
+import MyTravelogue from "./mypage/MyTravelogue";
 import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 
@@ -43,8 +48,30 @@ export const router = createBrowserRouter([
       },
       {
         path: "review/:reviewId",
-        element: <ReviewDetails />
-      }
+        element: <ReviewDetails />,
+      },
+      {
+        path: "mypage",
+        element: <MypageLayout />,
+        children: [
+          {
+            path: "",
+            element: <MyReviews />,
+          },
+          {
+            path: "likes",
+            element: <MyLikes />,
+          },
+          {
+            path: "travel",
+            element: <MyTravel />,
+          },
+          {
+            path: "travelogue",
+            element: <MyTravelogue />,
+          },
+        ],
+      },
     ],
   },
 ]);

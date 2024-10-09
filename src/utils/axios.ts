@@ -111,14 +111,25 @@ export const getGooglePlaceDetail = async ({
   }
 };
 
+export const getMyReviews = async () => {
+  try {
+    const res = await axiosInstance.get("/my/reviews?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+  } catch (err) {
+    console.error("내 리뷰 조회 API 에러", err);
+  }
+};
 
 export const getSearchPlaceList = async ({
   searchString,
   page = 1,
 }: {
-  searchString: string,
+  searchString: string;
   page?: number;
-  }) => { 
+}) => {
   try {
     const res = await axiosInstance.get(
       `/place/page?page=${page}&searchString=${searchString}`
@@ -130,4 +141,20 @@ export const getSearchPlaceList = async ({
   } catch (err) {
     console.error("검색 장소 페이징 조회 API 에러", err);
   }
-}
+};
+
+export const getMyLikes = async () => {
+  try {
+    const res = await axiosInstance.get("/like/page/my?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 찜 목록 조회 API 에러", err);
+  }
+};

@@ -25,6 +25,13 @@ export const mypageTabs = [
   { icon: HeartIcon, label: "찜 목록", route: "likes" },
 ];
 
+export const webMypageTabs = [
+  { icon: MessageIcon, label: "내 리뷰", route: "" },
+  { icon: HeartIcon, label: "내 찜 목록", route: "likes" },
+  { icon: LuggageIcon, label: "내 여행", route: "travel" },
+  { icon: NoteIcon, label: "내 여행기", route: "travelogue" },
+];
+
 export const mypageLikesTabs = [
   { label: "전체", value: "" },
   { label: "여행지", value: "place" },

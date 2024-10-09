@@ -1,14 +1,19 @@
 import styled from "styled-components";
 import { mypageLikesTabs } from "../../../utils/staticDatas";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TravelogueGridBox } from "./Travelogue";
 import { CarouselWithText } from "../../../assets/styles/home.style";
 import testImg from "../../../assets/images/testImg3.png";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import HeartIcon from "../../../assets/icons/HeartIcon";
+import { getMyLikes } from "../../../utils/axios";
 
 export default function Likes() {
   const [currentTab, setCurrentTab] = useState("");
+
+  useEffect(() => {
+    getMyLikes().then((res) => console.log(res));
+  });
 
   return (
     <>
