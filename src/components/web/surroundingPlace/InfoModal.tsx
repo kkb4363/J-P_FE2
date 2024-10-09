@@ -4,6 +4,8 @@ import StarIcon from "../../../assets/icons/StarIcon";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
+import CustomSkeleton from "../../mobile/CustomSkeleton";
+import useImgLoading from "../../../hooks/useImgLoading";
 
 interface Props {
   imgSrc: string;
@@ -16,15 +18,21 @@ interface Props {
 }
 
 export default function InfoModal(props: Props) {
+  const { loading } = useImgLoading({ imgSrc: props.imgSrc });
+
   return (
     <>
       <ModalTopBox>
-        <ImageView
-          src={props.imgSrc}
-          alt="이미지없음"
-          width="160px"
-          height="145px"
-        />
+        {loading ? (
+          <CustomSkeleton width="160px" height="145px" borderRadius="16px" />
+        ) : (
+          <ImageView
+            src={props.imgSrc}
+            alt="이미지없음"
+            width="160px"
+            height="145px"
+          />
+        )}
         <div>
           <h1>{props.title}</h1>
           <p>{props.shortAddress}</p>

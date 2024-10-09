@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
-import { useEffect, useState } from "react";
 import CustomSkeleton from "../../mobile/CustomSkeleton";
+import useImgLoading from "../../../hooks/useImgLoading";
 
 interface Props {
   imgSrc: string;
@@ -11,25 +11,14 @@ interface Props {
 }
 
 export default function SurroundingPlaceCard({ imgSrc, title, rating }: Props) {
-  const [imgLoading, setImgLoading] = useState(true);
-
-  useEffect(() => {
-    // 이미지가 캐시된 상태에서도 onLoad가 호출되도록 확인
-    const img = new Image();
-    img.src = imgSrc;
-    img.onload = () => setImgLoading(false);
-  }, [imgSrc]);
+  const { loading } = useImgLoading({ imgSrc: imgSrc });
 
   return (
     <SurroundingPlaceCardContainer>
-      {imgLoading ? (
+      {loading ? (
         <CustomSkeleton width="224px" height="95px" borderRadius="16px" />
       ) : (
-        <img
-          src={imgSrc}
-          onLoad={() => setImgLoading(false)}
-          alt="surrounding-place-img"
-        />
+        <img src={imgSrc} alt="surrounding-place-img" />
       )}
       <SurroundingPlaceCardBottomBox>
         <p>{title}</p>

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import ImageView from "../ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
+import useImgLoading from "../../../hooks/useImgLoading";
+import CustomSkeleton from "../../mobile/CustomSkeleton";
 
 interface Props {
   imgSrc: string;
@@ -15,9 +17,15 @@ export default function SurroundingMoreAddCard({
   subName,
   rating,
 }: Props) {
+  const { loading } = useImgLoading({ imgSrc: imgSrc });
+
   return (
     <MoreAddCardContainer>
-      <ImageView src={imgSrc} alt="이미지없음" width="90px" height="95px" />
+      {loading ? (
+        <CustomSkeleton width="90px" height="95px" borderRadius="16px" />
+      ) : (
+        <ImageView src={imgSrc} alt="이미지없음" width="90px" height="95px" />
+      )}
       <MoreAddCardTextCol>
         <div>
           <span>주변 여행지</span>
