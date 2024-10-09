@@ -110,3 +110,35 @@ export const getGooglePlaceDetail = async ({
     console.error("구글플레이스 상세 정보 API 에러", err);
   }
 };
+
+export const getMyReviews = async () => {
+  try {
+    const res = await axiosInstance.get("/my/reviews?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 리뷰 조회 API 에러", err);
+  }
+};
+
+export const getMyLikes = async () => {
+  try {
+    const res = await axiosInstance.get("/like/page/my?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 찜 목록 조회 API 에러", err);
+  }
+};

@@ -8,8 +8,18 @@ import {
 } from "../../../assets/styles/travelReview.style";
 import LikeIcon from "../../../assets/icons/LikeIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
+import { useEffect, useState } from "react";
+import { getMyReviews } from "../../../utils/axios";
 
 export default function Review() {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    getMyReviews().then((res) => {
+      setReviews(res?.data.data);
+    });
+  }, []);
+
   return (
     <>
       <TravelHeader>

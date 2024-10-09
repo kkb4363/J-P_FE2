@@ -25,7 +25,7 @@ export default function Layout({ minWidth = "1440px" }: Props) {
         </HeaderLeft>
 
         <HeaderRight>
-          <span>마이페이지</span>
+          <span onClick={() => navigate("/mypage")}>마이페이지</span>
 
           <LoginButton>로그인</LoginButton>
         </HeaderRight>
