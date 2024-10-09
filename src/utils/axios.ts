@@ -118,12 +118,28 @@ export const getMyReviews = async () => {
         Authorization: cookies.get("userToken"),
       },
     });
+  } catch (err) {
+    console.error("내 리뷰 조회 API 에러", err);
+  }
+};
+
+export const getSearchPlaceList = async ({
+  searchString,
+  page = 1,
+}: {
+  searchString: string;
+  page?: number;
+}) => {
+  try {
+    const res = await axiosInstance.get(
+      `/place/page?page=${page}&searchString=${searchString}`
+    );
 
     if (res.status === 200) {
       return res;
     }
   } catch (err) {
-    console.error("내 리뷰 조회 API 에러", err);
+    console.error("검색 장소 페이징 조회 API 에러", err);
   }
 };
 

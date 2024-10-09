@@ -65,7 +65,7 @@ export const CommentInput = styled.form`
   }
 `;
 
-export const CommentWriteButton = styled.button<{ fill: boolean }>`
+export const CommentWriteButton = styled.button<{ fill: boolean, fontsize?: string }>`
   background-color: ${(props) =>
     props.fill ? props.theme.color.main : props.theme.color.white};
   color: ${(props) =>
@@ -74,11 +74,19 @@ export const CommentWriteButton = styled.button<{ fill: boolean }>`
   white-space: nowrap;
   border-radius: 30px;
   padding: 8.5px 17px;
-  font-size: 12px;
+  font-size: ${({fontsize}) => fontsize ? fontsize : "12px"};
   font-weight: 700;
 
   &:active {
     opacity: ${(props) => props.fill && 0.5};
     background-color: ${(props) => !props.fill && props.theme.color.gray100}
   }
+`;
+
+export const LoadingText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  color: ${(props) => props.theme.color.gray300};
 `;

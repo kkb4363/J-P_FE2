@@ -90,7 +90,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
       <BottomSheet maxH={0.75} minH={3.5}>
         {/* 일정 목록 */}
         {!isPlanDetail && (
-          <>
+          <D.PlanContainer>
             <D.PlansBox>
               <D.PlansEditButton onClick={() => setIsPlanEdit((prev) => !prev)}>
                 {isPlanEdit ? (
@@ -131,7 +131,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
             <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
               + 장소 추가
             </D.AddPlaceButton>
-          </>
+          </D.PlanContainer>
         )}
 
         {/* 일정 상세 */}
@@ -266,3 +266,4 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
     </>
   );
 }
+

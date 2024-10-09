@@ -10,6 +10,8 @@ import MyReviews from "./mypage/MyReviews";
 import MyLikes from "./mypage/MyLikes";
 import MyTravel from "./mypage/MyTravel";
 import MyTravelogue from "./mypage/MyTravelogue";
+import TravelReview from "./travel-review/TravelReview";
+import ReviewDetails from "./travel-review/ReviewDetails";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ export const router = createBrowserRouter([
       {
         path: "surroundingMore/:lng/:lat",
         element: <SurroundingMore />,
+      },
+      {
+        path: "travelReview",
+        element: <TravelReview />,
+      },
+      {
+        path: "review/:reviewId",
+        element: <ReviewDetails />,
       },
       {
         path: "mypage",
