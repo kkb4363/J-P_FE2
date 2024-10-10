@@ -4,11 +4,11 @@ import TwoButtonsModal from "../TwoButtonsModal";
 import { useState } from "react";
 import { useJPStore } from "../../../store/JPType.store";
 import { useNavigate } from "react-router-dom";
-import { PlanList } from "../scheduleSort/PlanList";
+import { PlanList } from "../schedule/PlanList";
 import { planItemProps } from "../../../types/schedule";
 import { arrayMoveImmutable } from "array-move";
-import PrevArrow from "../SlideArrows/PrevArrow";
-import NextArrow from "../SlideArrows/NextArrow";
+import PrevArrow from "../schedule/PrevArrow";
+import NextArrow from "../schedule/NextArrow";
 import {
   testDayList,
   testPlanItems,
