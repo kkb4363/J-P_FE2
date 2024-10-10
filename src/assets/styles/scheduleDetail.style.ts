@@ -238,7 +238,7 @@ export const Line = styled.div`
 `;
 
 // 일정 상세
-export const PlanDetailsHeader = styled.div`
+export const PlanDetailsHeader = styled.div<{ $editMode?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -246,14 +246,10 @@ export const PlanDetailsHeader = styled.div`
   white-space: nowrap;
   padding: 10px 0;
 
-  & > span {
-    width: 100%;
-    font-weight: 700;
-    text-align: center;
-  }
   & > p {
     font-size: 14px;
     color: ${(props) => props.theme.color.secondary};
+    visibility: ${({ $editMode }) => ($editMode ? "visible" : "hidden")};
   }
 `;
 
@@ -281,7 +277,6 @@ export const DetailsInput = styled.div<{ isDetailsEdit: boolean }>`
     props.isDetailsEdit && `1px solid ${props.theme.color.gray200}`};
   border-radius: 16px;
   padding: 20px 27px;
-  height: 98px;
   box-shadow: ${(props) =>
     !props.isDetailsEdit && "0px 2px 10px 0px rgba(0, 0, 0, 0.04)"};
 
@@ -304,16 +299,9 @@ export const CostTitleBox = styled.div`
   justify-content: space-between;
 `;
 
-export const SelectCostText = styled.p`
-  color: ${(props) => props.theme.color.gray300};
-  font-size: 12px;
-  line-height: 150%;
-`;
-
 export const SelectCostBox = styled.div`
   display: flex;
-  gap: 12px;
-  margin: 8px 0 16px;
+  gap: 20px;
 `;
 
 const RoundIconBox = styled.div`
@@ -324,13 +312,50 @@ const RoundIconBox = styled.div`
   border-radius: 30px;
 `;
 
-export const SelectCostItem = styled(RoundIconBox)<{ isCategorySelect: boolean; }>`
+export const SelectCostItem = styled.div<{ $isSelected: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  & > span {
+    font-size: 12px;
+    color: ${(props) =>
+      props.$isSelected
+        ? props.theme.color.secondary
+        : props.theme.color.gray400};
+  }
+`;
+
+export const CategoryIconBox = styled(RoundIconBox)<{ $isSelected: boolean }>`
   background-color: ${(props) => props.theme.color.white};
   border: 1px solid
     ${(props) =>
-      props.isCategorySelect
+      props.$isSelected
         ? props.theme.color.secondary
         : props.theme.color.gray200};
+`;
+
+export const Title = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  text-align: center;
+`;
+
+export const AddCostBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 20px 5px;
+
+  & > div > p {
+    color: ${(props) => props.theme.color.gray900};
+    font-size: 14px;
+    line-height: 150%;
+    margin-bottom: 8px;
+  }
 `;
 
 export const CostInput = styled.div`
@@ -350,20 +375,32 @@ export const CostInput = styled.div`
   }
 `;
 
-export const CostBox = styled.div`
+export const CostItemList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 17px 18px;
-  background-color: ${(props) => props.theme.color.white};
-  border-radius: 16px;
-  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.04);
+  gap: 8px;
+
+  & > p {
+    font-size: 14px;
+  }
 `;
 
 export const CostItem = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+`
+
+export const CostBox = styled.div`
+  width: 100%;
+  display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 17px 18px;
+  border-radius: 16px;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.04);
+  background-color: ${(props) => props.theme.color.white};
   font-size: 14px;
   color: ${(props) => props.theme.color.gray700};
 `;
@@ -381,6 +418,10 @@ export const CostCategoryIcon = styled(RoundIconBox)`
 export const TransportBox = styled.div`
   display: flex;
   gap: 8px;
+
+  & > p {
+    font-size: 14px;
+  }
 `;
 
 export const TransPortItem = styled.div<{ $select: boolean }>`
