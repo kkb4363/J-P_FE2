@@ -35,6 +35,58 @@ export default function MyReviews() {
             <span>5</span>
           </ReviewCardCommentRow>
         </ReviewCard>
+        <ReviewCard>
+          <ReviewCardTitleRow>
+            <div>
+              <img src={testImg} alt="user" />
+              <p>arami10</p>
+              <span>|</span>
+              <span>24.4.12</span>
+            </div>
+
+            <span>수정</span>
+          </ReviewCardTitleRow>
+
+          <ReviewCardDetailCol>
+            <p>전주 한옥마을, 벽화마을, 남부시장 먹방 여행</p>
+            <span>
+              오랜만에 한옥마을에서 힐링하고 갑니다~ 조용하고 조용하고
+            </span>
+          </ReviewCardDetailCol>
+
+          <ReviewCardCommentRow>
+            <StarIcon />
+            <span>5.0</span>
+            <CommentIcon />
+            <span>5</span>
+          </ReviewCardCommentRow>
+        </ReviewCard>
+        <ReviewCard>
+          <ReviewCardTitleRow>
+            <div>
+              <img src={testImg} alt="user" />
+              <p>arami10</p>
+              <span>|</span>
+              <span>24.4.12</span>
+            </div>
+
+            <span>수정</span>
+          </ReviewCardTitleRow>
+
+          <ReviewCardDetailCol>
+            <p>전주 한옥마을, 벽화마을, 남부시장 먹방 여행</p>
+            <span>
+              오랜만에 한옥마을에서 힐링하고 갑니다~ 조용하고 조용하고
+            </span>
+          </ReviewCardDetailCol>
+
+          <ReviewCardCommentRow>
+            <StarIcon />
+            <span>5.0</span>
+            <CommentIcon />
+            <span>5</span>
+          </ReviewCardCommentRow>
+        </ReviewCard>
       </ReviewCardRow>
     </>
   );
@@ -58,6 +110,7 @@ const ReviewCardRow = styled.div`
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
 `;
 
 const ReviewCard = styled.div`
@@ -104,6 +157,7 @@ const ReviewCardTitleRow = styled.div`
   & > span:last-child {
     color: ${(props) => props.theme.color.gray300};
     font-size: 12px;
+    cursor: pointer;
   }
 `;
 
