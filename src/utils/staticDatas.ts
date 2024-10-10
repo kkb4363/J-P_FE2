@@ -1,4 +1,8 @@
+import BagIcon from "../assets/icons/BagIcon";
 import CalendarIcon from "../assets/icons/CalendarIcon";
+import CarIcon from "../assets/icons/CarIcon";
+import EatIcon from "../assets/icons/EatIcon";
+import EtcIcon from "../assets/icons/EtcIcon";
 import HeartIcon from "../assets/icons/HeartIcon";
 import HomeIcon from "../assets/icons/HomeIcon";
 import LuggageIcon from "../assets/icons/LuggageIcon";
@@ -6,6 +10,7 @@ import MessageIcon from "../assets/icons/MessageIcon";
 import NoteIcon from "../assets/icons/NoteIcon";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
+import TicketIcon from "../assets/icons/TicketIcon";
 import { reviewApiProps } from "../types/home";
 import { commentResDto, userCompactResDto } from "../types/res.dto";
 import { planItemProps } from "../types/schedule";
@@ -165,9 +170,8 @@ export const textCommentItem: commentResDto = {
   content: "좋은 리뷰네요!",
   userCompactResDto: testUserDto,
   createdAt: "24.3.20",
-  replyList: []
-}
-
+  replyList: [],
+};
 
 export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
 
@@ -177,4 +181,35 @@ export const testTransportList: string[] = [
   "기차",
   "택시",
   "도보",
+];
+
+// 비용 항목 정보 배열
+export const costCategories = [
+  { icon: CarIcon, id: "Car", label: "교통" },
+  { icon: TicketIcon, id: "Ticket", label: "관광" },
+  { icon: BagIcon, id: "Bag", label: "쇼핑" },
+  { icon: EatIcon, id: "Eat", label: "식사" },
+  { icon: EtcIcon, id: "Etc", label: "기타" },
+];
+
+export interface testCostTypes {
+  type: {
+    icon: ({ stroke }: { stroke?: string }) => JSX.Element;
+    id: string;
+    label: string;
+  };
+  name: string;
+  cost: number;
+}
+export const testCostList: testCostTypes[] = [
+  {
+    type: costCategories[0],
+    name: "버스",
+    cost: 7900,
+  },
+  {
+    type: costCategories[1],
+    name: "입장권",
+    cost: 10500,
+  },
 ];
