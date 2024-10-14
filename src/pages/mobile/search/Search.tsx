@@ -143,7 +143,7 @@ export default function Search() {
               <SearchWordBox>
                 {recentWords.map((word) => {
                   return (
-                    <ActionButton del>
+                    <ActionButton del key={word}>
                       <span>{word}</span>
                       <CancelIcon onClick={() => handleWordDelete(word)} />
                     </ActionButton>

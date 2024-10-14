@@ -35,7 +35,12 @@ export default function Home() {
       <HomeTitle>어디로 떠날까요?</HomeTitle>
 
       <InputBox>
-        <CustomInput text="여행지를 입력해주세요" value="" width="500px" />
+        <CustomInput
+          text="여행지를 입력해주세요"
+          value={""}
+          width="500px"
+          onClick={() => navigate("search")}
+        />
       </InputBox>
 
       <CarouselTitle>
@@ -105,7 +110,7 @@ export default function Home() {
   );
 }
 
-const HomeTitle = styled.p`
+export const HomeTitle = styled.p`
   width: 100%;
   text-align: center;
   margin-top: 85px;
@@ -115,7 +120,7 @@ const HomeTitle = styled.p`
   font-weight: 700;
 `;
 
-const InputBox = styled.div`
+export const InputBox = styled.div`
   margin: 31px 0 103px 0;
   width: 100%;
   display: flex;
