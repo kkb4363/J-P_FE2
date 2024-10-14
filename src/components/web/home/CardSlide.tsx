@@ -90,6 +90,7 @@ export default function CardSlide({
           ))
         : data?.map((item: placeApiProps) => (
             <PlaceCard
+              key={item.id}
               bottomText={bottomText ? item.name : ""}
               topText={topText ? "여행지" : ""}
               title={title ? item.name : ""}

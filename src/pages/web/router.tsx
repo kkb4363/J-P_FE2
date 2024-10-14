@@ -12,6 +12,7 @@ import MyTravel from "./mypage/MyTravel";
 import MyTravelogue from "./mypage/MyTravelogue";
 import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
+import Search from "./search/Search";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
             element: <MyTravelogue />,
           },
         ],
+      },
+      {
+        path: "search",
+        element: <Search />,
       },
     ],
   },

@@ -13,6 +13,7 @@ interface Props {
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onDelete?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onkeydown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   // ref
   // callback or onClick
 }
@@ -27,6 +28,7 @@ export default function CustomInput({
   onSubmit,
   onClick,
   onDelete,
+  onkeydown,
 }: Props) {
   return (
     <CustomInputContainer $height={height} $width={width}>
@@ -34,9 +36,10 @@ export default function CustomInput({
       <form onSubmit={onSubmit}>
         <input
           placeholder={text}
-          value={value}
+          defaultValue={value}
           onChange={onChange}
           onClick={onClick}
+          onKeyDown={onkeydown}
         />
       </form>
       {del && (
