@@ -7,7 +7,7 @@ interface Props {
 const SearchIcon = ({
   fill = "none",
   stroke = "#4D4D4D",
-  strokeWidth = "1.5",
+  strokeWidth = "2",
 }: Props) => {
   return (
     <svg
