@@ -6,7 +6,6 @@ import { filter } from "../../../utils/staticDatas";
 import Review from "./Review";
 import Travelogue from "./Travelogue";
 
-
 export default function TravelReview() {
   const [isDropdownView, setIsDropdownView] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(filter[0]);
@@ -86,7 +85,11 @@ export default function TravelReview() {
           )}
         </FilterBox>
       </>
-      {reviewStore.isReview ? <Review sort={selectedFilter.state} /> : <Travelogue />}
+      {reviewStore.isReview ? (
+        <Review sort={selectedFilter.state} />
+      ) : (
+        <Travelogue />
+      )}
     </TravelReviewContainer>
   );
 }
@@ -131,6 +134,7 @@ const FilterButton = styled.div`
   gap: 10px;
   border-radius: 30px;
   border: 1px solid ${(props) => props.theme.color.gray700};
+  background-color: ${(props) => props.theme.color.white};
 
   & > span {
     color: ${(props) => props.theme.color.gray700};
@@ -149,7 +153,7 @@ const Dropdown = styled.div`
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.08),
     0px 6px 8px 0px rgba(0, 0, 0, 0.08);
   padding: 22px 24px;
-  z-index: 1;
+  z-index: 9;
   background-color: ${(props) => props.theme.color.white};
 `;
 
@@ -187,4 +191,3 @@ const FilterText = styled.span`
   font-size: 14px;
   color: ${(props) => props.theme.color.gray900};
 `;
-

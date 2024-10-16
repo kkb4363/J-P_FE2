@@ -38,7 +38,6 @@ export default function ReviewCard({ item }: Props) {
           content="24.2.3"
         />
         <ContentText>{item.content}</ContentText>
-        <MoreText>더보기</MoreText>
       </ReviewBody>
       <ReviewImageBox>
         {testImageList.slice(0, 2).map((url, i) => (
@@ -114,12 +113,6 @@ const ContentText = styled.p`
   font-size: 14px;
   line-height: 140%;
   word-wrap: break-word;
-`;
-
-const MoreText = styled.p`
-  font-size: 12px;
-  color: ${(props) => props.theme.color.gray300};
-  cursor: pointer;
 `;
 
 const ReviewImageBox = styled.div`
