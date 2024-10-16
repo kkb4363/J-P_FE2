@@ -13,6 +13,7 @@ import MyTravelogue from "./mypage/MyTravelogue";
 import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import Search from "./search/Search";
+import ImageViewer from "./travel-review/ImageViewer";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
       {
         path: "review/:reviewId",
         element: <ReviewDetails />,
+      },
+      {
+        path: "review/:reviewId/photo",
+        element: <ImageViewer />,
       },
       {
         path: "mypage",

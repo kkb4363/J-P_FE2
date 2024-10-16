@@ -103,9 +103,6 @@ export const testImageList: string[] = [
   "/src/assets/images/testImg2.png",
   "/src/assets/images/testImg3.png",
   "/src/assets/images/testImg.png",
-  "/src/assets/images/testImg1.png",
-  "/src/assets/images/testImg2.png",
-  "/src/assets/images/testImg3.png",
 ];
 
 export const testLogContents1 =
