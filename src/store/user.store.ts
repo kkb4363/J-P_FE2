@@ -37,7 +37,11 @@ export const useUserStore = create<State & Action>()(
       getSearchData: () => get().searchData,
       addSearchData: (s: string) => {
         const prev = get().searchData;
-        set({ searchData: [...prev, s] });
+        if (!prev.includes(s)) {
+          const addData =
+            prev.length >= 5 ? [...prev.slice(1), s] : [...prev, s];
+          set({ searchData: addData });
+        }
       },
       deleteSearchData: (s: string) => {
         const prev = get().searchData;
