@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../../utils/axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ReviewDetailApiProps } from "../../../types/home.details";
 import { LikeCommentBox } from "../../../assets/styles/home.style";
-import { testImageList, testReviewItem, testUserDto } from "../../../utils/staticDatas";
+import { testImageList, testReviewItem } from "../../../utils/staticDatas";
 import * as R from "../../../assets/styles/travelReview.style";
 import ImageView from "../../../components/mobile/ImageView";
 import MarkIcon from "../../../assets/icons/MarkIcon";
@@ -12,7 +12,6 @@ import StarIcon from "../../../assets/icons/StarIcon";
 import LikeIcon from "../../../assets/icons/LikeIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
-import { commentResDto } from "../../../types/res.dto";
 import CustomProfile from "../../../components/mobile/CustomProfile";
 
 export default function ReviewDetails() {
@@ -22,6 +21,7 @@ export default function ReviewDetails() {
   const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");
   const [commentCnt, setCommentCnt] = useState(-1);
+  const navigate = useNavigate();
 
   const requestApi = async () => {
     setIsLoading(true);
@@ -43,6 +43,13 @@ export default function ReviewDetails() {
   const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log(`${comment} submit`);
+  };
+
+
+  const handleImageClick = (index: number) => {
+    navigate(`/review/${params.reviewId}/photo`, {
+      state: { currentIndex: index, images: testImageList }, // 이미지 인덱스와 목록을 state로 전달
+    });
   };
 
   useEffect(() => {
@@ -83,7 +90,7 @@ export default function ReviewDetails() {
             </div>
             <ReviewDetailsImageBox>
               {testImageList.slice(0, 4).map((url, i) => (
-                <ImageWrapper key={i}>
+                <ImageWrapper key={i} onClick={() => handleImageClick(i)}>
                   <ImageView
                     src={url}
                     alt="review img"
