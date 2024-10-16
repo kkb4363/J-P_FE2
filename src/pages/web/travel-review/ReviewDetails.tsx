@@ -152,6 +152,7 @@ export default function ReviewDetails() {
               createdAt={testReviewItem.createdAt}
               user={testReviewItem.userCompactResDto}
               replyList={[]}
+              web
             />
           </CommentBox>
         </ReviewDetailsContainer>
@@ -222,7 +223,7 @@ const ImageOverlay = styled.div`
 `;
 
 const CommentHeader = styled.p`
-  margin: 8px 8px 16px;
+  margin: 16px 8px;
 `;
 
 const CommentInput = styled.form`
