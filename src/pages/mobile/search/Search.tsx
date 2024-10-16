@@ -7,68 +7,54 @@ import CancelIcon from "../../../assets/icons/CancelIcon";
 import ImageView from "../../../components/mobile/ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
 import ActionButton from "../../../components/mobile/ActionButton";
-import {
-  realTimeWords,
-  RECENT_SEARCH_KEY,
-  testImg1,
-} from "../../../utils/staticDatas";
+import { realTimeWords, testImg1 } from "../../../utils/staticDatas";
 import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
 import { placeApiProps } from "../../../types/home";
+import { useUserStore } from "../../../store/user.store";
 
 export default function Search() {
-  const [searchWord, setSearchWord] = useState("");
-  const [recentWords, setRecentWords] = useState<string[]>([]);
+  const userStore = useUserStore();
+  const [deleteEvery, setDeleteEvery] = useState(false);
+  const [searchString, setSearchString] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchData, setSearchData] = useState<placeApiProps[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
-  const [openModal, setOpenModal] = useState(false);
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setIsSubmit(true);
+    setPage(1);
+
+    if (searchString.trim() !== "") {
+      userStore.addSearchData(searchString);
+    }
+
+    setTimeout(() => {
+      getSearchPlace();
+    }, 200);
+  };
+
+  const handleDeleteEvery = () => {
+    userStore.clearSearchData();
+    setDeleteEvery(false);
+  };
 
   const getSearchPlace = async () => {
-    setIsLoading(true);
-    await getSearchPlaceList({ searchString: searchWord, page: page }).then(
+    await getSearchPlaceList({ searchString: searchString, page: page }).then(
       (res) => {
         const newData = res?.data.data;
         setSearchData((p) => [...p, ...newData]);
         setHasMore(newData.length > 0);
+        setIsLoading(false);
       }
     );
-    setIsLoading(false);
   };
 
-  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmit(true);
-    getSearchPlace();
-    setPage(1);
-
-    if (searchWord.trim() !== "") {
-      const updatedRecentWords = [
-        searchWord,
-        ...recentWords.filter((word) => word !== searchWord),
-      ].slice(0, 5);
-      setRecentWords(updatedRecentWords);
-      localStorage.setItem(
-        RECENT_SEARCH_KEY,
-        JSON.stringify(updatedRecentWords)
-      );
-    }
-  };
-
-  const handleAllDeleteClick = () => {
-    setRecentWords([]);
-    localStorage.removeItem(RECENT_SEARCH_KEY);
-    setOpenModal(false);
-  };
-
-  const handleWordDelete = (deleteWord: string) => {
-    const updatedWords = recentWords.filter((word) => word !== deleteWord);
-    setRecentWords(updatedWords);
-    localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(updatedWords));
-  };
-
+  // 마지막 요소 트리거
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (isLoading) return;
@@ -81,7 +67,7 @@ export default function Search() {
           }
         },
         {
-          threshold: 0.1, // 요소의 10% 이상이 보여야 트리거
+          threshold: 0.1,
         }
       );
 
@@ -90,22 +76,13 @@ export default function Search() {
     [hasMore, isLoading]
   );
 
-  // 최근 검색어 불러오기
-  useEffect(() => {
-    const storedWords = localStorage.getItem(RECENT_SEARCH_KEY);
-    if (storedWords) {
-      setRecentWords(JSON.parse(storedWords));
-    }
-  }, []);
-
-  // 검색 data 초기화
   useEffect(() => {
     setIsSubmit(false);
-    if (searchWord.trim() === "") {
+    if (searchString.trim() === "") {
       setSearchData([]);
       setPage(1);
     }
-  }, [searchWord]);
+  }, [searchString]);
 
   useEffect(() => {
     if (page !== 1) {
@@ -119,54 +96,58 @@ export default function Search() {
       <SearchContainer>
         <CustomInput
           text="여행지를 입력해주세요"
-          del={searchWord !== ""}
-          value={searchWord}
-          onChange={(e) => setSearchWord(e.target.value)}
+          del={searchString !== ""}
+          value={searchString}
+          onChange={(e) => setSearchString(e.target.value)}
           onSubmit={handleSearchSubmit}
-          onDelete={() => setSearchWord("")}
+          onDelete={() => setSearchString("")}
         />
-        {openModal && (
+        {deleteEvery && (
           <TwoButtonsModal
             text="검색 기록을 모두 삭제하시겠습니까?"
-            onClick={handleAllDeleteClick}
-            onClose={() => setOpenModal(false)}
+            onClick={handleDeleteEvery}
+            onClose={() => setDeleteEvery(false)}
           />
         )}
 
-        {searchWord === "" && (
+        {searchString === "" && (
           <>
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
-                <p onClick={() => setOpenModal(true)}>모두 삭제</p>
+                {userStore.getSearchData().length !== 0 && (
+                  <p onClick={() => setDeleteEvery(true)}>모두 삭제</p>
+                )}
               </SearchRecentTitleBox>
               <SearchWordBox>
-                {recentWords.map((word) => {
-                  return (
-                    <ActionButton del key={word}>
-                      <span>{word}</span>
-                      <CancelIcon onClick={() => handleWordDelete(word)} />
+                {userStore
+                  .getSearchData()
+                  ?.slice()
+                  .reverse()
+                  .map((s) => (
+                    <ActionButton del key={s}>
+                      <span>{s}</span>
+                      <CancelIcon
+                        onClick={() => userStore.deleteSearchData(s)}
+                      />
                     </ActionButton>
-                  );
-                })}
+                  ))}
+                {userStore.getSearchData().length === 0 && (
+                  <p>최근 검색어가 없습니다.</p>
+                )}
               </SearchWordBox>
             </SearchWordContainer>
             <SearchWordContainer>
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
-                {realTimeWords.map((word: string, index: number) => {
-                  return (
-                    <ActionButton
-                      hashtag
-                      key={index}
-                    >{`#${word}`}</ActionButton>
-                  );
-                })}
+                {realTimeWords.map((s: string, index: number) => (
+                  <ActionButton hashtag key={index}>{`#${s}`}</ActionButton>
+                ))}
               </SearchWordBox>
             </SearchWordContainer>
           </>
         )}
-        {searchWord !== "" && (
+        {searchString !== "" && (
           <SearchBody>
             {searchData.length === 0 && !isLoading && isSubmit && (
               <CenterText>검색 결과가 없습니다.</CenterText>
@@ -260,6 +241,11 @@ const SearchWordBox = styled.div`
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+
+  & > p {
+    font-size: 12px;
+    color: ${(props) => props.theme.color.gray400};
+  }
 `;
 
 const SearchBody = styled.div`

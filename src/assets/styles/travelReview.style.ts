@@ -75,7 +75,6 @@ export const CommentWriteButton = styled.button<{ fill: boolean, fontsize?: stri
   border-radius: 30px;
   padding: 8.5px 17px;
   font-size: ${({fontsize}) => fontsize ? fontsize : "12px"};
-  font-weight: 700;
 
   &:active {
     opacity: ${(props) => props.fill && 0.5};
