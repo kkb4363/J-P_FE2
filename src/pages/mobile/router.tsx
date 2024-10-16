@@ -42,20 +42,6 @@ export const router = createBrowserRouter([
     path: "nearby/:placeId",
     element: <NearPlace />,
   },
-
-  {
-    path: "travelReview",
-    element: <TravelReview />,
-  },
-  {
-    path: "review/:reviewId",
-    element: <ReviewDetails />,
-  },
-  {
-    path: "travelogue/:TravelogueId",
-    element: <TravelogueDetails />,
-  },
-
   {
     path: "Schedule",
     element: <ScheduleLayout />,
@@ -117,14 +103,17 @@ export const router = createBrowserRouter([
         element: <Search />,
       },
       {
-        path: "schedule",
-        element: <Schedule />,
+        path: "travelReview",
+        element: <TravelReview />,
       },
       {
-        path: "travels",
-        element: <TravelMore />,
+        path: "review/:reviewId",
+        element: <ReviewDetails />,
       },
-
+      {
+        path: "travelogue/:TravelogueId",
+        element: <TravelogueDetails />,
+      },
       {
         path: "mypage",
         element: <MyPageLayout />,
@@ -148,11 +137,20 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: "schedule",
+        element: <Schedule />,
+      },
+      {
+        path: "travels",
+        element: <TravelMore />,
+      },
+      {
         path: "editProfile",
         element: <EditProfile />,
       },
     ],
   },
+
   {
     path: "writeReview",
     element: <WriteReview />,
