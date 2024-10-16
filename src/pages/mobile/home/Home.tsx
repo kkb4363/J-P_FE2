@@ -28,7 +28,7 @@ export default function Home() {
 
       <CustomInput
         text="여행지를 입력해주세요"
-        onClick={() => navigate("search")}
+        onClick={() => navigate("/home/search")}
         value=""
       />
 

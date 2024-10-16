@@ -19,7 +19,7 @@ export const footerTabs = [
   { icon: HomeIcon, label: "홈", route: "/home" },
   { icon: SearchIcon, label: "검색", route: "/home/search" },
   { icon: CalendarIcon, label: "일정", route: "/home/schedule" },
-  { icon: MessageIcon, label: "리뷰/여행기", route: "/home/travel-review" },
+  { icon: MessageIcon, label: "리뷰/여행기", route: "/home/travelReview" },
   { icon: ProfileIcon, label: "마이페이지", route: "/home/mypage" },
 ];
 
