@@ -1,19 +1,19 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { axiosInstance } from "../../../utils/axios";
-import { useEffect, useState } from "react";
-import { ReviewDetailApiProps } from "../../../types/home.details";
+import StarIcon from "../../../assets/icons/StarIcon";
 import * as R from "../../../assets/styles/travelReview.style";
+import IconBox from "../../../components/IconBox";
+import LikeCommentBox from "../../../components/LikeCommentBox";
+import CommentCard from "../../../components/mobile/CommentCard";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import CustomProfile from "../../../components/mobile/CustomProfile";
-import StarIcon from "../../../assets/icons/StarIcon";
-import ImageView from "../../../components/mobile/ImageView";
-import LikeIcon from "../../../assets/icons/LikeIcon";
-import CommentIcon from "../../../assets/icons/CommentIcon";
-import CommentCard from "../../../components/mobile/CommentCard";
-import { commentResDto } from "../../../types/res.dto";
-import { testImageList } from "../../../utils/staticDatas";
 import ImageSlider from "../../../components/mobile/ImageSlider";
+import ImageView from "../../../components/mobile/ImageView";
+import { ReviewDetailApiProps } from "../../../types/home.details";
+import { commentResDto } from "../../../types/res.dto";
+import { axiosInstance } from "../../../utils/axios";
+import { testImageList } from "../../../utils/staticDatas";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -69,10 +69,10 @@ export default function ReviewDetails() {
               nickname={review?.userCompactResDto.nickname}
               content="24.2.3"
             />
-            <R.IconBox>
+            <IconBox>
               <StarIcon />
               <span>{review?.star}</span>
-            </R.IconBox>
+            </IconBox>
           </R.ProfileHeader>
           <p>{review?.content}</p>
           <ReviewDetailsImageBox>
@@ -102,19 +102,12 @@ export default function ReviewDetails() {
               </ImageWrapper>
             ))}
           </ReviewDetailsImageBox>
-          <R.LikeCommentBox>
-            <R.IconBox>
-              <LikeIcon
-                fill={fillLike ? "#FFC814" : "none"}
-                onClick={() => setFillLike((prev) => !prev)}
-              />
-              <span>{review?.likeCnt}</span>
-            </R.IconBox>
-            <R.IconBox>
-              <CommentIcon stroke="#808080" />
-              <span>{review?.commentResDtoList.length}</span>
-            </R.IconBox>
-          </R.LikeCommentBox>
+          <LikeCommentBox
+            likeCnt={review!.likeCnt}
+            commentCnt={review!.commentResDtoList.length}
+            fillLike={fillLike}
+            likeClick={() => setFillLike((prev) => !prev)}
+          />
           <R.CommentsBox>
             <p>댓글</p>
             <R.CommentInputBox>

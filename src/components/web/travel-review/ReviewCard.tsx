@@ -1,17 +1,13 @@
 import styled from "styled-components";
 import { reviewApiProps } from "../../../types/home";
 import { testImageList } from "../../../utils/staticDatas";
-import {
-  IconBox,
-  LikeCommentBox,
-} from "../../../assets/styles/travelReview.style";
 import CustomProfile from "../../mobile/CustomProfile";
 import ImageView from "../ImageView";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
-import LikeIcon from "../../../assets/icons/LikeIcon";
-import CommentIcon from "../../../assets/icons/CommentIcon";
 import { useNavigate } from "react-router-dom";
+import LikeCommentBox from "../../LikeCommentBox";
+import IconBox from "../../IconBox";
 
 interface Props {
   item: reviewApiProps;
@@ -40,7 +36,7 @@ export default function ReviewCard({ item }: Props) {
         <ContentText>{item.content}</ContentText>
       </ReviewBody>
       <ReviewImageBox>
-        {testImageList.slice(0, 2).map((url, i) => (
+      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
           <ImageWrapper key={i}>
             <ImageView src={url} alt="review img" width="100%" height="191px" />
             {i === 1 && (
@@ -51,16 +47,6 @@ export default function ReviewCard({ item }: Props) {
           </ImageWrapper>
         ))}
       </ReviewImageBox>
-      <LikeCommentBox>
-        <IconBox>
-          <LikeIcon />
-          <span>{item.likeCnt}</span>
-        </IconBox>
-        <IconBox>
-          <CommentIcon stroke="#808080" />
-          <span>{item.commentCnt}</span>
-        </IconBox>
-      </LikeCommentBox>
     </ReviewCardContainer>
   );
 }

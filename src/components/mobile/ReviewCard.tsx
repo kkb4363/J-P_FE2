@@ -1,15 +1,15 @@
-import styled from "styled-components";
-import { reviewApiProps } from "../../types/home";
-import CustomProfile from "./CustomProfile";
-import StarIcon from "../../assets/icons/StarIcon";
-import LikeIcon from "../../assets/icons/LikeIcon";
-import CommentIcon from "../../assets/icons/CommentIcon";
-import { useNavigate } from "react-router-dom";
-import ImageView from "./ImageView";
-import * as R from "../../assets/styles/travelReview.style";
-import { testImageList } from "../../utils/staticDatas";
-import MarkIcon from "../../assets/icons/MarkIcon";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import MarkIcon from "../../assets/icons/MarkIcon";
+import StarIcon from "../../assets/icons/StarIcon";
+import * as R from "../../assets/styles/travelReview.style";
+import { reviewApiProps } from "../../types/home";
+import { testImageList } from "../../utils/staticDatas";
+import IconBox from "../IconBox";
+import LikeCommentBox from "../LikeCommentBox";
+import CustomProfile from "./CustomProfile";
+import ImageView from "./ImageView";
 
 interface Props {
   item: reviewApiProps;
@@ -60,10 +60,10 @@ export default function ReviewCard({ item, ref }: Props) {
           nickname={item.userCompactResDto.nickname}
           content="24.2.3"
         />
-        <R.IconBox>
+        <IconBox>
           <StarIcon />
           <span>{item.star}</span>
-        </R.IconBox>
+        </IconBox>
       </R.ProfileHeader>
       <ReviewContentBox>
         <p>{item.content}</p>
@@ -76,16 +76,7 @@ export default function ReviewCard({ item, ref }: Props) {
         height="191px"
         bottomText={`+${testImageList.length - 1}`}
       ></ImageView>
-      <R.LikeCommentBox>
-        <R.IconBox>
-          <LikeIcon />
-          <span>8</span>
-        </R.IconBox>
-        <R.IconBox>
-          <CommentIcon stroke="#808080" />
-          <span>2</span>
-        </R.IconBox>
-      </R.LikeCommentBox>
+      <LikeCommentBox likeCnt={8} commentCnt={2}/>
     </ReviewCardContainer>
   );
 }
