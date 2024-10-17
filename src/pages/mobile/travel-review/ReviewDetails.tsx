@@ -14,6 +14,7 @@ import CommentCard from "../../../components/mobile/CommentCard";
 import { commentResDto } from "../../../types/res.dto";
 import { testImageList } from "../../../utils/staticDatas";
 import ImageSlider from "../../../components/mobile/ImageSlider";
+import testImg from "../../../assets/images/testImg2.png";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -65,7 +66,7 @@ export default function ReviewDetails() {
         <ReviewDetailsBody>
           <R.ProfileHeader>
             <CustomProfile
-              src="/public/testImg.png"
+              src={testImg}
               nickname={review?.userCompactResDto.nickname}
               content="24.2.3"
             />
@@ -80,7 +81,7 @@ export default function ReviewDetails() {
             {testImageList.slice(0, 4).map((url, i) => (
               <ImageWrapper key={i}>
                 <ImageView
-                  src={url}
+                  src={testImg}
                   alt="review img"
                   width="100%"
                   height="129px"

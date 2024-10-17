@@ -19,6 +19,7 @@ import {
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
 import ImageSlider from "../../../components/mobile/ImageSlider";
+import testImg from "../../../assets/images/testImg1.png";
 
 export default function TravelogueDetails() {
   const [fillHeart, setFillHeart] = useState(false);
@@ -49,7 +50,7 @@ export default function TravelogueDetails() {
       </CustomHeader>
       <TravelogueDetailsBody>
         <ImageView
-          src="/public/testImg.png"
+          src={testImg}
           alt="Travelogue"
           width="100%"
           height="191px"
@@ -58,11 +59,7 @@ export default function TravelogueDetails() {
           handleClick={() => setIsModalOpen(true)}
         />
         <R.ProfileHeader>
-          <CustomProfile
-            src="/public/testImg.png"
-            nickname="coco1202"
-            content="24.2.3"
-          />
+          <CustomProfile src={testImg} nickname="coco1202" content="24.2.3" />
           <R.LikeCommentBox>
             <R.IconBox>
               <LikeIcon

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import PencilIcon from "../../assets/icons/PencilIcon";
 import TrashIcon from "../../assets/icons/TrashIcon";
 import TwoButtonsModal from "./TwoButtonsModal";
+import testImg from "../../assets/images/testImg.png";
 
 interface Props {
   isReply?: boolean;
@@ -74,7 +75,7 @@ export default function CommentCard({
       )}
       <CommentCardContainer $reply={isReply} $edit={edit} $web={web}>
         <CustomProfile
-          src="/src/assets/images/testImg.png"
+          src={testImg}
           nickname={user.nickname}
           content={createdAt}
         />
