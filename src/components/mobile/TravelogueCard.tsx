@@ -23,7 +23,7 @@ export default function TravelogueCard() {
       <HashtagsBox hashTags={testLogTags} />
       <TravelogueTitleBox>
         <p>안동 혼자 뚜벅이 여행 떠나기</p>
-        <span onClick={() => navigate(`/home/travel-log/123`)}>자세히보기</span>
+        <span onClick={() => navigate(`/home/travelogue/123`)}>자세히보기</span>
       </TravelogueTitleBox>
       <ImageView
         src={testImageList[0]}

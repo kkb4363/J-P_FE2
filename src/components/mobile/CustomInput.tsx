@@ -36,16 +36,18 @@ export default function CustomInput({
       <form onSubmit={onSubmit}>
         <input
           placeholder={text}
-          defaultValue={value}
+          value={value}
           onChange={onChange}
           onClick={onClick}
           onKeyDown={onkeydown}
         />
       </form>
-      {del && (
+      {del ? (
         <TextDeleteButton onClick={onDelete}>
           <CancelIcon stroke="#FFFFFF" />
         </TextDeleteButton>
+      ) : (
+        <EmptyBox />
       )}
     </CustomInputContainer>
   );
@@ -89,5 +91,10 @@ const TextDeleteButton = styled.button`
   width: 22px;
   height: 22px;
   border-radius: 99px;
-  background-color: ${(props) => props.theme.color.gray300};
+  background-color: ${(props) => props.theme.color.gray200};
+`;
+
+const EmptyBox = styled.div`
+  width: 22px;
+  height: 22px;
 `;
