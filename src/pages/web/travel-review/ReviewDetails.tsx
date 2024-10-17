@@ -105,8 +105,8 @@ export default function ReviewDetails() {
               ))}
             </ReviewDetailsImageBox>
             <LikeCommentBox
-              likeCnt={review!.likeCnt}
-              commentCnt={review!.commentResDtoList.length}
+              likeCnt={5}
+              commentCnt={2}
               fillLike={fillLike}
               likeClick={() => setFillLike((prev) => !prev)}
             />
