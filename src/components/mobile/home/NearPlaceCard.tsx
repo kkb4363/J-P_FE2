@@ -5,6 +5,7 @@ import ActionButton from "../ActionButton";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import { useState } from "react";
 import CustomSkeleton from "../CustomSkeleton";
+import useImgLoading from "../../../hooks/useImgLoading";
 
 interface Props {
   photoUrl: string;
@@ -21,7 +22,7 @@ export default function NearPlaceCard({
   height = "83px",
   handleDetails,
 }: Props) {
-  const [imgLoading, setImgLoading] = useState(true);
+  const { loading } = useImgLoading({ imgSrc: photoUrl });
 
   return (
     <NearPlaceBox $height={height}>
@@ -30,12 +31,11 @@ export default function NearPlaceCard({
         height="60px"
         src={photoUrl}
         alt={name}
-        onLoad={() => setImgLoading(false)}
         minWidth="60px"
         minHeight="60px"
       />
 
-      {imgLoading && (
+      {loading && (
         <SkeletonBox>
           <CustomSkeleton width="62px" height="62px" borderRadius="8px" />
         </SkeletonBox>

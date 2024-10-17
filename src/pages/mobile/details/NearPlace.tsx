@@ -22,6 +22,8 @@ import BottomSheet from "../../../components/mobile/BottomSheet";
 import NearPlaceCard from "../../../components/mobile/detail/NearPlaceCard";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import PlusIcon from "../../../assets/icons/PlusIcon";
+import useImgLoading from "../../../hooks/useImgLoading";
+import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
 
 export default function NearPlace() {
   const param = useParams();
@@ -36,6 +38,9 @@ export default function NearPlace() {
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
   );
+  const { loading: imgLoading, setLoading: setImgLoading } = useImgLoading({
+    imgSrc: selectPlace?.photoUrls?.[0],
+  });
 
   const handlePrev = () => {
     if (selectPlaceId && details.id) {
@@ -101,6 +106,10 @@ export default function NearPlace() {
     }
   }, [location?.state]);
 
+  useEffect(() => {
+    setImgLoading(true);
+  }, [selectPlace?.photoUrls?.[0]]);
+
   return (
     <S.NearPlaceContainer>
       <CustomHeader title="주변 여행지" handleClick={handlePrev} />
@@ -126,12 +135,21 @@ export default function NearPlace() {
         >
           <S.SelectPlaceCol>
             <S.SelectPlaceCard>
-              <ImageView
-                width="80px"
-                height="80px"
-                src={selectPlace?.photoUrls?.[0]}
-                alt={selectPlace?.name}
-              />
+              {imgLoading ? (
+                <CustomSkeleton
+                  width="80px"
+                  height="80px"
+                  borderRadius="16px"
+                />
+              ) : (
+                <ImageView
+                  width="80px"
+                  height="80px"
+                  src={selectPlace?.photoUrls?.[0]}
+                  alt={selectPlace?.name}
+                />
+              )}
+
               <S.CardCol>
                 <p>{selectPlace?.name}</p>
                 <span>{selectPlace?.shortAddress}</span>

@@ -28,6 +28,7 @@ import Slider from "react-slick";
 import NearPlaceCard from "../../../components/mobile/home/NearPlaceCard";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import useImgLoading from "../../../hooks/useImgLoading";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
@@ -51,8 +52,10 @@ export default function HomeDetails() {
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [addScheduleState, setAddScheduleState] = useState(false);
+  const { loading: imgLoading } = useImgLoading({
+    imgSrc: details?.photoUrls?.[0],
+  });
 
   const getDetail = async () => {
     getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
@@ -92,7 +95,7 @@ export default function HomeDetails() {
   return (
     <>
       <S.HomeDetailsContainer>
-        {loading ? (
+        {imgLoading ? (
           <CustomSkeleton height="250px" />
         ) : (
           <S.DetailsImageBox>

@@ -13,5 +13,5 @@ export default function useImgLoading({ imgSrc }: Props) {
     img.onload = () => setLoading(false);
   }, [imgSrc]);
 
-  return { loading };
+  return { loading, setLoading };
 }
