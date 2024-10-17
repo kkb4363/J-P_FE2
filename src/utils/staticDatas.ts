@@ -98,11 +98,11 @@ export const testImg1 = "/src/assets/images/testImg.png";
 export const testImg2 = "/src/assets/images/testImg1.png";
 
 export const testImageList: string[] = [
-  "/src/assets/images/testImg.png",
-  "/src/assets/images/testImg1.png",
-  "/src/assets/images/testImg2.png",
-  "/src/assets/images/testImg3.png",
-  "/src/assets/images/testImg.png",
+  "/public/testImg.png",
+  "/public/testImg1.png",
+  "/public/testImg2.png",
+  "/public/testImg3.png",
+  "/public/testImg.png",
 ];
 
 export const testLogContents1 =

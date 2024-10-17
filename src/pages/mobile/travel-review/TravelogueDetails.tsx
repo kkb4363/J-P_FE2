@@ -49,7 +49,7 @@ export default function TravelogueDetails() {
       </CustomHeader>
       <TravelogueDetailsBody>
         <ImageView
-          src="/src/assets/images/testImg.png"
+          src="/public/testImg.png"
           alt="Travelogue"
           width="100%"
           height="191px"
@@ -59,7 +59,7 @@ export default function TravelogueDetails() {
         />
         <R.ProfileHeader>
           <CustomProfile
-            src="/src/assets/images/testImg.png"
+            src="/public/testImg.png"
             nickname="coco1202"
             content="24.2.3"
           />

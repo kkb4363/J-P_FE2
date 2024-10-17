@@ -65,7 +65,7 @@ export default function ReviewDetails() {
         <ReviewDetailsBody>
           <R.ProfileHeader>
             <CustomProfile
-              src="/src/assets/images/testImg.png"
+              src="/public/testImg.png"
               nickname={review?.userCompactResDto.nickname}
               content="24.2.3"
             />

@@ -7,6 +7,7 @@ import ImageView from "./ImageView";
 import CommentIcon from "../../assets/icons/CommentIcon";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import { useNavigate } from "react-router-dom";
+import testImg from "../../assets/images/testImg.png";
 
 export default function TravelogueCard() {
   const navigate = useNavigate();
@@ -14,11 +15,7 @@ export default function TravelogueCard() {
   return (
     <TravelogueCardContainer>
       <R.ProfileHeader>
-        <CustomProfile
-          src="/src/assets/images/testImg.png"
-          nickname="coco1202"
-          content="24.2.3"
-        />
+        <CustomProfile src={testImg} nickname="coco1202" content="24.2.3" />
       </R.ProfileHeader>
       <HashtagsBox hashTags={testLogTags} />
       <TravelogueTitleBox>
@@ -26,7 +23,7 @@ export default function TravelogueCard() {
         <span onClick={() => navigate(`/home/travelogue/123`)}>자세히보기</span>
       </TravelogueTitleBox>
       <ImageView
-        src={testImageList[0]}
+        src={testImg}
         alt="Travelogue"
         width="100%"
         height="191px"
