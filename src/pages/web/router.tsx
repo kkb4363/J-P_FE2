@@ -14,6 +14,7 @@ import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import Search from "./search/Search";
 import ImageViewer from "./travel-review/ImageViewer";
+import TravelogueDetails from "./travel-review/TravelogueDetails";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,14 @@ export const router = createBrowserRouter([
       },
       {
         path: "review/:reviewId/photo",
+        element: <ImageViewer />,
+      },
+      {
+        path: "travelogue/:travelogueId",
+        element: <TravelogueDetails />,
+      },
+      {
+        path: "travelogue/:travelogueId/photo",
         element: <ImageViewer />,
       },
       {

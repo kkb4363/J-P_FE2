@@ -20,13 +20,12 @@ import testImg from "../../../assets/images/testImg3.png";
 import ImageView from "../../../components/web/ImageView";
 import {
   ReviewInfo,
-  ReviewMessageRow,
   ReviewTitle,
 } from "../../../assets/styles/homeDetail.style";
-import CommentIcon from "../../../assets/icons/CommentIcon";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
+import LikeCommentBox from "../../../components/LikeCommentBox";
 
 export default function Detail() {
   const param = useParams();
@@ -225,12 +224,7 @@ export default function Detail() {
             <ReviewInfo>
               <span>드라이브, 산책 코스로 딱좋았던</span>
             </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>10</span>
-              <CommentIcon />
-              <span>1</span>
-            </ReviewMessageRow>
+            <LikeCommentBox likeCnt={10} commentCnt={1} />
           </ReviewInfoCol>
         </ReviewCard>
         <ReviewCard>
@@ -256,12 +250,7 @@ export default function Detail() {
             <ReviewInfo>
               <span>드라이브, 산책 코스로 딱좋았던</span>
             </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>10</span>
-              <CommentIcon />
-              <span>1</span>
-            </ReviewMessageRow>
+            <LikeCommentBox likeCnt={10} commentCnt={1} />
           </ReviewInfoCol>
         </ReviewCard>
         <ReviewCard>
@@ -287,12 +276,7 @@ export default function Detail() {
             <ReviewInfo>
               <span>드라이브, 산책 코스로 딱좋았던</span>
             </ReviewInfo>
-            <ReviewMessageRow>
-              <HeartIcon />
-              <span>10</span>
-              <CommentIcon />
-              <span>1</span>
-            </ReviewMessageRow>
+            <LikeCommentBox likeCnt={10} commentCnt={1} />
           </ReviewInfoCol>
         </ReviewCard>
       </ReviewCardRow>

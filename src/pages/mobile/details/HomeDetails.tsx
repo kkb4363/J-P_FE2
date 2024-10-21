@@ -5,7 +5,6 @@ import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
 import { useEffect, useState } from "react";
 import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
-import CommentIcon from "../../../assets/icons/CommentIcon";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getPlaceDetail,
@@ -29,6 +28,7 @@ import SurroundingPlaceCard from "../../../components/mobile/home/SurroundingPla
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import useImgLoading from "../../../hooks/useImgLoading";
+import LikeCommentBox from "../../../components/LikeCommentBox";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
@@ -231,12 +231,10 @@ export default function HomeDetails() {
                   <S.ReviewInfo>
                     <span>{review.content}</span>
                   </S.ReviewInfo>
-                  <S.ReviewMessageRow>
-                    <HeartIcon />
-                    <span>{review.likeCnt}</span>
-                    <CommentIcon />
-                    <span>{review.commentCnt}</span>
-                  </S.ReviewMessageRow>
+                  <LikeCommentBox
+                    likeCnt={review.likeCnt}
+                    commentCnt={review.commentCnt}
+                  />
                 </S.DetailsReviewBox>
               ))}
             </S.DetailsReviewRow>
