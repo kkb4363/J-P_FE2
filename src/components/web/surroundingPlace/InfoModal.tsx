@@ -4,7 +4,7 @@ import StarIcon from "../../../assets/icons/StarIcon";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
-import CustomSkeleton from "../../mobile/CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 import useImgLoading from "../../../hooks/useImgLoading";
 
 interface Props {

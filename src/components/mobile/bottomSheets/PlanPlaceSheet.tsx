@@ -2,7 +2,7 @@ import * as D from "../../../assets/styles/scheduleDetail.style";
 import * as S from "../../../assets/styles/nearplace.style";
 import BottomSheet from "../BottomSheet";
 import { testImg1 } from "../../../utils/staticDatas";
-import ImageView from "../ImageView";
+import ImageView from "../../ImageView";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import CancelIcon from "../../../assets/icons/CancelIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";

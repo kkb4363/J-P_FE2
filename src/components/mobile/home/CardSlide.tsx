@@ -3,11 +3,11 @@ import { scrollHidden } from "../../../assets/styles/home.style";
 import { useEffect, useState } from "react";
 import { getPlaceList } from "../../../utils/axios";
 import { placeApiProps } from "../../../types/home";
-import ImageView from "../ImageView";
+import ImageView from "../../ImageView";
 import testImg from "../../../assets/images/testImg.png";
 import { useNavigate } from "react-router-dom";
 import CarouselTitleBox from "../CarouselTitleBox";
-import CustomSkeleton from "../CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
   placeType: string;

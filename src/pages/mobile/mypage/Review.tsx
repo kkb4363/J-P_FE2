@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import testImg from "../../../assets/images/testImg3.png";
-import LikeCommentBox from "../../../components/LikeCommentBox";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import { getMyReviews } from "../../../utils/axios";
 import { TravelHeader } from "./Travel";
+import CustomProfile from "../../../components/CustomProfile";
+import testImg from "../../../assets/images/testImg3.png";
+import { useEffect, useState } from "react";
+import LikeCommentBox from "../../../components/LikeCommentBox";
+import { getMyReviews } from "../../../utils/axios";
 
 export default function Review() {
   const [reviews, setReviews] = useState([]);

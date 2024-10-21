@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useLocation, useNavigate } from "react-router-dom";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import { NextButtonBox } from "./ScheduleLayout";
 
 export default function SelectCity() {

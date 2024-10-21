@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import * as R from "../../assets/styles/travelReview.style";
-import CustomProfile from "./CustomProfile";
+import CustomProfile from "../CustomProfile";
 import { commentResDto, userCompactResDto } from "../../types/res.dto";
 import ReplyIcon from "../../assets/icons/ReplyIcon";
 import { useEffect, useRef, useState } from "react";
 import PencilIcon from "../../assets/icons/PencilIcon";
 import TrashIcon from "../../assets/icons/TrashIcon";
-import TwoButtonsModal from "./TwoButtonsModal";
 import IconBox from "../IconBox";
+import TwoButtonsModal from "../TwoButtonsModal";
+import testImg from "../../assets/images/testImg.png";
 
 interface Props {
   isReply?: boolean;
@@ -75,7 +76,7 @@ export default function CommentCard({
       )}
       <CommentCardContainer $reply={isReply} $edit={edit} $web={web}>
         <CustomProfile
-          src="/src/assets/images/testImg.png"
+          src={testImg}
           nickname={user.nickname}
           content={createdAt}
         />

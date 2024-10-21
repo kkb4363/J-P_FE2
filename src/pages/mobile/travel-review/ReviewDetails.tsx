@@ -5,15 +5,16 @@ import StarIcon from "../../../assets/icons/StarIcon";
 import * as R from "../../../assets/styles/travelReview.style";
 import IconBox from "../../../components/IconBox";
 import LikeCommentBox from "../../../components/LikeCommentBox";
-import CommentCard from "../../../components/mobile/CommentCard";
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import ImageSlider from "../../../components/mobile/ImageSlider";
-import ImageView from "../../../components/mobile/ImageView";
-import { ReviewDetailApiProps } from "../../../types/home.details";
+import CustomProfile from "../../../components/CustomProfile";
+import ImageView from "../../../components/ImageView";
+import CommentCard from "../../../components/mobile/CommentCard";
 import { commentResDto } from "../../../types/res.dto";
-import { axiosInstance } from "../../../utils/axios";
 import { testImageList } from "../../../utils/staticDatas";
+import ImageSlider from "../../../components/mobile/ImageSlider";
+import testImg from "../../../assets/images/testImg2.png";
+import { axiosInstance } from "../../../utils/axios";
+import { ReviewDetailApiProps } from "../../../types/home.details";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -65,7 +66,7 @@ export default function ReviewDetails() {
         <ReviewDetailsBody>
           <R.ProfileHeader>
             <CustomProfile
-              src="/src/assets/images/testImg.png"
+              src={testImg}
               nickname={review?.userCompactResDto.nickname}
               content="24.2.3"
             />
@@ -80,7 +81,7 @@ export default function ReviewDetails() {
             {testImageList.slice(0, 4).map((url, i) => (
               <ImageWrapper key={i}>
                 <ImageView
-                  src={url}
+                  src={testImg}
                   alt="review img"
                   width="100%"
                   height="129px"

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import SearchIcon from "../../assets/icons/SearchIcon";
+import SearchIcon from "../assets/icons/SearchIcon";
 import React from "react";
-import CancelIcon from "../../assets/icons/CancelIcon";
+import CancelIcon from "../assets/icons/CancelIcon";
 
 interface Props {
   height?: string;

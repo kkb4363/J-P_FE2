@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import * as R from "../../assets/styles/travelReview.style";
-import CustomProfile from "./CustomProfile";
-import HashtagsBox from "./HashtagsBox";
-import { testImageList, testLogTags } from "../../utils/staticDatas";
-import ImageView from "./ImageView";
+import * as R from "../../../assets/styles/travelReview.style";
+import CustomProfile from "../../CustomProfile";
+import HashtagsBox from "../../HashtagsBox";
+import { testImageList, testLogTags } from "../../../utils/staticDatas";
+import ImageView from "../../ImageView";
+import LikeIcon from "../../../assets/icons/LikeIcon";
 import { useNavigate } from "react-router-dom";
-import LikeCommentBox from "../LikeCommentBox";
+import testImg from "../../../assets/images/testImg2.png";
+import LikeCommentBox from "../../LikeCommentBox";
 
 export default function TravelogueCard() {
   const navigate = useNavigate();
@@ -13,11 +15,7 @@ export default function TravelogueCard() {
   return (
     <TravelogueCardContainer>
       <R.ProfileHeader>
-        <CustomProfile
-          src="/src/assets/images/testImg.png"
-          nickname="coco1202"
-          content="24.2.3"
-        />
+        <CustomProfile src={testImg} nickname="coco1202" content="24.2.3" />
       </R.ProfileHeader>
       <HashtagsBox hashTags={testLogTags} />
       <TravelogueTitleBox>
@@ -25,7 +23,7 @@ export default function TravelogueCard() {
         <span onClick={() => navigate(`/home/travelogue/123`)}>자세히보기</span>
       </TravelogueTitleBox>
       <ImageView
-        src={testImageList[0]}
+        src={testImg}
         alt="Travelogue"
         width="100%"
         height="191px"

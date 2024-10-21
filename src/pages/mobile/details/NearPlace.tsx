@@ -2,7 +2,6 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
-  axiosInstance,
   getGooglePlaceDetail,
   getPlaceDetail,
   getSurroundingPlace,
@@ -12,16 +11,18 @@ import {
   SelectPlaceProps,
 } from "../../../types/home.details";
 import { useMapStore } from "../../../store/map.store";
-import ImageView from "../../../components/mobile/ImageView";
+import ImageView from "../../../components/ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import * as S from "../../../assets/styles/nearplace.style";
 import BottomSheet from "../../../components/mobile/BottomSheet";
-import NearPlaceCard from "../../../components/mobile/detail/NearPlaceCard";
+import SurroundingPlaceCard from "../../../components/mobile/detail/SurroundingPlaceCard";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import PlusIcon from "../../../assets/icons/PlusIcon";
+import useImgLoading from "../../../hooks/useImgLoading";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function NearPlace() {
   const param = useParams();
@@ -36,6 +37,9 @@ export default function NearPlace() {
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
   );
+  const { loading: imgLoading, setLoading: setImgLoading } = useImgLoading({
+    imgSrc: selectPlace?.photoUrls?.[0],
+  });
 
   const handlePrev = () => {
     if (selectPlaceId && details.id) {
@@ -101,13 +105,17 @@ export default function NearPlace() {
     }
   }, [location?.state]);
 
+  useEffect(() => {
+    setImgLoading(true);
+  }, [selectPlace?.photoUrls?.[0]]);
+
   return (
     <S.NearPlaceContainer>
       <CustomHeader title="주변 여행지" handleClick={handlePrev} />
       {!selectPlaceId ? (
         <BottomSheet maxH={0.9} minH={7} key={"surroundingPlace-bottom-sheet"}>
           {mapStore.getNearPlace().map((place) => (
-            <NearPlaceCard
+            <SurroundingPlaceCard
               height="100px"
               key={place.placeId}
               photoUrl={place.photoUrls[0]}
@@ -126,12 +134,21 @@ export default function NearPlace() {
         >
           <S.SelectPlaceCol>
             <S.SelectPlaceCard>
-              <ImageView
-                width="80px"
-                height="80px"
-                src={selectPlace?.photoUrls?.[0]}
-                alt={selectPlace?.name}
-              />
+              {imgLoading ? (
+                <CustomSkeleton
+                  width="80px"
+                  height="80px"
+                  borderRadius="16px"
+                />
+              ) : (
+                <ImageView
+                  width="80px"
+                  height="80px"
+                  src={selectPlace?.photoUrls?.[0]}
+                  alt={selectPlace?.name}
+                />
+              )}
+
               <S.CardCol>
                 <p>{selectPlace?.name}</p>
                 <span>{selectPlace?.shortAddress}</span>

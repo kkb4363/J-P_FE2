@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { reviewApiProps } from "../../../types/home";
 import { testImageList } from "../../../utils/staticDatas";
-import CustomProfile from "../../mobile/CustomProfile";
+import CustomProfile from "../../CustomProfile";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { useNavigate } from "react-router-dom";

@@ -3,11 +3,9 @@ import { useState } from "react";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import * as R from "../../../assets/styles/travelReview.style";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import ImageView from "../../../components/mobile/ImageView";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import CommentIcon from "../../../assets/icons/CommentIcon";
-import LikeIcon from "../../../assets/icons/LikeIcon";
-import HashtagsBox from "../../../components/mobile/HashtagsBox";
+import ImageView from "../../../components/ImageView";
+import CustomProfile from "../../../components/CustomProfile";
+import HashtagsBox from "../../../components/HashtagsBox";
 import {
   testImageList,
   testLogContents1,
@@ -20,6 +18,7 @@ import MarkIcon from "../../../assets/icons/MarkIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
 import ImageSlider from "../../../components/mobile/ImageSlider";
 import LikeCommentBox from "../../../components/LikeCommentBox";
+import testImg from "../../../assets/images/testImg1.png";
 
 export default function TravelogueDetails() {
   const [fillHeart, setFillHeart] = useState(false);
@@ -50,7 +49,7 @@ export default function TravelogueDetails() {
       </CustomHeader>
       <TravelogueDetailsBody>
         <ImageView
-          src="/src/assets/images/testImg.png"
+          src={testImg}
           alt="Travelogue"
           width="100%"
           height="191px"

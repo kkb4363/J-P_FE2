@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
-import ImageView from "../ImageView";
+import ImageView from "../../ImageView";
 import { useState } from "react";
-import CustomSkeleton from "../CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
   photoUrl: string;
@@ -13,7 +13,7 @@ interface Props {
   height?: string;
 }
 
-export default function NearPlaceCard({
+export default function SurroundingPlaceCard({
   photoUrl,
   name,
   rating,

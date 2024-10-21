@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import CancelIcon from "../../assets/icons/CancelIcon";
 import Slider from "react-slick";
+import testImg from "../../assets/images/testImg2.png";
 
 interface Props {
   imageList: string[];
@@ -9,7 +10,11 @@ interface Props {
   focusIndex?: number;
 }
 
-export default function ImageSlider({ imageList, onClose, focusIndex = 0 }: Props) {
+export default function ImageSlider({
+  imageList,
+  onClose,
+  focusIndex = 0,
+}: Props) {
   const [currentIndex, setCurrentIndex] = useState<number>(focusIndex);
   const settings = {
     arrows: false,
@@ -33,7 +38,7 @@ export default function ImageSlider({ imageList, onClose, focusIndex = 0 }: Prop
       <ImageSliderBody>
         <StyledSlider {...settings}>
           {imageList.map((url, i) => (
-            <img key={i} src={url} alt={`slide-${i}`} width="100%" />
+            <img key={i} src={testImg} alt={`slide-${i}`} width="100%" />
           ))}
         </StyledSlider>
       </ImageSliderBody>

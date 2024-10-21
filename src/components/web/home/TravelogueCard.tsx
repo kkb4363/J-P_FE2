@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import ImageView from "../../mobile/ImageView";
-import HashtagsBox from "../../mobile/HashtagsBox";
-import CustomProfile from "../../mobile/CustomProfile";
+import ImageView from "../../ImageView";
+import HashtagsBox from "../../HashtagsBox";
+import CustomProfile from "../../CustomProfile";
 import testImg from "../../../assets/images/testImg.png";
 import LikeIcon from "../../../assets/icons/LikeIcon";
 

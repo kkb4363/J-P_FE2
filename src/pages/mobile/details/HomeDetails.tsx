@@ -21,13 +21,14 @@ import { useMapStore } from "../../../store/map.store";
 import * as S from "../../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../../utils/staticDatas";
 import EditIcon from "../../../assets/icons/EditIcon";
-import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 import styled from "styled-components";
 import Slider from "react-slick";
-import NearPlaceCard from "../../../components/mobile/home/NearPlaceCard";
+import SurroundingPlaceCard from "../../../components/mobile/home/SurroundingPlaceCard";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import useImgLoading from "../../../hooks/useImgLoading";
 
 export default function HomeDetails() {
   const navigate = useNavigate();
@@ -51,8 +52,10 @@ export default function HomeDetails() {
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [addScheduleState, setAddScheduleState] = useState(false);
+  const { loading: imgLoading } = useImgLoading({
+    imgSrc: details?.photoUrls?.[0],
+  });
 
   const getDetail = async () => {
     getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
@@ -92,7 +95,7 @@ export default function HomeDetails() {
   return (
     <>
       <S.HomeDetailsContainer>
-        {loading ? (
+        {imgLoading ? (
           <CustomSkeleton height="250px" />
         ) : (
           <S.DetailsImageBox>
@@ -173,7 +176,7 @@ export default function HomeDetails() {
                   />
                 ))
               : nearbyPlaces?.slice(0, 3).map((place) => (
-                  <NearPlaceCard
+                  <SurroundingPlaceCard
                     handleDetails={() =>
                       navigate(`/nearby/${place.placeId}`, {
                         state: {

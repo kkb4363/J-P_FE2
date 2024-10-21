@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
+import { ReviewDetailApiProps } from "../../../types/home.details";
+import { testImageList, testReviewItem } from "../../../utils/staticDatas";
+import ImageView from "../../../components/ImageView";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
 import * as R from "../../../assets/styles/travelReview.style";
 import IconBox from "../../../components/IconBox";
-import LikeCommentBox from "../../../components/LikeCommentBox";
 import CommentCard from "../../../components/mobile/CommentCard";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import ImageView from "../../../components/mobile/ImageView";
-import { ReviewDetailApiProps } from "../../../types/home.details";
+import CustomProfile from "../../../components/CustomProfile";
 import { axiosInstance } from "../../../utils/axios";
-import { testImageList, testReviewItem } from "../../../utils/staticDatas";
+import LikeCommentBox from "../../../components/LikeCommentBox";
+import styled from "styled-components";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -43,7 +43,6 @@ export default function ReviewDetails() {
     e.preventDefault();
     console.log(`${comment} submit`);
   };
-
 
   const handleImageClick = (index: number) => {
     navigate(`/review/${params.reviewId}/photo`, {

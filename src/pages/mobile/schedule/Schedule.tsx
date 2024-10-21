@@ -9,11 +9,11 @@ import {
   ReviewCol as SuggestionCol,
 } from "../../../assets/styles/home.style";
 import testImg from "../../../assets/images/testImg.png";
-import ImageView from "../../../components/mobile/ImageView";
+import ImageView from "../../../components/ImageView";
 import BellIcon from "../../../assets/icons/BellIcon";
 import CheckIcon from "../../../assets/icons/CheckIcon";
 import { useNavigate } from "react-router-dom";
-import CustomProfile from "../../../components/mobile/CustomProfile";
+import CustomProfile from "../../../components/CustomProfile";
 
 export default function Schedule() {
   const navigate = useNavigate();

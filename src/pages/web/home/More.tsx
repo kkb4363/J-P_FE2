@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getPlaceList } from "../../../utils/axios";
 import { placeApiProps } from "../../../types/home";
 import PlaceCard from "../../../components/web/home/PlaceCard";
-import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function More() {
   const navigate = useNavigate();
