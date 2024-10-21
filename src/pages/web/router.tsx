@@ -62,6 +62,10 @@ export const router = createBrowserRouter([
         element: <TravelogueDetails />,
       },
       {
+        path: "travelogue/:travelogueId/photo",
+        element: <ImageViewer />,
+      },
+      {
         path: "mypage",
         element: <MypageLayout />,
         children: [
