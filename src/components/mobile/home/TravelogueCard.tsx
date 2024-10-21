@@ -3,8 +3,7 @@ import ImageView from "../../ImageView";
 import testImg from "../../../assets/images/testImg2.png";
 import HashtagsBox from "../../HashtagsBox";
 import CustomProfile from "../../CustomProfile";
-import HeartIcon from "../../../assets/icons/HeartIcon";
-import CommentIcon from "../../../assets/icons/CommentIcon";
+import LikeCommentBox from "./../../LikeCommentBox";
 
 export default function TravelogueCard() {
   return (
@@ -24,15 +23,7 @@ export default function TravelogueCard() {
           <CustomProfile src={testImg} nickname="coco1202" fontSize="12px" />
 
           <ReviewLikeCommentRow>
-            <LikeCommentBox>
-              <HeartIcon />
-              <span>26</span>
-            </LikeCommentBox>
-
-            <LikeCommentBox>
-              <CommentIcon />
-              <span>16</span>
-            </LikeCommentBox>
+            <LikeCommentBox isReview={false} likeCnt={26} commentCnt={16} />
           </ReviewLikeCommentRow>
         </ReviewProfileRow>
       </ReviewTextCol>
@@ -75,16 +66,4 @@ const ReviewProfileRow = styled.div`
 const ReviewLikeCommentRow = styled.div`
   display: flex;
   gap: 8px;
-`;
-
-const LikeCommentBox = styled.div`
-  gap: 3px;
-  display: flex;
-
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 140%;
-  }
 `;
