@@ -19,7 +19,6 @@ import {
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
 import ImageSlider from "../../../components/mobile/ImageSlider";
-import LikeCommentBox from "../../../components/LikeCommentBox";
 
 export default function TravelogueDetails() {
   const [fillHeart, setFillHeart] = useState(false);
@@ -64,12 +63,19 @@ export default function TravelogueDetails() {
             nickname="coco1202"
             content="24.2.3"
           />
-          <LikeCommentBox
-            likeCnt={12}
-            commentCnt={8}
-            fillLike={fillLike}
-            likeClick={() => setFillLike((prev) => !prev)}
-          />
+          <R.LikeCommentBox>
+            <R.IconBox>
+              <LikeIcon
+                fill={fillLike ? "#FFC814" : "none"}
+                onClick={() => setFillLike((prev) => !prev)}
+              />
+              <span>12</span>
+            </R.IconBox>
+            <R.IconBox>
+              <CommentIcon stroke="#808080" />
+              <span>4</span>
+            </R.IconBox>
+          </R.LikeCommentBox>
         </R.ProfileHeader>
         <HashtagsBox hashTags={testLogTags} />
         <p dangerouslySetInnerHTML={{ __html: testLogContents1 }} />

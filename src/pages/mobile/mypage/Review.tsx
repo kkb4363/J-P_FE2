@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import testImg from "../../../assets/images/testImg3.png";
-import LikeCommentBox from "../../../components/LikeCommentBox";
-import CustomProfile from "../../../components/mobile/CustomProfile";
-import { getMyReviews } from "../../../utils/axios";
 import { TravelHeader } from "./Travel";
+import CustomProfile from "../../../components/mobile/CustomProfile";
+import testImg from "../../../assets/images/testImg3.png";
+import {
+  IconBox,
+  LikeCommentBox,
+} from "../../../assets/styles/travelReview.style";
+import LikeIcon from "../../../assets/icons/LikeIcon";
+import CommentIcon from "../../../assets/icons/CommentIcon";
+import { useEffect, useState } from "react";
+import { getMyReviews } from "../../../utils/axios";
 
 export default function Review() {
   const [reviews, setReviews] = useState([]);
@@ -39,7 +44,16 @@ export default function Review() {
             곳이에요
           </TextBox>
 
-          <LikeCommentBox likeCnt={6} commentCnt={2} />
+          <LikeCommentBox>
+            <IconBox>
+              <LikeIcon />
+              <span>6</span>
+            </IconBox>
+            <IconBox>
+              <CommentIcon />
+              <span>2</span>
+            </IconBox>
+          </LikeCommentBox>
         </ReviewCard>
         <ReviewCard>
           <ProfileBox>
@@ -58,7 +72,16 @@ export default function Review() {
             곳이에요
           </TextBox>
 
-          <LikeCommentBox likeCnt={6} commentCnt={2} />
+          <LikeCommentBox>
+            <IconBox>
+              <LikeIcon />
+              <span>6</span>
+            </IconBox>
+            <IconBox>
+              <CommentIcon />
+              <span>2</span>
+            </IconBox>
+          </LikeCommentBox>
         </ReviewCard>
       </ReviewCardCol>
     </>
