@@ -3,7 +3,7 @@ interface Props {
   stroke?: string;
 }
 
-const CommentIcon = ({ fill = "none", stroke = "#B8B8B8" }: Props) => {
+const CommentIcon = ({ fill = "none", stroke = "#808080" }: Props) => {
   return (
     <svg
       width="16"

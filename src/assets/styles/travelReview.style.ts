@@ -8,23 +8,6 @@ export const ProfileHeader = styled.div`
   padding: 0 1px;
 `;
 
-export const IconBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  & > span {
-    font-size: 12px;
-    color: ${(props) => props.theme.color.gray500};
-    line-height: normal;
-  }
-`;
-
-export const LikeCommentBox = styled.div`
-  display: flex;
-  gap: 6px;
-`;
-
 export const CommentsBox = styled.div`
   display: flex;
   flex-direction: column;
