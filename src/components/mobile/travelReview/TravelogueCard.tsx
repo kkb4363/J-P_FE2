@@ -4,7 +4,6 @@ import CustomProfile from "../../CustomProfile";
 import HashtagsBox from "../../HashtagsBox";
 import { testImageList, testLogTags } from "../../../utils/staticDatas";
 import ImageView from "../../ImageView";
-import LikeIcon from "../../../assets/icons/LikeIcon";
 import { useNavigate } from "react-router-dom";
 import testImg from "../../../assets/images/testImg2.png";
 import LikeCommentBox from "../../LikeCommentBox";

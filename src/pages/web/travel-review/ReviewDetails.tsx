@@ -12,6 +12,7 @@ import CustomProfile from "../../../components/CustomProfile";
 import { axiosInstance } from "../../../utils/axios";
 import LikeCommentBox from "../../../components/LikeCommentBox";
 import styled from "styled-components";
+import LoadingText from "../../../components/LoadingText";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -56,7 +57,7 @@ export default function ReviewDetails() {
   }, [params.reviewId]);
   return (
     <div>
-      {isLoading && <R.LoadingText>로딩중...</R.LoadingText>}
+      {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && (
         <ReviewDetailsContainer>
           <ReviewDetailsHeader>리뷰</ReviewDetailsHeader>

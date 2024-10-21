@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { testReviewItem } from "../../../utils/staticDatas";
-import { LoadingText } from "../../../assets/styles/travelReview.style";
 import styled from "styled-components";
 import TravelogueCard from "../../../components/web/travel-review/TravelogueCard";
 import { reviewApiProps } from "../../../types/home";
+import LoadingText from "../../../components/LoadingText";
 
 interface Props {
   sort: string;
@@ -27,9 +27,9 @@ export default function Travelogue({ sort }: Props) {
 
   return (
     <>
-      {isLoading && <LoadingText>로딩중...</LoadingText>}
+      {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && data.length === 0 && (
-        <LoadingText>첫 리뷰를 작성해주세요!</LoadingText>
+        <LoadingText text="첫 리뷰를 작성해주세요!" />
       )}
       {!isLoading && (
         <TravelogueContainer>
@@ -44,6 +44,7 @@ export default function Travelogue({ sort }: Props) {
 }
 
 const TravelogueContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

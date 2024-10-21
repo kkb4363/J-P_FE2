@@ -159,18 +159,6 @@ export const ReviewLikeCommentRow = styled.div`
   gap: 8px;
 `;
 
-export const LikeCommentBox = styled.div`
-  gap: 3px;
-  display: flex;
-
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 140%;
-  }
-`;
-
 export const ReviewDetailText = styled.span`
   color: ${(props) => props.theme.color.gray900};
   font-size: 14px;

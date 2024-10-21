@@ -64,11 +64,3 @@ export const CommentWriteButton = styled.button<{ fill: boolean, fontsize?: stri
     background-color: ${(props) => !props.fill && props.theme.color.gray100}
   }
 `;
-
-export const LoadingText = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50%;
-  color: ${(props) => props.theme.color.gray300};
-`;

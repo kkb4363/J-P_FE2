@@ -232,17 +232,6 @@ export const ReviewInfo = styled.div`
   }
 `;
 
-export const ReviewMessageRow = styled.div`
-  display: flex;
-  gap: 4px;
-  & > span {
-    color: ${(props) => props.theme.color.gray500};
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 140%;
-  }
-`;
-
 export const AddScheduleBox = styled.div`
   padding: 29px 0 0 0;
   width: 100%;

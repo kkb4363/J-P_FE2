@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { reviewApiProps } from "../../../types/home";
 import { testImageList, testLogTags } from "../../../utils/staticDatas";
-import CustomProfile from "../../mobile/CustomProfile";
 import TwoImageBox from "./TwoImageBox";
 import LikeCommentBox from "../../LikeCommentBox";
+import CustomProfile from "../../CustomProfile";
 
 interface Props {
   item: reviewApiProps;
@@ -35,6 +35,7 @@ export default function TravelogueCard({ item }: Props) {
 }
 
 const TravelogueCardContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 24px 46px 41px;

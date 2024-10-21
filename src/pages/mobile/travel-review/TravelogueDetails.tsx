@@ -1,11 +1,16 @@
-import styled from "styled-components";
 import { useState } from "react";
-import CustomHeader from "../../../components/mobile/CustomHeader";
-import * as R from "../../../assets/styles/travelReview.style";
+import styled from "styled-components";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import ImageView from "../../../components/ImageView";
+import testImg from "../../../assets/images/testImg1.png";
+import * as R from "../../../assets/styles/travelReview.style";
 import CustomProfile from "../../../components/CustomProfile";
 import HashtagsBox from "../../../components/HashtagsBox";
+import ImageView from "../../../components/ImageView";
+import LikeCommentBox from "../../../components/LikeCommentBox";
+import CommentCard from "../../../components/mobile/CommentCard";
+import CustomHeader from "../../../components/mobile/CustomHeader";
+import ImageSlider from "../../../components/mobile/ImageSlider";
+import TraveloguePlaceBox from "../../../components/TraveloguePlaceBox";
 import {
   testImageList,
   testLogContents1,
@@ -14,11 +19,6 @@ import {
   testLogTags,
   testUserDto,
 } from "../../../utils/staticDatas";
-import MarkIcon from "../../../assets/icons/MarkIcon";
-import CommentCard from "../../../components/mobile/CommentCard";
-import ImageSlider from "../../../components/mobile/ImageSlider";
-import LikeCommentBox from "../../../components/LikeCommentBox";
-import testImg from "../../../assets/images/testImg1.png";
 
 export default function TravelogueDetails() {
   const [fillHeart, setFillHeart] = useState(false);
@@ -73,16 +73,11 @@ export default function TravelogueDetails() {
         <HashtagsBox hashTags={testLogTags} />
         <p dangerouslySetInnerHTML={{ __html: testLogContents1 }} />
         <PlaceBox>
-          <MarkIcon fill="#806cff" stroke="#fff" />
-          <span>안동 하회마을</span>
-          <MarkIcon fill="#806cff" stroke="#fff" />
-          <span>부용대</span>
+          <TraveloguePlaceBox place="안동 회화마을" />
+          <TraveloguePlaceBox place="부용대" />
         </PlaceBox>
         <p dangerouslySetInnerHTML={{ __html: testLogContents2 }} />
-        <PlaceBox>
-          <MarkIcon fill="#806cff" stroke="#fff" />
-          <span>월영교</span>
-        </PlaceBox>
+        <TraveloguePlaceBox place="월영교" />
         <p>{testLogContents3}</p>
         <RowLine />
         <R.CommentsBox>
@@ -146,14 +141,7 @@ const TravelogueDetailsBody = styled.div`
 
 const PlaceBox = styled.div`
   display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-top: 6px;
-  & > span {
-    font-weight: 700;
-    font-size: 14px;
-    margin-right: 8px;
-  }
+  gap: 8px;
 `;
 
 const RowLine = styled.div`
