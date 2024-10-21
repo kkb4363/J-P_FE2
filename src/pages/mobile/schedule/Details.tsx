@@ -2,7 +2,7 @@ import { useState } from "react";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import PlanSheet from "../../../components/mobile/bottomSheets/PlanSheet";
 import PlanPlaceSheet from "./../../../components/mobile/bottomSheets/PlanPlaceSheet";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import * as D from "../../../assets/styles/scheduleDetail.style";
 import ClipIcon from "../../../assets/icons/ClipIcon";

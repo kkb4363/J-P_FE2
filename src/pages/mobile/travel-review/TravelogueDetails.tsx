@@ -3,11 +3,11 @@ import { useState } from "react";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import * as R from "../../../assets/styles/travelReview.style";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import ImageView from "../../../components/mobile/ImageView";
-import CustomProfile from "../../../components/mobile/CustomProfile";
+import ImageView from "../../../components/ImageView";
+import CustomProfile from "../../../components/CustomProfile";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import LikeIcon from "../../../assets/icons/LikeIcon";
-import HashtagsBox from "../../../components/mobile/HashtagsBox";
+import HashtagsBox from "../../../components/HashtagsBox";
 import {
   testImageList,
   testLogContents1,

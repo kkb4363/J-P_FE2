@@ -4,7 +4,7 @@ import { getSurroundingPlace } from "../../../utils/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { NearByPlaceProps } from "../../../types/home.details";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
-import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function SurrondingPlace() {
   const navigate = useNavigate();

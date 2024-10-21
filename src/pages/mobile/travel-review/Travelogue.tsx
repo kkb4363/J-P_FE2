@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import TravelogueCard from "../../../components/mobile/TravelogueCard";
+import TravelogueCard from "../../../components/mobile/travelReview/TravelogueCard";
 
 interface Props {
   sort: string;

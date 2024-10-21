@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import MarkIcon from "../../../assets/icons/MarkIcon";
-import ActionButton from "../../../components/mobile/ActionButton";
+import ActionButton from "../../../components/ActionButton";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { useNavigate } from "react-router-dom";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
@@ -10,7 +10,7 @@ import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
 import useImageUploadHook from "../../../hooks/useImageUpload";
 import testImg from "../../../assets/images/testImg2.png";
 import XIcon from "../../../assets/icons/XIcon";
-import NobuttonModal from "../../../components/mobile/NobuttonModal";
+import NobuttonModal from "../../../components/NobuttonModal";
 import { useState } from "react";
 
 export default function WriteReview() {

@@ -1,6 +1,6 @@
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import RenderGoogleMap from "./RenderGoogleMap";
-import CustomSkeleton from "../CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 
 export interface GoogleMapProps {
   width: string;

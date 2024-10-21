@@ -1,15 +1,15 @@
 import styled from "styled-components";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import testImg from "../../../assets/images/testImg.png";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { useState } from "react";
-import OneButtonModal from "../../../components/mobile/OneButtonModal";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
+import OneButtonModal from "../../../components/OneButtonModal";
 
 export default function ListView() {
   const [list, setList] = useState<number[]>([]);

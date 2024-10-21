@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import * as R from "../../assets/styles/travelReview.style";
-import CustomProfile from "./CustomProfile";
-import HashtagsBox from "./HashtagsBox";
-import { testImageList, testLogTags } from "../../utils/staticDatas";
-import ImageView from "./ImageView";
-import CommentIcon from "../../assets/icons/CommentIcon";
-import LikeIcon from "../../assets/icons/LikeIcon";
+import * as R from "../../../assets/styles/travelReview.style";
+import CustomProfile from "../../CustomProfile";
+import HashtagsBox from "../../HashtagsBox";
+import { testImageList, testLogTags } from "../../../utils/staticDatas";
+import ImageView from "../../ImageView";
+import CommentIcon from "../../../assets/icons/CommentIcon";
+import LikeIcon from "../../../assets/icons/LikeIcon";
 import { useNavigate } from "react-router-dom";
-import testImg from "../../assets/images/testImg.png";
+import testImg from "../../../assets/images/testImg2.png";
 
 export default function TravelogueCard() {
   const navigate = useNavigate();

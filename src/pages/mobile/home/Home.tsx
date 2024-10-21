@@ -1,4 +1,4 @@
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import BellIcon from "../../../assets/icons/BellIcon";
 import * as S from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";

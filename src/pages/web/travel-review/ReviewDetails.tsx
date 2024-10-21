@@ -6,13 +6,13 @@ import { ReviewDetailApiProps } from "../../../types/home.details";
 import { LikeCommentBox } from "../../../assets/styles/home.style";
 import { testImageList, testReviewItem } from "../../../utils/staticDatas";
 import * as R from "../../../assets/styles/travelReview.style";
-import ImageView from "../../../components/mobile/ImageView";
+import ImageView from "../../../components/ImageView";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
 import LikeIcon from "../../../assets/icons/LikeIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import CommentCard from "../../../components/mobile/CommentCard";
-import CustomProfile from "../../../components/mobile/CustomProfile";
+import CustomProfile from "../../../components/CustomProfile";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -44,7 +44,6 @@ export default function ReviewDetails() {
     e.preventDefault();
     console.log(`${comment} submit`);
   };
-
 
   const handleImageClick = (index: number) => {
     navigate(`/review/${params.reviewId}/photo`, {

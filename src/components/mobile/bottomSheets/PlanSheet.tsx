@@ -20,7 +20,7 @@ import {
 import NextArrow from "../schedule/NextArrow";
 import { PlanList } from "../schedule/PlanList";
 import PrevArrow from "../schedule/PrevArrow";
-import TwoButtonsModal from "../TwoButtonsModal";
+import TwoButtonsModal from "../../TwoButtonsModal";
 import BottomSheet from "./../BottomSheet";
 import TrashIcon from "../../../assets/icons/TrashIcon";
 
@@ -216,23 +216,25 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                     </div>
                   </D.CostTitleBox>
                   <D.CostItemList>
-                    {testCostList.length > 0 ? (testCostList.map((item, idx) => (
-                      <D.CostItem>
-                        <D.CostBox key={idx}>
-                          <D.CostCategory>
-                            <D.CostCategoryIcon>
-                              <item.type.icon stroke="#6979F8" />
-                            </D.CostCategoryIcon>
-                            <p>{item.name}</p>
-                          </D.CostCategory>
-                          <p>{item.cost}원</p>
-                        </D.CostBox>
-                        <div>
-                          <TrashIcon />
-                        </div>
-                      </D.CostItem>
-                    ))) : (
-                        <p>비용을 추가해주세요.</p>
+                    {testCostList.length > 0 ? (
+                      testCostList.map((item, idx) => (
+                        <D.CostItem>
+                          <D.CostBox key={idx}>
+                            <D.CostCategory>
+                              <D.CostCategoryIcon>
+                                <item.type.icon stroke="#6979F8" />
+                              </D.CostCategoryIcon>
+                              <p>{item.name}</p>
+                            </D.CostCategory>
+                            <p>{item.cost}원</p>
+                          </D.CostBox>
+                          <div>
+                            <TrashIcon />
+                          </div>
+                        </D.CostItem>
+                      ))
+                    ) : (
+                      <p>비용을 추가해주세요.</p>
                     )}
                   </D.CostItemList>
                 </div>

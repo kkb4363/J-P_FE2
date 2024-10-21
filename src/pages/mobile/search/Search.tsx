@@ -2,13 +2,13 @@ import styled from "styled-components";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getSearchPlaceList } from "../../../utils/axios";
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import CancelIcon from "../../../assets/icons/CancelIcon";
-import ImageView from "../../../components/mobile/ImageView";
+import ImageView from "../../../components/ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
-import ActionButton from "../../../components/mobile/ActionButton";
+import ActionButton from "../../../components/ActionButton";
 import { realTimeWords, testImg1 } from "../../../utils/staticDatas";
-import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
+import TwoButtonsModal from "../../../components/TwoButtonsModal";
 import { placeApiProps } from "../../../types/home";
 import { useUserStore } from "../../../store/user.store";
 

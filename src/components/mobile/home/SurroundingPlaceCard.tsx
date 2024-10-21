@@ -1,11 +1,10 @@
 import styled from "styled-components";
-import ImageView from "../ImageView";
+import ImageView from "../../ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
-import ActionButton from "../ActionButton";
 import PlusIcon from "../../../assets/icons/PlusIcon";
-import { useState } from "react";
-import CustomSkeleton from "../CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 import useImgLoading from "../../../hooks/useImgLoading";
+import ActionButton from "../../ActionButton";
 
 interface Props {
   photoUrl: string;
@@ -15,7 +14,7 @@ interface Props {
   handleDetails?: () => void;
 }
 
-export default function NearPlaceCard({
+export default function SurroundingPlaceCard({
   photoUrl,
   name,
   rating,

@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { reviewApiProps } from "../../types/home";
-import CustomProfile from "./CustomProfile";
+import CustomProfile from "../CustomProfile";
 import StarIcon from "../../assets/icons/StarIcon";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import CommentIcon from "../../assets/icons/CommentIcon";
 import { useNavigate } from "react-router-dom";
-import ImageView from "./ImageView";
+import ImageView from "../ImageView";
 import * as R from "../../assets/styles/travelReview.style";
 import { testImageList } from "../../utils/staticDatas";
 import MarkIcon from "../../assets/icons/MarkIcon";

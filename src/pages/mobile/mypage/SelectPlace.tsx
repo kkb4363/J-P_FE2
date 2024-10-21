@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import {
   PlaceCard,
   PlaceCardAddButton,
