@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import PencilIcon from "../../assets/icons/PencilIcon";
 import TrashIcon from "../../assets/icons/TrashIcon";
 import TwoButtonsModal from "./TwoButtonsModal";
-import IconBox from "../IconBox";
 
 interface Props {
   isReply?: boolean;
@@ -93,7 +92,7 @@ export default function CommentCard({
         {!isReply && (
           <>
             <CommentFooter>
-              <IconBox>
+              <R.IconBox>
                 {!edit && (
                   <>
                     <ReplyIcon />
@@ -106,7 +105,7 @@ export default function CommentCard({
                     )}
                   </>
                 )}
-              </IconBox>
+              </R.IconBox>
 
               <CommentEditIconBox>
                 {edit ? (

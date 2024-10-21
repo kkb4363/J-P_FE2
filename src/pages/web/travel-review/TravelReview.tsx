@@ -19,7 +19,7 @@ export default function TravelReview() {
       setIsDropdownView(true);
     }
   };
-
+  console.log(selectedFilter);
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -49,21 +49,20 @@ export default function TravelReview() {
   return (
     <TravelReviewContainer>
       <>
-        <Switch value={reviewStore.isReview}>
-          <span />
-          <ReviewBtn
-            value={reviewStore.isReview}
+        <ToggleBox>
+          <ToggleButton
+            $isSelect={reviewStore.isReview}
             onClick={() => reviewStore.setIsReview(true)}
           >
             리뷰
-          </ReviewBtn>
-          <TravelogueBtn
-            value={!reviewStore.isReview}
+          </ToggleButton>
+          <ToggleButton
+            $isSelect={!reviewStore.isReview}
             onClick={() => reviewStore.setIsReview(false)}
           >
             여행기
-          </TravelogueBtn>
-        </Switch>
+          </ToggleButton>
+        </ToggleBox>
         <FilterBox ref={dropdownRef}>
           <FilterButton onClick={handleFilterClick}>
             <span>{selectedFilter.name}</span>
@@ -89,7 +88,7 @@ export default function TravelReview() {
       {reviewStore.isReview ? (
         <Review sort={selectedFilter.state} />
       ) : (
-        <Travelogue sort={selectedFilter.state} />
+        <Travelogue />
       )}
     </TravelReviewContainer>
   );
@@ -99,55 +98,29 @@ const TravelReviewContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding: 60px 15%;
   gap: 10px;
 `;
 
-const Switch = styled.div<{ value: boolean }>`
-  position: relative;
+const ToggleBox = styled.div`
   display: flex;
-  width: 180px;
-  height: 45px;
-  background-color: ${(props) => props.theme.color.white};
-  border: 1px solid ${(props) => props.theme.color.gray100};
-  border-radius: 30px;
-
-  & > span {
-    position: absolute;
-    width: ${({value}) => value ? '75px' : '87px'};
-    height: 33px;
-    top: 6px;
-    border-radius: 30px;
-    background-color: ${(props) => props.theme.color.main};
-    transition: all 0.6s ease-in-out;
-    z-index: 1;
-    transform: ${({ value }) =>
-      value ? "translateX(7px)" : "translateX(85px)"};
-  }
+  align-self: center;
+  gap: 16px;
 `;
 
-const Toggle = styled.button<{ value: boolean }>`
-  position: relative;
-  height: 45px;
-  color: ${(props) => props.theme.color.gray300};
+const ToggleButton = styled.div<{ $isSelect: boolean }>`
+  padding: 12px 24px;
   font-weight: 700;
-  z-index: 2;
-  transition: color .5s ease;
-  padding: 0;
+  border-radius: 30px;
+  cursor: pointer;
+  border: 1px solid
+    ${(props) =>
+      props.$isSelect ? props.theme.color.main : props.theme.color.gray200};
+  background-color: ${(props) =>
+    props.$isSelect ? props.theme.color.mainLight : props.theme.color.white};
+  color: ${(props) =>
+    props.$isSelect ? props.theme.color.main : props.theme.color.gray400};
 `;
-
-const ReviewBtn = styled(Toggle)`
-  width: 90px;
-  color: ${({ value }) => value && "#fff"};
-`;
-
-const TravelogueBtn = styled(Toggle)`
-  width: 80px;
-  margin-right: 10px;
-  color: ${({ value }) => value && "#fff"};
-`;
-
 
 const FilterBox = styled.div`
   position: relative;
