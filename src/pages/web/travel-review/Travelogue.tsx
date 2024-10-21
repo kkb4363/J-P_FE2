@@ -44,6 +44,7 @@ export default function Travelogue({ sort }: Props) {
 }
 
 const TravelogueContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

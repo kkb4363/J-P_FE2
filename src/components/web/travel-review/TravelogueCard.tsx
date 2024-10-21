@@ -35,6 +35,7 @@ export default function TravelogueCard({ item }: Props) {
 }
 
 const TravelogueCardContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 24px 46px 41px;

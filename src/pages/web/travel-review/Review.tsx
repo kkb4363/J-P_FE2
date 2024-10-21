@@ -16,7 +16,7 @@ export default function Review({ sort }: Props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-	// [세연 TODO] : DB에 리뷰 데이터 들어오면 확인 후 수정
+  // [세연 TODO] : DB에 리뷰 데이터 들어오면 확인 후 수정
   const requestApi = async () => {
     setIsLoading(true);
     try {
@@ -65,6 +65,7 @@ export default function Review({ sort }: Props) {
 }
 
 const ReviewContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
