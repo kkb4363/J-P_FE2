@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { HomeTitle, InputBox } from "../home/Home";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import { useState } from "react";
 import XIcon from "../../../assets/icons/XIcon";
 import { getSearchPlaceList } from "../../../utils/axios";
@@ -9,7 +9,7 @@ import testImg from "../../../assets/images/testImg.png";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { useUserStore } from "../../../store/user.store";
 import { realTimeWords } from "../../../utils/staticDatas";
-import TwoButtonsModal from "../../../components/mobile/TwoButtonsModal";
+import TwoButtonsModal from "../../../components/TwoButtonsModal";
 
 export default function Search() {
   const userStore = useUserStore();

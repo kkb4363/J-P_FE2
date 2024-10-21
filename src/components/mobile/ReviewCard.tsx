@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import { reviewApiProps } from "../../types/home";
-import CustomProfile from "./CustomProfile";
+import CustomProfile from "../CustomProfile";
 import StarIcon from "../../assets/icons/StarIcon";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import CommentIcon from "../../assets/icons/CommentIcon";
 import { useNavigate } from "react-router-dom";
-import ImageView from "./ImageView";
+import ImageView from "../ImageView";
 import * as R from "../../assets/styles/travelReview.style";
 import { testImageList } from "../../utils/staticDatas";
 import MarkIcon from "../../assets/icons/MarkIcon";
 import { useEffect, useRef, useState } from "react";
+import testImg from "../../assets/images/testImg.png";
 
 interface Props {
   item: reviewApiProps;
@@ -56,7 +57,7 @@ export default function ReviewCard({ item, ref }: Props) {
 
       <R.ProfileHeader>
         <CustomProfile
-          src="/src/assets/images/testImg.png"
+          src={testImg}
           nickname={item.userCompactResDto.nickname}
           content="24.2.3"
         />
@@ -70,7 +71,7 @@ export default function ReviewCard({ item, ref }: Props) {
         <span onClick={() => navigate(`/home/review/${item.id}`)}>더보기</span>
       </ReviewContentBox>
       <ImageView
-        src={testImageList[0]}
+        src={testImg}
         alt="review detail img"
         width="100%"
         height="191px"

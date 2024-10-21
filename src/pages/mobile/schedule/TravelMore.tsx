@@ -5,10 +5,10 @@ import {
   ReviewCol as SuggestionCol,
 } from "../../../assets/styles/home.style";
 import { SuggestionBox, SuggestTextCol } from "./Schedule";
-import ImageView from "../../../components/mobile/ImageView";
+import ImageView from "../../../components/ImageView";
 import testImg from "../../../assets/images/testImg.png";
 import styled from "styled-components";
-import CustomProfile from "../../../components/mobile/CustomProfile";
+import CustomProfile from "../../../components/CustomProfile";
 
 export default function TravelMore() {
   const navigate = useNavigate();

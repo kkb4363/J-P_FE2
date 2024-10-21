@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ImageView from "../ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
 import useImgLoading from "../../../hooks/useImgLoading";
-import CustomSkeleton from "../../mobile/CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
   imgSrc: string;

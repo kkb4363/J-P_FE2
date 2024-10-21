@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import CancelIcon from "../../assets/icons/CancelIcon";
-import PrimaryButton from "./PrimaryButton";
-import { ModalOverlay, ModalWrapper } from "../../assets/styles/modal.style";
+import CancelIcon from "../assets/icons/CancelIcon";
+import PrimaryButton from "./mobile/PrimaryButton";
+import { ModalOverlay, ModalWrapper } from "../assets/styles/modal.style";
 
 interface Props {
   text: string;

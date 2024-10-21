@@ -3,7 +3,7 @@ import MoreContainer from "../../../components/mobile/MoreContainer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPlaceList } from "../../../utils/axios";
 import { placeApiProps } from "../../../types/home";
-import ImageView from "../../../components/mobile/ImageView";
+import ImageView from "../../../components/ImageView";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import testImg from "../../../assets/images/testImg.png";
 import { useLocation } from "react-router-dom";

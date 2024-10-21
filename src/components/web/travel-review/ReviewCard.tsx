@@ -5,7 +5,7 @@ import {
   IconBox,
   LikeCommentBox,
 } from "../../../assets/styles/travelReview.style";
-import CustomProfile from "../../mobile/CustomProfile";
+import CustomProfile from "../../CustomProfile";
 import ImageView from "../ImageView";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";

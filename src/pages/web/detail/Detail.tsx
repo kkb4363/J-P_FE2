@@ -24,7 +24,7 @@ import {
   ReviewTitle,
 } from "../../../assets/styles/homeDetail.style";
 import CommentIcon from "../../../assets/icons/CommentIcon";
-import CustomSkeleton from "../../../components/mobile/CustomSkeleton";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
 

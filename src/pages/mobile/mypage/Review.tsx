@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { TravelHeader } from "./Travel";
-import CustomProfile from "../../../components/mobile/CustomProfile";
+import CustomProfile from "../../../components/CustomProfile";
 import testImg from "../../../assets/images/testImg3.png";
 import {
   IconBox,

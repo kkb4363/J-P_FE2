@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import CustomInput from "../../../components/mobile/CustomInput";
+import CustomInput from "../../../components/CustomInput";
 import CardSlide from "../../../components/web/home/CardSlide";
 import TravelogueCardSlide from "../../../components/web/home/TravelogueCardSlide";
 import { useNavigate } from "react-router-dom";

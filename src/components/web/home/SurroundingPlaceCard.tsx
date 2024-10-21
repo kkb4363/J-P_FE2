@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
-import CustomSkeleton from "../../mobile/CustomSkeleton";
+import CustomSkeleton from "../../CustomSkeleton";
 import useImgLoading from "../../../hooks/useImgLoading";
 
 interface Props {

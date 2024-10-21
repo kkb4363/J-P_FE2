@@ -10,7 +10,7 @@ import {
 } from "../../../utils/axios";
 import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
-import NobuttonModal from "../../../components/mobile/NobuttonModal";
+import NobuttonModal from "../../../components/NobuttonModal";
 import { SelectPlaceProps } from "../../../types/home.details";
 import InfoModal from "../../../components/web/surroundingPlace/InfoModal";
 
