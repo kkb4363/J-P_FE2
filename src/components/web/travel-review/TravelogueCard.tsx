@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { reviewApiProps } from "../../../types/home";
 import { testImageList, testLogTags } from "../../../utils/staticDatas";
-import CustomProfile from "../../mobile/CustomProfile";
 import TwoImageBox from "./TwoImageBox";
 import LikeCommentBox from "../../LikeCommentBox";
+import CustomProfile from "../../CustomProfile";
 
 interface Props {
   item: reviewApiProps;
