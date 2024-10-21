@@ -4,7 +4,7 @@ import ReviewCard from "./../../../components/web/travel-review/ReviewCard";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../../utils/axios";
 import { reviewApiProps } from "../../../types/home";
-import { LoadingText } from "../../../assets/styles/travelReview.style";
+import LoadingText from "../../../components/LoadingText";
 
 interface Props {
   sort: string;
@@ -48,9 +48,9 @@ export default function Review({ sort }: Props) {
 
   return (
     <>
-      {isLoading && <LoadingText>로딩중...</LoadingText>}
+      {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && data.length === 0 && (
-        <LoadingText>첫 리뷰를 작성해주세요!</LoadingText>
+        <LoadingText text="첫 리뷰를 작성해주세요!" />
       )}
       {!isLoading && (
         <ReviewContainer>
