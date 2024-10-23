@@ -18,6 +18,7 @@ import {
 	testLogTags,
 	testReviewItem,
 } from "../../../utils/staticDatas";
+import Container from "../../../components/web/Container";
 
 export default function TravelogueDetails() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,10 +47,10 @@ export default function TravelogueDetails() {
     <div>
       {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && (
-        <TravelogueDetailsContainer>
+        <Container>
           <TravelogueDetailsTitle>
             <div />
-            <p>안동 혼자 뚜벅이 여행 떠나기</p>
+            <h1>안동 혼자 뚜벅이 여행 떠나기</h1>
             <HeartBox onClick={handleHeartClick}>
               <HeartIcon
                 fill={fillHeart ? "#FF5757" : "none"}
@@ -121,17 +122,11 @@ export default function TravelogueDetails() {
               web
             />
           </CommentBox>
-        </TravelogueDetailsContainer>
+        </Container>
       )}
     </div>
   );
 }
-
-const TravelogueDetailsContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 60px 19%;
-`;
 
 const TravelogueDetailsTitle = styled.div`
   display: flex;
@@ -141,7 +136,7 @@ const TravelogueDetailsTitle = styled.div`
     width: 32px;
   }
 
-  & > p {
+  & > h1 {
     font-weight: 700;
     font-size: 24px;
   }

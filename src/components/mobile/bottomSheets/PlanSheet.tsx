@@ -7,6 +7,7 @@ import CardIcon from "../../../assets/icons/CardIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
 import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
+import TrashIcon from "../../../assets/icons/TrashIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
 import { useJPStore } from "../../../store/JPType.store";
 import { planItemProps } from "../../../types/schedule";
@@ -17,12 +18,10 @@ import {
   testPlanItems,
   testTransportList,
 } from "../../../utils/staticDatas";
-import NextArrow from "../schedule/NextArrow";
-import { PlanList } from "../schedule/PlanList";
-import PrevArrow from "../schedule/PrevArrow";
+import DaySlider from "../../DaySlider";
 import TwoButtonsModal from "../../TwoButtonsModal";
+import { PlanList } from "../schedule/PlanList";
 import BottomSheet from "./../BottomSheet";
-import TrashIcon from "../../../assets/icons/TrashIcon";
 
 interface Props {
   setIsPlanPlace: (value: React.SetStateAction<boolean>) => void;
@@ -50,17 +49,6 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
     deleteSchedule: false,
     deleteScheduleSuccess: false,
   });
-
-  const daySlideSettings = {
-    infinite: false,
-    focusOnSelect: true,
-    focusOnChange: true,
-    slidesToShow: 3,
-    swipeToSlide: true,
-    speed: 500,
-    prevArrow: <PrevArrow />,
-    nextArrow: <NextArrow />,
-  };
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -138,17 +126,11 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                     </>
                   )}
                 </D.PlansEditButton>
-                <div>
-                  <D.StyledSlider {...daySlideSettings}>
-                    {testDayList.map((day, i) => (
-                      <D.DayBox
-                        key={i}
-                        onClick={() => handleDayClick(day)}
-                        $select={currentDay === day}
-                      >{`Day ${day + 1}`}</D.DayBox>
-                    ))}
-                  </D.StyledSlider>
-                </div>
+                <DaySlider
+                  dayList={testDayList}
+                  currentDay={currentDay}
+                  onDayClick={handleDayClick}
+                />
                 <PlanList
                   planItems={planItems}
                   onSortEnd={handleSortEnd}
