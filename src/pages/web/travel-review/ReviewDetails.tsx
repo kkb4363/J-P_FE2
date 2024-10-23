@@ -13,6 +13,7 @@ import { axiosInstance } from "../../../utils/axios";
 import LikeCommentBox from "../../../components/LikeCommentBox";
 import styled from "styled-components";
 import LoadingText from "../../../components/LoadingText";
+import Container from "../../../components/web/Container";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -59,8 +60,8 @@ export default function ReviewDetails() {
     <div>
       {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && (
-        <ReviewDetailsContainer>
-          <ReviewDetailsHeader>리뷰</ReviewDetailsHeader>
+        <Container>
+          <h1>리뷰</h1>
           <ReviewDetailsBody>
             <ReviewPlaceBox>
               <MarkIcon stroke="#1A1A1A" />
@@ -154,27 +155,17 @@ export default function ReviewDetails() {
               web
             />
           </CommentBox>
-        </ReviewDetailsContainer>
+        </Container>
       )}
     </div>
   );
 }
 
-const ReviewDetailsContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 60px 15%;
-`;
-
-const ReviewDetailsHeader = styled.h1`
-  font-size: 32px;
-  margin-bottom: 24px;
-`;
-
 const ReviewDetailsBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 24px;
   padding: 24px;
   background-color: ${(props) => props.theme.color.white};
   border-radius: 16px;
