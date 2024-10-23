@@ -3,12 +3,13 @@ import testImg from "../../../assets/images/testImg.png";
 import PencilIcon from "../../../assets/icons/PencilIcon";
 import { Outlet, useNavigate } from "react-router-dom";
 import { webMypageTabs } from "../../../utils/staticDatas";
+import Container from './../../../components/web/Container';
 
 export default function MypageLayout() {
   const navigate = useNavigate();
   return (
     <Container>
-      <Title>마이페이지</Title>
+      <h1>마이페이지</h1>
 
       <ProfileBox>
         <img src={testImg} alt="프로필이미지" />
@@ -36,16 +37,6 @@ export default function MypageLayout() {
     </Container>
   );
 }
-
-const Container = styled.div`
-  padding: 45px 200px 0 200px;
-`;
-
-const Title = styled.h1`
-  color: ${(props) => props.theme.color.gray900};
-  font-size: 32px;
-  font-weight: 700;
-`;
 
 const ProfileBox = styled.div`
   margin-top: 61px;
