@@ -3,13 +3,21 @@ import { CSS } from "@dnd-kit/utilities";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import { planItemProps } from "../../../types/schedule";
+import TrashIcon from "../../../assets/icons/TrashIcon";
 
 interface Props {
   item: planItemProps;
   isEdit: boolean;
+  setMoveDayOpen: (flag: boolean) => void;
+  setDeleteOpen: (flag: boolean) => void;
 }
 
-export default function PlanItem({ item, isEdit }: Props) {
+export default function PlanItem({
+  item,
+  isEdit,
+  setMoveDayOpen,
+  setDeleteOpen,
+}: Props) {
   const {
     attributes,
     listeners,
@@ -19,6 +27,12 @@ export default function PlanItem({ item, isEdit }: Props) {
     transition,
     isDragging,
   } = useSortable({ id: item.id });
+
+  const handleItemClick = () => {
+    if (isEdit) {
+      setMoveDayOpen(true);
+    }
+  };
 
   return (
     <PlanItemContainer
@@ -31,7 +45,7 @@ export default function PlanItem({ item, isEdit }: Props) {
       }}
     >
       <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
-      <PlaceBox $isDragging={isDragging}>
+      <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
         <PlaceNum $isEdit={isEdit}>1</PlaceNum>
         <PlaceTitleBox>
           <p>{item.title}</p>
@@ -47,9 +61,15 @@ export default function PlanItem({ item, isEdit }: Props) {
           </DragHandler>
         )}
       </PlaceBox>
-      <DetailsButton>
-        <FileCheckIcon />
-      </DetailsButton>
+      {isEdit ? (
+        <button onClick={() => setDeleteOpen(true)}>
+          <TrashIcon />
+        </button>
+      ) : (
+        <DetailsButton>
+          <FileCheckIcon />
+        </DetailsButton>
+      )}
     </PlanItemContainer>
   );
 }
