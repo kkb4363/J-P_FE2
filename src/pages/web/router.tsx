@@ -14,8 +14,7 @@ import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import Search from "./search/Search";
 import ImageViewer from "./travel-review/ImageViewer";
-import TravelogueDetails from "./travel-review/TravelogueDetails";
-import ScheduleDetails from "./schedule/ScheduleDetails";
+import Schedule from "./schedule/Schedule";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: "surroundingMore/:lng/:lat",
         element: <SurroundingMore />,
+      },
+      {
+        path: "schedule",
+        element: <Schedule />,
       },
       {
         path: "travelReview",
