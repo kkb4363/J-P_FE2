@@ -22,6 +22,13 @@ export default function useSearchHook() {
     }
   };
 
+  const handleRecentWordClick = async (s: string) => {
+    await getSearchPlaceList({ searchString: s + "", page: 1 }).then((res) => {
+      setSearchData(res?.data.data);
+      setSearch(s);
+    });
+  };
+
   const getSearchPlace = async () => {
     await getSearchPlaceList({ searchString: search + "", page: 1 }).then(
       (res) => {
@@ -47,5 +54,6 @@ export default function useSearchHook() {
     handleDeleteEvery,
     deleteEveryOpen,
     handleDeleteOpen,
+    handleRecentWordClick,
   };
 }
