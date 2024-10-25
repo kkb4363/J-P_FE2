@@ -1,35 +1,27 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import styled, { css } from "styled-components";
+import { Outlet } from "react-router-dom";
+import styled from "styled-components";
 import { scrollHidden } from "../../assets/styles/home.style";
-import { webHeaderTabs } from "../../utils/staticDatas";
+import { useModalStore } from "../../store/modal.store";
+import SearchModal from "../../components/web/search/SearchModal";
+import Header from "./Header";
 
 interface Props {
   minWidth?: string;
 }
 
 export default function Layout({ minWidth = "1440px" }: Props) {
-  const navigate = useNavigate();
+  const { getCurrentModal, setCurrentModal } = useModalStore();
+
   return (
     <LayoutContainer>
-      <Header $minWidth={minWidth}>
-        <HeaderLeft>
-          <Logo>Logo</Logo>
+      <Header minWidth={minWidth} />
 
-          <HeaderTabRow>
-            {webHeaderTabs.map((tab) => (
-              <span onClick={() => navigate(tab.route)} key={tab.label}>
-                {tab.label}
-              </span>
-            ))}
-          </HeaderTabRow>
-        </HeaderLeft>
-
-        <HeaderRight>
-          <span onClick={() => navigate("/mypage")}>마이페이지</span>
-
-          <LoginButton>로그인</LoginButton>
-        </HeaderRight>
-      </Header>
+      {getCurrentModal() === "search" && (
+        <>
+          <SearchModal />
+          <Overlay onClick={() => setCurrentModal("")} />
+        </>
+      )}
 
       <OutletBox $minWidth={minWidth}>
         <Outlet />
@@ -38,77 +30,20 @@ export default function Layout({ minWidth = "1440px" }: Props) {
   );
 }
 
+const Overlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  margin-top: 90px;
+`;
+
 const LayoutContainer = styled.div`
   width: 100vw;
   height: 100vh;
   overflow: auto;
 
   background-color: ${(props) => props.theme.color.background};
-`;
-
-const Header = styled.div<{ $minWidth: string }>`
-  width: 100%;
-  min-width: ${(props) => props.$minWidth && props.$minWidth};
-  height: 90px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  box-sizing: border-box;
-  padding: 0 100px;
-  background-color: ${(props) => props.theme.color.white};
-`;
-
-const Logo = styled.div``;
-
-const headerTextStyle = css`
-  color: ${(props) => props.theme.color.gray900};
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 120px;
-`;
-
-const HeaderTabRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 44px;
-
-  & > span {
-    ${headerTextStyle}
-  }
-`;
-
-const HeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 60px;
-
-  & > span {
-    ${headerTextStyle};
-  }
-`;
-
-const LoginButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 50px;
-  border-radius: 16px;
-
-  background: ${(props) => props.theme.color.main};
-  color: ${(props) => props.theme.color.white};
-  font-size: 16px;
-  font-weight: 700;
-
-  &:hover {
-    background-color: ${(props) => props.theme.color.mainHover};
-  }
 `;
 
 const OutletBox = styled.div<{ $minWidth: string }>`
