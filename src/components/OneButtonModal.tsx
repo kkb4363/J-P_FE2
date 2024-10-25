@@ -27,7 +27,9 @@ export default function OneButtonModal({
         <ModalHeader>
           <EmptyBox />
           <p>{title}</p>
-          <CancelIcon onClick={onClose} />
+          <CloseButton onClick={onClose}>
+            <CancelIcon />
+          </CloseButton>
         </ModalHeader>
         <ModalBody>
           {children}
@@ -52,15 +54,19 @@ const EmptyBox = styled.div`
   width: 22px;
 `;
 
+const CloseButton = styled.div`
+  cursor: pointer;
+`;
+
 const ModalBody = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 7px 32px 20px;
+  padding: 7px 0 20px;
 `;
 
 const ModalButtonBox = styled.div`
-  width: 70%;
+  width: 190px;
 `;
