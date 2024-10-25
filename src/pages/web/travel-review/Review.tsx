@@ -4,7 +4,7 @@ import ReviewCard from "./../../../components/web/travel-review/ReviewCard";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../../utils/axios";
 import { reviewApiProps } from "../../../types/home";
-import { LoadingText } from "../../../assets/styles/travelReview.style";
+import LoadingText from "../../../components/LoadingText";
 
 interface Props {
   sort: string;
@@ -16,7 +16,7 @@ export default function Review({ sort }: Props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-	// [세연 TODO] : DB에 리뷰 데이터 들어오면 확인 후 수정
+  // [세연 TODO] : DB에 리뷰 데이터 들어오면 확인 후 수정
   const requestApi = async () => {
     setIsLoading(true);
     try {
@@ -48,9 +48,9 @@ export default function Review({ sort }: Props) {
 
   return (
     <>
-      {isLoading && <LoadingText>로딩중...</LoadingText>}
+      {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && data.length === 0 && (
-        <LoadingText>첫 리뷰를 작성해주세요!</LoadingText>
+        <LoadingText text="첫 리뷰를 작성해주세요!" />
       )}
       {!isLoading && (
         <ReviewContainer>
@@ -65,6 +65,7 @@ export default function Review({ sort }: Props) {
 }
 
 const ReviewContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

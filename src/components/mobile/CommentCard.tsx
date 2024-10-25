@@ -6,6 +6,7 @@ import ReplyIcon from "../../assets/icons/ReplyIcon";
 import { useEffect, useRef, useState } from "react";
 import PencilIcon from "../../assets/icons/PencilIcon";
 import TrashIcon from "../../assets/icons/TrashIcon";
+import IconBox from "../IconBox";
 import TwoButtonsModal from "../TwoButtonsModal";
 import testImg from "../../assets/images/testImg.png";
 
@@ -93,7 +94,7 @@ export default function CommentCard({
         {!isReply && (
           <>
             <CommentFooter>
-              <R.IconBox>
+              <IconBox>
                 {!edit && (
                   <>
                     <ReplyIcon />
@@ -106,7 +107,7 @@ export default function CommentCard({
                     )}
                   </>
                 )}
-              </R.IconBox>
+              </IconBox>
 
               <CommentEditIconBox>
                 {edit ? (

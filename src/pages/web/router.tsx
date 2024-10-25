@@ -15,6 +15,8 @@ import ReviewDetails from "./travel-review/ReviewDetails";
 import Search from "./search/Search";
 import ImageViewer from "./travel-review/ImageViewer";
 import Schedule from "./schedule/Schedule";
+import TravelogueDetails from "./travel-review/TravelogueDetails";
+import ScheduleDetails from "./schedule/ScheduleDetails";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +64,14 @@ export const router = createBrowserRouter([
         element: <ImageViewer />,
       },
       {
+        path: "travelogue/:travelogueId",
+        element: <TravelogueDetails />,
+      },
+      {
+        path: "travelogue/:travelogueId/photo",
+        element: <ImageViewer />,
+      },
+      {
         path: "mypage",
         element: <MypageLayout />,
         children: [
@@ -86,6 +96,10 @@ export const router = createBrowserRouter([
       {
         path: "search",
         element: <Search />,
+      },
+      {
+        path: "schedule/details/:scheduleId",
+        element: <ScheduleDetails />,
       },
     ],
   },

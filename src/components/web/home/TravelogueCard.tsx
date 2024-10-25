@@ -1,11 +1,9 @@
 import styled from "styled-components";
-import CommentIcon from "../../../assets/icons/CommentIcon";
-import HeartIcon from "../../../assets/icons/HeartIcon";
 import ImageView from "../../ImageView";
 import HashtagsBox from "../../HashtagsBox";
 import CustomProfile from "../../CustomProfile";
 import testImg from "../../../assets/images/testImg.png";
-import LikeIcon from "../../../assets/icons/LikeIcon";
+import LikeCommentBox from "./../../LikeCommentBox";
 
 interface Props {
   isReviewCard: boolean;
@@ -37,15 +35,7 @@ export default function TravelogueCard({ isReviewCard }: Props) {
           <CustomProfile src={testImg} nickname="coco1202" fontSize="12px" />
 
           <ReviewLikeCommentRow>
-            <LikeCommentBox>
-              {isReviewCard ? <LikeIcon /> : <HeartIcon />}
-              <span>26</span>
-            </LikeCommentBox>
-
-            <LikeCommentBox>
-              <CommentIcon />
-              <span>16</span>
-            </LikeCommentBox>
+            <LikeCommentBox isReview={isReviewCard} likeCnt={26} commentCnt={16} />
           </ReviewLikeCommentRow>
         </ReviewProfileRow>
       </ReviewTextCol>
@@ -99,16 +89,4 @@ const ReviewProfileRow = styled.div`
 const ReviewLikeCommentRow = styled.div`
   display: flex;
   gap: 8px;
-`;
-
-const LikeCommentBox = styled.div`
-  gap: 3px;
-  display: flex;
-
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 140%;
-  }
 `;

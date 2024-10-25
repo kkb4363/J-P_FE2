@@ -163,36 +163,6 @@ export const PlansEditButton = styled.div`
 
 export const DaySelector = styled.div``;
 
-export const StyledSlider = styled(Slider)`
-  text-align: center;
-  display: flex;
-
-  .slick-slider {
-    position: relative;
-  }
-`;
-
-export const ArrowBox = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
-export const DayBox = styled.div<{ $select: boolean }>`
-  width: 80px !important;
-  padding: 8px 22px;
-  white-space: nowrap;
-  background-color: ${(props) =>
-    props.$select ? props.theme.color.secondary : props.theme.color.white};
-  color: ${(props) =>
-    props.$select ? props.theme.color.white : props.theme.color.secondary};
-  border: 1px solid ${(props) => props.theme.color.secondary};
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 700;
-`;
-
 export const AddPlaceButton = styled.div`
   align-self: flex-end;
   text-align: center;

@@ -1,18 +1,19 @@
-import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { ReviewDetailApiProps } from "../../../types/home.details";
-import { LikeCommentBox } from "../../../assets/styles/home.style";
 import { testImageList, testReviewItem } from "../../../utils/staticDatas";
-import * as R from "../../../assets/styles/travelReview.style";
 import ImageView from "../../../components/ImageView";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
-import LikeIcon from "../../../assets/icons/LikeIcon";
-import CommentIcon from "../../../assets/icons/CommentIcon";
+import * as R from "../../../assets/styles/travelReview.style";
+import IconBox from "../../../components/IconBox";
 import CommentCard from "../../../components/mobile/CommentCard";
 import CustomProfile from "../../../components/CustomProfile";
+import { axiosInstance } from "../../../utils/axios";
+import LikeCommentBox from "../../../components/LikeCommentBox";
+import styled from "styled-components";
+import LoadingText from "../../../components/LoadingText";
+import Container from "../../../components/web/Container";
 
 export default function ReviewDetails() {
   const params = useParams();
@@ -57,10 +58,10 @@ export default function ReviewDetails() {
   }, [params.reviewId]);
   return (
     <div>
-      {isLoading && <R.LoadingText>로딩중...</R.LoadingText>}
+      {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && (
-        <ReviewDetailsContainer>
-          <ReviewDetailsHeader>리뷰</ReviewDetailsHeader>
+        <Container>
+          <h1>리뷰</h1>
           <ReviewDetailsBody>
             <ReviewPlaceBox>
               <MarkIcon stroke="#1A1A1A" />
@@ -72,10 +73,10 @@ export default function ReviewDetails() {
                 nickname={review ? review.userCompactResDto.nickname : "yeeso"}
                 content="24.2.3"
               />
-              <R.IconBox>
+              <IconBox>
                 <StarIcon />
                 <span>{review ? review.star : 4.8}</span>
-              </R.IconBox>
+              </IconBox>
             </R.ProfileHeader>
             <div>
               <ReviewContents $isTitle={true}>
@@ -104,19 +105,12 @@ export default function ReviewDetails() {
                 </ImageWrapper>
               ))}
             </ReviewDetailsImageBox>
-            <LikeCommentBox>
-              <R.IconBox>
-                <LikeIcon
-                  fill={fillLike ? "#FFC814" : "none"}
-                  onClick={() => setFillLike((prev) => !prev)}
-                />
-                <span>{review ? review.likeCnt : 12}</span>
-              </R.IconBox>
-              <R.IconBox>
-                <CommentIcon stroke="#808080" />
-                <span>{review ? review.commentResDtoList.length : 1}</span>
-              </R.IconBox>
-            </LikeCommentBox>
+            <LikeCommentBox
+              likeCnt={5}
+              commentCnt={2}
+              fillLike={fillLike}
+              likeClick={() => setFillLike((prev) => !prev)}
+            />
           </ReviewDetailsBody>
           <CommentHeader>댓글</CommentHeader>
           <R.CommentInputBox>
@@ -161,27 +155,17 @@ export default function ReviewDetails() {
               web
             />
           </CommentBox>
-        </ReviewDetailsContainer>
+        </Container>
       )}
     </div>
   );
 }
 
-const ReviewDetailsContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 60px 15%;
-`;
-
-const ReviewDetailsHeader = styled.h1`
-  font-size: 32px;
-  margin-bottom: 24px;
-`;
-
 const ReviewDetailsBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 24px;
   padding: 24px;
   background-color: ${(props) => props.theme.color.white};
   border-radius: 16px;

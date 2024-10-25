@@ -4,10 +4,9 @@ import CustomProfile from "../../CustomProfile";
 import HashtagsBox from "../../HashtagsBox";
 import { testImageList, testLogTags } from "../../../utils/staticDatas";
 import ImageView from "../../ImageView";
-import CommentIcon from "../../../assets/icons/CommentIcon";
-import LikeIcon from "../../../assets/icons/LikeIcon";
 import { useNavigate } from "react-router-dom";
 import testImg from "../../../assets/images/testImg2.png";
+import LikeCommentBox from "../../LikeCommentBox";
 
 export default function TravelogueCard() {
   const navigate = useNavigate();
@@ -29,16 +28,7 @@ export default function TravelogueCard() {
         height="191px"
         bottomText={`+${testImageList.length - 1}`}
       />
-      <R.LikeCommentBox>
-        <R.IconBox>
-          <LikeIcon />
-          <span>8</span>
-        </R.IconBox>
-        <R.IconBox>
-          <CommentIcon stroke="#808080" />
-          <span>2</span>
-        </R.IconBox>
-      </R.LikeCommentBox>
+      <LikeCommentBox likeCnt={8} commentCnt={2} />
     </TravelogueCardContainer>
   );
 }
