@@ -19,6 +19,7 @@ export default function Search() {
     handleDeleteEvery,
     deleteEveryOpen,
     handleDeleteOpen,
+    handleRecentWordClick,
   } = useSearchHook();
 
   return (
@@ -44,9 +45,11 @@ export default function Search() {
           </SubTitle>
           <TagBoxRow>
             {userStore.getSearchData()?.map((s) => (
-              <SearchTag key={s} onClick={() => userStore.deleteSearchData(s)}>
-                <span>{s}</span>
-                <XIcon stroke="#1a1a1a" />
+              <SearchTag key={s}>
+                <span onClick={() => handleRecentWordClick(s)}>{s}</span>
+                <div onClick={() => userStore.deleteSearchData(s)}>
+                  <XIcon stroke="#1a1a1a" />
+                </div>
               </SearchTag>
             ))}
           </TagBoxRow>
@@ -129,9 +132,10 @@ const SearchTag = styled.div`
   & > span {
     color: ${(props) => props.theme.color.gray900};
     font-size: 16px;
+    cursor: pointer;
   }
 
-  & > svg {
+  & > div {
     cursor: pointer;
   }
 `;
@@ -150,50 +154,6 @@ const ResultsRow = styled.div`
   gap: 16px;
   flex-wrap: wrap;
 `;
-
-// const ResultsCard = styled.div`
-//   width: 224px;
-//   height: 190px;
-//   border-radius: 16px;
-//   border: 1px solid ${(props) => props.theme.color.gray200};
-//   background-color: ${(props) => props.theme.color.white};
-
-//   & > img {
-//     border-top-right-radius: inherit;
-//     border-top-left-radius: inherit;
-//     width: 100%;
-//     height: 50%;
-//     object-fit: cover;
-//   }
-
-//   & > div {
-//     padding: 16px 16px 0 16px;
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-
-//     & > p {
-//       color: ${(props) => props.theme.color.gray900};
-//       font-size: 16px;
-//       font-weight: 700;
-//     }
-
-//     & > span {
-//       display: flex;
-//       align-items: center;
-//       gap: 2px;
-//       color: ${(props) => props.theme.color.gray500};
-//       font-size: 12px;
-//     }
-//   }
-
-//   & > p {
-//     padding-top: 12px;
-//     color: ${(props) => props.theme.color.gray700};
-//     font-size: 14px;
-//     padding-left: 16px;
-//   }
-// `;
 
 const CenterText = styled.p`
   margin-top: 136px;
