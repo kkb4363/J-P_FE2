@@ -31,14 +31,18 @@ export default function PlanItem({ item, isEdit }: Props) {
       }}
     >
       <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
-      <PlaceBox>
+      <PlaceBox $isDragging={isDragging}>
         <PlaceNum $isEdit={isEdit}>1</PlaceNum>
         <PlaceTitleBox>
           <p>{item.title}</p>
           <span>{item.subtitle}</span>
         </PlaceTitleBox>
         {isEdit && (
-          <DragHandler ref={setActivatorNodeRef} {...listeners}>
+          <DragHandler
+            ref={setActivatorNodeRef}
+            {...listeners}
+            $isDragging={isDragging}
+          >
             선택
           </DragHandler>
         )}
@@ -72,14 +76,18 @@ const TimeBox = styled.div<{ $isEdit: boolean }>`
   font-size: 14px;
 `;
 
-const PlaceBox = styled.div`
+const PlaceBox = styled.div<{ $isDragging: boolean }>`
   width: 100%;
   height: 75px;
   display: flex;
   align-items: center;
   padding: 17px 24px;
   background-color: ${(props) => props.theme.color.white};
-  border: 1px solid ${(props) => props.theme.color.gray200};
+  border: 1px solid
+    ${(props) =>
+      props.$isDragging
+        ? props.theme.color.secondary
+        : props.theme.color.gray200};
   border-radius: 16px;
   gap: 16px;
 `;
@@ -119,8 +127,11 @@ const PlaceTitleBox = styled.div`
   }
 `;
 
-const DragHandler = styled.div`
-  color: ${(props) => props.theme.color.gray300};
+const DragHandler = styled.div<{ $isDragging: boolean }>`
+  color: ${(props) =>
+    props.$isDragging
+      ? props.theme.color.secondary
+      : props.theme.color.gray300};
   font-size: 12px;
   white-space: nowrap;
   cursor: pointer;
