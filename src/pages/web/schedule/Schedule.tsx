@@ -2,14 +2,17 @@ import styled from "styled-components";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import ScheduleCard from "../../../components/web/schedule/ScheduleCard";
 import RecommendCard from "../../../components/web/schedule/RecommendCard";
+import { useNavigate } from "react-router-dom";
+import Container from "../../../components/web/Container";
 
 export default function Schedule() {
+  const navigate = useNavigate();
   return (
-    <ScheduleContainer>
+    <Container>
       <>
         <TitleWithButton>
           <h1>내 일정</h1>
-          <button>
+          <button onClick={() => navigate("/createSchedule")}>
             <CalendarCheckIcon stroke="#6979f8" />
             <span>일정 생성</span>
           </button>
@@ -34,17 +37,9 @@ export default function Schedule() {
         <RecommendCard />
         <RecommendCard />
       </RecommendCardBox>
-    </ScheduleContainer>
+    </Container>
   );
 }
-
-const ScheduleContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 60px 15%;
-`;
 
 const TitleWithButton = styled.div`
   display: flex;
