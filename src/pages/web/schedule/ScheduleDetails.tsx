@@ -9,10 +9,6 @@ import PenIcon from "../../../assets/icons/PenIcon";
 import { ParticipantsRow } from "../../../assets/styles/scheduleDetail.style";
 import DaySlider from "../../../components/DaySlider";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
-import MoveDaySlider from "../../../components/MoveDaySlider";
-import OneButtonModal from "../../../components/OneButtonModal";
-import TimeSwiper from "../../../components/TimeSwiper";
-import TwoButtonsModal from "../../../components/TwoButtonsModal";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
 import { planItemProps } from "../../../types/schedule";
@@ -21,18 +17,11 @@ import {
   testImg1,
   testPlanItems,
 } from "../../../utils/staticDatas";
-import NobuttonModal from "../../../components/NobuttonModal";
 
 export default function ScheduleDetails() {
   const [currentDay, setCurrentDay] = useState(0);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
-  const [moveDayOpen, setMoveDayOpen] = useState(false);
-  const [moveTimeOpen, setMoveTimeOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState({
-    delete: false,
-    deleteSuccess: false,
-  });
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -52,57 +41,8 @@ export default function ScheduleDetails() {
     }
   };
 
-  const ModalNextClick = () => {
-    setMoveDayOpen(false);
-    setMoveTimeOpen(true);
-  };
-
-  const handleDeleteItemClick = () => {
-    setDeleteOpen({ delete: false, deleteSuccess: true });
-  };
-
-  const handleDeleteSuccessClick = () => {
-    setDeleteOpen({ delete: false, deleteSuccess: false });
-  };
-
   return (
     <Container>
-      {moveDayOpen && (
-        <OneButtonModal
-          title="다른 날로 이동"
-          buttonText="다음"
-          onClick={ModalNextClick}
-          onClose={() => setMoveDayOpen(false)}
-        >
-          <MoveDaySlider dayList={testDayList} currentDay={1} />
-        </OneButtonModal>
-      )}
-      {moveTimeOpen && (
-        <OneButtonModal
-          title="시간 설정"
-          buttonText="완료"
-          onClick={() => setMoveTimeOpen(false)}
-          onClose={() => setMoveTimeOpen(false)}
-        >
-          <TimeSwiper />
-        </OneButtonModal>
-      )}
-      {deleteOpen.delete && (
-        <TwoButtonsModal
-          text="일정을 삭제할까요?"
-          onClick={handleDeleteItemClick}
-          onClose={() => setDeleteOpen((p) => ({ ...p, delete: false }))}
-        />
-      )}
-      {deleteOpen.deleteSuccess && (
-        <OneButtonModal
-          noCloseBtn
-          buttonText="확인"
-          onClick={handleDeleteSuccessClick}
-        >
-          <ModalText>일정이 삭제되었습니다.</ModalText>
-        </OneButtonModal>
-      )}
       <DetailsTitleBox>
         <h1>일정</h1>
         <div>J P</div>
@@ -163,20 +103,7 @@ export default function ScheduleDetails() {
           >
             <SortableContext items={planItems}>
               {planItems.map((item) => {
-                return (
-                  <PlanItem
-                    key={item.id}
-                    item={item}
-                    isEdit={isEdit}
-                    setMoveDayOpen={setMoveDayOpen}
-                    setDeleteOpen={() =>
-                      setDeleteOpen((p) => ({
-                        ...p,
-                        delete: true,
-                      }))
-                    }
-                  />
-                );
+                return <PlanItem key={item.id} item={item} isEdit={isEdit} />;
               })}
             </SortableContext>
           </DndContext>
@@ -275,9 +202,3 @@ const EditButton = styled.div<{ $isEdit: boolean }>`
 const PlanList = styled.div`
   padding: 40px;
 `;
-
-
-const ModalText = styled.p`
-  font-size: 16px;
-  font-weight: 700;
-`

@@ -1,23 +1,30 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
-import { planItemProps } from "../../../types/schedule";
 import TrashIcon from "../../../assets/icons/TrashIcon";
+import { planItemProps } from "../../../types/schedule";
+import { testDayList } from "../../../utils/staticDatas";
+import MoveDaySlider from "../../MoveDaySlider";
+import OneButtonModal from "../../OneButtonModal";
+import TimeSwiper from "../../TimeSwiper";
+import TwoButtonsModal from "../../TwoButtonsModal";
 
 interface Props {
   item: planItemProps;
   isEdit: boolean;
-  setMoveDayOpen: (flag: boolean) => void;
-  setDeleteOpen: (flags: { delete: boolean; deleteSuccess: boolean }) => void;
 }
 
-export default function PlanItem({
-  item,
-  isEdit,
-  setMoveDayOpen,
-  setDeleteOpen,
-}: Props) {
+export default function PlanItem({ item, isEdit }: Props) {
+  const [isOpenMoveModal, setIsOpenMoveModal] = useState({
+    moveDay: false,
+    moveTime: false,
+  });
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
+    delete: false,
+    deleteSuccess: false,
+  });
   const {
     attributes,
     listeners,
@@ -30,54 +37,104 @@ export default function PlanItem({
 
   const handleItemClick = () => {
     if (isEdit) {
-      setMoveDayOpen(true);
+      setIsOpenMoveModal((p) => ({ ...p, moveDay: true }));
     }
   };
 
+  const handleModalNextClick = () => {
+    setIsOpenMoveModal({ moveDay: false, moveTime: true });
+  };
+
+  const handleDeleteItemClick = () => {
+    setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+  };
+
+  const handleDeleteSuccessClick = () => {
+    setIsOpenDeleteModal({ delete: false, deleteSuccess: false });
+  };
+
   return (
-    <PlanItemContainer
-      ref={setNodeRef}
-      {...attributes}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-        zIndex: isDragging ? "100" : "auto",
-      }}
-    >
-      <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
-      <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
-        <PlaceNum $isEdit={isEdit}>1</PlaceNum>
-        <PlaceTitleBox>
-          <p>{item.title}</p>
-          <span>{item.subtitle}</span>
-        </PlaceTitleBox>
-        {isEdit && (
-          <DragHandler
-            ref={setActivatorNodeRef}
-            {...listeners}
-            $isDragging={isDragging}
-          >
-            선택
-          </DragHandler>
-        )}
-      </PlaceBox>
-      {isEdit ? (
-        <button
-          onClick={() =>
-            setDeleteOpen({
-              delete: true,
-              deleteSuccess: false,
-            })
-          }
+    <>
+      {isOpenMoveModal.moveDay && (
+        <OneButtonModal
+          title="다른 날로 이동"
+          buttonText="다음"
+          onClick={handleModalNextClick}
+          onClose={() => setIsOpenMoveModal((p) => ({ ...p, moveDay: false }))}
         >
-          <TrashIcon />
-        </button>
-      ) : (
-        <DetailsButton>
-          <FileCheckIcon />
-        </DetailsButton>
+          <MoveDaySlider dayList={testDayList} currentDay={1} />
+        </OneButtonModal>
       )}
-    </PlanItemContainer>
+      {isOpenMoveModal.moveTime && (
+        <OneButtonModal
+          title="시간 설정"
+          buttonText="완료"
+          onClick={() => setIsOpenMoveModal((p) => ({ ...p, moveTime: false }))}
+          onClose={() => setIsOpenMoveModal((p) => ({ ...p, moveTime: false }))}
+        >
+          <TimeSwiper />
+        </OneButtonModal>
+      )}
+      {isOpenDeleteModal.delete && (
+        <TwoButtonsModal
+          text="일정을 삭제할까요?"
+          onClick={handleDeleteItemClick}
+          onClose={() => setIsOpenDeleteModal((p) => ({ ...p, delete: false }))}
+        />
+      )}
+      {isOpenDeleteModal.deleteSuccess && (
+        <OneButtonModal
+          noCloseBtn
+          buttonText="확인"
+          onClick={handleDeleteSuccessClick}
+        >
+          <ModalText>일정이 삭제되었습니다.</ModalText>
+        </OneButtonModal>
+      )}
+      <PlanItemContainer
+        ref={setNodeRef}
+        {...attributes}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition: transition,
+          zIndex: isDragging ? "100" : "auto",
+        }}
+      >
+        <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
+        <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
+          <PlaceNum $isEdit={isEdit}>1</PlaceNum>
+          <PlaceTitleBox>
+            <p>{item.title}</p>
+            <span>{item.subtitle}</span>
+          </PlaceTitleBox>
+          {isEdit && (
+            <DragHandler
+              ref={setActivatorNodeRef}
+              {...listeners}
+              $isDragging={isDragging}
+            >
+              선택
+            </DragHandler>
+          )}
+        </PlaceBox>
+        {isEdit ? (
+          <button
+            onClick={() =>
+              setIsOpenDeleteModal({
+                delete: true,
+                deleteSuccess: false,
+              })
+            }
+          >
+            <TrashIcon />
+          </button>
+        ) : (
+          <DetailsButton>
+            <FileCheckIcon />
+          </DetailsButton>
+        )}
+      </PlanItemContainer>
+    </>
   );
 }
 
@@ -171,4 +228,9 @@ const DetailsButton = styled.div`
   border-radius: 8px;
   background-color: ${(props) => props.theme.color.white};
   border: 1px solid ${(props) => props.theme.color.secondary};
+`;
+
+const ModalText = styled.p`
+  font-size: 16px;
+  font-weight: 700;
 `;
