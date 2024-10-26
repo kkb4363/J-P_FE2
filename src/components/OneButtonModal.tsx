@@ -5,10 +5,11 @@ import { ModalOverlay, ModalWrapper } from "../assets/styles/modal.style";
 import PrimaryButton from "./mobile/PrimaryButton";
 
 interface Props {
-  title: string;
+  title?: string;
   buttonText: string;
   onClick: () => void;
-  onClose: () => void;
+  onClose?: () => void;
+  noCloseBtn?: boolean;
   modalRef?: React.RefObject<HTMLDivElement>;
   children: React.ReactNode;
 }
@@ -18,6 +19,7 @@ export default function OneButtonModal({
   buttonText,
   onClick,
   onClose,
+  noCloseBtn = false,
   children,
 }: Props) {
   return (
@@ -27,9 +29,13 @@ export default function OneButtonModal({
         <ModalHeader>
           <EmptyBox />
           <p>{title}</p>
-          <CancelIcon onClick={onClose} />
+          {!noCloseBtn && (
+            <CloseButton onClick={onClose}>
+              <CancelIcon />
+            </CloseButton>
+          )}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody $noCloseBtn={noCloseBtn}>
           {children}
           <ModalButtonBox>
             <PrimaryButton text={buttonText} blue onClick={onClick} />
@@ -52,15 +58,19 @@ const EmptyBox = styled.div`
   width: 22px;
 `;
 
-const ModalBody = styled.div`
+const CloseButton = styled.div`
+  cursor: pointer;
+`;
+
+const ModalBody = styled.div<{ $noCloseBtn: boolean }>`
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 7px 32px 20px;
+  padding: ${({ $noCloseBtn }) => ($noCloseBtn ? "35px 0 51px" : "7px 0 20px")};
 `;
 
 const ModalButtonBox = styled.div`
-  width: 70%;
+  width: 190px;
 `;

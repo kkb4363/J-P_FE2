@@ -1,27 +1,53 @@
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { useState } from "react";
 import styled from "styled-components";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
-import {
-	ParticipantsRow
-} from "../../../assets/styles/scheduleDetail.style";
+import { ParticipantsRow } from "../../../assets/styles/scheduleDetail.style";
 import DaySlider from "../../../components/DaySlider";
+import JPToggle from "../../../components/JPToggle";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
-import { testDayList, testImg1 } from "../../../utils/staticDatas";
+import PlanItem from "../../../components/web/schedule/PlanItem";
+import { planItemProps } from "../../../types/schedule";
+import {
+  testDayList,
+  testImg1,
+  testPlanItems,
+} from "../../../utils/staticDatas";
 
 export default function ScheduleDetails() {
   const [currentDay, setCurrentDay] = useState(0);
+  const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
+  const [isEdit, setIsEdit] = useState(false);
+
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
   };
+
+  const handleDragEnd = ({ over, active }: DragEndEvent) => {
+    if (!over) return;
+    if (active.id !== over.id) {
+      const activeIndex = planItems.findIndex(
+        (item) => item.id === active.id.toString()
+      );
+      const overIndex = planItems.findIndex(
+        (item) => item.id === over.id.toString()
+      );
+
+      setPlanItems(arrayMove(planItems, activeIndex, overIndex));
+    }
+  };
+
   return (
     <Container>
       <DetailsTitleBox>
         <h1>일정</h1>
-        <div>J P</div>
+        <JPToggle />
       </DetailsTitleBox>
       <DetailsInfoBox>
         <InfoBox>
@@ -56,9 +82,15 @@ export default function ScheduleDetails() {
       />
 
       <PlansBox>
-        <EditButton>
-          <PenIcon stroke="#808080" />
-          <p>편집</p>
+        <EditButton $isEdit={isEdit} onClick={() => setIsEdit((prev) => !prev)}>
+          {isEdit ? (
+            <p>완료</p>
+          ) : (
+            <>
+              <PenIcon stroke="#808080" />
+              <p>편집</p>
+            </>
+          )}
         </EditButton>
         <DaySlider
           web
@@ -66,8 +98,19 @@ export default function ScheduleDetails() {
           currentDay={currentDay}
           onDayClick={handleDayClick}
         />
-        <PlanList>plans</PlanList>
-      </PlansBox> 
+        <PlanList>
+          <DndContext
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext items={planItems}>
+              {planItems.map((item) => {
+                return <PlanItem key={item.id} item={item} isEdit={isEdit} />;
+              })}
+            </SortableContext>
+          </DndContext>
+        </PlanList>
+      </PlansBox>
     </Container>
   );
 }
@@ -78,6 +121,8 @@ const DetailsTitleBox = styled.div`
   align-items: center;
   margin-bottom: 24px;
 `;
+
+
 
 const DetailsInfoBox = styled(DetailsTitleBox)`
   margin-bottom: 16px;
@@ -142,15 +187,19 @@ const PlansBox = styled.div`
   padding: 24px;
 `;
 
-const EditButton = styled.div`
+const EditButton = styled.div<{ $isEdit: boolean }>`
+  height: 16px;
   display: flex;
   align-self: flex-end;
   gap: 2px;
   margin-bottom: 12px;
+  cursor: pointer;
 
   & > p {
-    color: ${(props) => props.theme.color.gray500};
+    color: ${(props) =>
+      props.$isEdit ? props.theme.color.secondary : props.theme.color.gray500};
     font-size: 14px;
+    font-weight: ${({ $isEdit }) => $isEdit && "700"};
   }
 `;
 
