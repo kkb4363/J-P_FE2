@@ -57,7 +57,7 @@ export default function Search() {
           <SubTitle>실시간 검색 여행지</SubTitle>
           <TagBoxRow>
             {realTimeWords.map((r) => (
-              <NewSearchTag key={r}>
+              <NewSearchTag key={r} onClick={() => handleRecentWordClick(r)}>
                 <span>#{r}</span>
               </NewSearchTag>
             ))}

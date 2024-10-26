@@ -26,6 +26,7 @@ export default function useSearchHook() {
     await getSearchPlaceList({ searchString: s + "", page: 1 }).then((res) => {
       setSearchData(res?.data.data);
       setSearch(s);
+      userStore.addSearchData(s);
     });
   };
 
