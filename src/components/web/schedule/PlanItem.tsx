@@ -9,7 +9,7 @@ interface Props {
   item: planItemProps;
   isEdit: boolean;
   setMoveDayOpen: (flag: boolean) => void;
-  setDeleteOpen: (flag: boolean) => void;
+  setDeleteOpen: (flags: { delete: boolean; deleteSuccess: boolean }) => void;
 }
 
 export default function PlanItem({
@@ -62,7 +62,14 @@ export default function PlanItem({
         )}
       </PlaceBox>
       {isEdit ? (
-        <button onClick={() => setDeleteOpen(true)}>
+        <button
+          onClick={() =>
+            setDeleteOpen({
+              delete: true,
+              deleteSuccess: false,
+            })
+          }
+        >
           <TrashIcon />
         </button>
       ) : (

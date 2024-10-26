@@ -21,6 +21,7 @@ import {
   testImg1,
   testPlanItems,
 } from "../../../utils/staticDatas";
+import NobuttonModal from "../../../components/NobuttonModal";
 
 export default function ScheduleDetails() {
   const [currentDay, setCurrentDay] = useState(0);
@@ -28,7 +29,10 @@ export default function ScheduleDetails() {
   const [isEdit, setIsEdit] = useState(false);
   const [moveDayOpen, setMoveDayOpen] = useState(false);
   const [moveTimeOpen, setMoveTimeOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState({
+    delete: false,
+    deleteSuccess: false,
+  });
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -53,6 +57,14 @@ export default function ScheduleDetails() {
     setMoveTimeOpen(true);
   };
 
+  const handleDeleteItemClick = () => {
+    setDeleteOpen({ delete: false, deleteSuccess: true });
+  };
+
+  const handleDeleteSuccessClick = () => {
+    setDeleteOpen({ delete: false, deleteSuccess: false });
+  };
+
   return (
     <Container>
       {moveDayOpen && (
@@ -75,12 +87,21 @@ export default function ScheduleDetails() {
           <TimeSwiper />
         </OneButtonModal>
       )}
-      {deleteOpen && (
+      {deleteOpen.delete && (
         <TwoButtonsModal
           text="일정을 삭제할까요?"
-          onClick={() => setDeleteOpen(false)}
-          onClose={() => setDeleteOpen(false)}
-        ></TwoButtonsModal>
+          onClick={handleDeleteItemClick}
+          onClose={() => setDeleteOpen((p) => ({ ...p, delete: false }))}
+        />
+      )}
+      {deleteOpen.deleteSuccess && (
+        <OneButtonModal
+          noCloseBtn
+          buttonText="확인"
+          onClick={handleDeleteSuccessClick}
+        >
+          <ModalText>일정이 삭제되었습니다.</ModalText>
+        </OneButtonModal>
       )}
       <DetailsTitleBox>
         <h1>일정</h1>
@@ -148,7 +169,12 @@ export default function ScheduleDetails() {
                     item={item}
                     isEdit={isEdit}
                     setMoveDayOpen={setMoveDayOpen}
-                    setDeleteOpen={setDeleteOpen}
+                    setDeleteOpen={() =>
+                      setDeleteOpen((p) => ({
+                        ...p,
+                        delete: true,
+                      }))
+                    }
                   />
                 );
               })}
@@ -249,3 +275,9 @@ const EditButton = styled.div<{ $isEdit: boolean }>`
 const PlanList = styled.div`
   padding: 40px;
 `;
+
+
+const ModalText = styled.p`
+  font-size: 16px;
+  font-weight: 700;
+`
