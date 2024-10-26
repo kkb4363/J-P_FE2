@@ -11,6 +11,7 @@ export default function PrevArrow(props: any) {
 }
 
 export const ArrowBox = styled.span`
+  width: 24px;
   display: flex;
   align-items: center;
   justify-content: center;

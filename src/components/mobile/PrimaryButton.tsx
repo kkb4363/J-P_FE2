@@ -38,6 +38,7 @@ const PrimaryButtonContainer = styled.button<{
 }>`
   width: ${(props) => props.$width};
   height: ${(props) => props.$height};
+  padding: 0;
   background-color: ${(props) =>
     props.$blue
       ? props.theme.color.secondary
