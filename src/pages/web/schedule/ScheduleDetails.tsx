@@ -8,6 +8,7 @@ import InviteIcon from "../../../assets/icons/InviteIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
 import { ParticipantsRow } from "../../../assets/styles/scheduleDetail.style";
 import DaySlider from "../../../components/DaySlider";
+import JPToggle from "../../../components/JPToggle";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
@@ -22,6 +23,7 @@ export default function ScheduleDetails() {
   const [currentDay, setCurrentDay] = useState(0);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
+
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -45,7 +47,7 @@ export default function ScheduleDetails() {
     <Container>
       <DetailsTitleBox>
         <h1>일정</h1>
-        <div>J P</div>
+        <JPToggle />
       </DetailsTitleBox>
       <DetailsInfoBox>
         <InfoBox>
@@ -119,6 +121,8 @@ const DetailsTitleBox = styled.div`
   align-items: center;
   margin-bottom: 24px;
 `;
+
+
 
 const DetailsInfoBox = styled(DetailsTitleBox)`
   margin-bottom: 16px;
