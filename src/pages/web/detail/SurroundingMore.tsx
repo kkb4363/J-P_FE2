@@ -108,6 +108,7 @@ export default function SurroundingMore() {
 }
 
 const MoreContainer = styled.div`
+  // outlet Box padding 없애기
   width: calc(100% + 240px);
   height: calc(100% + 80px);
   margin-left: -120px;

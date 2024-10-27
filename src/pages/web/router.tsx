@@ -18,6 +18,7 @@ import Schedule from "./schedule/Schedule";
 import TravelogueDetails from "./travel-review/TravelogueDetails";
 import ScheduleDetails from "./schedule/ScheduleDetails";
 import CreateSchedule from "./schedule/CreateSchedule";
+import CreatePlace from "./schedule/CreatePlace";
 
 export const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: ":placeId",
+        path: "details/:placeId",
         element: <Detail />,
       },
       {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
       {
         path: "createSchedule",
         element: <CreateSchedule />,
+      },
+      {
+        path: "createPlace",
+        element: <CreatePlace />,
       },
       {
         path: "travelReview",
