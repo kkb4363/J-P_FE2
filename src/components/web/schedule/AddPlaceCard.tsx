@@ -3,10 +3,27 @@ import testImg from "../../../assets/images/testImg1.png";
 import styled from "styled-components";
 import IconBox from "../../IconBox";
 import PlusIcon from "../../../assets/icons/PlusIcon";
+import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
 
-export default function AddPlaceCard() {
+interface Props {
+  width?: string;
+  height?: string;
+  imgSize?: string;
+  isSelect: boolean;
+  handleAdd: () => void;
+  handleRemove: () => void;
+}
+
+export default function AddPlaceCard({
+  width = "430px",
+  height = "118px",
+  imgSize = "96px",
+  isSelect,
+  handleAdd,
+  handleRemove,
+}: Props) {
   return (
-    <AddPlaceCardContainer>
+    <AddPlaceCardContainer $width={width} $height={height} $imgSize={imgSize}>
       <img src={testImg} alt="이미지없음" />
 
       <div>
@@ -18,16 +35,26 @@ export default function AddPlaceCard() {
         </IconBox>
       </div>
 
-      <PlusButton>
-        <PlusIcon stroke="#6979f8" />
-      </PlusButton>
+      {!isSelect ? (
+        <PlusButton onClick={handleAdd}>
+          <PlusIcon stroke="#6979f8" />
+        </PlusButton>
+      ) : (
+        <CheckButton onClick={handleRemove}>
+          <CheckOnlyIcon />
+        </CheckButton>
+      )}
     </AddPlaceCardContainer>
   );
 }
 
-const AddPlaceCardContainer = styled.div`
-  width: 430px;
-  height: 118px;
+const AddPlaceCardContainer = styled.div<{
+  $width: string;
+  $height: string;
+  $imgSize: string;
+}>`
+  width: ${(props) => props.$width && props.$width};
+  height: ${(props) => props.$height && props.$height};
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
   background-color: ${(props) => props.theme.color.white};
@@ -36,8 +63,8 @@ const AddPlaceCardContainer = styled.div`
   align-items: center;
 
   & > img {
-    width: 99px;
-    height: 95px;
+    width: ${(props) => props.$imgSize && props.$imgSize};
+    height: ${(props) => props.$imgSize && props.$imgSize};
     border-radius: 16px;
     object-fit: cover;
   }
@@ -71,4 +98,8 @@ const PlusButton = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+`;
+
+const CheckButton = styled(PlusButton)`
+  background-color: ${(props) => props.theme.color.secondary};
 `;

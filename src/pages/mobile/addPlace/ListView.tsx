@@ -1,34 +1,22 @@
-import { useState } from "react";
 import styled from "styled-components";
-import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
-import StarIcon from "../../../assets/icons/StarIcon";
-import testImg from "../../../assets/images/testImg.png";
+
 import { scrollHidden } from "../../../assets/styles/home.style";
 import CustomInput from "../../../components/CustomInput";
 import OneButtonModal from "../../../components/OneButtonModal";
 import TimeSwiper from "../../../components/TimeSwiper";
-import SelectDayModal from "../../../components/SelectDayModal";
+import SelectDayModal from "../../../components/mobile/schedule/SelectDayModal";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
+import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
 
 export default function ListView() {
-  const [list, setList] = useState<number[]>([]);
-
-  const handleAdd = (id: number) => {
-    setList((prevList) => [...prevList, id]);
-  };
-
-  const handleRemove = (id: number) => {
-    const newList = list.filter((prev) => prev !== id);
-    setList(newList);
-  };
-
-  const [openModal, setOpenModal] = useState({
-    selectDay: false,
-    selectTime: false,
-  });
-
-  const handleDaySelect = () => {
-    setOpenModal((p) => ({ ...p, selectDay: false, selectTime: true }));
-  };
+  const {
+    list,
+    handleAdd,
+    handleRemove,
+    openModal,
+    setOpenModal,
+    handleDaySelect,
+  } = useAddPlaceHook();
 
   return (
     <>
@@ -36,30 +24,15 @@ export default function ListView() {
 
       <PlaceCardCol>
         {Array.from({ length: 7 }).map((_, idx) => (
-          <PlaceCard key={idx}>
-            <img src={testImg} alt="listview_img" />
-
-            <PlaceCardTextCol>
-              <h1>명소 {idx}</h1>
-              <span>한려해상국립공원</span>
-              <div>
-                <StarIcon />
-                <span>4.9</span>
-              </div>
-            </PlaceCardTextCol>
-
-            <PlaceCardAddButtonBox>
-              {!list.includes(idx) ? (
-                <PlaceCardAddButton onClick={() => handleAdd(idx)}>
-                  +
-                </PlaceCardAddButton>
-              ) : (
-                <CheckButton onClick={() => handleRemove(idx)}>
-                  <CheckOnlyIcon />
-                </CheckButton>
-              )}
-            </PlaceCardAddButtonBox>
-          </PlaceCard>
+          <AddPlaceCard
+            key={idx}
+            height="100px"
+            width="350px"
+            imgSize="80px"
+            isSelect={list.includes(idx)}
+            handleAdd={() => handleAdd(idx)}
+            handleRemove={() => handleRemove(idx)}
+          />
         ))}
       </PlaceCardCol>
 
@@ -87,7 +60,7 @@ export default function ListView() {
           onClick={() => {}}
           onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
-          <TimeSwiper />
+          <TimeSwiper isMobile={true} />
         </OneButtonModal>
       )}
     </>
@@ -153,13 +126,6 @@ export const PlaceCardTextCol = styled.div`
   }
 `;
 
-const PlaceCardAddButtonBox = styled.div`
-  padding-right: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 export const PlaceCardAddButton = styled.button`
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.color.secondary};
@@ -172,10 +138,6 @@ export const PlaceCardAddButton = styled.button`
 
   color: ${(props) => props.theme.color.secondary};
   font-weight: 700;
-`;
-
-const CheckButton = styled(PlaceCardAddButton)`
-  background-color: ${(props) => props.theme.color.secondary};
 `;
 
 export const SaveButtonBox = styled.div`

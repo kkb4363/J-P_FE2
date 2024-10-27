@@ -1,6 +1,6 @@
-import OneButtonModal from "./OneButtonModal";
-import ArrowLeftIcon from "../assets/icons/ArrowLeftIcon";
-import ArrowRightIcon from "../assets/icons/ArrowRightIcon";
+import OneButtonModal from "../../OneButtonModal";
+import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
+import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import styled from "styled-components";
 
 interface Props {

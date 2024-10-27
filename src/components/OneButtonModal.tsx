@@ -12,6 +12,9 @@ interface Props {
   noCloseBtn?: boolean;
   modalRef?: React.RefObject<HTMLDivElement>;
   children: React.ReactNode;
+  width?: string;
+  height?: string;
+  fontSize?: string;
 }
 
 export default function OneButtonModal({
@@ -21,12 +24,15 @@ export default function OneButtonModal({
   onClose,
   noCloseBtn = false,
   children,
+  width,
+  height,
+  fontSize = "16px",
 }: Props) {
   return (
     <>
       <ModalOverlay onClick={onClose} />
-      <ModalWrapper>
-        <ModalHeader>
+      <ModalWrapper $width={width} $height={height}>
+        <ModalHeader $fontSize={fontSize}>
           <EmptyBox />
           <p>{title}</p>
           {!noCloseBtn && (
@@ -46,12 +52,16 @@ export default function OneButtonModal({
   );
 }
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.div<{ $fontSize: string }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  font-weight: 700;
+
+  & > p {
+    font-weight: 700;
+    font-size: ${(props) => props.$fontSize && props.$fontSize};
+  }
 `;
 
 const EmptyBox = styled.div`

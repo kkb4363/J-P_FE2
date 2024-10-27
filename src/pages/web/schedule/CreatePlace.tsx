@@ -5,9 +5,20 @@ import CustomInput from "../../../components/CustomInput";
 import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
 import PrimaryButton from "../../../components/mobile/PrimaryButton";
 import OneButtonModal from "../../../components/OneButtonModal";
-import SelectDayModal from "../../../components/SelectDayModal";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
+import { scrollHidden } from "../../../assets/styles/home.style";
+import TimeSwiper from "../../../components/TimeSwiper";
+import SelectDayModal from "../../../components/web/schedule/SelectDayModal";
 
 export default function CreatePlace() {
+  const {
+    list,
+    handleAdd,
+    handleRemove,
+    openModal,
+    setOpenModal,
+    handleDaySelect,
+  } = useAddPlaceHook();
   return (
     <>
       <CreatePlaceContainer>
@@ -23,7 +34,14 @@ export default function CreatePlace() {
           </InputBox>
 
           <AddPlaceCardCol>
-            <AddPlaceCard />
+            {Array.from({ length: 7 }).map((_, idx) => (
+              <AddPlaceCard
+                key={idx}
+                isSelect={list.includes(idx)}
+                handleAdd={() => handleAdd(idx)}
+                handleRemove={() => handleRemove(idx)}
+              />
+            ))}
           </AddPlaceCardCol>
 
           <ButtonBox>
@@ -32,7 +50,8 @@ export default function CreatePlace() {
               height="44px"
               blue={true}
               text="완료"
-              isDisabled={true}
+              isDisabled={list.length === 0}
+              onClick={() => setOpenModal((p) => ({ ...p, selectDay: true }))}
             />
           </ButtonBox>
         </SideBar>
@@ -47,6 +66,28 @@ export default function CreatePlace() {
           />
         </GoogleMapBox>
       </CreatePlaceContainer>
+
+      {openModal.selectDay && (
+        <SelectDayModal
+          onClick={handleDaySelect}
+          onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
+        />
+      )}
+
+      {openModal.selectTime && (
+        <OneButtonModal
+          key={"시간 설정 모달"}
+          title="시간 설정"
+          buttonText="완료"
+          onClick={() => {}}
+          onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
+          width="440px"
+          height="320px"
+          fontSize="24px"
+        >
+          <TimeSwiper isMobile={false} />
+        </OneButtonModal>
+      )}
     </>
   );
 }
@@ -68,6 +109,9 @@ const SideBar = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.color.white};
+  overflow-y: scroll;
+  overflow-x: hidden;
+  ${scrollHidden};
 
   & > h1 {
     color: ${(props) => props.theme.color.gray900};
