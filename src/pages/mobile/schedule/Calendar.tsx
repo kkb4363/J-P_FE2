@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NextButtonBox } from "./ScheduleLayout";
 
-interface DayProps {
+export interface DayProps {
   startDate: Date;
   endDate: Date | undefined;
   key: string;

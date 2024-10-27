@@ -14,8 +14,11 @@ import TravelReview from "./travel-review/TravelReview";
 import ReviewDetails from "./travel-review/ReviewDetails";
 import Search from "./search/Search";
 import ImageViewer from "./travel-review/ImageViewer";
+import Schedule from "./schedule/Schedule";
 import TravelogueDetails from "./travel-review/TravelogueDetails";
 import ScheduleDetails from "./schedule/ScheduleDetails";
+import CreateSchedule from "./schedule/CreateSchedule";
+import CreatePlace from "./schedule/CreatePlace";
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +30,7 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: ":placeId",
+        path: "details/:placeId",
         element: <Detail />,
       },
       {
@@ -45,6 +48,22 @@ export const router = createBrowserRouter([
       {
         path: "surroundingMore/:lng/:lat",
         element: <SurroundingMore />,
+      },
+      {
+        path: "schedule",
+        element: <Schedule />,
+      },
+      {
+        path: "schedule/details/:scheduleId",
+        element: <ScheduleDetails />,
+      },
+      {
+        path: "createSchedule",
+        element: <CreateSchedule />,
+      },
+      {
+        path: "createPlace",
+        element: <CreatePlace />,
       },
       {
         path: "travelReview",
@@ -91,10 +110,6 @@ export const router = createBrowserRouter([
       {
         path: "search",
         element: <Search />,
-      },
-      {
-        path: "schedule/details/:scheduleId",
-        element: <ScheduleDetails />,
       },
     ],
   },

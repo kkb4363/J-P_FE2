@@ -28,7 +28,7 @@ export default function More() {
   const handleClick = (placeId: string) => {
     getHomeTab() === "CITY"
       ? navigate(`/city/${placeId}`)
-      : navigate(`/${placeId}`);
+      : navigate(`/details/${placeId}`);
   };
 
   useEffect(() => {

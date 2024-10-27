@@ -2,7 +2,11 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-export default function TimeSwiper() {
+interface Props {
+  isMobile: boolean;
+}
+
+export default function TimeSwiper({ isMobile }: Props) {
   const [selectTime, setSelectTime] = useState(0); //0 오전 1 오후
   const [selectHour, setSelectHour] = useState(0);
   const [selectMin, setSelectMin] = useState(0);
@@ -16,7 +20,7 @@ export default function TimeSwiper() {
   });
 
   return (
-    <TimeModalContainer>
+    <TimeModalContainer $isMobile={isMobile}>
       <Swiper
         direction="vertical"
         loop={true}
@@ -70,8 +74,9 @@ export default function TimeSwiper() {
   );
 }
 
-const TimeModalContainer = styled.div`
-  max-height: 90px;
+const TimeModalContainer = styled.div<{ $isMobile: boolean }>`
+  max-height: ${(props) => (props.$isMobile ? "90px" : "120px")};
+  margin-top: ${(props) => (props.$isMobile ? 0 : "30px")};
   width: 100%;
   align-items: center;
   display: flex;

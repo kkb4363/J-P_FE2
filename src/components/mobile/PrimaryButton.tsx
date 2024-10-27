@@ -7,6 +7,7 @@ interface Props {
   blue?: boolean;
   secondary?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  isDisabled?: boolean;
 }
 
 export default function PrimaryButton({
@@ -16,6 +17,7 @@ export default function PrimaryButton({
   blue = false,
   secondary = false,
   onClick,
+  isDisabled,
 }: Props) {
   return (
     <PrimaryButtonContainer
@@ -24,6 +26,7 @@ export default function PrimaryButton({
       onClick={onClick}
       $blue={blue}
       $secondary={secondary}
+      disabled={isDisabled}
     >
       {text}
     </PrimaryButtonContainer>
@@ -42,12 +45,17 @@ const PrimaryButtonContainer = styled.button<{
   background-color: ${(props) =>
     props.$blue
       ? props.theme.color.secondary
-      : props.$secondary ? props.theme.color.white : props.theme.color.main};
+      : props.$secondary
+      ? props.theme.color.white
+      : props.theme.color.main};
   border-radius: 16px;
-  color: ${(props) => props.$secondary
-    ? props.theme.color.gray700
-    : props.theme.color.white};
+  color: ${(props) =>
+    props.$secondary ? props.theme.color.gray700 : props.theme.color.white};
   font-weight: 700;
   font-size: 14px;
-  border: 1px ${(props) => (props.$secondary ? "solid" : "none")} ${(props) => props.theme.color.gray300};
+  border: 1px ${(props) => (props.$secondary ? "solid" : "none")}${(props) => props.theme.color.gray300};
+
+  &:disabled {
+    background-color: ${(props) => props.theme.color.gray200};
+  }
 `;
