@@ -1,29 +1,18 @@
-import styled from "styled-components";
-import CustomInput from "../../../components/CustomInput";
-import { scrollHidden } from "../../../assets/styles/home.style";
-import testImg from "../../../assets/images/testImg.png";
-import StarIcon from "../../../assets/icons/StarIcon";
 import { useState } from "react";
+import styled from "styled-components";
+import "swiper/css";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
-import "swiper/css";
-import { Swiper, SwiperSlide } from "swiper/react";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
+import StarIcon from "../../../assets/icons/StarIcon";
+import testImg from "../../../assets/images/testImg.png";
+import { scrollHidden } from "../../../assets/styles/home.style";
+import CustomInput from "../../../components/CustomInput";
 import OneButtonModal from "../../../components/OneButtonModal";
+import TimeSwiper from "../../../components/TimeSwiper";
 
 export default function ListView() {
   const [list, setList] = useState<number[]>([]);
-  const hour = Array.from({ length: 12 }).map((v, i) => {
-    const num = i + 1;
-    return num < 10 ? `0${num}` : `${num}`;
-  });
-  const min = Array.from({ length: 6 }).map((v, i) => {
-    return i === 0 ? `00` : i * 10;
-  });
-
-  const [selectTime, setSelectTime] = useState(0); //0 오전 1 오후
-  const [selectHour, setSelectHour] = useState(0);
-  const [selectMin, setSelectMin] = useState(0);
 
   const handleAdd = (id: number) => {
     setList((prevList) => [...prevList, id]);
@@ -124,49 +113,7 @@ export default function ListView() {
           onClick={() => {}}
           onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
-          <TimeModalContainer>
-            <Swiper
-              direction="vertical"
-              loop={true}
-              slideToClickedSlide={true}
-              loopAdditionalSlides={1}
-              spaceBetween={40}
-              slidesPerView={2}
-              onSlideChange={(swiper) => setSelectTime(swiper.realIndex)}
-              centeredSlides={true}
-            >
-              <SwiperSlide>오전</SwiperSlide>
-              <SwiperSlide>오후</SwiperSlide>
-            </Swiper>
-
-            <Swiper
-              direction="vertical"
-              loop={true}
-              slideToClickedSlide={true}
-              spaceBetween={10}
-              slidesPerView={3}
-              onSlideChange={(swiper) => setSelectHour(swiper.realIndex + 1)}
-              centeredSlides={true}
-            >
-              {hour.map((hour) => (
-                <SwiperSlide key={hour}>{hour}</SwiperSlide>
-              ))}
-            </Swiper>
-
-            <Swiper
-              direction="vertical"
-              loop={true}
-              slideToClickedSlide={true}
-              spaceBetween={10}
-              slidesPerView={3}
-              onSlideChange={(swiper) => setSelectMin(swiper.realIndex * 10)}
-              centeredSlides={true}
-            >
-              {min.map((min) => (
-                <SwiperSlide key={min}>{min}</SwiperSlide>
-              ))}
-            </Swiper>
-          </TimeModalContainer>
+          <TimeSwiper />
         </OneButtonModal>
       )}
     </>
@@ -339,11 +286,4 @@ const Date = styled.div<{ $isActive: boolean }>`
     font-size: 14px;
     font-weight: 500;
   }
-`;
-
-const TimeModalContainer = styled.div`
-  max-height: 90px;
-  width: 100%;
-  align-items: center;
-  display: flex;
 `;
