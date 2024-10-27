@@ -4,46 +4,50 @@ import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import CustomInput from "../../../components/CustomInput";
 import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
 import PrimaryButton from "../../../components/mobile/PrimaryButton";
+import OneButtonModal from "../../../components/OneButtonModal";
+import SelectDayModal from "../../../components/SelectDayModal";
 
 export default function CreatePlace() {
   return (
-    <CreatePlaceContainer>
-      <SideBar>
-        <h1>남해 여행</h1>
-        <h2>
-          <CalendarCheckIcon />
-          4.17~4.19(2박 3일)
-        </h2>
+    <>
+      <CreatePlaceContainer>
+        <SideBar>
+          <h1>남해 여행</h1>
+          <h2>
+            <CalendarCheckIcon />
+            4.17~4.19(2박 3일)
+          </h2>
 
-        <InputBox>
-          <CustomInput text="어디로 떠나고 싶나요?" value="" />
-        </InputBox>
+          <InputBox>
+            <CustomInput text="어디로 떠나고 싶나요?" value="" />
+          </InputBox>
 
-        <AddPlaceCardCol>
-          <AddPlaceCard />
-        </AddPlaceCardCol>
+          <AddPlaceCardCol>
+            <AddPlaceCard />
+          </AddPlaceCardCol>
 
-        <ButtonBox>
-          <PrimaryButton
-            width="190px"
-            height="44px"
-            blue={true}
-            text="완료"
-            isDisabled={true}
+          <ButtonBox>
+            <PrimaryButton
+              width="190px"
+              height="44px"
+              blue={true}
+              text="완료"
+              isDisabled={true}
+            />
+          </ButtonBox>
+        </SideBar>
+
+        <GoogleMapBox>
+          <CustomGoogleMap
+            width="100%"
+            height="98%"
+            lat={12.424}
+            lng={14.242}
+            handleMarkerClick={() => {}}
           />
-        </ButtonBox>
-      </SideBar>
-
-      <GoogleMapBox>
-        <CustomGoogleMap
-          width="100%"
-          height="98%"
-          lat={12.424}
-          lng={14.242}
-          handleMarkerClick={() => {}}
-        />
-      </GoogleMapBox>
-    </CreatePlaceContainer>
+        </GoogleMapBox>
+      </CreatePlaceContainer>
+    </>
   );
 }
 
