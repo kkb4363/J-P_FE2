@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MyPageTitle } from "./MyReviews";
 import testImg from "../../../assets/images/testImg.png";
+import HeartIcon from "../../../assets/icons/HeartIcon";
 
 export default function MyLikes() {
   return (
@@ -10,10 +11,15 @@ export default function MyLikes() {
         <Tab $isActive={true}>전체</Tab>
         <Tab $isActive={false}>여행지</Tab>
         <Tab $isActive={false}>도시</Tab>
+        <Tab $isActive={false}>리뷰</Tab>
+        <Tab $isActive={false}>여행기</Tab>
       </TabRow>
 
       <ImgGridBox>
         <ImgBox>
+          <HeartIconBox>
+            <HeartIcon width="24" height="24" stroke="#ff5757" fill="#ff5757" />
+          </HeartIconBox>
           <img src={testImg} alt="like" />
           <div>
             <p>양평 두물머리</p>
@@ -21,6 +27,9 @@ export default function MyLikes() {
           </div>
         </ImgBox>
         <ImgBox>
+          <HeartIconBox>
+            <HeartIcon width="24" height="24" stroke="#ff5757" fill="#ff5757" />
+          </HeartIconBox>
           <img src={testImg} alt="like" />
           <div>
             <p>양평 두물머리</p>
@@ -28,6 +37,9 @@ export default function MyLikes() {
           </div>
         </ImgBox>
         <ImgBox>
+          <HeartIconBox>
+            <HeartIcon width="24" height="24" stroke="#ff5757" fill="#ff5757" />
+          </HeartIconBox>
           <img src={testImg} alt="like" />
           <div>
             <p>양평 두물머리</p>
@@ -60,11 +72,12 @@ const ImgGridBox = styled.div`
 `;
 
 const ImgBox = styled.div`
-  width: 164px;
+  width: 165px;
   height: 200px;
   display: flex;
   flex-direction: column;
   gap: 13px;
+  position: relative;
 
   & > img {
     width: 100%;
@@ -90,4 +103,14 @@ const ImgBox = styled.div`
       font-weight: 700;
     }
   }
+`;
+
+const HeartIconBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  right: 15px;
+  top: 10px;
 `;

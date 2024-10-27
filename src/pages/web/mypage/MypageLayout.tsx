@@ -3,7 +3,7 @@ import testImg from "../../../assets/images/testImg.png";
 import PencilIcon from "../../../assets/icons/PencilIcon";
 import { Outlet, useNavigate } from "react-router-dom";
 import { webMypageTabs } from "../../../utils/staticDatas";
-import Container from './../../../components/web/Container';
+import Container from "./../../../components/web/Container";
 
 export default function MypageLayout() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function MypageLayout() {
         <img src={testImg} alt="프로필이미지" />
         <ProfileTextCol>
           <p>닉네임</p>
-          <span>
+          <span onClick={() => navigate("/edit")}>
             <PencilIcon />
             프로필 수정
           </span>
@@ -23,12 +23,23 @@ export default function MypageLayout() {
       </ProfileBox>
 
       <TabRow>
-        {webMypageTabs.map((tab) => (
-          <Tab key={tab.route} onClick={() => navigate(tab.route)}>
-            <tab.icon width="24" height="24" stroke="#1a1a1a" />
-            <span>{tab.label}</span>
-          </Tab>
-        ))}
+        {webMypageTabs.map((tab) => {
+          const isActive = location.pathname.split("/")[2] === tab.route;
+          return (
+            <Tab
+              $isActive={isActive}
+              key={tab.route}
+              onClick={() => navigate(tab.route)}
+            >
+              <tab.icon
+                width="24"
+                height="24"
+                stroke={isActive ? "#1a1a1a" : "#999"}
+              />
+              <span>{tab.label}</span>
+            </Tab>
+          );
+        })}
       </TabRow>
 
       <OutletBox>
@@ -81,23 +92,28 @@ const TabRow = styled.div`
   align-items: center;
   justify-content: center;
   gap: 61px;
-  padding-bottom: 49px;
+  padding-bottom: 16px;
   border-bottom: 1px solid ${(props) => props.theme.color.gray200};
 `;
 
-const Tab = styled.div`
+const Tab = styled.div<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  padding-bottom: 16px;
+  border-bottom: 1px solid
+    ${(props) => (props.$isActive ? props.theme.color.main : "none")};
+  margin-bottom: -16px;
 
   & > span {
-    color: ${(props) => props.theme.color.gray900};
+    color: ${(props) =>
+      props.$isActive ? props.theme.color.gray900 : props.theme.color.gray400};
     font-size: 16px;
     font-weight: 700;
   }
 `;
 
 const OutletBox = styled.div`
-  margin-top: 45px;
+  margin-top: 24px;
 `;

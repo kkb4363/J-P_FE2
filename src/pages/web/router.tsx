@@ -19,6 +19,7 @@ import TravelogueDetails from "./travel-review/TravelogueDetails";
 import ScheduleDetails from "./schedule/ScheduleDetails";
 import CreateSchedule from "./schedule/CreateSchedule";
 import CreatePlace from "./schedule/CreatePlace";
+import EditProfile from "./mypage/EditProfile";
 
 export const router = createBrowserRouter([
   {
@@ -90,7 +91,7 @@ export const router = createBrowserRouter([
         element: <MypageLayout />,
         children: [
           {
-            path: "",
+            path: "reviews",
             element: <MyReviews />,
           },
           {
@@ -106,6 +107,10 @@ export const router = createBrowserRouter([
             element: <MyTravelogue />,
           },
         ],
+      },
+      {
+        path: "edit",
+        element: <EditProfile />,
       },
       {
         path: "search",

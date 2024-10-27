@@ -20,6 +20,10 @@ export default function MyTravelogue() {
         <ImgCard>
           <p>제주</p>
           <span>03.21 ~ 03.24</span>
+
+          <WritingTag>
+            <span>작성중</span>
+          </WritingTag>
         </ImgCard>
         <ImgCard>
           <p>제주</p>
@@ -41,6 +45,7 @@ const ImgCardGridBox = styled.div`
 `;
 
 const ImgCard = styled.div`
+  position: relative;
   background-image: url(${testImg});
   background-position: center;
   background-size: cover;
@@ -65,5 +70,25 @@ const ImgCard = styled.div`
     color: ${(props) => props.theme.color.white};
     font-size: 16px;
     font-weight: 400;
+  }
+`;
+
+const WritingTag = styled.div`
+  position: absolute;
+  width: 56px;
+  height: 29px;
+  border-radius: 16px;
+  border: 1px solid ${(props) => props.theme.color.secondary};
+  background-color: ${(props) => props.theme.color.white};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 18px;
+  right: 18px;
+
+  & > span {
+    color: ${(props) => props.theme.color.secondary};
+    font-size: 12px;
+    user-select: none;
   }
 `;

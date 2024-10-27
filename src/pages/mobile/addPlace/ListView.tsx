@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import { scrollHidden } from "../../../assets/styles/home.style";
 import CustomInput from "../../../components/CustomInput";
 import OneButtonModal from "../../../components/OneButtonModal";
