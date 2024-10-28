@@ -22,6 +22,8 @@ export default function Search() {
     handleRecentWordClick,
   } = useSearchHook();
 
+  console.log(searchData);
+
   return (
     <>
       <HomeTitle>어디로 떠날까요?</HomeTitle>

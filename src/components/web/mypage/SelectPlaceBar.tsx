@@ -5,9 +5,13 @@ import useSearchHook from "../../../hooks/useSearch";
 import AddPlaceCard from "./AddPlaceCard";
 import PrimaryButton from "../../PrimaryButton";
 import { scrollHidden } from "../../../assets/styles/home.style";
+import { useModalStore } from "../../../store/modal.store";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
 
 export default function SelectPlaceBar() {
+  const { setCurrentModal } = useModalStore();
   const { search, searchData, handleInput, handleInputEnter } = useSearchHook();
+  const writeReviewStore = useWriteReviewStore();
 
   return (
     <SelectPlaceBarContainer>
@@ -24,16 +28,23 @@ export default function SelectPlaceBar() {
       </SearchInputBox>
 
       <CardCol>
-        <AddPlaceCard />
-        <AddPlaceCard />
-        <AddPlaceCard />
+        {searchData?.map((d) => (
+          <AddPlaceCard
+            key={d.id}
+            photoUrl={d.photourl}
+            name={d.name}
+            rating={d.rating}
+            id={d.placeId}
+          />
+        ))}
       </CardCol>
 
       <ButtonBox>
         <PrimaryButton
           blue={true}
           text="완료"
-          onClick={() => {}}
+          isDisabled={writeReviewStore.getSelectedPlace() === ""}
+          onClick={() => setCurrentModal("")}
           width="190px"
         />
       </ButtonBox>

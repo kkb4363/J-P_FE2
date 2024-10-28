@@ -120,7 +120,7 @@ export default function Detail() {
 
         <AddScheduleButton>
           <PlusIcon stroke="#fff" />
-          <span>일정추가</span>
+          <span>일정담기</span>
         </AddScheduleButton>
       </TitleBox>
 

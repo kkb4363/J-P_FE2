@@ -3,23 +3,42 @@ import testImg from "../../../assets/images/testImg2.png";
 import IconBox from "../../IconBox";
 import StarIcon from "../../../assets/icons/StarIcon";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
 
-export default function AddPlaceCard() {
+interface Props {
+  photoUrl?: string;
+  name: string;
+  rating: number;
+  id: string;
+}
+
+export default function AddPlaceCard({ photoUrl, name, rating, id }: Props) {
+  const writeReviewStore = useWriteReviewStore();
+  const isChecked = writeReviewStore.getSelectedPlace() === name;
+
+  const handleSelect = () => {
+    if (isChecked) {
+      writeReviewStore.setSelectedPlace("");
+    } else {
+      writeReviewStore.setSelectedPlace(name);
+    }
+  };
+
   return (
     <AddPlaceCardContainer>
       <img src={testImg} alt="addPlace" />
 
       <TextCol>
         <h1>명소</h1>
-        <p>순천만 국가정원</p>
+        <p>{name}</p>
         <IconBox>
           <StarIcon />
-          <span>4.9</span>
+          <span>{rating}</span>
         </IconBox>
       </TextCol>
 
-      <CheckBox>
-        <CheckOnlyIcon stroke="#b8b8b8" />
+      <CheckBox $isChecked={isChecked} onClick={handleSelect}>
+        <CheckOnlyIcon stroke={isChecked ? "white" : "#b8b8b8"} />
       </CheckBox>
     </AddPlaceCardContainer>
   );
@@ -64,13 +83,16 @@ const TextCol = styled.div`
   }
 `;
 
-const CheckBox = styled.div`
+const CheckBox = styled.div<{ $isChecked: boolean }>`
   width: 34px;
   height: 34px;
   border-radius: 6px;
   border: 1px solid ${(props) => props.theme.color.gray300};
-
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  background-color: ${(props) =>
+    props.$isChecked && props.theme.color.secondary};
 `;

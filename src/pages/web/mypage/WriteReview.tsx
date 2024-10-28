@@ -10,11 +10,11 @@ import { InfoText, SuccessModalContainer, TextBox } from "./WriteTravelouge";
 import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
 import useImagesUploadHook from "../../../hooks/useImagesUpload";
 import XIcon from "../../../assets/icons/XIcon";
-import { scrollHidden } from "../../../assets/styles/home.style";
 import { toast } from "react-toastify";
 import PrimaryButton from "../../../components/PrimaryButton";
 import OneButtonModal from "../../../components/OneButtonModal";
 import { useModalStore } from "../../../store/modal.store";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
 
 export default function WriteReview() {
   const {
@@ -24,9 +24,8 @@ export default function WriteReview() {
     handleButtonClick,
     handleImageDelete,
   } = useImagesUploadHook();
-
+  const writeReviewStore = useWriteReviewStore();
   const { setCurrentModal } = useModalStore();
-
   const [openSuccess, setOpenSuccess] = useState(false);
   const [rating, setRating] = useState(0);
   const [ratingFixed, setRatingFixed] = useState(rating);
@@ -51,21 +50,28 @@ export default function WriteReview() {
       <Container>
         <h1>리뷰 쓰기</h1>
 
-        <MarkerBox>
+        <MarkerBox $isActive={writeReviewStore.getSelectedPlace() !== ""}>
           <div>
             <MarkIcon stroke="#6979f8" />
           </div>
         </MarkerBox>
 
-        <AddPlaceBtnBox>
-          <ActionButton
-            add={true}
-            onClick={() => setCurrentModal("selectPlace")}
-          >
-            <PlusIcon />
-            장소 등록
-          </ActionButton>
-        </AddPlaceBtnBox>
+        {writeReviewStore.getSelectedPlace() === "" ? (
+          <AddPlaceBtnBox>
+            <ActionButton
+              add={true}
+              onClick={() => setCurrentModal("selectPlace")}
+            >
+              <PlusIcon />
+              장소 등록
+            </ActionButton>
+          </AddPlaceBtnBox>
+        ) : (
+          <SelectedPlaceText>
+            <MarkIcon width="18" height="18" stroke="#6979f8" />
+            {writeReviewStore.getSelectedPlace()}
+          </SelectedPlaceText>
+        )}
 
         <SubText>방문한 여행지는 어떠셨나요?</SubText>
 
@@ -192,7 +198,7 @@ export default function WriteReview() {
   );
 }
 
-const MarkerBox = styled.div`
+const MarkerBox = styled.div<{ $isActive: boolean }>`
   margin-top: 40px;
   width: 100%;
   display: flex;
@@ -208,7 +214,10 @@ const MarkerBox = styled.div`
     justify-content: center;
     align-items: center;
     border: 1px solid ${(props) => props.theme.color.gray100};
-    background-color: ${(props) => props.theme.color.gray100};
+    background-color: ${(props) =>
+      props.$isActive
+        ? props.theme.color.secondaryLight
+        : props.theme.color.gray100};
   }
 `;
 
@@ -218,6 +227,19 @@ const AddPlaceBtnBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const SelectedPlaceText = styled.p`
+  margin-top: 24px;
+  display: flex;
+  color: ${(props) => props.theme.color.secondary};
+  font-size: 16px;
+  font-weight: 700;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
 
 const SubText = styled.p`
