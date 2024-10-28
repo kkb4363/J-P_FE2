@@ -45,7 +45,7 @@ export default function Header({ minWidth }: Props) {
           <SearchIcon />
         </div>
 
-        <div onClick={() => handleTab("/mypage")}>
+        <div onClick={() => handleTab("/mypage/travel")}>
           <ProfileIcon />
         </div>
 

@@ -1,15 +1,11 @@
 import styled from "styled-components";
 
 interface Props {
-	children: React.ReactNode
+  children: React.ReactNode;
 }
 
-export default function Container({children}:Props) {
-	return (
-		<ContainerBox>
-			{children}
-		</ContainerBox>
-	);
+export default function Container({ children }: Props) {
+  return <ContainerBox>{children}</ContainerBox>;
 }
 
 const ContainerBox = styled.div`

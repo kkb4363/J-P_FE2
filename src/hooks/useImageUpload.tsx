@@ -1,41 +1,25 @@
-import { useRef } from "react";
-import { useWriteReviewStore } from "../store/writeReview.store";
+import { useRef, useState } from "react";
+import testImg from "../assets/images/testImg.png";
 
 export default function useImageUploadHook() {
-  const { getSelectedImg, setSelectedImg } = useWriteReviewStore();
-
-  const imageRef = useRef<HTMLInputElement>(null);
+  const imgRef = useRef<HTMLInputElement>(null);
+  const [imgSrc, setImgSrc] = useState(testImg);
+  const [newImg, setNewImg] = useState(null);
 
   const handleImageChange = (e: any) => {
-    const selectedFiles = Array.from(e.target.files);
+    const selectedFile = e.target.files[0];
 
-    if (selectedFiles.length + getSelectedImg().length > 10) {
-      alert("이미지는 최대 10장까지 업로드 가능합니다");
-      return;
+    if (selectedFile) {
+      setImgSrc(URL.createObjectURL(selectedFile));
+      setNewImg(selectedFile);
     }
-
-    const prevImage = getSelectedImg();
-    const newImage = [...prevImage, ...selectedFiles];
-
-    setSelectedImg(newImage);
   };
 
-  const handleButtonClick = () => {
-    imageRef.current?.click();
+  const handleClick = () => {
+    if (imgRef.current) {
+      return imgRef.current.click();
+    }
   };
 
-  const handleImageDelete = (lastModified: number) => {
-    const newImages = getSelectedImg().filter(
-      (prev: File) => prev.lastModified !== lastModified
-    );
-    setSelectedImg(newImages);
-  };
-
-  return {
-    imageRef,
-    images: getSelectedImg(),
-    handleImageChange,
-    handleButtonClick,
-    handleImageDelete,
-  };
+  return { imgRef, imgSrc, newImg, handleImageChange, handleClick };
 }

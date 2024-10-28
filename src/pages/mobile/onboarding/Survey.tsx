@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import LogoutIcon from "../../../assets/icons/LogoutIcon";
-import PrimaryButton from "../../../components/mobile/PrimaryButton";
+import PrimaryButton from "../../../components/PrimaryButton";
 import { axiosInstance, updateUser } from "../../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";

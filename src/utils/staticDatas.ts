@@ -31,10 +31,10 @@ export const mypageTabs = [
 ];
 
 export const webMypageTabs = [
-  { icon: MessageIcon, label: "내 리뷰", route: "" },
-  { icon: HeartIcon, label: "내 찜 목록", route: "likes" },
   { icon: LuggageIcon, label: "내 여행", route: "travel" },
   { icon: NoteIcon, label: "내 여행기", route: "travelogue" },
+  { icon: MessageIcon, label: "내 리뷰", route: "reviews" },
+  { icon: HeartIcon, label: "내 찜 목록", route: "likes" },
 ];
 
 export const mypageLikesTabs = [

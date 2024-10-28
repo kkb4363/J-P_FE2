@@ -18,8 +18,8 @@ export default function StyledToast({ position = "bottom-center" }: Props) {
     <StyledToastContainer
       position={position}
       hideProgressBar={true}
-      autoClose={6000}
-      closeButton={false}
+      autoClose={2000}
+      closeButton={true}
       $isBottom={position.includes("bottom")}
     />
   );

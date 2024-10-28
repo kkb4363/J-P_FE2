@@ -60,11 +60,11 @@ const ViewerContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-	overflow-y: auto;
+  overflow-y: auto;
   background-color: ${(props) => props.theme.color.black};
   display: flex;
   flex-direction: column;
-	justify-content: center;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -72,7 +72,6 @@ const ViewerContent = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-	
 `;
 
 const ImageWrapper = styled.div`
@@ -93,7 +92,7 @@ const ArrowButton = styled.button`
   place-content: center;
   background-color: ${(props) => props.theme.color.white};
   border-radius: 99px;
-	z-index: 10;
+  z-index: 10;
 
   &:hover {
     background-color: ${(props) => props.theme.color.gray200};

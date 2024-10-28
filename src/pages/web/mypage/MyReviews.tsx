@@ -1,23 +1,16 @@
 import styled from "styled-components";
 import testImg from "../../../assets/images/testImg.png";
-import StarIcon from "../../../assets/icons/StarIcon";
-import CommentIcon from "../../../assets/icons/CommentIcon";
+import CustomProfile from "../../../components/CustomProfile";
+import LikeCommentBox from "../../../components/LikeCommentBox";
 
 export default function MyReviews() {
   return (
     <>
       <MyPageTitle>내 작성 리뷰 2</MyPageTitle>
-      <SubTitle>전체</SubTitle>
       <ReviewCardRow>
         <ReviewCard>
           <ReviewCardTitleRow>
-            <div>
-              <img src={testImg} alt="user" />
-              <p>arami10</p>
-              <span>|</span>
-              <span>24.4.12</span>
-            </div>
-
+            <CustomProfile src={testImg} nickname="arami10" content="24.4.12" />
             <span>수정</span>
           </ReviewCardTitleRow>
 
@@ -27,22 +20,11 @@ export default function MyReviews() {
               오랜만에 한옥마을에서 힐링하고 갑니다~ 조용하고 조용하고
             </span>
           </ReviewCardDetailCol>
-
-          <ReviewCardCommentRow>
-            <StarIcon />
-            <span>5.0</span>
-            <CommentIcon />
-            <span>5</span>
-          </ReviewCardCommentRow>
+          <LikeCommentBox commentCnt={1} likeCnt={5} />
         </ReviewCard>
         <ReviewCard>
           <ReviewCardTitleRow>
-            <div>
-              <img src={testImg} alt="user" />
-              <p>arami10</p>
-              <span>|</span>
-              <span>24.4.12</span>
-            </div>
+            <CustomProfile src={testImg} nickname="arami10" content="24.4.12" />
 
             <span>수정</span>
           </ReviewCardTitleRow>
@@ -54,21 +36,11 @@ export default function MyReviews() {
             </span>
           </ReviewCardDetailCol>
 
-          <ReviewCardCommentRow>
-            <StarIcon />
-            <span>5.0</span>
-            <CommentIcon />
-            <span>5</span>
-          </ReviewCardCommentRow>
+          <LikeCommentBox commentCnt={1} likeCnt={5} />
         </ReviewCard>
         <ReviewCard>
           <ReviewCardTitleRow>
-            <div>
-              <img src={testImg} alt="user" />
-              <p>arami10</p>
-              <span>|</span>
-              <span>24.4.12</span>
-            </div>
+            <CustomProfile src={testImg} nickname="arami10" content="24.4.12" />
 
             <span>수정</span>
           </ReviewCardTitleRow>
@@ -80,12 +52,7 @@ export default function MyReviews() {
             </span>
           </ReviewCardDetailCol>
 
-          <ReviewCardCommentRow>
-            <StarIcon />
-            <span>5.0</span>
-            <CommentIcon />
-            <span>5</span>
-          </ReviewCardCommentRow>
+          <LikeCommentBox commentCnt={1} likeCnt={5} />
         </ReviewCard>
       </ReviewCardRow>
     </>
@@ -96,14 +63,7 @@ export const MyPageTitle = styled.h1`
   color: ${(props) => props.theme.color.gray900};
   font-size: 24px;
   font-weight: 700;
-`;
-
-const SubTitle = styled.h2`
-  margin-top: 12px;
-  margin-bottom: 25px;
-  color: ${(props) => props.theme.color.gray900};
-  font-size: 20px;
-  font-weight: 700;
+  margin-bottom: 24px;
 `;
 
 const ReviewCardRow = styled.div`
@@ -130,29 +90,6 @@ const ReviewCardTitleRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  & > div:first-child {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    & > img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    & > p {
-      color: ${(props) => props.theme.color.gray900};
-      font-size: 12px;
-    }
-
-    & > span {
-      color: ${(props) => props.theme.color.gray300};
-      font-size: 12px;
-    }
-  }
 
   & > span:last-child {
     color: ${(props) => props.theme.color.gray300};
@@ -183,16 +120,5 @@ const ReviewCardDetailCol = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-`;
-
-const ReviewCardCommentRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 12px;
   }
 `;

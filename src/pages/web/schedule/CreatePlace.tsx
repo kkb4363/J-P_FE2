@@ -3,7 +3,7 @@ import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMa
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import CustomInput from "../../../components/CustomInput";
 import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
-import PrimaryButton from "../../../components/mobile/PrimaryButton";
+import PrimaryButton from "../../../components/PrimaryButton";
 import OneButtonModal from "../../../components/OneButtonModal";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
 import { scrollHidden } from "../../../assets/styles/home.style";

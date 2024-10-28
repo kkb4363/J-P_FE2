@@ -6,11 +6,23 @@ interface Props {
   del?: boolean;
   hashtag?: boolean;
   children: ReactNode;
+  onClick?: () => void;
 }
 
-export default function ActionButton({ add, del, hashtag, children }: Props) {
+export default function ActionButton({
+  add,
+  del,
+  hashtag,
+  children,
+  onClick,
+}: Props) {
   return (
-    <ActionButtonContainer $add={add} $del={del} $hashtag={hashtag}>
+    <ActionButtonContainer
+      $add={add}
+      $del={del}
+      $hashtag={hashtag}
+      onClick={onClick}
+    >
       {children}
     </ActionButtonContainer>
   );

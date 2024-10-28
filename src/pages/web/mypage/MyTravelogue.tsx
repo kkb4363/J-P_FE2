@@ -2,13 +2,19 @@ import styled from "styled-components";
 import { MypageTitleWithButton } from "./MyTravel";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import testImg from "../../../assets/images/testImg1.png";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SelectTravelModal from "../../../components/web/mypage/SelectTravelModal";
 
 export default function MyTravelogue() {
+  const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
+
   return (
-    <div>
+    <>
       <MypageTitleWithButton>
-        내 여행기
-        <div>
+        목록
+        <div onClick={() => setOpenModal(true)}>
           <div>
             <PlusIcon />
           </div>
@@ -20,6 +26,10 @@ export default function MyTravelogue() {
         <ImgCard>
           <p>제주</p>
           <span>03.21 ~ 03.24</span>
+
+          <WritingTag>
+            <span>작성중</span>
+          </WritingTag>
         </ImgCard>
         <ImgCard>
           <p>제주</p>
@@ -30,7 +40,9 @@ export default function MyTravelogue() {
           <span>03.21 ~ 03.24</span>
         </ImgCard>
       </ImgCardGridBox>
-    </div>
+
+      {openModal && <SelectTravelModal onClose={() => setOpenModal(false)} />}
+    </>
   );
 }
 
@@ -41,6 +53,7 @@ const ImgCardGridBox = styled.div`
 `;
 
 const ImgCard = styled.div`
+  position: relative;
   background-image: url(${testImg});
   background-position: center;
   background-size: cover;
@@ -65,5 +78,25 @@ const ImgCard = styled.div`
     color: ${(props) => props.theme.color.white};
     font-size: 16px;
     font-weight: 400;
+  }
+`;
+
+const WritingTag = styled.div`
+  position: absolute;
+  width: 56px;
+  height: 29px;
+  border-radius: 16px;
+  border: 1px solid ${(props) => props.theme.color.secondary};
+  background-color: ${(props) => props.theme.color.white};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 18px;
+  right: 18px;
+
+  & > span {
+    color: ${(props) => props.theme.color.secondary};
+    font-size: 12px;
+    user-select: none;
   }
 `;
