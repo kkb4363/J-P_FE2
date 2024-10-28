@@ -2,8 +2,10 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { scrollHidden } from "../../assets/styles/home.style";
 import { useModalStore } from "../../store/modal.store";
-import SearchModal from "../../components/web/search/SearchModal";
 import Header from "./Header";
+import StyledToast from "../../components/mobile/StyledToast";
+import SearchBar from "../../components/web/search/SearchBar";
+import SelectPlaceBar from "../../components/web/mypage/SelectPlaceBar";
 
 interface Props {
   minWidth?: string;
@@ -18,7 +20,14 @@ export default function Layout({ minWidth = "1440px" }: Props) {
 
       {getCurrentModal() === "search" && (
         <>
-          <SearchModal />
+          <SearchBar />
+          <Overlay onClick={() => setCurrentModal("")} />
+        </>
+      )}
+
+      {getCurrentModal() === "selectPlace" && (
+        <>
+          <SelectPlaceBar />
           <Overlay onClick={() => setCurrentModal("")} />
         </>
       )}
@@ -26,6 +35,7 @@ export default function Layout({ minWidth = "1440px" }: Props) {
       <OutletBox $minWidth={minWidth}>
         <Outlet />
       </OutletBox>
+      <StyledToast position="bottom-left" />
     </LayoutContainer>
   );
 }

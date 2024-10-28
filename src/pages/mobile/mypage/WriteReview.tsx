@@ -7,11 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
-import useImageUploadHook from "../../../hooks/useImageUpload";
 import testImg from "../../../assets/images/testImg2.png";
 import XIcon from "../../../assets/icons/XIcon";
 import NobuttonModal from "../../../components/NobuttonModal";
 import { useState } from "react";
+import useImagesUploadHook from "../../../hooks/useImagesUpload";
 
 export default function WriteReview() {
   const writeReviewStore = useWriteReviewStore();
@@ -22,7 +22,7 @@ export default function WriteReview() {
     handleImageChange,
     handleButtonClick,
     handleImageDelete,
-  } = useImageUploadHook();
+  } = useImagesUploadHook();
 
   const [openModal, setOpenModal] = useState(false);
 

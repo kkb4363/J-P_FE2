@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DayProps } from "../../mobile/schedule/Calendar";
 import { DateRange } from "react-date-range";
 import { ko } from "date-fns/locale";
-import PrimaryButton from "../../../components/mobile/PrimaryButton";
+import PrimaryButton from "../../../components/PrimaryButton";
 import CustomInput from "../../../components/CustomInput";
 import CitySlider from "../../../components/web/schedule/CitySlider";
 

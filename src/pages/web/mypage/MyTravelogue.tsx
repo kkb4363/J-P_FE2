@@ -2,13 +2,19 @@ import styled from "styled-components";
 import { MypageTitleWithButton } from "./MyTravel";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import testImg from "../../../assets/images/testImg1.png";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SelectTravelModal from "../../../components/web/mypage/SelectTravelModal";
 
 export default function MyTravelogue() {
+  const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
+
   return (
-    <div>
+    <>
       <MypageTitleWithButton>
-        내 여행기
-        <div>
+        목록
+        <div onClick={() => setOpenModal(true)}>
           <div>
             <PlusIcon />
           </div>
@@ -34,7 +40,9 @@ export default function MyTravelogue() {
           <span>03.21 ~ 03.24</span>
         </ImgCard>
       </ImgCardGridBox>
-    </div>
+
+      {openModal && <SelectTravelModal onClose={() => setOpenModal(false)} />}
+    </>
   );
 }
 

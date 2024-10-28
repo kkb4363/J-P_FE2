@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import CancelIcon from "../assets/icons/CancelIcon";
 import { ModalOverlay, ModalWrapper } from "../assets/styles/modal.style";
-import PrimaryButton from "./mobile/PrimaryButton";
+import PrimaryButton from "./PrimaryButton";
 
 interface Props {
   title?: string;
@@ -10,7 +10,7 @@ interface Props {
   onClick: () => void;
   onClose?: () => void;
   noCloseBtn?: boolean;
-  modalRef?: React.RefObject<HTMLDivElement>;
+  noBtn?: boolean;
   children: React.ReactNode;
   width?: string;
   height?: string;
@@ -23,6 +23,7 @@ export default function OneButtonModal({
   onClick,
   onClose,
   noCloseBtn = false,
+  noBtn = false,
   children,
   width,
   height,
@@ -43,9 +44,11 @@ export default function OneButtonModal({
         </ModalHeader>
         <ModalBody $noCloseBtn={noCloseBtn}>
           {children}
-          <ModalButtonBox>
-            <PrimaryButton text={buttonText} blue onClick={onClick} />
-          </ModalButtonBox>
+          {!noBtn && (
+            <ModalButtonBox>
+              <PrimaryButton text={buttonText} blue onClick={onClick} />
+            </ModalButtonBox>
+          )}
         </ModalBody>
       </ModalWrapper>
     </>

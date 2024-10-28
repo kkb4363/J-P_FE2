@@ -6,7 +6,7 @@ import useSearchHook from "../../../hooks/useSearch";
 import { useModalStore } from "../../../store/modal.store";
 import { useNavigate } from "react-router-dom";
 
-export default function SearchModal() {
+export default function SearchBar() {
   const navigate = useNavigate();
   const { setCurrentModal } = useModalStore();
   const { search, searchData, handleInput, handleInputEnter } = useSearchHook();
@@ -17,7 +17,7 @@ export default function SearchModal() {
   };
 
   return (
-    <SearchModalContainer>
+    <SearchBarContainer>
       <HomeTitle>어디로 떠날까요?</HomeTitle>
 
       <SearchInputBox>
@@ -47,7 +47,7 @@ export default function SearchModal() {
           ))}
         </SearchResultRow>
       </SearchResultBox>
-    </SearchModalContainer>
+    </SearchBarContainer>
   );
 }
 
@@ -61,7 +61,7 @@ const modalAnimation = keyframes`
 
 `;
 
-const SearchModalContainer = styled.div`
+const SearchBarContainer = styled.div`
   animation: ${modalAnimation} 0.2s linear;
   position: absolute;
   display: flex;

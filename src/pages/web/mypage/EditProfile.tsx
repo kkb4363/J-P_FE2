@@ -1,25 +1,13 @@
 import styled from "styled-components";
 import Container from "../../../components/web/Container";
-import testImg from "../../../assets/images/testImg1.png";
 import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
-import PrimaryButton from "../../../components/mobile/PrimaryButton";
-import { useRef, useState } from "react";
+import PrimaryButton from "../../../components/PrimaryButton";
+import useImageUploadHook from "../../../hooks/useImageUpload";
 
 export default function EditProfile() {
-  const [imgSrc, setImgSrc] = useState(testImg);
-  const [newImg, setNewImg] = useState(null);
-
-  const imgRef = useRef<HTMLInputElement>(null);
-
-  const handleImageChange = (e: any) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      setImgSrc(URL.createObjectURL(selectedFile));
-      setNewImg(selectedFile);
-    }
-  };
+  const { imgRef, imgSrc, newImg, handleImageChange, handleClick } =
+    useImageUploadHook();
 
   return (
     <Container>
@@ -28,7 +16,7 @@ export default function EditProfile() {
       <ProfileImgBox>
         <div>
           <img src={imgSrc} alt="profile" />
-          <CameraIconBox onClick={() => imgRef.current?.click()}>
+          <CameraIconBox onClick={handleClick}>
             <CameraIcon />
             <input
               hidden
