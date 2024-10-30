@@ -5,11 +5,16 @@ import NextArrow from "./mobile/schedule/NextArrow";
 import PrevArrow from "./mobile/schedule/PrevArrow";
 
 interface Props {
+  isMobile: boolean;
   dayList: number[];
   currentDay: number;
 }
 
-export default function MoveDaySlider({ dayList, currentDay }: Props) {
+export default function MoveDaySlider({
+  isMobile,
+  dayList,
+  currentDay,
+}: Props) {
   const [selectDay, setSelectDay] = useState(currentDay);
   const slideSettings = {
     infinite: false,
@@ -23,16 +28,17 @@ export default function MoveDaySlider({ dayList, currentDay }: Props) {
     nextArrow: <NextArrow />,
   };
   return (
-    <StyledSlider {...slideSettings}>
+    <StyledSlider {...slideSettings} $isMobile={isMobile}>
       {dayList.map((day, i) => (
         <div>
           <DayBox
             key={i}
             onClick={() => setSelectDay(day)}
             $select={selectDay === day}
+            $isMobile={isMobile}
           >
             <p>{`Day ${day + 1}`}</p>
-            <p>4.17 (목)</p>
+            <span>4.17 (목)</span>
           </DayBox>
         </div>
       ))}
@@ -40,9 +46,9 @@ export default function MoveDaySlider({ dayList, currentDay }: Props) {
   );
 }
 
-const StyledSlider = styled(Slider)`
+const StyledSlider = styled(Slider)<{ $isMobile: boolean }>`
   width: 100%;
-  padding: 3px 6px 0;
+  padding: ${({ $isMobile }) => ($isMobile ? "0 6px" : "32px 15px")};
   text-align: center;
   display: flex;
 
@@ -51,12 +57,13 @@ const StyledSlider = styled(Slider)`
   }
   .slick-slide {
     display: flex;
+    justify-content: center;
   }
 `;
 
-const DayBox = styled.div<{ $select: boolean }>`
-  height: 61px;
-  padding: 12px 15px;
+const DayBox = styled.div<{ $select: boolean; $isMobile: boolean }>`
+  height: ${({ $isMobile }) => ($isMobile ? "61px" : "78px")};
+  padding: ${({ $isMobile }) => ($isMobile ? "12px 15px" : "16px 20px")};
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -69,14 +76,14 @@ const DayBox = styled.div<{ $select: boolean }>`
     ${(props) =>
       props.$select ? props.theme.color.secondary : props.theme.color.gray200};
   border-radius: 12px;
-  font-size: 14px;
+  font-size: ${({ $isMobile }) => $isMobile && "14px"};
 
-  & > p:nth-child(1) {
+  & > p {
     font-weight: 700;
     color: ${(props) =>
       props.$select ? props.theme.color.secondary : props.theme.color.gray700};
   }
-  & > p:nth-child(2) {
+  & > span {
     color: ${(props) =>
       props.$select ? props.theme.color.secondary : props.theme.color.gray400};
   }
