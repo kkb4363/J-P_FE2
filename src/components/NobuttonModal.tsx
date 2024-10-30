@@ -10,7 +10,7 @@ interface Props {
   height?: string;
 }
 
-export default function NobuttonModal({
+export default function NoButtonModal({
   onClose,
   children,
   width,
