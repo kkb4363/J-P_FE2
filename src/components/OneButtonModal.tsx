@@ -5,6 +5,9 @@ import { ModalOverlay, ModalWrapper } from "../assets/styles/modal.style";
 import PrimaryButton from "./PrimaryButton";
 
 interface Props {
+  isMobile: boolean;
+  width?: string;
+  height?: string;
   title?: string;
   buttonText: string;
   onClick: () => void;
@@ -12,12 +15,12 @@ interface Props {
   noCloseBtn?: boolean;
   noBtn?: boolean;
   children: React.ReactNode;
-  width?: string;
-  height?: string;
-  fontSize?: string;
 }
 
 export default function OneButtonModal({
+  isMobile,
+  width,
+  height,
   title,
   buttonText,
   onClick,
@@ -25,15 +28,12 @@ export default function OneButtonModal({
   noCloseBtn = false,
   noBtn = false,
   children,
-  width,
-  height,
-  fontSize = "16px",
 }: Props) {
   return (
     <>
       <ModalOverlay onClick={onClose} />
       <ModalWrapper $width={width} $height={height}>
-        <ModalHeader $fontSize={fontSize}>
+        <ModalHeader $isMobile={isMobile}>
           <EmptyBox />
           <p>{title}</p>
           {!noCloseBtn && (
@@ -42,28 +42,26 @@ export default function OneButtonModal({
             </CloseButton>
           )}
         </ModalHeader>
-        <ModalBody $noCloseBtn={noCloseBtn}>
-          {children}
-          {!noBtn && (
-            <ModalButtonBox>
-              <PrimaryButton text={buttonText} blue onClick={onClick} />
-            </ModalButtonBox>
-          )}
-        </ModalBody>
+        <ModalBody $isMobile={isMobile}>{children}</ModalBody>
+        {!noBtn && (
+          <ModalButtonBox $noCloseBtn={noCloseBtn} $isMobile={isMobile}>
+            <PrimaryButton text={buttonText} blue onClick={onClick} />
+          </ModalButtonBox>
+        )}
       </ModalWrapper>
     </>
   );
 }
 
-const ModalHeader = styled.div<{ $fontSize: string }>`
+const ModalHeader = styled.div<{ $isMobile: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: ${({ $isMobile }) => ($isMobile ? "16px 16px 0" : "36px 36px 0")};
 
   & > p {
     font-weight: 700;
-    font-size: ${(props) => props.$fontSize && props.$fontSize};
+    font-size: ${({ $isMobile }) => ($isMobile ? "16px" : "24px")};
   }
 `;
 
@@ -75,15 +73,17 @@ const CloseButton = styled.div`
   cursor: pointer;
 `;
 
-const ModalBody = styled.div<{ $noCloseBtn: boolean }>`
+const ModalBody = styled.div<{ $isMobile: boolean }>`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  padding: ${({ $noCloseBtn }) => ($noCloseBtn ? "35px 0 51px" : "7px 0 20px")};
 `;
 
-const ModalButtonBox = styled.div`
+const ModalButtonBox = styled.div<{ $noCloseBtn: boolean; $isMobile: boolean }>`
   width: 190px;
+  align-self: center;
+  margin-bottom: ${({ $noCloseBtn, $isMobile }) =>
+    $noCloseBtn ? ($isMobile ? "51px" : "106px") : $isMobile ? "17px" : "46px"};
 `;
