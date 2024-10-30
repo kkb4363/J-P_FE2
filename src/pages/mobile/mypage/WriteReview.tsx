@@ -9,9 +9,9 @@ import PlusIcon from "../../../assets/icons/PlusIcon";
 import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
 import testImg from "../../../assets/images/testImg2.png";
 import XIcon from "../../../assets/icons/XIcon";
-import NobuttonModal from "../../../components/NobuttonModal";
 import { useState } from "react";
 import useImagesUploadHook from "../../../hooks/useImagesUpload";
+import OneButtonModal from "../../../components/OneButtonModal";
 
 export default function WriteReview() {
   const writeReviewStore = useWriteReviewStore();
@@ -156,12 +156,17 @@ export default function WriteReview() {
       </WriteReviewBody>
 
       {openModal && (
-        <NobuttonModal onClose={handleClose}>
+        <OneButtonModal
+          isMobile
+          buttonText="확인"
+          onClick={handleClose}
+          noCloseBtn
+        >
           <ModalContainer>
             <ModalTitle>리뷰 등록이 완료되었습니다!</ModalTitle>
             <ModalText>다른 여행객들에게도 도움이 될 거에요.</ModalText>
           </ModalContainer>
-        </NobuttonModal>
+        </OneButtonModal>
       )}
     </>
   );

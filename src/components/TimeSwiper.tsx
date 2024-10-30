@@ -32,10 +32,10 @@ export default function TimeSwiper({ isMobile }: Props) {
         centeredSlides={true}
       >
         <SwiperSlide>
-          <Text>오전</Text>
+          <Text $isMobile={isMobile}>오전</Text>
         </SwiperSlide>
         <SwiperSlide>
-          <Text>오후</Text>
+          <Text $isMobile={isMobile}>오후</Text>
         </SwiperSlide>
       </Swiper>
 
@@ -50,7 +50,7 @@ export default function TimeSwiper({ isMobile }: Props) {
       >
         {hour.map((hour) => (
           <SwiperSlide key={hour}>
-            <Text>{hour}</Text>
+            <Text $isMobile={isMobile}>{hour}</Text>
           </SwiperSlide>
         ))}
       </Swiper>
@@ -66,7 +66,7 @@ export default function TimeSwiper({ isMobile }: Props) {
       >
         {min.map((min) => (
           <SwiperSlide key={min}>
-            <Text>{min}</Text>
+            <Text $isMobile={isMobile}>{min}</Text>
           </SwiperSlide>
         ))}
       </Swiper>
@@ -75,15 +75,16 @@ export default function TimeSwiper({ isMobile }: Props) {
 }
 
 const TimeModalContainer = styled.div<{ $isMobile: boolean }>`
-  max-height: ${(props) => (props.$isMobile ? "90px" : "120px")};
-  margin-top: ${(props) => (props.$isMobile ? 0 : "30px")};
+  max-height: ${({ $isMobile }) => ($isMobile ? "90px" : "120px")};
+  margin-top: ${({ $isMobile }) => ($isMobile ? 0 : "30px")};
   width: 100%;
   align-items: center;
   display: flex;
   padding: 0 50px;
 `;
 
-const Text = styled.p`
+const Text = styled.p<{ $isMobile: boolean }>`
   cursor: default;
   user-select: none;
+  font-size: ${({ $isMobile }) => !$isMobile && "20px"};
 `;
