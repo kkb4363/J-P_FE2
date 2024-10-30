@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CancelIcon from "../assets/icons/CancelIcon";
-import { ModalOverlay, ModalWrapper } from "../assets/styles/modal.style";
+import CancelIcon from "../../assets/icons/CancelIcon";
+import { ModalOverlay, ModalWrapper } from "../../assets/styles/modal.style";
 
 interface Props {
   onClose?: () => void;
