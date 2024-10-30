@@ -53,6 +53,7 @@ export default function ListView() {
 
       {openModal.selectTime && (
         <OneButtonModal
+          isMobile
           key={"시간 설정 모달"}
           title="시간 설정"
           buttonText="완료"

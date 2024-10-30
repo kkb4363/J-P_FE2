@@ -176,6 +176,7 @@ export default function WriteReview() {
       </Container>
       {openSuccess && (
         <OneButtonModal
+          isMobile={false}
           buttonText="확인"
           onClick={() => setOpenSuccess(false)}
           onClose={() => setOpenSuccess(false)}

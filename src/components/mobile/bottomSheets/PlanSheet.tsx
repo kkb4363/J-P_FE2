@@ -316,6 +316,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
       )}
       {openModal.deleteSchedule && (
         <TwoButtonsModal
+          isMobile
           text="일정을 삭제할까요?"
           onClick={handleDeleteModalClick}
           onClose={() => setOpenModal((p) => ({ ...p, deleteSchedule: false }))}

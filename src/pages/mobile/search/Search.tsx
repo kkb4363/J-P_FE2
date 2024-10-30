@@ -104,6 +104,7 @@ export default function Search() {
         />
         {deleteEvery && (
           <TwoButtonsModal
+            isMobile
             text="검색 기록을 모두 삭제하시겠습니까?"
             onClick={handleDeleteEvery}
             onClose={() => setDeleteEvery(false)}

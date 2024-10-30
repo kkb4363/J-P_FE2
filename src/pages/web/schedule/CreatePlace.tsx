@@ -76,6 +76,7 @@ export default function CreatePlace() {
 
       {openModal.selectTime && (
         <OneButtonModal
+          isMobile={false}
           key={"시간 설정 모달"}
           title="시간 설정"
           buttonText="완료"
@@ -83,7 +84,6 @@ export default function CreatePlace() {
           onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
           width="440px"
           height="320px"
-          fontSize="24px"
         >
           <TimeSwiper isMobile={false} />
         </OneButtonModal>

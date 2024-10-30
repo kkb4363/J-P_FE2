@@ -16,13 +16,13 @@ export default function SelectTravelModal({ onClose }: Props) {
 
   return (
     <OneButtonModal
+      isMobile={false}
       title="여행을 선택해주세요."
       onClick={() => navigate("/writeTravelogue")}
       onClose={onClose}
       width="580px"
       height="417px"
       buttonText="다음"
-      fontSize="24px"
       noBtn={!hasTravel}
     >
       {hasTravel ? (
@@ -48,7 +48,6 @@ export default function SelectTravelModal({ onClose }: Props) {
 }
 
 const TravelCardCol = styled.div`
-  margin-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 12px;

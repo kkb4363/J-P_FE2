@@ -145,11 +145,13 @@ export default function WriteTravelouge() {
 
       {openSuccess && (
         <OneButtonModal
+          isMobile={false}
           buttonText="확인"
           onClick={() => setOpenSuccess(false)}
           onClose={() => setOpenSuccess(false)}
-          width="360px"
-          height="260px"
+          width="470px"
+          height="390px"
+          noCloseBtn={true}
         >
           <SuccessModalContainer>
             <h1>여행기 등록이 완료되었습니다!</h1>
@@ -164,7 +166,6 @@ export default function WriteTravelouge() {
 export const SuccessModalContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
   gap: 8px;
 
   & > h1 {
