@@ -45,7 +45,7 @@ export default function Survey() {
   const handleGoogleLogin = async () => {
     try {
       const res = await axiosInstance.get(
-        `/login/oauth2/code/google?code=${code}`
+        `/login/oauth2/code/google?code=${code}&viewType=MOBILE`
       );
       const accessToken = res.headers.authorization;
       setCookie("userToken", accessToken);

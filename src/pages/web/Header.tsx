@@ -35,13 +35,13 @@ export default function Header({ minWidth }: Props) {
   const handleGoogleLogin = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
       import.meta.env.VITE_GOOGLE_CLIENT_ID
-    }&redirect_uri=https://j-p-plan.vercel.app/`;
+    }&redirect_uri=http://localhost:3000/`;
   };
 
-  const handleGoogle = async () => {
+  const handleGoogleApi = async () => {
     try {
       const res = await axiosInstance.get(
-        `/login/oauth2/code/google?code=${code}`
+        `/login/oauth2/code/google?code=${code}&viewType=PC`
       );
       const accessToken = res.headers.authorization;
       setCookie("userToken", accessToken);
@@ -56,7 +56,7 @@ export default function Header({ minWidth }: Props) {
 
   useEffect(() => {
     if (code) {
-      handleGoogle();
+      handleGoogleApi();
     } else {
       console.log("로그인 에러");
     }

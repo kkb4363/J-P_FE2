@@ -17,7 +17,7 @@ export default function Onboarding() {
   const handleGoogleLogin = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
       import.meta.env.VITE_GOOGLE_CLIENT_ID
-    }&redirect_uri=${Build}`;
+    }&redirect_uri=${Dev}`;
   };
 
   useEffect(() => {
