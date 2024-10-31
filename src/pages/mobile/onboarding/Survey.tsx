@@ -42,10 +42,11 @@ export default function Survey() {
     }
   };
 
+  // 개발환경 isDev=true , 빌드환경 isDev=false
   const handleGoogleLogin = async () => {
     try {
       const res = await axiosInstance.get(
-        `/login/oauth2/code/google?code=${code}`
+        `/login/oauth2/code/google?code=${code}&isDev=true`
       );
       const accessToken = res.headers.authorization;
       setCookie("userToken", accessToken);

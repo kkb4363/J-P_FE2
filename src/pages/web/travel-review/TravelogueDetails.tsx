@@ -11,12 +11,12 @@ import CommentCard from "../../../components/mobile/CommentCard";
 import TraveloguePlaceBox from "../../../components/TraveloguePlaceBox";
 import ImageView from "../../../components/web/ImageView";
 import {
-	testImageList,
-	testLogContents1,
-	testLogContents2,
-	testLogContents3,
-	testLogTags,
-	testReviewItem,
+  testImageList,
+  testLogContents1,
+  testLogContents2,
+  testLogContents3,
+  testLogTags,
+  testReviewItem,
 } from "../../../utils/staticDatas";
 import Container from "../../../components/web/Container";
 
@@ -38,7 +38,7 @@ export default function TravelogueDetails() {
   };
 
   const handleImageClick = (index: number) => {
-    navigate(`/travelogue/1/photo`, {
+    navigate(`/home/travelogue/1/photo`, {
       state: { currentIndex: index, images: testImageList }, // 이미지 인덱스와 목록을 state로 전달
     });
   };

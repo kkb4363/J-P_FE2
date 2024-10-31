@@ -115,7 +115,7 @@ const Switch = styled.div<{ value: boolean }>`
 
   & > span {
     position: absolute;
-    width: ${({value}) => value ? '75px' : '87px'};
+    width: ${({ value }) => (value ? "75px" : "87px")};
     height: 33px;
     top: 6px;
     border-radius: 30px;
@@ -133,7 +133,7 @@ const Toggle = styled.button<{ value: boolean }>`
   color: ${(props) => props.theme.color.gray300};
   font-weight: 700;
   z-index: 2;
-  transition: color .5s ease;
+  transition: color 0.5s ease;
   padding: 0;
 `;
 
@@ -148,13 +148,13 @@ const TravelogueBtn = styled(Toggle)`
   color: ${({ value }) => value && "#fff"};
 `;
 
-
 const FilterBox = styled.div`
   position: relative;
   align-self: flex-end;
 `;
 
 const FilterButton = styled.div`
+  cursor: pointer;
   display: flex;
   align-items: center;
   padding: 8px 18px;

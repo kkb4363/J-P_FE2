@@ -4,27 +4,53 @@ import PencilIcon from "../../../assets/icons/PencilIcon";
 import { Outlet, useNavigate } from "react-router-dom";
 import { webMypageTabs } from "../../../utils/staticDatas";
 import Container from "./../../../components/web/Container";
+import { useEffect } from "react";
+import { getMyProfile } from "../../../utils/axios";
+import ProfileNoImg from "../../../components/ProfileNoImg";
+import { UserType, useUserStore } from "../../../store/user.store";
 
 export default function MypageLayout() {
+  const userStore = useUserStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getMyProfile().then((res) => {
+      userStore.setUserName(res?.data.nickname);
+      userStore.setUserType(res?.data.mbti as UserType);
+    });
+  }, []);
+
   return (
     <Container>
       <h1>마이페이지</h1>
 
       <ProfileBox>
+        {/* {!!profile?.profile ? (
+          <img src={testImg} alt="프로필이미지" />
+        ) : (
+          <ProfileNoImg width="100px" height="100px" />
+        )} */}
+
         <img src={testImg} alt="프로필이미지" />
+
         <ProfileTextCol>
-          <p>닉네임</p>
-          <span onClick={() => navigate("/edit")}>
-            <PencilIcon />
-            프로필 수정
-          </span>
+          <p>
+            {!!userStore.getUserName()
+              ? userStore.getUserName()
+              : "로그인이 필요합니다"}
+          </p>
+          {!!userStore.getUserName() && (
+            <span onClick={() => navigate("/home/edit")}>
+              <PencilIcon />
+              프로필 수정
+            </span>
+          )}
         </ProfileTextCol>
       </ProfileBox>
 
       <TabRow>
         {webMypageTabs.map((tab) => {
-          const isActive = location.pathname.split("/")[2] === tab.route;
+          const isActive = location.pathname.split("/")[3] === tab.route;
           return (
             <Tab
               $isActive={isActive}

@@ -120,7 +120,7 @@ export default function Detail() {
 
         <AddScheduleButton>
           <PlusIcon stroke="#fff" />
-          <span>일정추가</span>
+          <span>일정담기</span>
         </AddScheduleButton>
       </TitleBox>
 
@@ -138,7 +138,7 @@ export default function Detail() {
         <span>{detail?.description}</span>
       </InfoBox>
 
-      {!isCityDetailPage && (
+      {detail.placeType === "TRAVEL_PLACE" && (
         <>
           <SubTitle>
             <span>기본 정보</span>
@@ -165,7 +165,7 @@ export default function Detail() {
         <p
           onClick={() =>
             navigate(
-              `/surrounding/${detail?.location.lng}/${detail?.location.lat}`
+              `/home/surroundingMore/${detail?.location.lng}/${detail?.location.lat}`
             )
           }
         >

@@ -1,16 +1,27 @@
 import styled from "styled-components";
 import testImg from "../../../assets/images/testImg1.png";
 import StarIcon from "../../../assets/icons/StarIcon";
+import { useNavigate } from "react-router-dom";
+import { useModalStore } from "../../../store/modal.store";
 
 interface Props {
   name: string;
   rating: number;
   subName: string;
+  placeId: string;
 }
 
-export default function ResultsCard({ name, rating, subName }: Props) {
+export default function ResultsCard({ name, rating, subName, placeId }: Props) {
+  const navigate = useNavigate();
+  const { setCurrentModal } = useModalStore();
+
+  const handleClick = (id: string) => {
+    setCurrentModal("");
+    navigate(`/home/details/${id}`);
+  };
+
   return (
-    <ResultsCardContainer>
+    <ResultsCardContainer onClick={() => handleClick(placeId)}>
       <img src={testImg} alt="result" />
 
       <div>
@@ -32,7 +43,7 @@ const ResultsCardContainer = styled.div`
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
   background-color: ${(props) => props.theme.color.white};
-
+  cursor: pointer;
   & > img {
     border-top-right-radius: inherit;
     border-top-left-radius: inherit;

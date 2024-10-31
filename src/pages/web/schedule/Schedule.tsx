@@ -12,7 +12,7 @@ export default function Schedule() {
       <>
         <TitleWithButton>
           <h1>내 일정</h1>
-          <button onClick={() => navigate("/createSchedule")}>
+          <button onClick={() => navigate("/home/createSchedule")}>
             <CalendarCheckIcon stroke="#6979f8" />
             <span>일정 생성</span>
           </button>

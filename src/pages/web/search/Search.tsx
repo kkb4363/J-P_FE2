@@ -7,9 +7,12 @@ import { realTimeWords } from "../../../utils/staticDatas";
 import TwoButtonsModal from "../../../components/TwoButtonsModal";
 import ResultsCard from "../../../components/web/search/ResultsCard";
 import useSearchHook from "../../../hooks/useSearch";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Search() {
   const userStore = useUserStore();
+  const location = useLocation();
 
   const {
     search,
@@ -21,6 +24,12 @@ export default function Search() {
     handleDeleteOpen,
     handleRecentWordClick,
   } = useSearchHook();
+
+  useEffect(() => {
+    if (!!location?.state?.query) {
+      handleRecentWordClick(location.state.query);
+    }
+  }, [location?.state?.query]);
 
   return (
     <>
@@ -75,6 +84,7 @@ export default function Search() {
                 subName={result.subName}
                 rating={result.rating}
                 key={result.id}
+                placeId={result.placeId}
               />
             ))}
           </ResultsRow>

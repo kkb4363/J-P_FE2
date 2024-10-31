@@ -45,9 +45,9 @@ export const mypageLikesTabs = [
 ];
 
 export const webHeaderTabs = [
-  { label: "홈", route: "" },
-  { label: "일정", route: "schedule" },
-  { label: "리뷰/여행기", route: "travelReview" },
+  { label: "홈", route: "/home" },
+  { label: "일정", route: "/home/schedule" },
+  { label: "리뷰/여행기", route: "/home/travelReview" },
 ];
 
 export const webHomeTabs = [

@@ -1,5 +1,12 @@
 import styled, { css } from "styled-components";
 
+export const extendedContainerStyle = css`
+  width: calc(100% + 240px);
+  height: calc(100% + 80px);
+  margin-left: -120px;
+  margin-bottom: -80px;
+`;
+
 export const scrollHidden = css`
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/

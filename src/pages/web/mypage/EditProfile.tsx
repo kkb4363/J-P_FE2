@@ -4,10 +4,32 @@ import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import useImageUploadHook from "../../../hooks/useImageUpload";
+import { useEffect, useRef } from "react";
+import { getMyProfile, updateUser } from "../../../utils/axios";
+import ProfileNoImg from "../../../components/ProfileNoImg";
+import { useUserStore } from "../../../store/user.store";
+import { useNavigate } from "react-router-dom";
 
 export default function EditProfile() {
+  const newNameRef = useRef<HTMLInputElement>(null);
+  const userStore = useUserStore();
+  const navigate = useNavigate();
   const { imgRef, imgSrc, newImg, handleImageChange, handleClick } =
     useImageUploadHook();
+
+  const handleEdit = () => {
+    if (newNameRef?.current) {
+      updateUser({
+        name: newNameRef.current.value,
+        type: userStore.getUserType(),
+      }).then((res) => {
+        if (res && newNameRef?.current) {
+          userStore.setUserName(newNameRef.current.value);
+          navigate(-1);
+        }
+      });
+    }
+  };
 
   return (
     <Container>
@@ -15,6 +37,11 @@ export default function EditProfile() {
 
       <ProfileImgBox>
         <div>
+          {/* {profile?.profile || imgSrc ? (
+            <img src={profile?.profile || imgSrc} alt="profile" />
+          ) : (
+            <ProfileNoImg width="100px" height="100px" />
+          )} */}
           <img src={imgSrc} alt="profile" />
           <CameraIconBox onClick={handleClick}>
             <CameraIcon />
@@ -31,7 +58,7 @@ export default function EditProfile() {
 
       <NickNameBox>
         <div>
-          <input placeholder="닉네임" />
+          <input placeholder={userStore.getUserName()} ref={newNameRef} />
           <DeleteIconBox>
             <XIcon />
           </DeleteIconBox>
@@ -39,7 +66,13 @@ export default function EditProfile() {
       </NickNameBox>
 
       <SaveButtonBox>
-        <PrimaryButton blue={true} text="저장" width="190px" height="45px" />
+        <PrimaryButton
+          onClick={handleEdit}
+          blue={true}
+          text="저장"
+          width="190px"
+          height="45px"
+        />
       </SaveButtonBox>
     </Container>
   );

@@ -1,7 +1,7 @@
 import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand";
 
-type UserType = "J" | "P";
+export type UserType = "J" | "P";
 
 interface State {
   userName: string;
