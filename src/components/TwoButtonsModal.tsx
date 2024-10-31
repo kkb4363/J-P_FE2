@@ -4,20 +4,30 @@ import PrimaryButton from "./PrimaryButton";
 import { ModalOverlay, ModalWrapper } from "../assets/styles/modal.style";
 
 interface Props {
+  isMobile: boolean;
+  width?: string;
+  height?: string;
   text: string;
   onClick: () => void;
   onClose: () => void;
 }
 
-export default function TwoButtonsModal({ text, onClick, onClose }: Props) {
+export default function TwoButtonsModal({
+  isMobile,
+  width,
+  height,
+  text,
+  onClick,
+  onClose,
+}: Props) {
   return (
     <>
       <ModalOverlay onClick={onClose} />
-      <ModalWrapper>
+      <ModalWrapper $width={width} $height={height}>
         <ModalHeader>
           <CancelIcon onClick={onClose} />
         </ModalHeader>
-        <ModalBody>
+        <ModalBody $isMobile={isMobile}>
           <p>{text}</p>
           <ModalButtonBox>
             <PrimaryButton text="아니오" secondary onClick={onClose} />
@@ -37,18 +47,20 @@ const ModalHeader = styled.div`
   font-weight: 700;
 `;
 
-const ModalBody = styled.div`
+const ModalBody = styled.div<{ $isMobile: boolean }>`
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 32px 40px;
+  padding: ${({ $isMobile }) =>
+    $isMobile ? "15px 32px 40px" : "54px 49px 106px"};
 
   & > p {
     color: ${(props) => props.theme.color.gray900};
     font-weight: 700;
     padding: 10px 0;
+    font-size: ${({ $isMobile }) => !$isMobile && "20px"};
   }
 `;
 

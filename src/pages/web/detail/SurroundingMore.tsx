@@ -10,9 +10,10 @@ import {
 } from "../../../utils/axios";
 import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
-import NobuttonModal from "../../../components/NobuttonModal";
+
 import { SelectPlaceProps } from "../../../types/home.details";
 import InfoModal from "../../../components/web/surroundingPlace/InfoModal";
+import NoButtonModal from "../../../components/web/NoButtonModal";
 
 import NoScheduleModal from "../../../components/web/surroundingPlace/NoScheduleModal";
 import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
@@ -79,7 +80,7 @@ export default function SurroundingMore() {
       </MoreContainer>
 
       {!!selectPlace?.placeId && (
-        <NobuttonModal
+        <NoButtonModal
           width="530px"
           height="380px"
           onClose={() => setSelectPlace({} as SelectPlaceProps)}
@@ -101,7 +102,7 @@ export default function SurroundingMore() {
 
             {/* <SuccessModal /> */}
           </ModalContainer>
-        </NobuttonModal>
+        </NoButtonModal>
       )}
     </>
   );

@@ -89,6 +89,9 @@ export default function Search() {
 
       {deleteEveryOpen && (
         <TwoButtonsModal
+          isMobile={false}
+          width="470px"
+          height="390px"
           text="검색 기록을 모두 삭제하시겠습니까?"
           onClick={handleDeleteEvery}
           onClose={handleDeleteOpen}
