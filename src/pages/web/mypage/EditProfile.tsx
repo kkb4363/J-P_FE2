@@ -19,15 +19,23 @@ export default function EditProfile() {
 
   const handleEdit = () => {
     if (newNameRef?.current) {
-      updateUser({
-        name: newNameRef.current.value,
-        type: userStore.getUserType(),
-      }).then((res) => {
-        if (res && newNameRef?.current) {
-          userStore.setUserName(newNameRef.current.value);
-          navigate(-1);
-        }
-      });
+      if (newNameRef?.current.value !== userStore.getUserName()) {
+        updateUser({
+          name: newNameRef.current.value,
+          type: userStore.getUserType(),
+        }).then((res) => {
+          if (res && newNameRef?.current) {
+            userStore.setUserName(newNameRef.current.value);
+            navigate(-1);
+          }
+        });
+      }
+    }
+  };
+
+  const handleNameDelete = () => {
+    if (newNameRef?.current) {
+      newNameRef.current.value = "";
     }
   };
 
@@ -58,8 +66,8 @@ export default function EditProfile() {
 
       <NickNameBox>
         <div>
-          <input placeholder={userStore.getUserName()} ref={newNameRef} />
-          <DeleteIconBox>
+          <input defaultValue={userStore.getUserName()} ref={newNameRef} />
+          <DeleteIconBox onClick={handleNameDelete}>
             <XIcon />
           </DeleteIconBox>
         </div>
