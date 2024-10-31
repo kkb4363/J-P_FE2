@@ -2,7 +2,10 @@ import styled from "styled-components";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import SurroundingMoreAddCard from "../../../components/web/home/SurroundingMoreAddCard";
-import { scrollHidden } from "../../../assets/styles/home.style";
+import {
+  extendedContainerStyle,
+  scrollHidden,
+} from "../../../assets/styles/home.style";
 import { useParams } from "react-router-dom";
 import {
   getGooglePlaceDetail,
@@ -109,11 +112,7 @@ export default function SurroundingMore() {
 }
 
 const MoreContainer = styled.div`
-  // outlet Box padding 없애기
-  width: calc(100% + 240px);
-  height: calc(100% + 80px);
-  margin-left: -120px;
-  margin-bottom: -80px;
+  ${extendedContainerStyle};
   min-height: 756px;
   display: flex;
   overflow-y: scroll;

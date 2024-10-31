@@ -16,7 +16,7 @@ interface Props {
 export default function ReviewCard({ item }: Props) {
   const navigate = useNavigate();
   return (
-    <ReviewCardContainer onClick={() => navigate(`/review/${item.id}`)}>
+    <ReviewCardContainer onClick={() => navigate(`/home/review/${item.id}`)}>
       <ReviewHeader>
         <ReviewPlaceBox>
           <MarkIcon stroke="#6979F8" width="18" height="18" />

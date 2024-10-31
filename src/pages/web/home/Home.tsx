@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleMore = (t: HomeTabType) => {
     setHomeTab(t);
-    navigate("/more");
+    navigate("/home/more");
   };
 
   return (

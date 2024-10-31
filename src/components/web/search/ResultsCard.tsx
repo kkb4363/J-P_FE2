@@ -17,7 +17,7 @@ export default function ResultsCard({ name, rating, subName, placeId }: Props) {
 
   const handleClick = (id: string) => {
     setCurrentModal("");
-    navigate(`/details/${id}`);
+    navigate(`/home/details/${id}`);
   };
 
   return (

@@ -76,8 +76,6 @@ export default function Detail() {
     }
   }, [detail?.id]);
 
-  console.log(detail);
-
   return (
     <>
       <PhotoBoxRow>
@@ -167,7 +165,7 @@ export default function Detail() {
         <p
           onClick={() =>
             navigate(
-              `/surrounding/${detail?.location.lng}/${detail?.location.lat}`
+              `/home/surroundingMore/${detail?.location.lng}/${detail?.location.lat}`
             )
           }
         >

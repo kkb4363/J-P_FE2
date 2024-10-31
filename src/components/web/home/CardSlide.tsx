@@ -63,7 +63,7 @@ export default function CardSlide({
   };
 
   const handleClick = (placeId: string) => {
-    navigate(`details/${placeId}`);
+    navigate(`/home/details/${placeId}`);
   };
 
   useEffect(() => {

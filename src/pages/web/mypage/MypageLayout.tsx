@@ -15,7 +15,7 @@ export default function MypageLayout() {
         <img src={testImg} alt="프로필이미지" />
         <ProfileTextCol>
           <p>닉네임</p>
-          <span onClick={() => navigate("/edit")}>
+          <span onClick={() => navigate("/home/edit")}>
             <PencilIcon />
             프로필 수정
           </span>
@@ -24,7 +24,7 @@ export default function MypageLayout() {
 
       <TabRow>
         {webMypageTabs.map((tab) => {
-          const isActive = location.pathname.split("/")[2] === tab.route;
+          const isActive = location.pathname.split("/")[3] === tab.route;
           return (
             <Tab
               $isActive={isActive}

@@ -13,7 +13,9 @@ interface Props {
 export default function TravelogueCard({ item }: Props) {
   const navigate = useNavigate();
   return (
-    <TravelogueCardContainer onClick={() => navigate(`/travelogue/${item.id}`)}>
+    <TravelogueCardContainer
+      onClick={() => navigate(`/home/travelogue/${item.id}`)}
+    >
       <Tags>
         {testLogTags.map((tag, idx) => (
           <Tag key={idx}>{`#${tag}`}</Tag>

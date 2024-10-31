@@ -47,7 +47,7 @@ export default function ReviewDetails() {
   };
 
   const handleImageClick = (index: number) => {
-    navigate(`/review/${params.reviewId}/photo`, {
+    navigate(`/home/review/${params.reviewId}/photo`, {
       state: { currentIndex: index, images: testImageList }, // 이미지 인덱스와 목록을 state로 전달
     });
   };

@@ -13,7 +13,7 @@ export default function SearchBar() {
 
   const handleMore = () => {
     setCurrentModal("");
-    navigate(`/search`, {
+    navigate(`/home/search`, {
       state: {
         query: search,
       },
@@ -76,7 +76,7 @@ const SearchBarContainer = styled.div`
 
   height: 532px;
   background-color: ${(props) => props.theme.color.white};
-  z-index: 2;
+  z-index: 3;
   padding: 0 120px;
 `;
 

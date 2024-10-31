@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { scrollHidden } from "../../assets/styles/home.style";
 import { useModalStore } from "../../store/modal.store";
-import Header from "./Header";
+import Header from "../../components/web/Header";
 import StyledToast from "../../components/mobile/StyledToast";
 import SearchBar from "../../components/web/search/SearchBar";
 import SelectPlaceBar from "../../components/web/mypage/SelectPlaceBar";
@@ -58,8 +58,9 @@ const LayoutContainer = styled.div`
 
 const OutletBox = styled.div<{ $minWidth: string }>`
   width: ${(props) => props.$minWidth && props.$minWidth};
-  margin: 0 auto;
   height: calc(100% - 90px);
+
+  margin: 0 auto;
   padding: 0 120px 80px 120px;
   overflow-y: auto;
   overflow-x: hidden;
