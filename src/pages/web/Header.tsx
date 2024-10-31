@@ -26,6 +26,12 @@ export default function Header({ minWidth }: Props) {
     setCurrentModal("");
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
+      import.meta.env.VITE_GOOGLE_CLIENT_ID
+    }&redirect_uri=https://j-p-plan.vercel.app/`;
+  };
+
   return (
     <HeaderContainer $minWidth={minWidth}>
       <HeaderLeft>
@@ -49,7 +55,7 @@ export default function Header({ minWidth }: Props) {
           <ProfileIcon />
         </div>
 
-        <LoginButton>로그인</LoginButton>
+        <LoginButton onClick={handleGoogleLogin}>로그인</LoginButton>
       </HeaderRight>
     </HeaderContainer>
   );

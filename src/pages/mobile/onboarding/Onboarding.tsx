@@ -8,13 +8,16 @@ import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();
 
+const Dev = "http://localhost:3000/survey";
+const Build = "https://j-p-plan.vercel.app/survey";
+
 export default function Onboarding() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
       import.meta.env.VITE_GOOGLE_CLIENT_ID
-    }&redirect_uri=http://localhost:3000/survey`;
+    }&redirect_uri=${Build}`;
   };
 
   useEffect(() => {
@@ -22,8 +25,6 @@ export default function Onboarding() {
       navigate("/home");
     }
   }, [cookies]);
-
-  // vercel testing
 
   return (
     <>
