@@ -4,15 +4,24 @@ import Header from "../../../components/web/Header";
 import GoogleIcon from "../../../assets/icons/GoogleIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
+import { useEffect } from "react";
 
 export default function Onboarding() {
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
   const handleGoogleLogin = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
       import.meta.env.VITE_GOOGLE_CLIENT_ID
     }&redirect_uri=http://localhost:3000/survey`;
   };
+
+  useEffect(() => {
+    if (!!cookies.get("userToken")) {
+      navigate("/home");
+    }
+  }, [cookies]);
 
   return (
     <ExtendedContainer>

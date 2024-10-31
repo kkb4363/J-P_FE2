@@ -158,3 +158,19 @@ export const getMyLikes = async () => {
     console.error("내 찜 목록 조회 API 에러", err);
   }
 };
+
+export const getMyProfile = async () => {
+  try {
+    const res = await axiosInstance.get("/user/me", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 프로필 조회 API 에러", err);
+  }
+};

@@ -1,12 +1,42 @@
 import styled from "styled-components";
 import { ExtendedContainer } from "./Onboarding";
 import Header from "../../../components/web/Header";
-import UserIcon from "../../../assets/icons/UserIcon";
-import ProfileIcon from "../../../assets/icons/ProfileIcon";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
+import { useCookies } from "react-cookie";
+import { axiosInstance } from "../../../utils/axios";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Survey() {
+  const navigate = useNavigate();
+  const [_, setCookie] = useCookies(["userToken"]);
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
+  // 개발환경 isDev=true , 빌드환경 isDev=false
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/login/oauth2/code/google?code=${code}&isDev=true`
+      );
+      const accessToken = res.headers.authorization;
+      setCookie("userToken", accessToken);
+
+      if (res.status === 200) {
+        res.data.isSignUp ? navigate("/home") : null;
+      }
+    } catch (err) {
+      console.error("구글 로그인 에러=", err);
+    }
+  };
+
+  useEffect(() => {
+    if (code) {
+      handleGoogleLogin();
+    }
+  }, [code]);
+
   return (
     <ExtendedContainer>
       <Header minWidth="1440px" />

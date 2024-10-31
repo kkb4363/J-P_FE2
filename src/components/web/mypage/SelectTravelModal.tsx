@@ -18,7 +18,7 @@ export default function SelectTravelModal({ onClose }: Props) {
     <OneButtonModal
       isMobile={false}
       title="여행을 선택해주세요."
-      onClick={() => navigate("/writeTravelogue")}
+      onClick={() => navigate("/home/writeTravelogue")}
       onClose={onClose}
       width="580px"
       height="417px"

@@ -4,20 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { useModalStore } from "../../store/modal.store";
 import SearchIcon from "../../assets/icons/SearchIcon";
 import ProfileIcon from "../../assets/icons/ProfileIcon";
-import { useCookies } from "react-cookie";
-import { axiosInstance } from "../../utils/axios";
-import { useEffect } from "react";
+import { Cookies, useCookies } from "react-cookie";
 
 interface Props {
   minWidth: string;
 }
 
 export default function Header({ minWidth }: Props) {
+  const cookies = new Cookies();
+  const [, , removeCookie] = useCookies();
   const navigate = useNavigate();
   const { getCurrentModal, setCurrentModal } = useModalStore();
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
-  const [_, setCookie] = useCookies(["userToken"]);
 
   const handleSearch = () => {
     if (getCurrentModal() === "search") {
@@ -32,35 +29,13 @@ export default function Header({ minWidth }: Props) {
     setCurrentModal("");
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${
-      import.meta.env.VITE_GOOGLE_CLIENT_ID
-    }&redirect_uri=http://localhost:3000/survey`;
-  };
-
-  const handleGoogleApi = async () => {
-    try {
-      const res = await axiosInstance.get(
-        `/login/oauth2/code/google?code=${code}&viewType=PC`
-      );
-      const accessToken = res.headers.authorization;
-      setCookie("userToken", accessToken);
-
-      if (res.status === 200) {
-        res.data.isSignUp ? navigate("/home") : null;
-      }
-    } catch (err) {
-      console.error("구글 oauth 에러=", err);
-    }
-  };
-
-  useEffect(() => {
-    if (code) {
-      handleGoogleApi();
+  const handleLoginOut = () => {
+    if (!!cookies.get("userToken")) {
+      removeCookie("userToken", { path: "/" });
     } else {
-      console.log("로그인 에러");
+      navigate("/");
     }
-  }, [code]);
+  };
 
   return (
     <HeaderContainer $minWidth={minWidth}>
@@ -85,7 +60,9 @@ export default function Header({ minWidth }: Props) {
           <ProfileIcon />
         </div>
 
-        <LoginButton onClick={handleGoogleLogin}>로그인</LoginButton>
+        <LoginButton onClick={handleLoginOut}>
+          {!!cookies.get("userToken") ? "로그아웃" : "로그인"}
+        </LoginButton>
       </HeaderRight>
     </HeaderContainer>
   );
