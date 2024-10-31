@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useModalStore } from "../../store/modal.store";
 import SearchIcon from "../../assets/icons/SearchIcon";
 import ProfileIcon from "../../assets/icons/ProfileIcon";
+import { useCookies } from "react-cookie";
+import { axiosInstance } from "../../utils/axios";
+import { useEffect } from "react";
 
 interface Props {
   minWidth: string;
@@ -12,6 +15,9 @@ interface Props {
 export default function Header({ minWidth }: Props) {
   const navigate = useNavigate();
   const { getCurrentModal, setCurrentModal } = useModalStore();
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const [_, setCookie] = useCookies(["userToken"]);
 
   const handleSearch = () => {
     if (getCurrentModal() === "search") {
@@ -31,6 +37,30 @@ export default function Header({ minWidth }: Props) {
       import.meta.env.VITE_GOOGLE_CLIENT_ID
     }&redirect_uri=https://j-p-plan.vercel.app/`;
   };
+
+  const handleGoogle = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/login/oauth2/code/google?code=${code}`
+      );
+      const accessToken = res.headers.authorization;
+      setCookie("userToken", accessToken);
+
+      if (res.status === 200) {
+        res.data.isSignUp ? navigate("/home") : null;
+      }
+    } catch (err) {
+      console.error("구글 oauth 에러=", err);
+    }
+  };
+
+  useEffect(() => {
+    if (code) {
+      handleGoogle();
+    } else {
+      console.log("로그인 에러");
+    }
+  }, [code]);
 
   return (
     <HeaderContainer $minWidth={minWidth}>
