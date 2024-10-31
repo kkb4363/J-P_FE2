@@ -16,6 +16,15 @@ export interface ReactMultiCarouselProps {
   };
 }
 
+interface Props {
+  responsive: ReactMultiCarouselProps;
+  placeType: string;
+  bottomText?: boolean;
+  topText?: boolean;
+  title?: boolean;
+  subTitle?: boolean;
+}
+
 export const CustomLeftArrow = ({ onClick }: { onClick: any }) => (
   <CustomArrow style={{ left: 0 }} onClick={onClick}>
     <ArrowLeftIcon />
@@ -29,16 +38,6 @@ export const CustomRightArrow = ({ onClick }: { onClick: any }) => {
   );
 };
 
-interface Props {
-  responsive: ReactMultiCarouselProps;
-  placeType: string;
-  bottomText?: boolean;
-  topText?: boolean;
-  title?: boolean;
-  subTitle?: boolean;
-  isCity?: boolean;
-}
-
 export default function CardSlide({
   responsive,
   placeType,
@@ -46,7 +45,6 @@ export default function CardSlide({
   subTitle,
   bottomText,
   topText,
-  isCity,
 }: Props) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -65,7 +63,7 @@ export default function CardSlide({
   };
 
   const handleClick = (placeId: string) => {
-    isCity ? navigate(`city/${placeId}`) : navigate(`details/${placeId}`);
+    navigate(`details/${placeId}`);
   };
 
   useEffect(() => {

@@ -37,10 +37,6 @@ export const router = createBrowserRouter([
         element: <Detail />,
       },
       {
-        path: "city/:placeId",
-        element: <Detail />,
-      },
-      {
         path: "more",
         element: <More />,
       },

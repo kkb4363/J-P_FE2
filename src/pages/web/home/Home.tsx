@@ -62,12 +62,7 @@ export default function Home() {
           <span onClick={() => handleMore("CITY")}>더보기</span>
         </div>
       </CarouselTitle>
-      <CardSlide
-        responsive={responsive4}
-        placeType="CITY"
-        isCity={true}
-        bottomText={true}
-      />
+      <CardSlide responsive={responsive4} placeType="CITY" bottomText={true} />
 
       <CarouselTitle>
         지금 가면 좋은 여행지

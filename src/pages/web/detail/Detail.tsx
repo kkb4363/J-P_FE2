@@ -76,6 +76,8 @@ export default function Detail() {
     }
   }, [detail?.id]);
 
+  console.log(detail);
+
   return (
     <>
       <PhotoBoxRow>
@@ -138,7 +140,7 @@ export default function Detail() {
         <span>{detail?.description}</span>
       </InfoBox>
 
-      {!isCityDetailPage && (
+      {detail.placeType === "TRAVEL_PLACE" && (
         <>
           <SubTitle>
             <span>기본 정보</span>

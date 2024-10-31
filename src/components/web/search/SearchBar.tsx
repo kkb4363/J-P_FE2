@@ -13,7 +13,11 @@ export default function SearchBar() {
 
   const handleMore = () => {
     setCurrentModal("");
-    navigate("/search");
+    navigate(`/search`, {
+      state: {
+        query: search,
+      },
+    });
   };
 
   return (
@@ -33,16 +37,17 @@ export default function SearchBar() {
       <SearchResultBox>
         <div>
           <h1>검색결과</h1>
-          <span onClick={handleMore}>더보기</span>
+          {searchData.length > 4 && <span onClick={handleMore}>더보기</span>}
         </div>
 
         <SearchResultRow>
-          {searchData?.map((result) => (
+          {searchData?.slice(0, 4).map((result) => (
             <ResultsCard
               name={result.name}
               subName={result.subName}
               rating={result.rating}
               key={result.id}
+              placeId={result.placeId}
             />
           ))}
         </SearchResultRow>
