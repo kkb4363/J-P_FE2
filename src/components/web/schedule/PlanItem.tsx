@@ -10,6 +10,8 @@ import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
+import NoButtonModal from "../NoButtonModal";
+import PlanMemo from "./PlanMemo";
 
 interface Props {
   item: planItemProps;
@@ -25,6 +27,10 @@ export default function PlanItem({ item, isEdit }: Props) {
     delete: false,
     deleteSuccess: false,
   });
+    const [isOpenMemoModal, setIsOpenMemoModal] = useState({
+      memo: false,
+      cost: false,
+    });
   const {
     attributes,
     listeners,
@@ -107,6 +113,16 @@ export default function PlanItem({ item, isEdit }: Props) {
           <ModalText>일정이 삭제되었습니다.</ModalText>
         </OneButtonModal>
       )}
+      {isOpenMemoModal.memo && (
+        <NoButtonModal
+          width="666px"
+          height="808px"
+          onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
+          noCloseBtn
+        >
+          <PlanMemo />
+        </NoButtonModal>
+      )}
       <PlanItemContainer
         ref={setNodeRef}
         {...attributes}
@@ -145,9 +161,13 @@ export default function PlanItem({ item, isEdit }: Props) {
             <TrashIcon />
           </button>
         ) : (
-          <DetailsButton>
+          <MemoButton
+            onClick={() =>
+              setIsOpenMemoModal((p) => ({ ...p, memo: true }))
+            }
+          >
             <FileCheckIcon />
-          </DetailsButton>
+          </MemoButton>
         )}
       </PlanItemContainer>
     </>
@@ -237,7 +257,7 @@ const DragHandler = styled.div<{ $isDragging: boolean }>`
   cursor: pointer;
 `;
 
-const DetailsButton = styled.div`
+const MemoButton = styled.button`
   width: 36px;
   height: 36px;
   padding: 8px;
