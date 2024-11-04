@@ -1,8 +1,14 @@
 import styled from "styled-components";
 import { MyPageTitle } from "./MyReviews";
 import MyTravelCard from "../../../components/web/mypage/MyTravelCard";
+import { useEffect } from "react";
+import { getMySchedules } from "../../../utils/axios";
 
 export default function MyTravel() {
+  useEffect(() => {
+    getMySchedules().then((res) => console.log(res));
+  }, []);
+
   return (
     <div>
       <MypageTitleWithButton>목록</MypageTitleWithButton>

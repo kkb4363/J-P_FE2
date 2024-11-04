@@ -17,6 +17,7 @@ export default function MypageLayout() {
     getMyProfile().then((res) => {
       userStore.setUserName(res?.data.nickname);
       userStore.setUserType(res?.data.mbti as UserType);
+      console.log(res);
     });
   }, []);
 
@@ -25,13 +26,11 @@ export default function MypageLayout() {
       <h1>마이페이지</h1>
 
       <ProfileBox>
-        {/* {!!profile?.profile ? (
-          <img src={testImg} alt="프로필이미지" />
+        {!!userStore.getUserProfile() ? (
+          <img src={userStore.getUserProfile()} alt="프로필이미지" />
         ) : (
           <ProfileNoImg width="100px" height="100px" />
-        )} */}
-
-        <img src={testImg} alt="프로필이미지" />
+        )}
 
         <ProfileTextCol>
           <p>
@@ -48,29 +47,33 @@ export default function MypageLayout() {
         </ProfileTextCol>
       </ProfileBox>
 
-      <TabRow>
-        {webMypageTabs.map((tab) => {
-          const isActive = location.pathname.split("/")[3] === tab.route;
-          return (
-            <Tab
-              $isActive={isActive}
-              key={tab.route}
-              onClick={() => navigate(tab.route)}
-            >
-              <tab.icon
-                width="24"
-                height="24"
-                stroke={isActive ? "#1a1a1a" : "#999"}
-              />
-              <span>{tab.label}</span>
-            </Tab>
-          );
-        })}
-      </TabRow>
+      {!!userStore.getUserName() && (
+        <>
+          <TabRow>
+            {webMypageTabs.map((tab) => {
+              const isActive = location.pathname.split("/")[3] === tab.route;
+              return (
+                <Tab
+                  $isActive={isActive}
+                  key={tab.route}
+                  onClick={() => navigate(tab.route)}
+                >
+                  <tab.icon
+                    width="24"
+                    height="24"
+                    stroke={isActive ? "#1a1a1a" : "#999"}
+                  />
+                  <span>{tab.label}</span>
+                </Tab>
+              );
+            })}
+          </TabRow>
 
-      <OutletBox>
-        <Outlet />
-      </OutletBox>
+          <OutletBox>
+            <Outlet />
+          </OutletBox>
+        </>
+      )}
     </Container>
   );
 }
@@ -100,6 +103,7 @@ const ProfileTextCol = styled.div`
     color: ${(props) => props.theme.color.gray900};
     font-size: 16px;
     font-weight: 700;
+    user-select: none;
   }
 
   & > span {

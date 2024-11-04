@@ -35,7 +35,7 @@ export default function Layout({ minWidth = "1440px" }: Props) {
       <OutletBox $minWidth={minWidth}>
         <Outlet />
       </OutletBox>
-      <StyledToast position="bottom-left" />
+      <StyledToast position="top-center" />
     </LayoutContainer>
   );
 }

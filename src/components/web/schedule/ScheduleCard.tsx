@@ -1,89 +1,105 @@
 import styled from "styled-components";
 import CheckIcon from "../../../assets/icons/CheckIcon";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
-import testImg from "../../../assets/images/testImg2.png";
+import MarkIcon from "../../../assets/icons/MarkIcon";
 export default function ScheduleCard() {
   return (
     <ScheduleCardContainer>
-      <img src={testImg} alt="이미지없음" />
-      <ScheduleCardTextCol>
-        <div>
-          <p>남해 여행</p>
-          <span>D-day 8</span>
-        </div>
-        <p>
-          <CalendarCheckIcon />
-          4.17 ~ 4.19
-        </p>
-      </ScheduleCardTextCol>
+      <CardHeader>
+        <CalendarCheckIcon />
+        <span>4.17 ~ 4.19</span>
+        <div>|</div>
+        <p>2박 3일 여행</p>
+      </CardHeader>
 
-      <ScheduleCardCheckBox>
-        <CheckIcon />
-        <span>공개</span>
-      </ScheduleCardCheckBox>
+      <CardTitle>
+        <p>남해 여행</p>
+        <div>
+          <CheckIcon />
+          <span>공개</span>
+        </div>
+      </CardTitle>
+
+      <CardTagRow>
+        {/* 3개까지만 보이게끔 */}
+        <CardTag>
+          <MarkIcon stroke="#6979f8" />
+          <span>금산 보리암</span>
+        </CardTag>
+        <CardTag>
+          <MarkIcon stroke="#6979f8" />
+          <span>금산 보리암</span>
+        </CardTag>
+      </CardTagRow>
     </ScheduleCardContainer>
   );
 }
 
 const ScheduleCardContainer = styled.div`
-  width: 400px;
-  height: 143px;
+  width: 343px;
+  height: 124px;
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
   background-color: ${(props) => props.theme.color.white};
-  padding: 22px;
+  padding: 16px;
 
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+`;
+
+const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  & > span {
+    color: ${(props) => props.theme.color.gray700};
+  }
+
+  & > div {
+    color: ${(props) => props.theme.color.gray400};
+  }
+
+  & > p {
+    color: ${(props) => props.theme.color.secondary};
+  }
+`;
+
+const CardTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  & > img {
-    width: 102px;
-    height: 100px;
-    border-radius: 16px;
-    object-fit: cover;
+  & > p {
+    color: ${(props) => props.theme.color.gray900};
+    font-size: 16px;
+    font-weight: 700;
   }
-`;
 
-const ScheduleCardTextCol = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-around;
-  flex: 1;
-  padding-left: 23px;
-
-  & > div:first-child {
+  & > div {
     display: flex;
     align-items: center;
-    gap: 3px;
-    & > p {
-      color: ${(props) => props.theme.color.gray900};
-      font-size: 20px;
-      font-weight: 700;
-    }
 
     & > span {
       color: ${(props) => props.theme.color.gray700};
       font-size: 12px;
     }
   }
-
-  & > p {
-    display: flex;
-    gap: 3px;
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 16px;
-  }
 `;
 
-const ScheduleCardCheckBox = styled.div`
+const CardTagRow = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 4px;
+`;
+
+const CardTag = styled.div`
+  display: flex;
+  align-items: center;
 
   & > span {
     color: ${(props) => props.theme.color.gray700};
-    font-size: 12px;
   }
 `;

@@ -174,3 +174,70 @@ export const getMyProfile = async () => {
     console.error("내 프로필 조회 API 에러", err);
   }
 };
+
+export const getMySchedules = async () => {
+  try {
+    const res = await axiosInstance.get("/schedules/my?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 일정 리스트 조회 API 에러", err);
+  }
+};
+
+export const getRecommendSchedules = async () => {
+  try {
+    const res = await axiosInstance.get("/schedules?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("추천 일정 리스트 조회 API 에러", err);
+  }
+};
+
+export const setLike = async ({ type, id }: { type: string; id: string }) => {
+  try {
+    const res = await axiosInstance.post(`/like/${type}/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("좋아요/찜 API 에러", err);
+  }
+};
+
+export const uploadProfileImg = async ({ file }: { file: File }) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await axiosInstance.post(`/upload/profile`, formData, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("유저 프로필 사진 업로드 API 에러", err);
+  }
+};

@@ -5,7 +5,11 @@ import XIcon from "../../../assets/icons/XIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import useImageUploadHook from "../../../hooks/useImageUpload";
 import { useEffect, useRef } from "react";
-import { getMyProfile, updateUser } from "../../../utils/axios";
+import {
+  getMyProfile,
+  updateUser,
+  uploadProfileImg,
+} from "../../../utils/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { useUserStore } from "../../../store/user.store";
 import { useNavigate } from "react-router-dom";
@@ -18,19 +22,31 @@ export default function EditProfile() {
     useImageUploadHook();
 
   const handleEdit = () => {
-    if (newNameRef?.current) {
-      if (newNameRef?.current.value !== userStore.getUserName()) {
-        updateUser({
-          name: newNameRef.current.value,
-          type: userStore.getUserType(),
-        }).then((res) => {
-          if (res && newNameRef?.current) {
-            userStore.setUserName(newNameRef.current.value);
-            navigate(-1);
-          }
-        });
-      }
+    const newName = newNameRef?.current?.value;
+    const oldName = userStore.getUserName();
+    const newType = userStore.getUserType();
+
+    const updatePromises = [];
+
+    if (newName && newName !== oldName) {
+      updatePromises.push(updateUser({ name: newName, type: newType }));
     }
+
+    if (newImg) {
+      updatePromises.push(uploadProfileImg({ file: newImg }));
+    }
+
+    Promise.all(updatePromises).then((results) => {
+      if (newName && newName !== oldName) {
+        userStore.setUserName(newName);
+        navigate(-1);
+      }
+      const imgRes = results.find((res) => res?.data?.data);
+      if (imgRes) {
+        userStore.setUserProfile(imgRes.data.data);
+        navigate(-1);
+      }
+    });
   };
 
   const handleNameDelete = () => {
@@ -45,12 +61,12 @@ export default function EditProfile() {
 
       <ProfileImgBox>
         <div>
-          {/* {profile?.profile || imgSrc ? (
-            <img src={profile?.profile || imgSrc} alt="profile" />
+          {userStore.getUserProfile() || imgSrc ? (
+            <img src={imgSrc || userStore.getUserProfile()} alt="profile" />
           ) : (
             <ProfileNoImg width="100px" height="100px" />
-          )} */}
-          <img src={imgSrc} alt="profile" />
+          )}
+
           <CameraIconBox onClick={handleClick}>
             <CameraIcon />
             <input

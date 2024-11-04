@@ -1,9 +1,8 @@
 import { useRef, useState } from "react";
-import testImg from "../assets/images/testImg.png";
 
 export default function useImageUploadHook() {
   const imgRef = useRef<HTMLInputElement>(null);
-  const [imgSrc, setImgSrc] = useState(testImg);
+  const [imgSrc, setImgSrc] = useState("");
   const [newImg, setNewImg] = useState(null);
 
   const handleImageChange = (e: any) => {
