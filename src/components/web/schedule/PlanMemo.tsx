@@ -6,17 +6,33 @@ import CardIcon from "../../../assets/icons/CardIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import { TitlePlusBox } from "../../../assets/styles/scheduleDetail.style";
 import { testCostList } from "../../../utils/staticDatas";
+import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
 import TransportBox from "../../TransportBox";
+import { AddCostDataTypes } from "../../../types/schedule";
 
-export default function PlanMemo() {
+interface Props {
+  isAddCost: boolean;
+  setIsOpenMemoModal: React.Dispatch<
+    React.SetStateAction<{
+      memo: boolean;
+      cost: boolean;
+    }>
+  >;
+}
+
+export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
   const [isPlanMemoEdit, setIsPlanMemoEdit] = useState(false);
-  const [isAddCost, setIsAddCost] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [planMemoData, setPlanMemoData] = useState({
     content: "",
     cost: testCostList,
     transport: [] as string[],
+  });
+  const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
+    category: "Car",
+    name: "",
+    cost: null,
   });
 
   const adjustTextareaHeight = () => {
@@ -28,72 +44,101 @@ export default function PlanMemo() {
   };
 
   const handleEditDoneClick = () => {
-    setIsPlanMemoEdit(false);
+    if (isAddCost) {
+      setIsOpenMemoModal({ memo: true, cost: false });
+      console.log(addCostData);
+    } else {
+      setIsPlanMemoEdit(false);
+    }
   };
 
   return (
     <PlanMemoContainer>
       <DoneButton
-        $isPlanMemoEdit={isPlanMemoEdit}
+        $isEdit={isPlanMemoEdit || isAddCost}
         onClick={handleEditDoneClick}
       >
-        완료
+        {isAddCost ? "저장" : "완료"}
       </DoneButton>
-      <Title>나의 플랜</Title>
-
-      <PlanMemoBody>
-        <div>
-          <SubTitleBox>
-            <CalendarIcon />
-            <p>일정</p>
-          </SubTitleBox>
-          <ContentInput onClick={() => setIsPlanMemoEdit(true)}>
-            <textarea
-              ref={textareaRef}
-              placeholder="여행 상세 일정"
-              readOnly={!isPlanMemoEdit}
-              value={planMemoData.content}
-              onChange={(e) =>
-                setPlanMemoData((prev) => ({
-                  ...prev,
-                  content: e.target.value,
-                }))
-              }
-              onInput={adjustTextareaHeight}
-              onClick={() => setIsPlanMemoEdit(true)}
+      {isAddCost ? (
+        <AddCostTitle>
+          <CardIcon />
+          <h1>비용</h1>
+        </AddCostTitle>
+      ) : (
+        <Title>나의 플랜</Title>
+      )}
+      {!isAddCost && (
+        <PlanMemoBody>
+          <div>
+            <SubtitleBox>
+              <CalendarIcon />
+              <p>일정</p>
+            </SubtitleBox>
+            <ContentInput onClick={() => setIsPlanMemoEdit(true)}>
+              <textarea
+                ref={textareaRef}
+                placeholder="여행 상세 일정"
+                readOnly={!isPlanMemoEdit}
+                value={planMemoData.content}
+                onChange={(e) =>
+                  setPlanMemoData((prev) => ({
+                    ...prev,
+                    content: e.target.value,
+                  }))
+                }
+                onInput={adjustTextareaHeight}
+                onClick={() => setIsPlanMemoEdit(true)}
+              />
+            </ContentInput>
+          </div>
+          <div>
+            <TitlePlusBox>
+              <SubtitleBox>
+                <CardIcon />
+                <p>비용</p>
+              </SubtitleBox>
+              <div
+                onClick={() =>
+                  setIsOpenMemoModal({
+                    memo: false,
+                    cost: true,
+                  })
+                }
+              >
+                <AddSquareIcon />
+              </div>
+            </TitlePlusBox>
+            <CostList isWeb={true} costList={planMemoData.cost} />
+          </div>
+          <div>
+            <TitlePlusBox>
+              <SubtitleBox>
+                <TrainIcon />
+                <p>이동 수단</p>
+              </SubtitleBox>
+              <div onClick={() => setIsPlanMemoEdit(true)}>
+                <AddSquareIcon />
+              </div>
+            </TitlePlusBox>
+            <TransportBox
+              isWeb={true}
+              transport={planMemoData.transport}
+              isPlanMemoEdit={isPlanMemoEdit}
+              setData={setPlanMemoData}
             />
-          </ContentInput>
-        </div>
-        <div>
-          <TitlePlusBox>
-            <SubTitleBox>
-              <CardIcon />
-              <p>비용</p>
-            </SubTitleBox>
-            <div onClick={() => setIsAddCost(true)}>
-              <AddSquareIcon />
-            </div>
-          </TitlePlusBox>
-          <CostList isWeb={true} costList={planMemoData.cost} />
-        </div>
-        <div>
-          <TitlePlusBox>
-            <SubTitleBox>
-              <TrainIcon />
-              <p>이동 수단</p>
-            </SubTitleBox>
-            <div onClick={() => setIsPlanMemoEdit(true)}>
-              <AddSquareIcon />
-            </div>
-          </TitlePlusBox>
-          <TransportBox
-            isWeb={true}
-            transport={planMemoData.transport}
-            isPlanMemoEdit={isPlanMemoEdit}
-            setData={setPlanMemoData}
+          </div>
+        </PlanMemoBody>
+      )}
+      {isAddCost && (
+        <AddCostBody>
+          <AddCostBox
+            isWeb
+            selectedCategory={addCostData.category}
+            setAddCostData={setAddCostData}
           />
-        </div>
-      </PlanMemoBody>
+        </AddCostBody>
+      )}
     </PlanMemoContainer>
   );
 }
@@ -106,12 +151,14 @@ const PlanMemoContainer = styled.div`
   overflow-y: auto;
 `;
 
-const DoneButton = styled.button<{ $isPlanMemoEdit: boolean }>`
+const DoneButton = styled.p<{ $isEdit: boolean }>`
   margin-top: 14px;
+  padding: 0;
   color: ${(props) => props.theme.color.secondary};
   font-weight: 700;
   align-self: flex-end;
-  visibility: ${({ $isPlanMemoEdit }) => !$isPlanMemoEdit && "hidden"};
+  cursor: pointer;
+  visibility: ${({ $isEdit }) => !$isEdit && "hidden"};
 `;
 
 const Title = styled.h1`
@@ -130,7 +177,7 @@ const PlanMemoBody = styled.div`
   max-height: calc(808px - 180px);
 `;
 
-const SubTitleBox = styled.div`
+const SubtitleBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -163,4 +210,22 @@ const ContentInput = styled.div`
       font-size: 16px;
     }
   }
+`;
+
+const AddCostTitle = styled.div`
+  display: flex;
+  gap: 8px;
+  align-self: center;
+
+  & > h1 {
+    font-size: 24px;
+  }
+`;
+
+const AddCostBody = styled.div`
+  height: 695px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding: 60px 32px;
 `;

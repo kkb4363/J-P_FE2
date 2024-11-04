@@ -27,10 +27,10 @@ export default function PlanItem({ item, isEdit }: Props) {
     delete: false,
     deleteSuccess: false,
   });
-    const [isOpenMemoModal, setIsOpenMemoModal] = useState({
-      memo: false,
-      cost: false,
-    });
+  const [isOpenMemoModal, setIsOpenMemoModal] = useState({
+    memo: false,
+    cost: false,
+  });
   const {
     attributes,
     listeners,
@@ -61,6 +61,52 @@ export default function PlanItem({ item, isEdit }: Props) {
 
   return (
     <>
+      <PlanItemContainer
+        ref={setNodeRef}
+        {...attributes}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition: transition,
+          zIndex: isDragging ? "100" : "auto",
+        }}
+      >
+        <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
+        <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
+          <PlaceNum $isEdit={isEdit}>1</PlaceNum>
+          <PlaceTitleBox>
+            <p>{item.title}</p>
+            <span>{item.subtitle}</span>
+          </PlaceTitleBox>
+          {isEdit && (
+            <DragHandler
+              ref={setActivatorNodeRef}
+              {...listeners}
+              $isDragging={isDragging}
+            >
+              선택
+            </DragHandler>
+          )}
+        </PlaceBox>
+        {isEdit ? (
+          <button
+            onClick={() =>
+              setIsOpenDeleteModal({
+                delete: true,
+                deleteSuccess: false,
+              })
+            }
+          >
+            <TrashIcon />
+          </button>
+        ) : (
+          <MemoButton
+            onClick={() => setIsOpenMemoModal((p) => ({ ...p, memo: true }))}
+          >
+            <FileCheckIcon />
+          </MemoButton>
+        )}
+      </PlanItemContainer>
+
       {isOpenMoveModal.moveDay && (
         <OneButtonModal
           isMobile={false}
@@ -120,56 +166,19 @@ export default function PlanItem({ item, isEdit }: Props) {
           onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
-          <PlanMemo />
+          <PlanMemo isAddCost={false} setIsOpenMemoModal={setIsOpenMemoModal} />
         </NoButtonModal>
       )}
-      <PlanItemContainer
-        ref={setNodeRef}
-        {...attributes}
-        style={{
-          transform: CSS.Transform.toString(transform),
-          transition: transition,
-          zIndex: isDragging ? "100" : "auto",
-        }}
-      >
-        <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
-        <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
-          <PlaceNum $isEdit={isEdit}>1</PlaceNum>
-          <PlaceTitleBox>
-            <p>{item.title}</p>
-            <span>{item.subtitle}</span>
-          </PlaceTitleBox>
-          {isEdit && (
-            <DragHandler
-              ref={setActivatorNodeRef}
-              {...listeners}
-              $isDragging={isDragging}
-            >
-              선택
-            </DragHandler>
-          )}
-        </PlaceBox>
-        {isEdit ? (
-          <button
-            onClick={() =>
-              setIsOpenDeleteModal({
-                delete: true,
-                deleteSuccess: false,
-              })
-            }
-          >
-            <TrashIcon />
-          </button>
-        ) : (
-          <MemoButton
-            onClick={() =>
-              setIsOpenMemoModal((p) => ({ ...p, memo: true }))
-            }
-          >
-            <FileCheckIcon />
-          </MemoButton>
-        )}
-      </PlanItemContainer>
+      {isOpenMemoModal.cost && (
+        <NoButtonModal
+          width="666px"
+          height="695px"
+          onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
+          noCloseBtn
+        >
+          <PlanMemo isAddCost={true} setIsOpenMemoModal={setIsOpenMemoModal} />
+        </NoButtonModal>
+      )}
     </>
   );
 }
