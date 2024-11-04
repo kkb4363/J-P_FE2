@@ -185,7 +185,7 @@ export const costCategories = [
   { icon: CarIcon, id: "Car", label: "교통" },
   { icon: TicketIcon, id: "Ticket", label: "관광" },
   { icon: BagIcon, id: "Bag", label: "쇼핑" },
-  { icon: EatIcon, id: "Eat", label: "식사" },
+  { icon: EatIcon, id: "Eat", label: "식비" },
   { icon: EtcIcon, id: "Etc", label: "기타" },
 ];
 

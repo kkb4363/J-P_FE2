@@ -9,13 +9,13 @@ import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
 import { useJPStore } from "../../../store/JPType.store";
-import { planItemProps } from "../../../types/schedule";
+import { AddCostDataTypes, planItemProps } from "../../../types/schedule";
 import {
-  costCategories,
   testCostList,
   testDayList,
-  testPlanItems,
+  testPlanItems
 } from "../../../utils/staticDatas";
+import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
 import DaySlider from "../../DaySlider";
 import TransportBox from "../../TransportBox";
@@ -34,11 +34,15 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
   const [isAddCostMode, setIsAddCostMode] = useState(false);
   const [currentDay, setCurrentDay] = useState(0);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
-  const [costCategory, setCostCategory] = useState("Car");
   const [planDetails, setPlanDetails] = useState({
     content: "",
     cost: testCostList,
     transport: [] as string[],
+  });
+  const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
+    category: "Car",
+    name: "",
+    cost: null,
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -224,41 +228,10 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
             </D.PlanDetailsHeader>
 
             <D.AddCostBox>
-              <div>
-                <p>항목을 선택해주세요.</p>
-                <D.SelectCostBox>
-                  {costCategories.map((category, idx) => (
-                    <D.SelectCostItem
-                      key={idx}
-                      $isSelected={costCategory === category.id}
-                      onClick={() => setCostCategory(category.id)}
-                    >
-                      <D.CategoryIconBox
-                        $isSelected={costCategory === category.id}
-                      >
-                        <category.icon
-                          stroke={
-                            costCategory === category.id ? "#6979F8" : "#B8B8B8"
-                          }
-                        />
-                      </D.CategoryIconBox>
-                      <span>{category.label}</span>
-                    </D.SelectCostItem>
-                  ))}
-                </D.SelectCostBox>
-              </div>
-              <div>
-                <p>항목명을 입력해주세요.</p>
-                <D.CostInput>
-                  <input name="name" placeholder="항목명 입력" />
-                </D.CostInput>
-              </div>
-              <div>
-                <p>금액을 입력해주세요.</p>
-                <D.CostInput>
-                  <input name="cost" type="number" placeholder="금액 입력" />
-                </D.CostInput>
-              </div>
+              <AddCostBox
+                selectedCategory={addCostData.category}
+                setAddCostData={setAddCostData}
+              />
             </D.AddCostBox>
           </div>
         </BottomSheet>
