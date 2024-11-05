@@ -38,9 +38,7 @@ export default function CreateSchedule() {
         endDate: date[0].endDate + "",
       });
     } else {
-      //TODO : navigate option state -> selectDate 정보 넘겨주고
-      //넘겨받은 페이지에서 4.17~4.19(2박 3일) <- 요거 계산해서 표시해주기
-      navigate(`/home/schedule/details/${selectCity}`);
+      navigate(`/home/schedule/details/${selectCity}`, { state: selectDate });
     }
   };
 

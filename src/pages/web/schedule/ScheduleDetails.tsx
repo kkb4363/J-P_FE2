@@ -2,11 +2,12 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
 import { ParticipantsRow } from "../../../assets/styles/scheduleDetail.style";
+import DatesBox from "../../../components/DatesBox";
 import DaySlider from "../../../components/DaySlider";
 import JPToggle from "../../../components/JPToggle";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
@@ -24,6 +25,10 @@ export default function ScheduleDetails() {
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
 
+  const { state: dates } = useLocation();
+  const placeId = useParams();
+  console.log(placeId);
+  console.log(dates);
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -55,10 +60,7 @@ export default function ScheduleDetails() {
             <p>남해 여행</p>
             <PenIcon stroke="#4D4D4D" />
           </TitleBox>
-          <DaysBox>
-            <CalendarCheckIcon stroke="#4D4D4D" />
-            <p>4.17 ~ 4.19 (2박 3일)</p>
-          </DaysBox>
+          <DatesBox dates={dates} />
           <MemberBox>
             <InviteIcon />
             <ParticipantsRow>
@@ -161,17 +163,6 @@ const TitleBox = styled.div`
     color: ${(props) => props.theme.color.gray900};
     font-size: 24px;
     font-weight: 700;
-  }
-`;
-
-const DaysBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-
-  & > p {
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 14px;
   }
 `;
 
