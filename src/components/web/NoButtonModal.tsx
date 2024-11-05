@@ -8,6 +8,7 @@ interface Props {
   children: React.ReactNode;
   width?: string;
   height?: string;
+  noCloseBtn?: boolean;
 }
 
 export default function NoButtonModal({
@@ -15,15 +16,18 @@ export default function NoButtonModal({
   children,
   width,
   height,
+  noCloseBtn = false,
 }: Props) {
   return (
     <>
       <ModalOverlay onClick={onClose} />
       <ModalWrapper $width={width} $height={height}>
-        <ModalHeader>
-          <EmptyBox />
-          <CancelIcon onClick={onClose} />
-        </ModalHeader>
+        {!noCloseBtn && (
+          <ModalHeader>
+            <EmptyBox />
+            <CancelIcon onClick={onClose} />
+          </ModalHeader>
+        )}
         <ModalBody>{children}</ModalBody>
       </ModalWrapper>
     </>
@@ -34,7 +38,7 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 16px 16px 0;
   font-weight: 700;
 `;
 
@@ -48,5 +52,5 @@ const ModalBody = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 0 32px 20px;
+  padding: 16px 32px 20px;
 `;
