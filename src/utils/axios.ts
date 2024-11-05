@@ -293,3 +293,22 @@ export const deleteProfileImg = async () => {
     console.error("유저 프로필 사진 삭제 API 에러", err);
   }
 };
+
+export const createSchedule = async (schedule: {
+  startDate: string;
+  endDate: string;
+  placeId: string;
+}) => {
+  try {
+    const res = await axiosInstance.post(`/schedule`, schedule, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("일정 초기 생성 API 에러", err);
+  }
+};
