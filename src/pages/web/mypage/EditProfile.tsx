@@ -4,8 +4,8 @@ import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import useImageUploadHook from "../../../hooks/useImageUpload";
-import { useEffect, useRef } from "react";
-import { getMyProfile, updateUser } from "../../../utils/axios";
+import { useRef, useState } from "react";
+import { updateUser, uploadProfileImg } from "../../../utils/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { useUserStore } from "../../../store/user.store";
 import { useNavigate } from "react-router-dom";
@@ -16,19 +16,48 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const { imgRef, imgSrc, newImg, handleImageChange, handleClick } =
     useImageUploadHook();
+  const [newName, setNewName] = useState("");
 
-  const handleEdit = () => {
+  const canSubmit =
+    (!!newName && newName !== userStore.getUserName()) || newImg !== null;
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setNewName(e.target.value);
+  };
+
+  const handleNameDelete = () => {
     if (newNameRef?.current) {
-      updateUser({
-        name: newNameRef.current.value,
-        type: userStore.getUserType(),
-      }).then((res) => {
-        if (res && newNameRef?.current) {
-          userStore.setUserName(newNameRef.current.value);
-          navigate(-1);
-        }
-      });
+      newNameRef.current.value = "";
+      setNewName("");
     }
+  };
+
+  const handleSubmit = () => {
+    const oldName = userStore.getUserName();
+    const newType = userStore.getUserType();
+
+    const updatePromises = [];
+
+    if (newName && newName !== oldName) {
+      updatePromises.push(updateUser({ name: newName, type: newType }));
+    }
+
+    if (newImg) {
+      updatePromises.push(uploadProfileImg({ file: newImg }));
+    }
+
+    Promise.all(updatePromises).then((results) => {
+      if (newName && newName !== oldName) {
+        userStore.setUserName(newName);
+        navigate(-1);
+      }
+      const imgRes = results.find((res) => res?.data?.data);
+      if (imgRes) {
+        userStore.setUserProfile(imgRes.data.data);
+        navigate(-1);
+      }
+    });
   };
 
   return (
@@ -37,12 +66,12 @@ export default function EditProfile() {
 
       <ProfileImgBox>
         <div>
-          {/* {profile?.profile || imgSrc ? (
-            <img src={profile?.profile || imgSrc} alt="profile" />
+          {userStore.getUserProfile() || imgSrc ? (
+            <img src={imgSrc || userStore.getUserProfile()} alt="profile" />
           ) : (
             <ProfileNoImg width="100px" height="100px" />
-          )} */}
-          <img src={imgSrc} alt="profile" />
+          )}
+
           <CameraIconBox onClick={handleClick}>
             <CameraIcon />
             <input
@@ -58,8 +87,12 @@ export default function EditProfile() {
 
       <NickNameBox>
         <div>
-          <input placeholder={userStore.getUserName()} ref={newNameRef} />
-          <DeleteIconBox>
+          <input
+            defaultValue={userStore.getUserName()}
+            onChange={handleNameChange}
+            ref={newNameRef}
+          />
+          <DeleteIconBox onClick={handleNameDelete}>
             <XIcon />
           </DeleteIconBox>
         </div>
@@ -67,11 +100,12 @@ export default function EditProfile() {
 
       <SaveButtonBox>
         <PrimaryButton
-          onClick={handleEdit}
+          onClick={handleSubmit}
           blue={true}
           text="저장"
           width="190px"
           height="45px"
+          isDisabled={!canSubmit}
         />
       </SaveButtonBox>
     </Container>

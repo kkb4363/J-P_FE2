@@ -6,6 +6,7 @@ export type UserType = "J" | "P";
 interface State {
   userName: string;
   userType: UserType;
+  userProfileImg: string;
   searchData: string[];
 }
 
@@ -16,6 +17,8 @@ interface Action {
   setUserType: (t: UserType) => void;
   getSearchData: () => string[];
   addSearchData: (s: string) => void;
+  getUserProfile: () => string;
+  setUserProfile: (p: string) => void;
   deleteSearchData: (s: string) => void;
   clearSearchData: () => void;
 }
@@ -23,6 +26,7 @@ interface Action {
 const initData: State = {
   userName: "",
   userType: "J",
+  userProfileImg: "",
   searchData: [],
 };
 
@@ -34,6 +38,8 @@ export const useUserStore = create<State & Action>()(
       setUserName: (n: string) => set({ userName: n }),
       getUserType: () => get().userType,
       setUserType: (t: UserType) => set({ userType: t }),
+      getUserProfile: () => get().userProfileImg,
+      setUserProfile: (p: string) => set({ userProfileImg: p }),
       getSearchData: () => get().searchData,
       addSearchData: (s: string) => {
         const prev = get().searchData;

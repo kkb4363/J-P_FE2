@@ -4,6 +4,7 @@ import {
   getPlaceDetail,
   getReviews,
   getSurroundingPlace,
+  setLike,
 } from "../../../utils/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -26,12 +27,14 @@ import CustomSkeleton from "../../../components/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
 import LikeCommentBox from "../../../components/LikeCommentBox";
+import { useUserStore } from "../../../store/user.store";
+import { toast } from "react-toastify";
 
 export default function Detail() {
   const param = useParams();
   const navigate = useNavigate();
+  const userStore = useUserStore();
 
-  const isCityDetailPage = location.pathname.includes("city");
   const [loading, setLoading] = useState(true);
   const [detail, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
@@ -63,6 +66,19 @@ export default function Detail() {
     });
   };
 
+  const handleLike = () => {
+    if (!userStore.getUserName()) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    } else if (detail?.id) {
+      const placeType =
+        detail.placeType === "TRAVEL_PLACE" ? "PLACE" : "REVIEW";
+
+      setLike({ type: placeType, id: detail.placeId }).then((res) =>
+        console.log(res)
+      );
+    }
+  };
+
   useEffect(() => {
     if (param?.placeId) {
       getDetail();
@@ -75,6 +91,8 @@ export default function Detail() {
       getNearPlace();
     }
   }, [detail?.id]);
+
+  console.log(detail);
 
   return (
     <>
@@ -112,16 +130,18 @@ export default function Detail() {
           <MarkIcon width="32" height="32" />
           <span>
             {detail?.name}
-            <HeartBox>
+            <HeartBox onClick={handleLike}>
               <HeartIcon />
             </HeartBox>
           </span>
         </div>
 
-        <AddScheduleButton>
-          <PlusIcon stroke="#fff" />
-          <span>일정담기</span>
-        </AddScheduleButton>
+        {detail?.placeType === "TRAVEL_PLACE" && (
+          <AddScheduleButton>
+            <PlusIcon stroke="#fff" />
+            <span>일정담기</span>
+          </AddScheduleButton>
+        )}
       </TitleBox>
 
       <TagRowBox>

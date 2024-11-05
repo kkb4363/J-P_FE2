@@ -4,40 +4,71 @@ import ScheduleCard from "../../../components/web/schedule/ScheduleCard";
 import RecommendCard from "../../../components/web/schedule/RecommendCard";
 import { useNavigate } from "react-router-dom";
 import Container from "../../../components/web/Container";
+import { useEffect, useState } from "react";
+import { getMySchedules, getRecommendSchedules } from "../../../utils/axios";
+import { useUserStore } from "../../../store/user.store";
+import { toast } from "react-toastify";
 
 export default function Schedule() {
   const navigate = useNavigate();
+  const { getUserName } = useUserStore();
+  const [mySchedules, setMySchedules] = useState([]);
+
+  const handleScheduleCreate = () => {
+    if (!getUserName()) {
+      toast(<span>로그인이 필요합니다.</span>);
+    } else {
+      navigate("/home/createSchedule");
+    }
+  };
+
+  useEffect(() => {
+    getRecommendSchedules().then((res) => console.log(res));
+  }, []);
+
+  useEffect(() => {
+    if (!!getUserName()) {
+      getMySchedules().then((res) => {
+        setMySchedules(res?.data);
+      });
+    }
+  }, []);
+
+  console.log(mySchedules);
+
   return (
-    <Container>
-      <>
-        <TitleWithButton>
-          <h1>내 일정</h1>
-          <button onClick={() => navigate("/home/createSchedule")}>
-            <CalendarCheckIcon stroke="#6979f8" />
-            <span>일정 생성</span>
-          </button>
-        </TitleWithButton>
+    <>
+      <Container>
+        <>
+          <TitleWithButton>
+            <h1>내 일정</h1>
+            <button onClick={handleScheduleCreate}>
+              <CalendarCheckIcon stroke="#6979f8" />
+              <span>일정 생성</span>
+            </button>
+          </TitleWithButton>
+
+          <SubTitleWithMore>
+            <h2>다가오는 일정 1</h2>
+          </SubTitleWithMore>
+
+          <ScheduleCardBox>
+            <ScheduleCard />
+          </ScheduleCardBox>
+        </>
 
         <SubTitleWithMore>
-          <h2>다가오는 일정 1</h2>
+          <h2>여행 일정 추천</h2>
+          <span>더보기</span>
         </SubTitleWithMore>
 
-        <ScheduleCardBox>
-          <ScheduleCard />
-        </ScheduleCardBox>
-      </>
-
-      <SubTitleWithMore>
-        <h2>여행 일정 추천</h2>
-        <span>더보기</span>
-      </SubTitleWithMore>
-
-      <RecommendCardBox>
-        <RecommendCard />
-        <RecommendCard />
-        <RecommendCard />
-      </RecommendCardBox>
-    </Container>
+        <RecommendCardBox>
+          <RecommendCard />
+          <RecommendCard />
+          <RecommendCard />
+        </RecommendCardBox>
+      </Container>
+    </>
   );
 }
 

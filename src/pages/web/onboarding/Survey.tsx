@@ -4,15 +4,39 @@ import Header from "../../../components/web/Header";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { useCookies } from "react-cookie";
-import { axiosInstance } from "../../../utils/axios";
+import { axiosInstance, getMyProfile, updateUser } from "../../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { UserType, useUserStore } from "../../../store/user.store";
 
 export default function Survey() {
   const navigate = useNavigate();
+  const userStore = useUserStore();
   const [_, setCookie] = useCookies(["userToken"]);
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
+
+  const nickNameRef = useRef<HTMLInputElement>(null);
+  const [type, setType] = useState("");
+
+  const handleJPSelect = (type: string) => {
+    setType(type);
+  };
+
+  const handleSubmit = async () => {
+    if (nickNameRef.current && !!nickNameRef.current.value && !!type) {
+      updateUser({
+        name: nickNameRef.current.value,
+        type: type as "J" | "P",
+      }).then((res) => {
+        if (res && nickNameRef.current) {
+          userStore.setUserName(nickNameRef.current.value);
+          userStore.setUserType(type as "J" | "P");
+          navigate("/home");
+        }
+      });
+    }
+  };
 
   // 개발환경 isDev=true , 빌드환경 isDev=false
   const handleGoogleLogin = async () => {
@@ -24,11 +48,24 @@ export default function Survey() {
       setCookie("userToken", accessToken);
 
       if (res.status === 200) {
-        res.data.isSignUp ? navigate("/home") : null;
+        if (res.data.isSignUp) {
+          setUserProfile();
+          navigate("/home");
+        } else {
+          return;
+        }
       }
     } catch (err) {
       console.error("구글 로그인 에러=", err);
     }
+  };
+
+  const setUserProfile = () => {
+    getMyProfile().then((res) => {
+      userStore.setUserName(res?.data.nickname);
+      userStore.setUserType(res?.data.mbti as UserType);
+      userStore.setUserProfile(res?.data.profile);
+    });
   };
 
   useEffect(() => {
@@ -46,16 +83,22 @@ export default function Survey() {
 
         <NameInput>
           <NicknameIcon />
-          <input placeholder="닉네임을 입력해주세요." />
+          <input placeholder="닉네임을 입력해주세요." ref={nickNameRef} />
         </NameInput>
 
         <p>성향을 선택해주세요.</p>
 
         <SelectJPBoxRow>
-          <SelectJPBox>
+          <SelectJPBox
+            $isSelected={type === "J"}
+            onClick={() => handleJPSelect("J")}
+          >
             <span>J형/계획형</span>
           </SelectJPBox>
-          <SelectJPBox>
+          <SelectJPBox
+            $isSelected={type === "P"}
+            onClick={() => handleJPSelect("P")}
+          >
             <span>P형/즉흥형</span>
           </SelectJPBox>
         </SelectJPBoxRow>
@@ -64,7 +107,7 @@ export default function Survey() {
           width="260px"
           height="50px"
           text="시작하기"
-          onClick={() => {}}
+          onClick={handleSubmit}
         />
       </SurveyBox>
     </ExtendedContainer>
@@ -120,12 +163,13 @@ const SelectJPBoxRow = styled.div`
   margin-bottom: 117px;
 `;
 
-const SelectJPBox = styled.button`
+const SelectJPBox = styled.button<{ $isSelected: boolean }>`
   width: 140px;
   height: 54px;
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
-  background-color: ${(props) => props.theme.color.white};
+  background-color: ${(props) =>
+    props.$isSelected ? props.theme.color.gray200 : props.theme.color.white};
 
   display: flex;
   justify-content: center;
@@ -135,9 +179,5 @@ const SelectJPBox = styled.button`
     color: ${(props) => props.theme.color.black};
     font-size: 16px;
     font-weight: 400;
-  }
-
-  &:hover {
-    opacity: 0.6;
   }
 `;

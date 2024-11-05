@@ -5,6 +5,7 @@ import { useModalStore } from "../../store/modal.store";
 import SearchIcon from "../../assets/icons/SearchIcon";
 import ProfileIcon from "../../assets/icons/ProfileIcon";
 import { Cookies, useCookies } from "react-cookie";
+import { useUserStore } from "../../store/user.store";
 
 interface Props {
   minWidth: string;
@@ -13,6 +14,7 @@ interface Props {
 export default function Header({ minWidth }: Props) {
   const cookies = new Cookies();
   const [, , removeCookie] = useCookies();
+  const userStore = useUserStore();
   const navigate = useNavigate();
   const { getCurrentModal, setCurrentModal } = useModalStore();
 
@@ -32,6 +34,8 @@ export default function Header({ minWidth }: Props) {
   const handleLoginOut = () => {
     if (!!cookies.get("userToken")) {
       removeCookie("userToken", { path: "/" });
+      userStore.setUserName("");
+      userStore.setUserProfile("");
     } else {
       navigate("/");
     }
