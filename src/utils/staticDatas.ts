@@ -31,7 +31,7 @@ export const mypageTabs = [
 ];
 
 export const webMypageTabs = [
-  { icon: LuggageIcon, label: "내 여행", route: "travel" },
+  { icon: LuggageIcon, label: "내 일정", route: "travel" },
   { icon: NoteIcon, label: "내 여행기", route: "travelogue" },
   { icon: MessageIcon, label: "내 리뷰", route: "reviews" },
   { icon: HeartIcon, label: "내 찜 목록", route: "likes" },

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import testImg from "../../../assets/images/testImg.png";
 import PencilIcon from "../../../assets/icons/PencilIcon";
 import { Outlet, useNavigate } from "react-router-dom";
 import { webMypageTabs } from "../../../utils/staticDatas";
@@ -17,7 +16,7 @@ export default function MypageLayout() {
     getMyProfile().then((res) => {
       userStore.setUserName(res?.data.nickname);
       userStore.setUserType(res?.data.mbti as UserType);
-      console.log(res);
+      userStore.setUserProfile(res?.data.profile);
     });
   }, []);
 

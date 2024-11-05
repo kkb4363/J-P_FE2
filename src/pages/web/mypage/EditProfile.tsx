@@ -4,12 +4,8 @@ import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import useImageUploadHook from "../../../hooks/useImageUpload";
-import { useEffect, useRef } from "react";
-import {
-  getMyProfile,
-  updateUser,
-  uploadProfileImg,
-} from "../../../utils/axios";
+import { useRef, useState } from "react";
+import { updateUser, uploadProfileImg } from "../../../utils/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { useUserStore } from "../../../store/user.store";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +16,24 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const { imgRef, imgSrc, newImg, handleImageChange, handleClick } =
     useImageUploadHook();
+  const [newName, setNewName] = useState("");
 
-  const handleEdit = () => {
-    const newName = newNameRef?.current?.value;
+  const canSubmit =
+    (!!newName && newName !== userStore.getUserName()) || newImg !== null;
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setNewName(e.target.value);
+  };
+
+  const handleNameDelete = () => {
+    if (newNameRef?.current) {
+      newNameRef.current.value = "";
+      setNewName("");
+    }
+  };
+
+  const handleSubmit = () => {
     const oldName = userStore.getUserName();
     const newType = userStore.getUserType();
 
@@ -47,12 +58,6 @@ export default function EditProfile() {
         navigate(-1);
       }
     });
-  };
-
-  const handleNameDelete = () => {
-    if (newNameRef?.current) {
-      newNameRef.current.value = "";
-    }
   };
 
   return (
@@ -82,7 +87,11 @@ export default function EditProfile() {
 
       <NickNameBox>
         <div>
-          <input defaultValue={userStore.getUserName()} ref={newNameRef} />
+          <input
+            defaultValue={userStore.getUserName()}
+            onChange={handleNameChange}
+            ref={newNameRef}
+          />
           <DeleteIconBox onClick={handleNameDelete}>
             <XIcon />
           </DeleteIconBox>
@@ -91,11 +100,12 @@ export default function EditProfile() {
 
       <SaveButtonBox>
         <PrimaryButton
-          onClick={handleEdit}
+          onClick={handleSubmit}
           blue={true}
           text="저장"
           width="190px"
           height="45px"
+          isDisabled={!canSubmit}
         />
       </SaveButtonBox>
     </Container>

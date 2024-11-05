@@ -136,10 +136,12 @@ export default function Detail() {
           </span>
         </div>
 
-        <AddScheduleButton>
-          <PlusIcon stroke="#fff" />
-          <span>일정담기</span>
-        </AddScheduleButton>
+        {detail?.placeType === "TRAVEL_PLACE" && (
+          <AddScheduleButton>
+            <PlusIcon stroke="#fff" />
+            <span>일정담기</span>
+          </AddScheduleButton>
+        )}
       </TitleBox>
 
       <TagRowBox>
