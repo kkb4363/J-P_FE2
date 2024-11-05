@@ -210,3 +210,50 @@ export const testCostList: testCostTypes[] = [
     cost: 10500,
   },
 ];
+
+export const cities = [
+  {
+    id: "SEOUL",
+    title: "서울",
+  },
+  {
+    id: "METROPOLITAN_CITY",
+    title: "광역시",
+  },
+  {
+    id: "GYEONGGI_DO",
+    title: "경기도",
+  },
+  {
+    id: "GANGWON_DO",
+    title: "강원도",
+  },
+  {
+    id: "CHUNGCHEONGBUK_DO",
+    title: "충청북도",
+  },
+  {
+    id: "CHUNGCHEONGNAM_DO",
+    title: "충청남도",
+  },
+  {
+    id: "JEOLLABUK_DO",
+    title: "전라북도",
+  },
+  {
+    id: "JEOLLANAM_DO",
+    title: "전라남도",
+  },
+  {
+    id: "GYEONGSANGBUK_DO",
+    title: "경상북도",
+  },
+  {
+    id: "GYEONGSANGNAM_DO",
+    title: "경상남도",
+  },
+  {
+    id: "JEJU_DO",
+    title: "제주도",
+  },
+];

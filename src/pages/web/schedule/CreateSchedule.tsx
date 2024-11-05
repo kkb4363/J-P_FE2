@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Container from "../../../components/web/Container";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DayProps } from "../../mobile/schedule/Calendar";
 import { DateRange } from "react-date-range";
 import { ko } from "date-fns/locale";
@@ -8,10 +8,17 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import CustomInput from "../../../components/CustomInput";
 import CitySlider from "../../../components/web/schedule/CitySlider";
 import { useNavigate } from "react-router-dom";
+import { getPlaceList } from "../../../utils/axios";
+import { CityProps } from "../../../types/schedule";
+import { useDisplayStore } from "../../../store/display.store";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function CreateSchedule() {
   const navigate = useNavigate();
-  const [state, setState] = useState<DayProps[]>([
+  const { getCurrentCity } = useDisplayStore();
+  const [city, setCity] = useState<CityProps[]>([]);
+  const [cityLoading, setCityLoading] = useState(false);
+  const [date, setDate] = useState<DayProps[]>([
     {
       startDate: new Date(),
       endDate: new Date(),
@@ -22,16 +29,37 @@ export default function CreateSchedule() {
     startDate: "",
     endDate: "",
   });
+  const [selectCity, setSelectCity] = useState("");
 
   const handleSubmit = () => {
-    setSelectDate({
-      startDate: state[0].startDate + "",
-      endDate: state[0].endDate + "",
-    });
-    navigate("/home/schedule/details/1");
+    if (!selectDate.startDate) {
+      setSelectDate({
+        startDate: date[0].startDate + "",
+        endDate: date[0].endDate + "",
+      });
+    } else {
+      //TODO : navigate option state -> selectDate 정보 넘겨주고
+      //넘겨받은 페이지에서 4.17~4.19(2박 3일) <- 요거 계산해서 표시해주기
+      navigate(`/home/schedule/details/${selectCity}`);
+    }
   };
 
-  console.log(selectDate);
+  useEffect(() => {
+    const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
+    const cityCount = getCurrentCity() === "" ? 30 : 10;
+    setCityLoading(true);
+
+    getPlaceList({
+      type: "CITY",
+      elementCnt: cityCount,
+      cityType: cityType,
+    }).then((res) => {
+      if (res) {
+        setCity(res?.data.data);
+        setCityLoading(false);
+      }
+    });
+  }, [getCurrentCity()]);
 
   return (
     <Container>
@@ -48,8 +76,8 @@ export default function CreateSchedule() {
             showMonthAndYearPickers={false}
             months={2}
             direction="horizontal"
-            onChange={(item) => setState([item.selection] as DayProps[])}
-            ranges={state as DayProps[]}
+            onChange={(item) => setDate([item.selection] as DayProps[])}
+            ranges={date as DayProps[]}
             rangeColors={["#e7e9fe"]}
           />
         </SelectDateBox>
@@ -73,45 +101,24 @@ export default function CreateSchedule() {
           </CitySliderBox>
 
           <CityBox>
-            <City $isActive={true}>
-              <span>서울</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
-            <City $isActive={false}>
-              <span>대전</span>
-            </City>
+            {cityLoading
+              ? Array.from({ length: 7 }).map((_, idx) => (
+                  <CustomSkeleton
+                    width="106px"
+                    height="78px"
+                    key={idx}
+                    borderRadius="16px"
+                  />
+                ))
+              : city?.map((city) => (
+                  <City
+                    $isActive={selectCity === city.placeId}
+                    key={city.id}
+                    onClick={() => setSelectCity(city.placeId)}
+                  >
+                    <span>{city.name}</span>
+                  </City>
+                ))}
           </CityBox>
         </SelectCityBox>
       )}
@@ -169,24 +176,6 @@ const CitySliderBox = styled.div`
   margin-top: 24px;
 `;
 
-const CityTag = styled.div<{ $isActive: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px;
-  border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.secondary};
-  background-color: ${(props) =>
-    props.$isActive ? props.theme.color.secondary : props.theme.color.white};
-  cursor: pointer;
-
-  & > span {
-    color: ${(props) =>
-      props.$isActive ? props.theme.color.white : props.theme.color.secondary};
-    font-size: 14px;
-  }
-`;
-
 const CityBox = styled.div`
   margin-top: 30px;
   display: flex;
@@ -208,6 +197,7 @@ const City = styled.div<{ $isActive: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 
   & > span {
     color: ${(props) =>

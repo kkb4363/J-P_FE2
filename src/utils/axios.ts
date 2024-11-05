@@ -30,17 +30,29 @@ export const updateUser = async ({ name, type }: UserInfoProps) => {
 export const getPlaceList = async ({
   type,
   page = 1,
+  elementCnt = 10,
+  cityType,
 }: {
   type: string;
   page?: number;
+  elementCnt?: number;
+  cityType?: string | null;
 }) => {
   try {
-    const res = await axiosInstance.get(
-      `/place/page?page=${page}&placeType=${type}`
-    );
-
-    if (res.status === 200) {
-      return res;
+    if (!!cityType) {
+      const res = await axiosInstance.get(
+        `/place/page?page=${page}&placeType=${type}&elementCnt=${elementCnt}&cityType=${cityType}`
+      );
+      if (res.status === 200) {
+        return res;
+      }
+    } else {
+      const res = await axiosInstance.get(
+        `/place/page?page=${page}&placeType=${type}&elementCnt=${elementCnt}`
+      );
+      if (res.status === 200) {
+        return res;
+      }
     }
   } catch (err) {
     console.error("장소 페이지 조회 API 에러", err);

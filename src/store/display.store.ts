@@ -9,6 +9,7 @@ interface State {
   currentTab: TabType;
   currentHomeTab: HomeTabType;
   bottomSheetHeight: number;
+  currentCity: string;
 }
 
 interface Action {
@@ -18,12 +19,15 @@ interface Action {
   setHomeTab: (t: HomeTabType) => void;
   getBottomSheetHeight: () => number;
   setBottomSheetHeight: (h: number) => void;
+  getCurrentCity: () => string;
+  setCurrentCity: (c: string) => void;
 }
 
 const initData: State = {
   currentTab: "홈",
   currentHomeTab: "TRAVEL_PLACE",
   bottomSheetHeight: 0,
+  currentCity: "",
 };
 
 export const useDisplayStore = create<State & Action>()(
@@ -40,6 +44,8 @@ export const useDisplayStore = create<State & Action>()(
           return set({ bottomSheetHeight: h });
         }
       },
+      getCurrentCity: () => get().currentCity,
+      setCurrentCity: (c: string) => set({ currentCity: c }),
     }),
 
     {
