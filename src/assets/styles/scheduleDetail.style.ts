@@ -264,9 +264,13 @@ export const DetailsInput = styled.div<{ isDetailsEdit: boolean }>`
   }
 `;
 
-export const CostTitleBox = styled.div`
+export const TitlePlusBox = styled.div`
   display: flex;
   justify-content: space-between;
+
+  & > div {
+    cursor: pointer;
+  }
 `;
 
 export const SelectCostBox = styled.div`
@@ -274,7 +278,7 @@ export const SelectCostBox = styled.div`
   gap: 20px;
 `;
 
-const RoundIconBox = styled.div`
+export const RoundIconBox = styled.div`
   width: 34px;
   height: 34px;
   display: grid;
@@ -343,66 +347,4 @@ export const CostInput = styled.div`
       color: ${(props) => props.theme.color.gray300};
     }
   }
-`;
-
-export const CostItemList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  & > p {
-    font-size: 14px;
-  }
-`;
-
-export const CostItem = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-`
-
-export const CostBox = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 17px 18px;
-  border-radius: 16px;
-  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.04);
-  background-color: ${(props) => props.theme.color.white};
-  font-size: 14px;
-  color: ${(props) => props.theme.color.gray700};
-`;
-
-export const CostCategory = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-export const CostCategoryIcon = styled(RoundIconBox)`
-  background-color: ${(props) => props.theme.color.secondaryLight};
-`;
-
-export const TransportBox = styled.div`
-  display: flex;
-  gap: 8px;
-
-  & > p {
-    font-size: 14px;
-  }
-`;
-
-export const TransPortItem = styled.div<{ $select: boolean }>`
-  padding: 10px;
-  border-radius: 30px;
-  font-size: 14px;
-  white-space: nowrap;
-  background-color: ${(props) => props.theme.color.white};
-  border: 1px solid
-    ${(props) =>
-      props.$select ? props.theme.color.secondary : props.theme.color.gray200};
-  color: ${(props) =>
-    props.$select ? props.theme.color.secondary : props.theme.color.gray500};
 `;

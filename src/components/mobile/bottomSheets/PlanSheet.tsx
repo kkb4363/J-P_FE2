@@ -7,18 +7,18 @@ import CardIcon from "../../../assets/icons/CardIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
 import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
-import TrashIcon from "../../../assets/icons/TrashIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
 import { useJPStore } from "../../../store/JPType.store";
-import { planItemProps } from "../../../types/schedule";
+import { AddCostDataTypes, planItemProps } from "../../../types/schedule";
 import {
-  costCategories,
   testCostList,
   testDayList,
-  testPlanItems,
-  testTransportList,
+  testPlanItems
 } from "../../../utils/staticDatas";
+import AddCostBox from "../../AddCostBox";
+import CostList from "../../CostList";
 import DaySlider from "../../DaySlider";
+import TransportBox from "../../TransportBox";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import { PlanList } from "../schedule/PlanList";
 import BottomSheet from "./../BottomSheet";
@@ -34,12 +34,15 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
   const [isAddCostMode, setIsAddCostMode] = useState(false);
   const [currentDay, setCurrentDay] = useState(0);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
-  const [transport, setTransport] = useState<string[]>([]);
-  const [costCategory, setCostCategory] = useState("Car");
   const [planDetails, setPlanDetails] = useState({
     content: "",
-    cost: "",
-    transport: "",
+    cost: testCostList,
+    transport: [] as string[],
+  });
+  const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
+    category: "Car",
+    name: "",
+    cost: null,
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -75,18 +78,6 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`; // 스크롤 높이에 맞게 조절
-    }
-  };
-
-  const handleTransportClick = (item: string) => {
-    if (isPlanDetailEdit) {
-      if (transport.includes(item)) {
-        setTransport((prev) =>
-          prev.filter((transportItem) => transportItem !== item)
-        );
-      } else {
-        setTransport((prev) => [...prev, item]);
-      }
     }
   };
 
@@ -188,7 +179,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                   </D.DetailsInput>
                 </div>
                 <div>
-                  <D.CostTitleBox>
+                  <D.TitlePlusBox>
                     <D.SubTitleBox>
                       <CardIcon />
                       <p>비용</p>
@@ -196,32 +187,11 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                     <div onClick={() => setIsAddCostMode(true)}>
                       <AddSquareIcon />
                     </div>
-                  </D.CostTitleBox>
-                  <D.CostItemList>
-                    {testCostList.length > 0 ? (
-                      testCostList.map((item, idx) => (
-                        <D.CostItem>
-                          <D.CostBox key={idx}>
-                            <D.CostCategory>
-                              <D.CostCategoryIcon>
-                                <item.type.icon stroke="#6979F8" />
-                              </D.CostCategoryIcon>
-                              <p>{item.name}</p>
-                            </D.CostCategory>
-                            <p>{item.cost}원</p>
-                          </D.CostBox>
-                          <div>
-                            <TrashIcon />
-                          </div>
-                        </D.CostItem>
-                      ))
-                    ) : (
-                      <p>비용을 추가해주세요.</p>
-                    )}
-                  </D.CostItemList>
+                  </D.TitlePlusBox>
+                  <CostList costList={testCostList} />
                 </div>
                 <div>
-                  <D.CostTitleBox>
+                  <D.TitlePlusBox>
                     <D.SubTitleBox>
                       <TrainIcon />
                       <p>이동 수단</p>
@@ -229,29 +199,12 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                     <div onClick={() => setIsPlanDetailEdit(true)}>
                       <AddSquareIcon />
                     </div>
-                  </D.CostTitleBox>
-                  <D.TransportBox>
-                    {isPlanDetailEdit &&
-                      testTransportList.map((item, i) => (
-                        <D.TransPortItem
-                          key={i}
-                          onClick={() => handleTransportClick(item)}
-                          $select={transport.includes(item)}
-                        >
-                          {item}
-                        </D.TransPortItem>
-                      ))}
-                    {!isPlanDetailEdit &&
-                      (transport.length > 0 ? (
-                        transport.map((item, idx) => (
-                          <D.TransPortItem key={idx} $select={true}>
-                            {item}
-                          </D.TransPortItem>
-                        ))
-                      ) : (
-                        <p>선택된 아이템이 없습니다</p>
-                      ))}
-                  </D.TransportBox>
+                  </D.TitlePlusBox>
+                  <TransportBox
+                    transport={planDetails.transport}
+                    isPlanMemoEdit={isPlanDetailEdit}
+                    setData={setPlanDetails}
+                  />
                 </div>
               </D.PlanDetailsBody>
             </div>
@@ -275,41 +228,10 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
             </D.PlanDetailsHeader>
 
             <D.AddCostBox>
-              <div>
-                <p>항목을 선택해주세요.</p>
-                <D.SelectCostBox>
-                  {costCategories.map((category, idx) => (
-                    <D.SelectCostItem
-                      key={idx}
-                      $isSelected={costCategory === category.id}
-                      onClick={() => setCostCategory(category.id)}
-                    >
-                      <D.CategoryIconBox
-                        $isSelected={costCategory === category.id}
-                      >
-                        <category.icon
-                          stroke={
-                            costCategory === category.id ? "#6979F8" : "#B8B8B8"
-                          }
-                        />
-                      </D.CategoryIconBox>
-                      <span>{category.label}</span>
-                    </D.SelectCostItem>
-                  ))}
-                </D.SelectCostBox>
-              </div>
-              <div>
-                <p>항목명을 입력해주세요.</p>
-                <D.CostInput>
-                  <input name="name" placeholder="항목명 입력" />
-                </D.CostInput>
-              </div>
-              <div>
-                <p>금액을 입력해주세요.</p>
-                <D.CostInput>
-                  <input name="cost" type="number" placeholder="금액 입력" />
-                </D.CostInput>
-              </div>
+              <AddCostBox
+                selectedCategory={addCostData.category}
+                setAddCostData={setAddCostData}
+              />
             </D.AddCostBox>
           </div>
         </BottomSheet>

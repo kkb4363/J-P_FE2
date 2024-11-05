@@ -7,8 +7,10 @@ import { ko } from "date-fns/locale";
 import PrimaryButton from "../../../components/PrimaryButton";
 import CustomInput from "../../../components/CustomInput";
 import CitySlider from "../../../components/web/schedule/CitySlider";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateSchedule() {
+  const navigate = useNavigate();
   const [state, setState] = useState<DayProps[]>([
     {
       startDate: new Date(),
@@ -26,6 +28,7 @@ export default function CreateSchedule() {
       startDate: state[0].startDate + "",
       endDate: state[0].endDate + "",
     });
+    navigate("/home/schedule/details/1");
   };
 
   console.log(selectDate);
