@@ -2,21 +2,40 @@ import styled from "styled-components";
 import CheckIcon from "../../../assets/icons/CheckIcon";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
-export default function ScheduleCard() {
+
+interface Props {
+  endDate: string;
+  startDate: string;
+  isOpen: boolean;
+  title: string;
+  placeId: string;
+}
+
+export default function ScheduleCard(props: Props) {
+  const start = new Date(props.startDate);
+  const end = new Date(props.endDate);
+
+  const nightCnt = (end - start) / (1000 * 60 * 60 * 24);
+
   return (
     <ScheduleCardContainer>
       <CardHeader>
         <CalendarCheckIcon />
-        <span>4.17 ~ 4.19</span>
+        <span>
+          {start.getMonth() + 1}.{start.getDate()} ~ {end.getMonth() + 1}.
+          {end.getDate()}
+        </span>
         <div>|</div>
-        <p>2박 3일 여행</p>
+        <p>
+          {nightCnt}박 {nightCnt + 1}일 여행
+        </p>
       </CardHeader>
 
       <CardTitle>
-        <p>남해 여행</p>
+        <p>{props.title}</p>
         <div>
           <CheckIcon />
-          <span>공개</span>
+          <span>{props.isOpen ? "공개" : "비공개"}</span>
         </div>
       </CardTitle>
 

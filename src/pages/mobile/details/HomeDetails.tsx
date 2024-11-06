@@ -185,7 +185,7 @@ export default function HomeDetails() {
                       })
                     }
                     key={place.placeId}
-                    photoUrl={place.photoUrls[0]}
+                    photoUrl={place.photoUrl}
                     name={place.name}
                     rating={place.rating}
                   />

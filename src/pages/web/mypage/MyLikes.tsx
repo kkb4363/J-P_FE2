@@ -2,8 +2,14 @@ import styled from "styled-components";
 import { MyPageTitle } from "./MyReviews";
 import testImg from "../../../assets/images/testImg.png";
 import HeartIcon from "../../../assets/icons/HeartIcon";
+import { useEffect } from "react";
+import { getLikes } from "../../../utils/axios";
 
 export default function MyLikes() {
+  useEffect(() => {
+    getLikes().then((res) => console.log(res));
+  });
+
   return (
     <div>
       <MyPageTitle>내 찜 목록</MyPageTitle>

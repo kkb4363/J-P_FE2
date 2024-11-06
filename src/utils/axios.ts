@@ -221,11 +221,15 @@ export const getRecommendSchedules = async () => {
 
 export const setLike = async ({ type, id }: { type: string; id: string }) => {
   try {
-    const res = await axiosInstance.post(`/like/${type}/${id}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.post(
+      `/like/${type}/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: cookies.get("userToken"),
+        },
+      }
+    );
 
     if (res.status === 200) {
       return res;
@@ -235,12 +239,28 @@ export const setLike = async ({ type, id }: { type: string; id: string }) => {
   }
 };
 
+export const getLikes = async () => {
+  try {
+    const res = await axiosInstance.get("/like/page/my?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("좋아요/찜 조회 API 에러", err);
+  }
+};
+
 export const uploadProfileImg = async ({ file }: { file: File }) => {
   const formData = new FormData();
   formData.append("file", file);
 
   try {
-    const res = await axiosInstance.post(`/upload/profile`, formData, {
+    const res = await axiosInstance.post(`/profile/upload`, formData, {
       headers: {
         Authorization: cookies.get("userToken"),
       },
@@ -251,5 +271,21 @@ export const uploadProfileImg = async ({ file }: { file: File }) => {
     }
   } catch (err) {
     console.error("유저 프로필 사진 업로드 API 에러", err);
+  }
+};
+
+export const deleteProfileImg = async () => {
+  try {
+    const res = await axiosInstance.delete("/profile/delete", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("유저 프로필 사진 삭제 API 에러", err);
   }
 };

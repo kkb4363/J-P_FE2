@@ -70,10 +70,7 @@ export default function Detail() {
     if (!userStore.getUserName()) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
-      const placeType =
-        detail?.placeType === "TRAVEL_PLACE" ? "PLACE" : "REVIEW";
-
-      setLike({ type: placeType, id: detail.placeId }).then((res) =>
+      setLike({ type: "PLACE", id: detail.placeId }).then((res) =>
         console.log(res)
       );
     }
@@ -91,8 +88,6 @@ export default function Detail() {
       getNearPlace();
     }
   }, [detail?.id]);
-
-  console.log(surrondingPlace);
 
   return (
     <>
