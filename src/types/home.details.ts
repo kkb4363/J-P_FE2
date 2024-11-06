@@ -25,7 +25,7 @@ export interface NearByPlaceProps {
     };
   };
   name: string;
-  photoUrls: string[];
+  photoUrl: string;
   placeId: string;
   rating: number;
   userRatingsTotal: number;

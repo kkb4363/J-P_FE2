@@ -1,18 +1,17 @@
 import styled from "styled-components";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
-import ScheduleCard from "../../../components/web/schedule/ScheduleCard";
-import RecommendCard from "../../../components/web/schedule/RecommendCard";
 import { useNavigate } from "react-router-dom";
 import Container from "../../../components/web/Container";
-import { useEffect, useState } from "react";
-import { getMySchedules, getRecommendSchedules } from "../../../utils/axios";
 import { useUserStore } from "../../../store/user.store";
 import { toast } from "react-toastify";
+import ListIcon from "../../../assets/icons/ListIcon";
+import UpcomingSchedule from "../../../components/web/schedule/UpcomingSchedule";
+import OngoingSchedule from "../../../components/web/schedule/OngoingSchedule";
+import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
+import { useEffect, useState } from "react";
 
 export default function Schedule() {
   const navigate = useNavigate();
   const { getUserName } = useUserStore();
-  const [mySchedules, setMySchedules] = useState([]);
 
   const handleScheduleCreate = () => {
     if (!getUserName()) {
@@ -22,51 +21,38 @@ export default function Schedule() {
     }
   };
 
-  useEffect(() => {
-    getRecommendSchedules().then((res) => console.log(res));
-  }, []);
+  const [isListView, setIsListView] = useState(true);
 
-  useEffect(() => {
-    if (!!getUserName()) {
-      getMySchedules().then((res) => {
-        setMySchedules(res?.data);
-      });
-    }
-  }, []);
+  const handleListView = () => {
+    setIsListView((p) => !p);
+  };
 
-  console.log(mySchedules);
+  // useEffect(() => {
+  //   if(여행중?){
+  //     setIsListView(false)
+  //   }
+  // },[condition])
 
   return (
     <>
       <Container>
-        <>
-          <TitleWithButton>
-            <h1>내 일정</h1>
+        <TitleWithButton>
+          <h1>내 일정</h1>
+
+          {isListView ? (
             <button onClick={handleScheduleCreate}>
               <CalendarCheckIcon stroke="#6979f8" />
               <span>일정 생성</span>
             </button>
-          </TitleWithButton>
+          ) : (
+            <button onClick={handleListView}>
+              <ListIcon />
+              <span>일정 목록</span>
+            </button>
+          )}
+        </TitleWithButton>
 
-          <SubTitleWithMore>
-            <h2>다가오는 일정 1</h2>
-          </SubTitleWithMore>
-
-          <ScheduleCardBox>
-            <ScheduleCard />
-          </ScheduleCardBox>
-        </>
-
-        <SubTitleWithMore>
-          <h2>여행 일정 추천</h2>
-          <span>더보기</span>
-        </SubTitleWithMore>
-
-        <RecommendCardBox>
-          <RecommendCard />
-          <RecommendCard />
-          <RecommendCard />
-        </RecommendCardBox>
+        {isListView ? <UpcomingSchedule /> : <OngoingSchedule />}
       </Container>
     </>
   );
@@ -87,6 +73,7 @@ const TitleWithButton = styled.div`
   & > button {
     display: flex;
     align-items: center;
+    gap: 6px;
 
     & > span {
       color: ${(props) => props.theme.color.secondary};
@@ -94,38 +81,4 @@ const TitleWithButton = styled.div`
       font-weight: 700;
     }
   }
-`;
-
-const SubTitleWithMore = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-
-  & > h2 {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 24px;
-    font-weight: 700;
-  }
-
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 20px;
-    font-weight: 400;
-    cursor: pointer;
-  }
-`;
-
-const ScheduleCardBox = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 104px;
-`;
-
-const RecommendCardBox = styled.div`
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 70px;
 `;

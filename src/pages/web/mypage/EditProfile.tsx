@@ -5,7 +5,11 @@ import XIcon from "../../../assets/icons/XIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import useImageUploadHook from "../../../hooks/useImageUpload";
 import { useRef, useState } from "react";
-import { updateUser, uploadProfileImg } from "../../../utils/axios";
+import {
+  deleteProfileImg,
+  updateUser,
+  uploadProfileImg,
+} from "../../../utils/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { useUserStore } from "../../../store/user.store";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +49,7 @@ export default function EditProfile() {
 
     if (newImg) {
       updatePromises.push(uploadProfileImg({ file: newImg }));
+      // updatePromises.push(deleteProfileImg().then((res) => console.log(res)));
     }
 
     Promise.all(updatePromises).then((results) => {

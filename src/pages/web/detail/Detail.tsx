@@ -70,10 +70,7 @@ export default function Detail() {
     if (!userStore.getUserName()) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
-      const placeType =
-        detail.placeType === "TRAVEL_PLACE" ? "PLACE" : "REVIEW";
-
-      setLike({ type: placeType, id: detail.placeId }).then((res) =>
+      setLike({ type: "PLACE", id: detail.placeId }).then((res) =>
         console.log(res)
       );
     }
@@ -87,12 +84,10 @@ export default function Detail() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    if (detail.id) {
+    if (detail?.id) {
       getNearPlace();
     }
   }, [detail?.id]);
-
-  console.log(detail);
 
   return (
     <>
@@ -158,7 +153,7 @@ export default function Detail() {
         <span>{detail?.description}</span>
       </InfoBox>
 
-      {detail.placeType === "TRAVEL_PLACE" && (
+      {detail?.placeType === "TRAVEL_PLACE" && (
         <>
           <SubTitle>
             <span>기본 정보</span>
@@ -207,8 +202,8 @@ export default function Detail() {
               ?.slice(0, 5)
               ?.map((place) => (
                 <SurroundingPlaceCard
-                  key={place.placeId}
-                  imgSrc={place?.photoUrls[0]}
+                  key={place?.placeId}
+                  imgSrc={place?.photoUrl}
                   title={place?.name}
                   rating="4.9"
                 />
