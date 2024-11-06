@@ -6,6 +6,7 @@ import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import CustomSkeleton from "../../CustomSkeleton";
 import useImgLoading from "../../../hooks/useImgLoading";
+import { useModalStore } from "../../../store/modal.store";
 
 interface Props {
   imgSrc: string;
@@ -19,6 +20,7 @@ interface Props {
 
 export default function InfoModal(props: Props) {
   const { loading } = useImgLoading({ imgSrc: props.imgSrc });
+  const modalStore = useModalStore();
 
   return (
     <>
@@ -41,7 +43,7 @@ export default function InfoModal(props: Props) {
             {props.rating}
           </span>
         </div>
-        <ModalAddButton>
+        <ModalAddButton onClick={() => modalStore.setCurrentModal("addPlan")}>
           <span>+ 여행지 추가</span>
         </ModalAddButton>
       </ModalTopBox>

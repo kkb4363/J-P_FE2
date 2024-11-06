@@ -39,31 +39,36 @@ export default function EditProfile() {
 
   const handleSubmit = () => {
     const oldName = userStore.getUserName();
-    const newType = userStore.getUserType();
+    const promises = [];
 
-    const updatePromises = [];
-
-    if (newName && newName !== oldName) {
-      updatePromises.push(updateUser({ name: newName, type: newType }));
+    if (newName !== oldName) {
+      promises.push(
+        updateUser({ name: newName, type: userStore.getUserType() })
+      );
     }
 
     if (newImg) {
-      updatePromises.push(uploadProfileImg({ file: newImg }));
-      // updatePromises.push(deleteProfileImg().then((res) => console.log(res)));
+      promises.push(uploadProfileImg({ file: newImg }));
+      // promises.push(deleteProfileImg().then((res) => console.log(res)));
     }
 
-    Promise.all(updatePromises).then((results) => {
-      if (newName && newName !== oldName) {
-        userStore.setUserName(newName);
-        navigate(-1);
-      }
-      const imgRes = results.find((res) => res?.data?.data);
-      if (imgRes) {
-        userStore.setUserProfile(imgRes.data.data);
-        navigate(-1);
+    Promise.all(promises).then((res) => {
+      if (res) {
+        if (newName !== oldName) {
+          userStore.setUserName(newName);
+          navigate(-1);
+        }
+
+        const imgRes = res.find((res) => res?.data?.data);
+        if (imgRes) {
+          userStore.setUserProfile(imgRes.data.data);
+          navigate(-1);
+        }
       }
     });
   };
+
+  console.log(newImg);
 
   return (
     <Container>

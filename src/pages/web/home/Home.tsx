@@ -40,6 +40,7 @@ export default function Home() {
           value={""}
           width="500px"
           onClick={() => navigate("search")}
+          onChange={() => {}}
         />
       </InputBox>
 

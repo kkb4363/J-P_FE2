@@ -29,12 +29,19 @@ import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceC
 import LikeCommentBox from "../../../components/LikeCommentBox";
 import { useUserStore } from "../../../store/user.store";
 import { toast } from "react-toastify";
+import { useModalStore } from "../../../store/modal.store";
+import NoButtonModal from "../../../components/web/NoButtonModal";
+import { PlaceAddModalContainer } from "./SurroundingMore";
+import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
+import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 
 export default function Detail() {
   const param = useParams();
   const navigate = useNavigate();
   const userStore = useUserStore();
+  const modalStore = useModalStore();
 
+  const [addPlaceId, setAddPlaceId] = useState("");
   const [loading, setLoading] = useState(true);
   const [detail, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
@@ -74,6 +81,16 @@ export default function Detail() {
         console.log(res)
       );
     }
+  };
+
+  const handlePlaceAdd = (placeId: string) => {
+    modalStore.setCurrentModal("addPlan");
+    setAddPlaceId(placeId);
+  };
+
+  const handlePlaceAddModalClose = () => {
+    modalStore.setCurrentModal("");
+    setAddPlaceId("");
   };
 
   useEffect(() => {
@@ -132,9 +149,9 @@ export default function Detail() {
         </div>
 
         {detail?.placeType === "TRAVEL_PLACE" && (
-          <AddScheduleButton>
+          <AddScheduleButton onClick={() => handlePlaceAdd(detail?.placeId)}>
             <PlusIcon stroke="#fff" />
-            <span>일정담기</span>
+            <span>여행지 추가</span>
           </AddScheduleButton>
         )}
       </TitleBox>
@@ -205,7 +222,8 @@ export default function Detail() {
                   key={place?.placeId}
                   imgSrc={place?.photoUrl}
                   title={place?.name}
-                  rating="4.9"
+                  rating={place?.rating}
+                  onClick={() => handlePlaceAdd(place?.placeId)}
                 />
               ))}
       </SurroundingPlaceCardRow>
@@ -295,11 +313,29 @@ export default function Detail() {
           </ReviewInfoCol>
         </ReviewCard>
       </ReviewCardRow>
+
+      {!!addPlaceId && (
+        <NoButtonModal
+          width="530px"
+          height="380px"
+          onClose={handlePlaceAddModalClose}
+        >
+          <PlaceAddModalContainer>
+            {modalStore.getCurrentModal() === "addPlan" && (
+              <ScheduleModal placeId={addPlaceId} />
+            )}
+
+            {modalStore.getCurrentModal() === "successAddPlan" && (
+              <SuccessModal />
+            )}
+          </PlaceAddModalContainer>
+        </NoButtonModal>
+      )}
     </>
   );
 }
 
-//기범 TODO = SurroundingCard, ReviewCard 컴포넌트화하기
+//기범 TODO = ReviewCard 컴포넌트화하기
 const PhotoBoxRow = styled.div`
   display: flex;
   align-items: center;
