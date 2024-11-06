@@ -41,7 +41,7 @@ export default function EditProfile() {
     const oldName = userStore.getUserName();
     const promises = [];
 
-    if (newName !== oldName) {
+    if (!!newName && newName !== oldName) {
       promises.push(
         updateUser({ name: newName, type: userStore.getUserType() })
       );

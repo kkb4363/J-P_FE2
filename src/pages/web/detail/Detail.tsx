@@ -34,6 +34,9 @@ import NoButtonModal from "../../../components/web/NoButtonModal";
 import { PlaceAddModalContainer } from "./SurroundingMore";
 import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 export default function Detail() {
   const param = useParams();
@@ -74,7 +77,7 @@ export default function Detail() {
   };
 
   const handleLike = () => {
-    if (!userStore.getUserName()) {
+    if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
       setLike({ type: "PLACE", id: detail.placeId }).then((res) =>
@@ -84,8 +87,12 @@ export default function Detail() {
   };
 
   const handlePlaceAdd = (placeId: string) => {
-    modalStore.setCurrentModal("addPlan");
-    setAddPlaceId(placeId);
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    } else {
+      modalStore.setCurrentModal("addPlan");
+      setAddPlaceId(placeId);
+    }
   };
 
   const handlePlaceAddModalClose = () => {

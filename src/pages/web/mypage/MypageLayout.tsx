@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { getMyProfile } from "../../../utils/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { UserType, useUserStore } from "../../../store/user.store";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 export default function MypageLayout() {
   const userStore = useUserStore();
@@ -33,11 +36,11 @@ export default function MypageLayout() {
 
         <ProfileTextCol>
           <p>
-            {!!userStore.getUserName()
+            {!!cookies.get("userToken")
               ? userStore.getUserName()
               : "로그인이 필요합니다"}
           </p>
-          {!!userStore.getUserName() && (
+          {!!cookies.get("userToken") && (
             <span onClick={() => navigate("/home/edit")}>
               <PencilIcon />
               프로필 수정
@@ -46,7 +49,7 @@ export default function MypageLayout() {
         </ProfileTextCol>
       </ProfileBox>
 
-      {!!userStore.getUserName() && (
+      {!!cookies.get("userToken") && (
         <>
           <TabRow>
             {webMypageTabs.map((tab) => {
