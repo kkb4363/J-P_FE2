@@ -1,30 +1,26 @@
 import styled from "styled-components";
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import testImg from "../../../assets/images/testImg2.png";
 import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
 import { useUserStore } from "../../../store/user.store";
-import { useRef } from "react";
-import { updateUser } from "../../../utils/axios";
+import useImageUploadHook from "../../../hooks/useImageUpload";
+import useProfileEditHook from "../../../hooks/useProfileEdit";
+import ProfileNoImg from "../../../components/ProfileNoImg";
 
 export default function EditProfile() {
   const userStore = useUserStore();
-  const editedNameRef = useRef<HTMLInputElement>(null);
+  const { imgRef, imgSrc, newImg, handleImageChange, handleClick } =
+    useImageUploadHook();
 
-  const handleUserName = async () => {
-    if (editedNameRef?.current) {
-      if (editedNameRef?.current.value !== userStore.getUserName()) {
-        updateUser({
-          name: editedNameRef.current.value,
-          type: userStore.getUserType(),
-        }).then((res) => {
-          if (res && editedNameRef.current) {
-            userStore.setUserName(editedNameRef.current.value);
-          }
-        });
-      }
-    }
-  };
+  const {
+    newNameRef,
+    canSubmit,
+    handleNameChange,
+    handleNameDelete,
+    handleSubmit,
+  } = useProfileEditHook({
+    newImg: newImg,
+  });
 
   return (
     <>
@@ -32,27 +28,40 @@ export default function EditProfile() {
 
       <EditProfileContainer>
         <ImgBox>
-          <img src={testImg} alt="myProfile" />
-          <CameraIconBox>
+          {userStore.getUserProfile() || imgSrc ? (
+            <img src={imgSrc || userStore.getUserProfile()} alt="profile" />
+          ) : (
+            <ProfileNoImg width="80px" height="80px" />
+          )}
+          <CameraIconBox onClick={handleClick}>
             <CameraIcon />
+            <input
+              hidden
+              type="file"
+              ref={imgRef}
+              onChange={handleImageChange}
+              accept="image/*"
+            />
           </CameraIconBox>
         </ImgBox>
 
         <NicknameInputBox>
           <input
-            ref={editedNameRef}
-            placeholder=""
+            ref={newNameRef}
+            onChange={handleNameChange}
             type="text"
             defaultValue={userStore.getUserName()}
           />
 
-          <XIconBox>
+          <XIconBox onClick={handleNameDelete}>
             <XIcon />
           </XIconBox>
         </NicknameInputBox>
 
         <SaveButtonBox>
-          <button onClick={handleUserName}>저장</button>
+          <button onClick={handleSubmit} disabled={!canSubmit}>
+            저장
+          </button>
         </SaveButtonBox>
       </EditProfileContainer>
     </>
@@ -149,5 +158,9 @@ const SaveButtonBox = styled.div`
 
     background-color: ${(props) => props.theme.color.secondary};
     border-radius: 16px;
+
+    &:disabled {
+      background-color: ${(props) => props.theme.color.gray200};
+    }
   }
 `;

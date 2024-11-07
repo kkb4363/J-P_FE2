@@ -4,28 +4,46 @@ import CalendarIcon from "../../../assets/icons/CalendarIcon";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
+import { scrollHidden } from "../../../assets/styles/home.style";
+import { useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
 
 interface Props {
   handleClose: () => void;
+  placeId: string;
 }
 
-export default function CreateScheduleSheet({ handleClose }: Props) {
-  // testing add place...
+const cookies = new Cookies();
+
+export default function CreateScheduleSheet({ handleClose, placeId }: Props) {
+  const navigate = useNavigate();
   const [isSelect, setIsSelect] = useState(false);
   const handleSelect = () => {
     setIsSelect(true);
   };
 
-  // testing toast
-  const testToast = () =>
+  const handlePlaceAdd = () => {
     toast(
       <AddScheduleSuccess>
         <span>일정에 추가 되었습니다.</span>
-        <span>
+        <span onClick={() => navigate("/home/schedule")}>
           내 일정 보기 <ArrowRightIcon stroke="#6979F8" />
         </span>
       </AddScheduleSuccess>
     );
+    handleClose();
+  };
+
+  const handlePlaceCreate = () => {
+    if (!!cookies.get("userToken")) {
+      navigate("/Schedule");
+    } else {
+      toast(<span>로그인이 필요합니다.</span>);
+    }
+  };
+
+  const hasSchedule = false;
+  console.log(placeId);
 
   return (
     <BottomSheet
@@ -34,46 +52,54 @@ export default function CreateScheduleSheet({ handleClose }: Props) {
       isDismiss={true}
       handleClose={handleClose}
     >
-      {/* 일정 있을 때 */}
-      <AddPlaceContainer>
-        <h1>내 여행 일정</h1>
-        <AddPlaceCard $isSelect={isSelect}>
-          <span>경주</span>
-          <div>4.25 ~ 4.27(2박 3일)</div>
-          <span onClick={handleSelect}>{!isSelect && "선택"}</span>
-        </AddPlaceCard>
+      {hasSchedule ? (
+        <AddPlaceContainer>
+          <h1>내 여행 일정</h1>
+          <AddPlaceCardCol>
+            <AddPlaceCard $isSelect={isSelect}>
+              <span>경주</span>
+              <div>4.25 ~ 4.27(2박 3일)</div>
+              <span onClick={handleSelect}>{!isSelect && "선택"}</span>
+            </AddPlaceCard>
+          </AddPlaceCardCol>
 
-        <AddPlaceDayListRow>
-          <AddPlaceDayListBox $isSelect={true}>
-            <p>Day1</p>
-            <span>4.25(목)</span>
-          </AddPlaceDayListBox>
-          <AddPlaceDayListBox $isSelect={false}>
-            <p>Day2</p>
-            <span>4.26(금)</span>
-          </AddPlaceDayListBox>
-          <AddPlaceDayListBox $isSelect={false}>
-            <p>Day3</p>
-            <span>4.27(토)</span>
-          </AddPlaceDayListBox>
-        </AddPlaceDayListRow>
+          <AddPlaceDayListRow>
+            {isSelect && (
+              <>
+                <AddPlaceDayListBox $isSelect={true}>
+                  <p>Day1</p>
+                  <span>4.25(목)</span>
+                </AddPlaceDayListBox>
+                <AddPlaceDayListBox $isSelect={false}>
+                  <p>Day2</p>
+                  <span>4.26(금)</span>
+                </AddPlaceDayListBox>
+                <AddPlaceDayListBox $isSelect={false}>
+                  <p>Day3</p>
+                  <span>4.27(토)</span>
+                </AddPlaceDayListBox>
+              </>
+            )}
+          </AddPlaceDayListRow>
 
-        <AddPlaceButton>
-          <span>추가하기</span>
-        </AddPlaceButton>
-      </AddPlaceContainer>
+          {isSelect && (
+            <AddPlaceButton onClick={handlePlaceAdd}>
+              <span>추가하기</span>
+            </AddPlaceButton>
+          )}
+        </AddPlaceContainer>
+      ) : (
+        <AddPlaceContainer>
+          <NoScheduleTitle>
+            <CalendarIcon />
+            <span> 일정이 없어요. 여행 일정을 등록해봐요!</span>
+          </NoScheduleTitle>
 
-      {/* 일정 없을 때 */}
-      {/* <AddPlaceContainer>
-        <NoScheduleTitle>
-          <CalendarIcon />
-          <span> 일정이 없어요. 여행 일정을 등록해봐요!</span>
-        </NoScheduleTitle>
-
-        <AddScheduleButton>
-          <span>일정 등록하기</span>
-        </AddScheduleButton>
-      </AddPlaceContainer> */}
+          <AddScheduleButton onClick={handlePlaceCreate}>
+            <span>일정 등록하기</span>
+          </AddScheduleButton>
+        </AddPlaceContainer>
+      )}
     </BottomSheet>
   );
 }
@@ -94,9 +120,20 @@ const AddPlaceContainer = styled.div`
   }
 `;
 
+const AddPlaceCardCol = styled.div`
+  height: 80px;
+  width: 100%;
+  overflow-y: scroll;
+  ${scrollHidden};
+
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+`;
+
 // 일정 있을 때
 const AddPlaceCard = styled.div<{ $isSelect: boolean }>`
-  height: 70px;
+  min-height: 70px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -130,9 +167,10 @@ const AddPlaceCard = styled.div<{ $isSelect: boolean }>`
 `;
 
 const AddPlaceDayListRow = styled.div`
-  padding: 30px;
+  padding: 0 30px 30px 30px;
   display: flex;
   align-items: center;
+  flex: 1;
   gap: 18px;
 `;
 

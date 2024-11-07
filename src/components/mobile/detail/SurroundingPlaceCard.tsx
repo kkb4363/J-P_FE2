@@ -11,6 +11,7 @@ interface Props {
   rating: number;
   vicinity: string;
   height?: string;
+  handleClick: () => void;
 }
 
 export default function SurroundingPlaceCard({
@@ -19,6 +20,7 @@ export default function SurroundingPlaceCard({
   rating,
   vicinity,
   height = "83px",
+  handleClick,
 }: Props) {
   const [imgLoading, setImgLoading] = useState(true);
 
@@ -56,7 +58,7 @@ export default function SurroundingPlaceCard({
           <span>{rating}</span>
         </RatingBox>
 
-        <NearPlaceAddBtn>
+        <NearPlaceAddBtn onClick={handleClick}>
           <PlusIcon />
           <span>추가</span>
         </NearPlaceAddBtn>

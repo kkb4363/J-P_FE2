@@ -1,7 +1,13 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-type ModalProps = "search" | "" | "selectPlace";
+type ModalProps =
+  | "search"
+  | ""
+  | "selectPlace"
+  | "placeInfo"
+  | "addPlan"
+  | "successAddPlan";
 
 interface State {
   currentModal: ModalProps;

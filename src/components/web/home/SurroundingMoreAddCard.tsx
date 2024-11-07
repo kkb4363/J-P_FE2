@@ -9,6 +9,7 @@ interface Props {
   name: string;
   subName: string;
   rating: number;
+  onClick: () => void;
 }
 
 export default function SurroundingMoreAddCard({
@@ -16,6 +17,7 @@ export default function SurroundingMoreAddCard({
   name,
   subName,
   rating,
+  onClick,
 }: Props) {
   const { loading } = useImgLoading({ imgSrc: imgSrc });
 
@@ -38,7 +40,7 @@ export default function SurroundingMoreAddCard({
           <StarIcon width="14" height="14" />
           <span>{rating}</span>
         </div>
-        <button>
+        <button onClick={onClick}>
           <span>+ 추가</span>
         </button>
       </MoreAddCardAddBox>

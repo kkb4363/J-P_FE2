@@ -40,6 +40,10 @@ const ModalHeader = styled.div`
   align-items: center;
   padding: 16px 16px 0;
   font-weight: 700;
+
+  & > svg {
+    cursor: pointer;
+  }
 `;
 
 const EmptyBox = styled.div`

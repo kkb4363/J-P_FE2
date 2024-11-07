@@ -4,66 +4,24 @@ import CameraIcon from "../../../assets/icons/CameraIcon";
 import XIcon from "../../../assets/icons/XIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import useImageUploadHook from "../../../hooks/useImageUpload";
-import { useRef, useState } from "react";
-import {
-  deleteProfileImg,
-  updateUser,
-  uploadProfileImg,
-} from "../../../utils/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { useUserStore } from "../../../store/user.store";
-import { useNavigate } from "react-router-dom";
+import useProfileEditHook from "../../../hooks/useProfileEdit";
 
 export default function EditProfile() {
-  const newNameRef = useRef<HTMLInputElement>(null);
   const userStore = useUserStore();
-  const navigate = useNavigate();
   const { imgRef, imgSrc, newImg, handleImageChange, handleClick } =
     useImageUploadHook();
-  const [newName, setNewName] = useState("");
 
-  const canSubmit =
-    (!!newName && newName !== userStore.getUserName()) || newImg !== null;
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setNewName(e.target.value);
-  };
-
-  const handleNameDelete = () => {
-    if (newNameRef?.current) {
-      newNameRef.current.value = "";
-      setNewName("");
-    }
-  };
-
-  const handleSubmit = () => {
-    const oldName = userStore.getUserName();
-    const newType = userStore.getUserType();
-
-    const updatePromises = [];
-
-    if (newName && newName !== oldName) {
-      updatePromises.push(updateUser({ name: newName, type: newType }));
-    }
-
-    if (newImg) {
-      updatePromises.push(uploadProfileImg({ file: newImg }));
-      // updatePromises.push(deleteProfileImg().then((res) => console.log(res)));
-    }
-
-    Promise.all(updatePromises).then((results) => {
-      if (newName && newName !== oldName) {
-        userStore.setUserName(newName);
-        navigate(-1);
-      }
-      const imgRes = results.find((res) => res?.data?.data);
-      if (imgRes) {
-        userStore.setUserProfile(imgRes.data.data);
-        navigate(-1);
-      }
-    });
-  };
+  const {
+    newNameRef,
+    canSubmit,
+    handleNameChange,
+    handleNameDelete,
+    handleSubmit,
+  } = useProfileEditHook({
+    newImg: newImg,
+  });
 
   return (
     <Container>

@@ -18,18 +18,23 @@ import { SelectPlaceProps } from "../../../types/home.details";
 import InfoModal from "../../../components/web/surroundingPlace/InfoModal";
 import NoButtonModal from "../../../components/web/NoButtonModal";
 
-import NoScheduleModal from "../../../components/web/surroundingPlace/NoScheduleModal";
 import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
+import { useModalStore } from "../../../store/modal.store";
+import { Cookies } from "react-cookie";
+import { toast } from "react-toastify";
+
+const cookies = new Cookies();
 
 export default function SurroundingMore() {
   const param = useParams();
   const mapStore = useMapStore();
+  const modalStore = useModalStore();
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
   );
 
-  const getPlace = async () => {
+  const getPlaceApi = async () => {
     getSurroundingPlace({ lat: param?.lat + "", lng: param?.lng + "" }).then(
       (res) => {
         mapStore.setNearPlace(res?.data.results);
@@ -37,15 +42,33 @@ export default function SurroundingMore() {
     );
   };
 
-  const handlePlaceClick = async (placeId: string) => {
+  const handleMarkerClick = async (placeId: string) => {
     getGooglePlaceDetail({ placeId: placeId }).then((res) => {
       setSelectPlace(res!.data);
+      modalStore.setCurrentModal("placeInfo");
     });
+  };
+
+  const handlePlaceAddCardClick = (placeId: string) => {
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    }
+
+    modalStore.setCurrentModal("addPlan");
+    setSelectPlace((p) => ({
+      ...p,
+      placeId: placeId,
+    }));
+  };
+
+  const handlePlaceAddModalClose = () => {
+    setSelectPlace({} as SelectPlaceProps);
+    modalStore.setCurrentModal("");
   };
 
   useEffect(() => {
     if (param.lng && param.lat) {
-      getPlace();
+      getPlaceApi();
     }
   }, [param?.lng, param?.lat]);
 
@@ -62,10 +85,11 @@ export default function SurroundingMore() {
             {mapStore.getNearPlace()?.map((card) => (
               <SurroundingMoreAddCard
                 key={card.placeId}
-                imgSrc={card.photoUrls[0]}
+                imgSrc={card.photoUrl}
                 name={card.name}
                 subName={card.shortAddress}
                 rating={card.rating}
+                onClick={() => handlePlaceAddCardClick(card.placeId)}
               />
             ))}
           </CardCol>
@@ -77,7 +101,7 @@ export default function SurroundingMore() {
             height="98%"
             lat={Number(param?.lat)}
             lng={Number(param?.lng)}
-            handleMarkerClick={handlePlaceClick}
+            handleMarkerClick={handleMarkerClick}
           />
         )}
       </MoreContainer>
@@ -86,25 +110,29 @@ export default function SurroundingMore() {
         <NoButtonModal
           width="530px"
           height="380px"
-          onClose={() => setSelectPlace({} as SelectPlaceProps)}
+          onClose={handlePlaceAddModalClose}
         >
-          <ModalContainer>
-            <InfoModal
-              imgSrc={selectPlace?.photoUrls[0]}
-              title={selectPlace?.name}
-              shortAddress={selectPlace?.shortAddress}
-              rating={selectPlace?.rating}
-              businessStatus={selectPlace?.businessStatus}
-              phoneNumber={selectPlace?.formattedPhoneNumber}
-              fullAddress={selectPlace?.fullAddress}
-            />
+          <PlaceAddModalContainer>
+            {modalStore.getCurrentModal() === "placeInfo" && (
+              <InfoModal
+                imgSrc={selectPlace?.photoUrls[0]}
+                title={selectPlace?.name}
+                shortAddress={selectPlace?.shortAddress}
+                rating={selectPlace?.rating}
+                businessStatus={selectPlace?.businessStatus}
+                phoneNumber={selectPlace?.formattedPhoneNumber}
+                fullAddress={selectPlace?.fullAddress}
+              />
+            )}
 
-            {/* <NoScheduleModal /> */}
+            {modalStore.getCurrentModal() === "addPlan" && (
+              <ScheduleModal placeId={selectPlace?.placeId} />
+            )}
 
-            {/* <ScheduleModal /> */}
-
-            {/* <SuccessModal /> */}
-          </ModalContainer>
+            {modalStore.getCurrentModal() === "successAddPlan" && (
+              <SuccessModal />
+            )}
+          </PlaceAddModalContainer>
         </NoButtonModal>
       )}
     </>
@@ -153,7 +181,7 @@ const CardCol = styled.div`
   ${scrollHidden};
 `;
 
-const ModalContainer = styled.div`
+export const PlaceAddModalContainer = styled.div`
   width: 530px;
   height: 380px;
   border-radius: 30px;

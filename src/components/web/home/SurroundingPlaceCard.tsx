@@ -7,10 +7,16 @@ import useImgLoading from "../../../hooks/useImgLoading";
 interface Props {
   imgSrc: string;
   title: string;
-  rating: string;
+  rating: number;
+  onClick: () => void;
 }
 
-export default function SurroundingPlaceCard({ imgSrc, title, rating }: Props) {
+export default function SurroundingPlaceCard({
+  imgSrc,
+  title,
+  rating,
+  onClick,
+}: Props) {
   const { loading } = useImgLoading({ imgSrc: imgSrc });
 
   return (
@@ -26,7 +32,7 @@ export default function SurroundingPlaceCard({ imgSrc, title, rating }: Props) {
           <StarIcon width="14" height="14" />
           &nbsp; {rating} | 위치보기
         </div>
-        <SurrondingPlaceAddButton>
+        <SurrondingPlaceAddButton onClick={onClick}>
           <PlusIcon />
           <span>추가</span>
         </SurrondingPlaceAddButton>

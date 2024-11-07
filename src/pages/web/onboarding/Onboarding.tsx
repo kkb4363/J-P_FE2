@@ -7,9 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { useEffect } from "react";
 
+const cookies = new Cookies();
+
 export default function Onboarding() {
   const navigate = useNavigate();
-  const cookies = new Cookies();
 
   const handleGoogleLogin = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile+email&response_type=code&client_id=${

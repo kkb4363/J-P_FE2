@@ -30,6 +30,7 @@ export default function Home() {
         text="여행지를 입력해주세요"
         onClick={() => navigate("/home/search")}
         value=""
+        onChange={() => {}}
       />
 
       <S.HomeBody>
@@ -43,7 +44,7 @@ export default function Home() {
           title="인기 여행 도시"
           handleClick={() => handleMore("CITY")}
         />
-        <CardSlide placeType="CITY" isCity={true} bottomText={true} />
+        <CardSlide placeType="CITY" bottomText={true} />
 
         <TitleMoreBox
           title="지금 가면 좋은 여행지"

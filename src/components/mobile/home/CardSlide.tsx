@@ -13,15 +13,9 @@ interface Props {
   placeType: string;
   bottomText?: boolean;
   topText?: boolean;
-  isCity?: boolean;
 }
 
-export default function CardSlide({
-  placeType,
-  bottomText,
-  topText,
-  isCity,
-}: Props) {
+export default function CardSlide({ placeType, bottomText, topText }: Props) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
@@ -34,7 +28,7 @@ export default function CardSlide({
   };
 
   const handleClick = (placeId: string) => {
-    isCity ? navigate(`city/${placeId}`) : navigate(`${placeId}`);
+    navigate(`${placeId}`);
   };
 
   useEffect(() => {

@@ -91,10 +91,6 @@ export const router = createBrowserRouter([
         element: <HomeDetails />,
       },
       {
-        path: "city/:placeId",
-        element: <HomeDetails />,
-      },
-      {
         path: "reviews/:placeId",
         element: <Reviews />,
       },

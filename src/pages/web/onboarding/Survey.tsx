@@ -3,11 +3,12 @@ import { ExtendedContainer } from "./Onboarding";
 import Header from "../../../components/web/Header";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
-import { useCookies } from "react-cookie";
+import { Cookies, useCookies } from "react-cookie";
 import { axiosInstance, getMyProfile, updateUser } from "../../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { UserType, useUserStore } from "../../../store/user.store";
+const cookies = new Cookies();
 
 export default function Survey() {
   const navigate = useNavigate();
@@ -73,6 +74,12 @@ export default function Survey() {
       handleGoogleLogin();
     }
   }, [code]);
+
+  useEffect(() => {
+    if (!!cookies.get("userToken")) {
+      navigate("/home");
+    }
+  }, [cookies]);
 
   return (
     <ExtendedContainer>

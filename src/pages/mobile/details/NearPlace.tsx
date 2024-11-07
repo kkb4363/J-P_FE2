@@ -23,6 +23,7 @@ import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMa
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import useImgLoading from "../../../hooks/useImgLoading";
 import CustomSkeleton from "../../../components/CustomSkeleton";
+import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 
 export default function NearPlace() {
   const param = useParams();
@@ -37,12 +38,14 @@ export default function NearPlace() {
   const [selectPlace, setSelectPlace] = useState<SelectPlaceProps>(
     {} as SelectPlaceProps
   );
+  const [addPlaceId, setAddPlaceId] = useState("");
+
   const { loading: imgLoading, setLoading: setImgLoading } = useImgLoading({
     imgSrc: selectPlace?.photoUrls?.[0],
   });
 
   const handlePrev = () => {
-    if (selectPlaceId && details.id) {
+    if (selectPlaceId && details?.id) {
       setSelectPlaceId("");
     } else {
       navigate(-1);
@@ -88,10 +91,10 @@ export default function NearPlace() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    if (details.id) {
+    if (details?.id) {
       getSurroundingPlaces();
     }
-  }, [details.id]);
+  }, [details?.id]);
 
   useEffect(() => {
     if (selectPlaceId) {
@@ -110,102 +113,118 @@ export default function NearPlace() {
   }, [selectPlace?.photoUrls?.[0]]);
 
   return (
-    <S.NearPlaceContainer>
-      <CustomHeader title="주변 여행지" handleClick={handlePrev} />
-      {!selectPlaceId ? (
-        <BottomSheet maxH={0.9} minH={7} key={"surroundingPlace-bottom-sheet"}>
-          {mapStore.getNearPlace().map((place) => (
-            <SurroundingPlaceCard
-              height="100px"
-              key={place.placeId}
-              photoUrl={place.photoUrls[0]}
-              name={place.name}
-              rating={place.rating}
-              vicinity={place.vicinity}
-            />
-          ))}
-        </BottomSheet>
-      ) : (
-        <BottomSheet
-          handleClose={handleBottomSheetClose}
-          maxH={0.33}
-          isDismiss={true}
-          key={"surroundingPlace-details-bottom-sheet2"}
-        >
-          <S.SelectPlaceCol>
-            <S.SelectPlaceCard>
-              {imgLoading ? (
-                <CustomSkeleton
-                  width="80px"
-                  height="80px"
-                  borderRadius="16px"
-                />
-              ) : (
-                <ImageView
-                  width="80px"
-                  height="80px"
-                  src={selectPlace?.photoUrls?.[0]}
-                  alt={selectPlace?.name}
-                />
-              )}
+    <>
+      <S.NearPlaceContainer>
+        <CustomHeader title="주변 여행지" handleClick={handlePrev} />
+        {!selectPlaceId ? (
+          <BottomSheet
+            maxH={0.9}
+            minH={7}
+            key={"surroundingPlace-bottom-sheet"}
+          >
+            {mapStore.getNearPlace().map((place) => (
+              <SurroundingPlaceCard
+                height="100px"
+                key={place.placeId}
+                photoUrl={place.photoUrl}
+                name={place.name}
+                rating={place.rating}
+                vicinity={place.vicinity}
+                handleClick={() => setAddPlaceId(place.placeId)}
+              />
+            ))}
+          </BottomSheet>
+        ) : (
+          <BottomSheet
+            handleClose={handleBottomSheetClose}
+            maxH={0.33}
+            isDismiss={true}
+            key={"surroundingPlace-details-bottom-sheet2"}
+          >
+            <S.SelectPlaceCol>
+              <S.SelectPlaceCard>
+                {imgLoading ? (
+                  <CustomSkeleton
+                    width="80px"
+                    height="80px"
+                    borderRadius="16px"
+                  />
+                ) : (
+                  <ImageView
+                    width="80px"
+                    height="80px"
+                    src={selectPlace?.photoUrls?.[0]}
+                    alt={selectPlace?.name}
+                  />
+                )}
 
-              <S.CardCol>
-                <p>{selectPlace?.name}</p>
-                <span>{selectPlace?.shortAddress}</span>
-                <div>
+                <S.CardCol>
+                  <p>{selectPlace?.name}</p>
+                  <span>{selectPlace?.shortAddress}</span>
                   <div>
-                    <StarIcon />
-                    <span>{selectPlace?.rating}</span>
+                    <div>
+                      <StarIcon />
+                      <span>{selectPlace?.rating}</span>
+                    </div>
+                    <S.PlaceAddButton
+                      onClick={() => setAddPlaceId(selectPlace?.placeId)}
+                    >
+                      <PlusIcon stroke="white" />
+                      <span>여행지 추가</span>
+                    </S.PlaceAddButton>
                   </div>
-                  <S.PlaceAddButton>
-                    <PlusIcon stroke="white" />
-                    <span>여행지 추가</span>
-                  </S.PlaceAddButton>
+                </S.CardCol>
+              </S.SelectPlaceCard>
+              <S.Divider />
+              <S.SelectPlaceDetailCol>
+                <div>
+                  <AlarmIcon />
+                  <span>{selectPlace?.openNow ? "영업 중" : "영업 종료"}</span>
                 </div>
-              </S.CardCol>
-            </S.SelectPlaceCard>
-            <S.Divider />
-            <S.SelectPlaceDetailCol>
-              <div>
-                <AlarmIcon />
-                <span>{selectPlace?.openNow ? "영업 중" : "영업 종료"}</span>
-              </div>
-              <div>
-                <InfoIcon />
-                <span>
-                  {selectPlace?.formattedPhoneNumber
-                    ? selectPlace?.formattedPhoneNumber
-                    : "전화번호 미제공"}
-                </span>
-              </div>
-              <div>
-                <MarkIcon width="18" height="18" />
-                <span>{selectPlace?.fullAddress}</span>
-              </div>
-            </S.SelectPlaceDetailCol>
-          </S.SelectPlaceCol>
-        </BottomSheet>
-      )}
+                <div>
+                  <InfoIcon />
+                  <span>
+                    {selectPlace?.formattedPhoneNumber
+                      ? selectPlace?.formattedPhoneNumber
+                      : "전화번호 미제공"}
+                  </span>
+                </div>
+                <div>
+                  <MarkIcon width="18" height="18" />
+                  <span>{selectPlace?.fullAddress}</span>
+                </div>
+              </S.SelectPlaceDetailCol>
+            </S.SelectPlaceCol>
+          </BottomSheet>
+        )}
 
-      {details?.id ? (
-        <CustomGoogleMap
-          width="100%"
-          height="calc(100dvh - 50px)"
-          lat={details.location.lat}
-          lng={details.location.lng}
-          handleMarkerClick={setSelectPlaceId}
-        />
-      ) : (
-        selectPlace.placeId && (
+        {details?.id ? (
           <CustomGoogleMap
             width="100%"
             height="calc(100dvh - 50px)"
-            lat={selectPlace?.location.lat}
-            lng={selectPlace?.location.lng}
+            lat={details.location.lat}
+            lng={details.location.lng}
             handleMarkerClick={setSelectPlaceId}
           />
-        )
+        ) : (
+          selectPlace.placeId && (
+            <CustomGoogleMap
+              width="100%"
+              height="calc(100dvh - 50px)"
+              lat={selectPlace?.location.lat}
+              lng={selectPlace?.location.lng}
+              handleMarkerClick={setSelectPlaceId}
+            />
+          )
+        )}
+      </S.NearPlaceContainer>
+
+      {!!addPlaceId && (
+        <CreateScheduleSheet
+          handleClose={() => setAddPlaceId("")}
+          placeId={addPlaceId}
+        />
       )}
-    </S.NearPlaceContainer>
+    </>
   );
 }

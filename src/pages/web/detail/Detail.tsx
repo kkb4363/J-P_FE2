@@ -27,14 +27,22 @@ import CustomSkeleton from "../../../components/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
 import LikeCommentBox from "../../../components/LikeCommentBox";
-import { useUserStore } from "../../../store/user.store";
 import { toast } from "react-toastify";
+import { useModalStore } from "../../../store/modal.store";
+import NoButtonModal from "../../../components/web/NoButtonModal";
+import { PlaceAddModalContainer } from "./SurroundingMore";
+import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
+import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 export default function Detail() {
   const param = useParams();
   const navigate = useNavigate();
-  const userStore = useUserStore();
+  const modalStore = useModalStore();
 
+  const [addPlaceId, setAddPlaceId] = useState("");
   const [loading, setLoading] = useState(true);
   const [detail, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
@@ -67,13 +75,27 @@ export default function Detail() {
   };
 
   const handleLike = () => {
-    if (!userStore.getUserName()) {
+    if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
-      setLike({ type: "PLACE", id: detail.placeId }).then((res) =>
-        console.log(res)
-      );
+      setLike({ type: "PLACE", id: detail?.placeId }).then(() => {
+        getDetail();
+      });
     }
+  };
+
+  const handlePlaceAdd = (placeId: string) => {
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    } else {
+      modalStore.setCurrentModal("addPlan");
+      setAddPlaceId(placeId);
+    }
+  };
+
+  const handlePlaceAddModalClose = () => {
+    modalStore.setCurrentModal("");
+    setAddPlaceId("");
   };
 
   useEffect(() => {
@@ -126,15 +148,18 @@ export default function Detail() {
           <span>
             {detail?.name}
             <HeartBox onClick={handleLike}>
-              <HeartIcon />
+              <HeartIcon
+                stroke={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
+                fill={detail?.isLiked ? "#FF5757" : "none"}
+              />
             </HeartBox>
           </span>
         </div>
 
         {detail?.placeType === "TRAVEL_PLACE" && (
-          <AddScheduleButton>
+          <AddScheduleButton onClick={() => handlePlaceAdd(detail?.placeId)}>
             <PlusIcon stroke="#fff" />
-            <span>일정담기</span>
+            <span>여행지 추가</span>
           </AddScheduleButton>
         )}
       </TitleBox>
@@ -205,7 +230,8 @@ export default function Detail() {
                   key={place?.placeId}
                   imgSrc={place?.photoUrl}
                   title={place?.name}
-                  rating="4.9"
+                  rating={place?.rating}
+                  onClick={() => handlePlaceAdd(place?.placeId)}
                 />
               ))}
       </SurroundingPlaceCardRow>
@@ -295,11 +321,29 @@ export default function Detail() {
           </ReviewInfoCol>
         </ReviewCard>
       </ReviewCardRow>
+
+      {!!addPlaceId && (
+        <NoButtonModal
+          width="530px"
+          height="380px"
+          onClose={handlePlaceAddModalClose}
+        >
+          <PlaceAddModalContainer>
+            {modalStore.getCurrentModal() === "addPlan" && (
+              <ScheduleModal placeId={addPlaceId} />
+            )}
+
+            {modalStore.getCurrentModal() === "successAddPlan" && (
+              <SuccessModal />
+            )}
+          </PlaceAddModalContainer>
+        </NoButtonModal>
+      )}
     </>
   );
 }
 
-//기범 TODO = SurroundingCard, ReviewCard 컴포넌트화하기
+//기범 TODO = ReviewCard 컴포넌트화하기
 const PhotoBoxRow = styled.div`
   display: flex;
   align-items: center;

@@ -10,6 +10,7 @@ import {
   getPlaceDetail,
   getReviews,
   getSurroundingPlace,
+  setLike,
 } from "../../../utils/axios";
 import {
   NearByPlaceProps,
@@ -29,12 +30,16 @@ import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import useImgLoading from "../../../hooks/useImgLoading";
 import LikeCommentBox from "../../../components/LikeCommentBox";
+import { Cookies } from "react-cookie";
+import { toast } from "react-toastify";
+
+const cookies = new Cookies();
 
 export default function HomeDetails() {
   const navigate = useNavigate();
   const param = useParams();
   const { clear } = useMapStore();
-  const isCityDetailPage = location.pathname.includes("city");
+
   const [imageIndex, setImageIndex] = useState<number>(0);
   const imageSliderSetting = {
     arrows: false,
@@ -46,20 +51,21 @@ export default function HomeDetails() {
     adaptiveHeight: true,
     beforeChange: (current: number, next: number) => setImageIndex(next),
   };
-  const [details, setDetails] = useState<PlaceDetailAPiProps>(
+  const [detail, setDetail] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
   const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
   const [loading, setLoading] = useState(true);
-  const [addScheduleState, setAddScheduleState] = useState(false);
+  const [addPlaceId, setAddPlaceId] = useState("");
+
   const { loading: imgLoading } = useImgLoading({
-    imgSrc: details?.photoUrls?.[0],
+    imgSrc: detail?.photoUrls?.[0],
   });
 
   const getDetail = async () => {
     getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
-      setDetails(res?.data);
+      setDetail(res?.data);
       setLoading(false);
     });
   };
@@ -72,11 +78,21 @@ export default function HomeDetails() {
 
   const getNearPlace = async () => {
     getSurroundingPlace({
-      lat: details?.location.lat + "",
-      lng: details?.location.lng + "",
+      lat: detail?.location.lat + "",
+      lng: detail?.location.lng + "",
     }).then((res) => {
       setNearbyPlaces(res?.data.results);
     });
+  };
+
+  const handleLike = () => {
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    } else if (detail?.id) {
+      setLike({ type: "PLACE", id: detail?.placeId }).then(() => {
+        getDetail();
+      });
+    }
   };
 
   useEffect(() => {
@@ -87,10 +103,10 @@ export default function HomeDetails() {
   }, [param?.placeId]);
 
   useEffect(() => {
-    if (details?.id) {
+    if (detail?.id) {
       getNearPlace();
     }
-  }, [details?.id]);
+  }, [detail?.id]);
 
   return (
     <>
@@ -100,7 +116,7 @@ export default function HomeDetails() {
         ) : (
           <S.DetailsImageBox>
             <StyledSlider {...imageSliderSetting}>
-              {details?.photoUrls?.map((img, idx) => (
+              {detail?.photoUrls?.map((img, idx) => (
                 <img aria-placeholder="loading" src={img} alt={img} key={idx} />
               ))}
             </StyledSlider>
@@ -114,13 +130,16 @@ export default function HomeDetails() {
               <ArrowLeftIcon stroke="#fff" />
             </S.ArrowLeftBox>
 
-            <S.LikeBox>
-              <HeartIcon />
+            <S.LikeBox onClick={handleLike}>
+              <HeartIcon
+                stroke={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
+                fill={detail?.isLiked ? "#FF5757" : "none"}
+              />
             </S.LikeBox>
 
             <S.ImagePageIndicatorBox>
               <span>
-                {imageIndex + 1} / {details?.photoUrls.length}
+                {imageIndex + 1} / {detail?.photoUrls.length}
               </span>
             </S.ImagePageIndicatorBox>
           </S.DetailsImageBox>
@@ -129,33 +148,33 @@ export default function HomeDetails() {
         <S.DetailsBody>
           <S.DetailsTitle>
             <MarkIcon />
-            {details?.name}
+            {detail?.name}
           </S.DetailsTitle>
 
           <ReviewTagRow>
-            {details?.tags?.map((tag) => (
+            {detail?.tags?.map((tag) => (
               <ReviewTag key={tag}>
                 <span>#{tag}</span>
               </ReviewTag>
             ))}
           </ReviewTagRow>
 
-          <S.DetailsInfo>{details?.description}</S.DetailsInfo>
+          <S.DetailsInfo>{detail?.description}</S.DetailsInfo>
 
-          {!isCityDetailPage && (
+          {detail?.placeType === "TRAVEL_PLACE" && (
             <>
               <S.DetailsTitle>기본 정보</S.DetailsTitle>
               <S.DetailsSubTitle>
                 <MarkIcon width="18" height="18" />
-                <span>{details?.formattedAddress}</span>
+                <span>{detail?.formattedAddress}</span>
               </S.DetailsSubTitle>
 
               {!loading && (
                 <CustomGoogleMap
                   width="100%"
                   height="146px"
-                  lat={details?.location.lat}
-                  lng={details?.location.lng}
+                  lat={detail?.location.lat}
+                  lng={detail?.location.lng}
                 />
               )}
             </>
@@ -188,6 +207,7 @@ export default function HomeDetails() {
                     photoUrl={place.photoUrl}
                     name={place.name}
                     rating={place.rating}
+                    handleClick={() => setAddPlaceId(place.placeId)}
                   />
                 ))}
           </S.NearPlaceCol>
@@ -240,17 +260,25 @@ export default function HomeDetails() {
             </S.DetailsReviewRow>
           )}
 
-          <S.AddScheduleBox>
-            <S.AddScheduleButton onClick={() => setAddScheduleState(true)}>
-              <PlusIcon stroke="#fff" />
-              <span>일정 추가</span>
-            </S.AddScheduleButton>
-          </S.AddScheduleBox>
+          {(detail?.placeType === "TRAVEL_PLACE" ||
+            detail?.placeType === "THEME") && (
+            <S.AddScheduleBox>
+              <S.AddScheduleButton
+                onClick={() => setAddPlaceId(detail?.placeId)}
+              >
+                <PlusIcon stroke="#fff" />
+                <span>여행지 추가</span>
+              </S.AddScheduleButton>
+            </S.AddScheduleBox>
+          )}
         </S.DetailsBody>
       </S.HomeDetailsContainer>
 
-      {addScheduleState && (
-        <CreateScheduleSheet handleClose={() => setAddScheduleState(false)} />
+      {!!addPlaceId && (
+        <CreateScheduleSheet
+          handleClose={() => setAddPlaceId("")}
+          placeId={addPlaceId}
+        />
       )}
     </>
   );

@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import LogoutIcon from "../../../assets/icons/LogoutIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
-import { axiosInstance, updateUser } from "../../../utils/axios";
+import { axiosInstance, getMyProfile, updateUser } from "../../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import { useUserStore } from "../../../store/user.store";
+import { Cookies, useCookies } from "react-cookie";
+import { UserType, useUserStore } from "../../../store/user.store";
 
 type JPProps = "J" | "P";
+const cookies = new Cookies();
 
 export default function Survey() {
   const params = new URLSearchParams(window.location.search);
+  const userStore = useUserStore();
   const code = params.get("code");
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
@@ -52,11 +54,24 @@ export default function Survey() {
       setCookie("userToken", accessToken);
 
       if (res.status === 200) {
-        res.data.isSignUp ? navigate("/home") : null;
+        if (res.data.isSignUp) {
+          setUserProfile();
+          navigate("/home");
+        } else {
+          return;
+        }
       }
     } catch (err) {
       console.error("구글 oauth 에러=", err);
     }
+  };
+
+  const setUserProfile = () => {
+    getMyProfile().then((res) => {
+      userStore.setUserName(res?.data.nickname);
+      userStore.setUserType(res?.data.mbti as UserType);
+      userStore.setUserProfile(res?.data.profile);
+    });
   };
 
   useEffect(() => {
@@ -66,6 +81,12 @@ export default function Survey() {
       console.log("로그인 에러");
     }
   }, [code]);
+
+  useEffect(() => {
+    if (!!cookies.get("userToken")) {
+      navigate("/home");
+    }
+  }, [cookies]);
 
   return (
     <>
