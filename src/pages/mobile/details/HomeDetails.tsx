@@ -95,6 +95,14 @@ export default function HomeDetails() {
     }
   };
 
+  const handlePlaceAdd = (placeId: string) => {
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    }
+
+    setAddPlaceId(placeId);
+  };
+
   useEffect(() => {
     if (param?.placeId) {
       getDetail();
@@ -207,7 +215,7 @@ export default function HomeDetails() {
                     photoUrl={place.photoUrl}
                     name={place.name}
                     rating={place.rating}
-                    handleClick={() => setAddPlaceId(place.placeId)}
+                    handleClick={() => handlePlaceAdd(place.placeId)}
                   />
                 ))}
           </S.NearPlaceCol>
@@ -264,7 +272,7 @@ export default function HomeDetails() {
             detail?.placeType === "THEME") && (
             <S.AddScheduleBox>
               <S.AddScheduleButton
-                onClick={() => setAddPlaceId(detail?.placeId)}
+                onClick={() => handlePlaceAdd(detail?.placeId)}
               >
                 <PlusIcon stroke="#fff" />
                 <span>여행지 추가</span>
