@@ -6,9 +6,10 @@ import { placeApiProps } from "../../../types/home";
 import ImageView from "../../../components/ImageView";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import testImg from "../../../assets/images/testImg.png";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function More() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState<placeApiProps[]>([]);
   const [page, setPage] = useState(1);
@@ -66,6 +67,7 @@ export default function More() {
           return (
             <PlaceCardWithText key={item.id} ref={lastElementRef}>
               <ImageView
+                handleClick={() => navigate(`/home/${item.placeId}`)}
                 src={testImg}
                 alt={item.name}
                 width="100%"
@@ -86,6 +88,7 @@ export default function More() {
           return (
             <PlaceCardWithText key={item.id}>
               <ImageView
+                handleClick={() => navigate(`/home/${item.placeId}`)}
                 src={testImg}
                 alt={item.name}
                 width="100%"

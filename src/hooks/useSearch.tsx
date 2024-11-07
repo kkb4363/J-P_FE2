@@ -14,6 +14,12 @@ export default function useSearchHook() {
     setSearch(e.target.value);
   };
 
+  const handleInputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    userStore.addSearchData(search);
+    getSearchPlace();
+  };
+
   const handleInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -50,8 +56,10 @@ export default function useSearchHook() {
   return {
     search,
     searchData,
+    setSearch,
     handleInput,
     handleInputEnter,
+    handleInputSubmit,
     handleDeleteEvery,
     deleteEveryOpen,
     handleDeleteOpen,

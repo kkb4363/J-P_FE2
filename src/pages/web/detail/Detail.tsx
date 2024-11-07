@@ -27,7 +27,6 @@ import CustomSkeleton from "../../../components/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
 import LikeCommentBox from "../../../components/LikeCommentBox";
-import { useUserStore } from "../../../store/user.store";
 import { toast } from "react-toastify";
 import { useModalStore } from "../../../store/modal.store";
 import NoButtonModal from "../../../components/web/NoButtonModal";
@@ -41,7 +40,6 @@ const cookies = new Cookies();
 export default function Detail() {
   const param = useParams();
   const navigate = useNavigate();
-  const userStore = useUserStore();
   const modalStore = useModalStore();
 
   const [addPlaceId, setAddPlaceId] = useState("");
@@ -80,9 +78,9 @@ export default function Detail() {
     if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
-      setLike({ type: "PLACE", id: detail.placeId }).then((res) =>
-        console.log(res)
-      );
+      setLike({ type: "PLACE", id: detail?.placeId }).then(() => {
+        getDetail();
+      });
     }
   };
 
@@ -150,7 +148,10 @@ export default function Detail() {
           <span>
             {detail?.name}
             <HeartBox onClick={handleLike}>
-              <HeartIcon />
+              <HeartIcon
+                stroke={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
+                fill={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
+              />
             </HeartBox>
           </span>
         </div>

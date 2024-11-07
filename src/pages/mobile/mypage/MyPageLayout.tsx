@@ -1,14 +1,16 @@
 import styled from "styled-components";
 import BellIcon from "../../../assets/icons/BellIcon";
 import CustomHeader from "../../../components/mobile/CustomHeader";
-import testImg from "../../../assets/images/testImg.png";
 import PenIcon from "../../../assets/icons/PenIcon";
-
 import { mypageTabs } from "../../../utils/staticDatas";
 import { useState } from "react";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../store/user.store";
+import { Cookies } from "react-cookie";
+import ProfileNoImg from "../../../components/ProfileNoImg";
+
+const cookies = new Cookies();
 
 export default function MyPageLayout() {
   const navigate = useNavigate();
@@ -31,37 +33,48 @@ export default function MyPageLayout() {
       </CustomHeader>
 
       <MyPageHeader>
-        <img src={testImg} alt="마이페이지" />
-
-        <div>
-          <p>{userStore.getUserName()}</p>
-          <span onClick={() => navigate("/home/editProfile")}>
-            <PenIcon />
-            프로필 수정
-          </span>
-        </div>
+        {!!userStore.getUserProfile() ? (
+          <img src={userStore.getUserProfile()} alt="프로필이미지" />
+        ) : (
+          <ProfileNoImg width="80px" height="80px" />
+        )}
+        {!!cookies.get("userToken") ? (
+          <div>
+            <p>{userStore.getUserName()}</p>
+            <span onClick={() => navigate("/home/editProfile")}>
+              <PenIcon />
+              프로필 수정
+            </span>
+          </div>
+        ) : (
+          <span>로그인이 필요합니다.</span>
+        )}
       </MyPageHeader>
 
-      <MypageTabRow>
-        {mypageTabs.map((tab) => (
-          <MypageTab
-            $isActive={currentTab === tab.route}
-            key={tab.label}
-            onClick={() => handleCurrentTab(tab.route)}
-          >
-            <tab.icon
-              width="18"
-              height="18"
-              stroke={getTabSvgColor(currentTab === tab.route)}
-            />
-            내 {tab.label}
-          </MypageTab>
-        ))}
-      </MypageTabRow>
+      {!!cookies.get("userToken") && (
+        <>
+          <MypageTabRow>
+            {mypageTabs.map((tab) => (
+              <MypageTab
+                $isActive={currentTab === tab.route}
+                key={tab.label}
+                onClick={() => handleCurrentTab(tab.route)}
+              >
+                <tab.icon
+                  width="18"
+                  height="18"
+                  stroke={getTabSvgColor(currentTab === tab.route)}
+                />
+                내 {tab.label}
+              </MypageTab>
+            ))}
+          </MypageTabRow>
 
-      <MypageOutletBox>
-        <Outlet />
-      </MypageOutletBox>
+          <MypageOutletBox>
+            <Outlet />
+          </MypageOutletBox>
+        </>
+      )}
     </>
   );
 }
@@ -77,6 +90,12 @@ const MyPageHeader = styled.div`
     width: 80px;
     height: 80px;
     border-radius: 50%;
+  }
+
+  & > span {
+    color: ${(props) => props.theme.color.gray900};
+    font-size: 14px;
+    font-weight: 700;
   }
 
   & > div {

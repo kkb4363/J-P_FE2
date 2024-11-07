@@ -61,7 +61,11 @@ export const getPlaceList = async ({
 
 export const getPlaceDetail = async ({ placeId }: { placeId: string }) => {
   try {
-    const res = await axiosInstance.get(`/place/details/${placeId}`);
+    const res = await axiosInstance.get(`/place/details/${placeId}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
 
     if (res.status === 200) {
       return res;

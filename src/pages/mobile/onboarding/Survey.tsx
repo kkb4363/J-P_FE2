@@ -5,10 +5,11 @@ import LogoutIcon from "../../../assets/icons/LogoutIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { axiosInstance, updateUser } from "../../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import { Cookies, useCookies } from "react-cookie";
 import { useUserStore } from "../../../store/user.store";
 
 type JPProps = "J" | "P";
+const cookies = new Cookies();
 
 export default function Survey() {
   const params = new URLSearchParams(window.location.search);
@@ -66,6 +67,12 @@ export default function Survey() {
       console.log("로그인 에러");
     }
   }, [code]);
+
+  useEffect(() => {
+    if (!!cookies.get("userToken")) {
+      navigate("/home");
+    }
+  }, [cookies]);
 
   return (
     <>

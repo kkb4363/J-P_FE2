@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { getSearchPlaceList } from "../../../utils/axios";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import CustomInput from "../../../components/CustomInput";
 import CancelIcon from "../../../assets/icons/CancelIcon";
@@ -11,84 +9,24 @@ import { realTimeWords, testImg1 } from "../../../utils/staticDatas";
 import TwoButtonsModal from "../../../components/TwoButtonsModal";
 import { placeApiProps } from "../../../types/home";
 import { useUserStore } from "../../../store/user.store";
+import useSearchHook from "../../../hooks/useSearch";
+import { useNavigate } from "react-router-dom";
 
 export default function Search() {
   const userStore = useUserStore();
-  const [deleteEvery, setDeleteEvery] = useState(false);
-  const [searchString, setSearchString] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchData, setSearchData] = useState<placeApiProps[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const navigate = useNavigate();
 
-  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setIsSubmit(true);
-    setPage(1);
-
-    if (searchString.trim() !== "") {
-      userStore.addSearchData(searchString);
-    }
-
-    setTimeout(() => {
-      getSearchPlace();
-    }, 200);
-  };
-
-  const handleDeleteEvery = () => {
-    userStore.clearSearchData();
-    setDeleteEvery(false);
-  };
-
-  const getSearchPlace = async () => {
-    await getSearchPlaceList({ searchString: searchString, page: page }).then(
-      (res) => {
-        const newData = res?.data.data;
-        setSearchData((p) => [...p, ...newData]);
-        setHasMore(newData.length > 0);
-        setIsLoading(false);
-      }
-    );
-  };
-
-  // 마지막 요소 트리거
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMore) {
-            setPage((prevPage) => prevPage + 1);
-          }
-        },
-        {
-          threshold: 0.1,
-        }
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [hasMore, isLoading]
-  );
-
-  useEffect(() => {
-    setIsSubmit(false);
-    if (searchString.trim() === "") {
-      setSearchData([]);
-      setPage(1);
-    }
-  }, [searchString]);
-
-  useEffect(() => {
-    if (page !== 1) {
-      getSearchPlace();
-    }
-  }, [isSubmit, page]);
+  const {
+    search,
+    searchData,
+    setSearch,
+    handleInput,
+    handleInputSubmit,
+    handleDeleteEvery,
+    deleteEveryOpen,
+    handleDeleteOpen,
+    handleRecentWordClick,
+  } = useSearchHook();
 
   return (
     <>
@@ -96,28 +34,28 @@ export default function Search() {
       <SearchContainer>
         <CustomInput
           text="여행지를 입력해주세요"
-          del={searchString !== ""}
-          value={searchString}
-          onChange={(e) => setSearchString(e.target.value)}
-          onSubmit={handleSearchSubmit}
-          onDelete={() => setSearchString("")}
+          del={search !== ""}
+          value={search}
+          onChange={handleInput}
+          onSubmit={handleInputSubmit}
+          onDelete={() => setSearch("")}
         />
-        {deleteEvery && (
+        {deleteEveryOpen && (
           <TwoButtonsModal
             isMobile
             text="검색 기록을 모두 삭제하시겠습니까?"
             onClick={handleDeleteEvery}
-            onClose={() => setDeleteEvery(false)}
+            onClose={handleDeleteEvery}
           />
         )}
 
-        {searchString === "" && (
+        {!search && (
           <>
             <SearchWordContainer>
               <SearchRecentTitleBox>
                 <SearchSubTitle>최근 검색어</SearchSubTitle>
                 {userStore.getSearchData().length !== 0 && (
-                  <p onClick={() => setDeleteEvery(true)}>모두 삭제</p>
+                  <p onClick={handleDeleteOpen}>모두 삭제</p>
                 )}
               </SearchRecentTitleBox>
               <SearchWordBox>
@@ -127,7 +65,7 @@ export default function Search() {
                   .reverse()
                   .map((s) => (
                     <ActionButton del key={s}>
-                      <span>{s}</span>
+                      <span onClick={() => handleRecentWordClick(s)}>{s}</span>
                       <CancelIcon
                         onClick={() => userStore.deleteSearchData(s)}
                       />
@@ -141,63 +79,45 @@ export default function Search() {
             <SearchWordContainer>
               <SearchSubTitle>실시간 검색 여행지</SearchSubTitle>
               <SearchWordBox>
-                {realTimeWords.map((s: string, index: number) => (
-                  <ActionButton hashtag key={index}>{`#${s}`}</ActionButton>
+                {realTimeWords.map((r: string, index: number) => (
+                  <ActionButton
+                    onClick={() => handleRecentWordClick(r)}
+                    hashtag
+                    key={index}
+                  >{`#${r}`}</ActionButton>
                 ))}
               </SearchWordBox>
             </SearchWordContainer>
           </>
         )}
-        {searchString !== "" && (
+        {!!search && (
           <SearchBody>
-            {searchData.length === 0 && !isLoading && isSubmit && (
+            {searchData.length === 0 && (
               <CenterText>검색 결과가 없습니다.</CenterText>
             )}
-            {isLoading && <CenterText>로딩중..</CenterText>}
-            {searchData.map((item: placeApiProps, index: number) => {
-              if (searchData.length === index + 1) {
-                // 마지막 요소에 ref 설정
-                return (
-                  <SearchPlaceCard key={item.placeId} ref={lastElementRef}>
-                    <ImageView
-                      src={testImg1}
-                      alt={item.name}
-                      width="80px"
-                      height="78px"
-                    />
-                    <SearchPlaceDetailCol>
-                      <SearchPlaceRating>
-                        <StarIcon />
-                        {item.rating}
-                      </SearchPlaceRating>
-                      <SearchPlaceTitle>{item.name}</SearchPlaceTitle>
 
-                      <span>{item.subName}</span>
-                    </SearchPlaceDetailCol>
-                  </SearchPlaceCard>
-                );
-              } else {
-                return (
-                  <SearchPlaceCard key={item.placeId}>
-                    <ImageView
-                      src={testImg1}
-                      alt={item.name}
-                      width="80px"
-                      height="78px"
-                    />
-                    <SearchPlaceDetailCol>
-                      <SearchPlaceRating>
-                        <StarIcon />
-                        {item.rating}
-                      </SearchPlaceRating>
-                      <SearchPlaceTitle>{item.name}</SearchPlaceTitle>
+            {searchData.map((item: placeApiProps) => (
+              <SearchPlaceCard
+                key={item.placeId}
+                onClick={() => navigate(`/home/${item.placeId}`)}
+              >
+                <ImageView
+                  src={testImg1}
+                  alt={item.name}
+                  width="80px"
+                  height="78px"
+                />
+                <SearchPlaceDetailCol>
+                  <SearchPlaceRating>
+                    <StarIcon />
+                    {item.rating}
+                  </SearchPlaceRating>
+                  <SearchPlaceTitle>{item.name}</SearchPlaceTitle>
 
-                      <span>{item.subName}</span>
-                    </SearchPlaceDetailCol>
-                  </SearchPlaceCard>
-                );
-              }
-            })}
+                  <span>{item.subName}</span>
+                </SearchPlaceDetailCol>
+              </SearchPlaceCard>
+            ))}
           </SearchBody>
         )}
       </SearchContainer>
@@ -211,6 +131,7 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-bottom: 20px;
 `;
 
 const SearchWordContainer = styled.div`
