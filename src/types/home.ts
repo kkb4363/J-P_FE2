@@ -1,10 +1,14 @@
 import { userCompactResDto } from "./res.dto";
 
+export type ThemeType = "TRAVEL" | "FESTIVAL";
+
+
 export interface placeApiProps {
   id: number;
   placeId: string;
   name: string;
   subName: string;
+  themeType: ThemeType;
   rating: number;
   photourl: string;
 }
