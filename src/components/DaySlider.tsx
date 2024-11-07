@@ -2,10 +2,11 @@ import Slider from "react-slick";
 import styled from "styled-components";
 import PrevArrow from "./mobile/schedule/PrevArrow";
 import NextArrow from "./mobile/schedule/NextArrow";
+import { dayResDto } from "../types/res.dto";
 
 interface Props {
   web?: boolean;
-  dayList: number[];
+  dayList: dayResDto[];
   currentDay: number;
   onDayClick: (day: number) => void;
 }
@@ -33,10 +34,10 @@ export default function DaySlider({
       {dayList.map((day, i) => (
         <DayBox
           key={i}
-          onClick={() => onDayClick(day)}
-          $select={currentDay === day}
+          onClick={() => onDayClick(day.dayIndex)}
+          $select={currentDay === day.dayIndex}
           $web={web}
-        >{`Day ${day + 1}`}</DayBox>
+        >{`Day ${day.dayIndex}`}</DayBox>
       ))}
     </StyledSlider>
   );

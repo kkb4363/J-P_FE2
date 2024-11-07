@@ -312,3 +312,18 @@ export const createSchedule = async (schedule: {
     console.error("일정 초기 생성 API 에러", err);
   }
 };
+
+export const getSchedule = async (id: string) => {
+  try {
+    const res = await axiosInstance.get(`/schedule/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status == 200) { 
+      return res;
+    }
+  } catch (err) {
+    console.error("일정 상세조회 API 에러", err);
+  }
+};

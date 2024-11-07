@@ -48,9 +48,9 @@ export default function CreateSchedule() {
       createSchedule(schedule).then((res) => {
         if (res && res.status === 200) {
           toast(<span>일정이 생성되었습니다!</span>);
+          navigate(`/home/schedule/details/${res.data}`);
         }
       });
-      //navigate(`/home/schedule/details/${selectCity}`, { state: selectDate });
     }
   };
 
