@@ -150,7 +150,7 @@ export default function Detail() {
             <HeartBox onClick={handleLike}>
               <HeartIcon
                 stroke={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
-                fill={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
+                fill={detail?.isLiked ? "#FF5757" : "none"}
               />
             </HeartBox>
           </span>

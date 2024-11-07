@@ -21,6 +21,10 @@ import NoButtonModal from "../../../components/web/NoButtonModal";
 import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 import { useModalStore } from "../../../store/modal.store";
+import { Cookies } from "react-cookie";
+import { toast } from "react-toastify";
+
+const cookies = new Cookies();
 
 export default function SurroundingMore() {
   const param = useParams();
@@ -46,6 +50,10 @@ export default function SurroundingMore() {
   };
 
   const handlePlaceAddCardClick = (placeId: string) => {
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    }
+
     modalStore.setCurrentModal("addPlan");
     setSelectPlace((p) => ({
       ...p,

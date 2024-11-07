@@ -83,13 +83,13 @@ export default function CreateSchedule() {
         </SelectDateBox>
       ) : (
         <SelectCityBox>
-          <h2>도시를 선택해주세요.</h2>
+          <h2>어디로 떠나고 싶으신가요?</h2>
 
           <InputBox>
             <CustomInput
               width="500px"
               height="60px"
-              text="어디로 떠나고 싶나요?"
+              text="도시를 선택해주세요."
               value=""
             />
           </InputBox>
