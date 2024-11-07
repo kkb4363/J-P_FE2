@@ -28,11 +28,13 @@ import WriteReview from "./mypage/WriteReview";
 import SelectPlace from "./mypage/SelectPlace";
 import Travelogue from "./mypage/Travelogue";
 import TravelogueDetails from "./travel-review/TravelogueDetails";
+import ErrorPage from "./ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "",
     element: <Onboarding />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "survey",
