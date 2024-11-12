@@ -24,6 +24,11 @@ import PlusIcon from "../../../assets/icons/PlusIcon";
 import useImgLoading from "../../../hooks/useImgLoading";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
+import { Cookies } from "react-cookie";
+import { toast } from "react-toastify";
+import StyledToast from "../../../components/mobile/StyledToast";
+
+const cookies = new Cookies();
 
 export default function NearPlace() {
   const param = useParams();
@@ -59,6 +64,14 @@ export default function NearPlace() {
     } else {
       navigate(-1);
     }
+  };
+
+  const handlePlaceAdd = (placeId: string) => {
+    if (!cookies.get("userToken")) {
+      return toast(<span>로그인이 필요합니다.</span>);
+    }
+
+    setAddPlaceId(placeId);
   };
 
   const getDetail = async () => {
@@ -130,7 +143,7 @@ export default function NearPlace() {
                 name={place.name}
                 rating={place.rating}
                 vicinity={place.vicinity}
-                handleClick={() => setAddPlaceId(place.placeId)}
+                handleClick={() => handlePlaceAdd(place.placeId)}
               />
             ))}
           </BottomSheet>
@@ -167,7 +180,7 @@ export default function NearPlace() {
                       <span>{selectPlace?.rating}</span>
                     </div>
                     <S.PlaceAddButton
-                      onClick={() => setAddPlaceId(selectPlace?.placeId)}
+                      onClick={() => handlePlaceAdd(selectPlace?.placeId)}
                     >
                       <PlusIcon stroke="white" />
                       <span>여행지 추가</span>

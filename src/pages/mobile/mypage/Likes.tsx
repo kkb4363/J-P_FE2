@@ -1,56 +1,78 @@
 import styled from "styled-components";
-import { mypageLikesTabs } from "../../../utils/staticDatas";
+import { webMyLikeTabs } from "../../../utils/staticDatas";
 import { useEffect, useState } from "react";
 import { TravelogueGridBox } from "./Travelogue";
 import { CarouselWithText } from "../../../assets/styles/home.style";
-import testImg from "../../../assets/images/testImg3.png";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import { getMyLikes } from "../../../utils/axios";
+import { getLikes } from "../../../utils/axios";
+import { MyLikeProps } from "../../../types/mypage";
+import CustomSkeleton from "../../../components/CustomSkeleton";
+import { useNavigate } from "react-router-dom";
 
 export default function Likes() {
+  const navigate = useNavigate();
+
+  const [isLoading, SetIsLoading] = useState(true);
+  const [likes, setLikes] = useState<MyLikeProps[]>([]);
   const [currentTab, setCurrentTab] = useState("");
 
   useEffect(() => {
-    getMyLikes().then((res) => console.log(res));
-  });
+    getLikes({
+      likeType: webMyLikeTabs.find((t) => t.value === currentTab)?.likeType,
+      placeType: webMyLikeTabs.find((t) => t.value === currentTab)?.placeType,
+    }).then((res) => {
+      if (res) {
+        setLikes(res?.data.data);
+        SetIsLoading(false);
+      }
+    });
+  }, [currentTab]);
 
   return (
     <>
       <LikesTabRow>
-        {mypageLikesTabs.map((tab) => (
+        {webMyLikeTabs.map((tab) => (
           <LikesTab
             key={tab.value}
             $isActive={currentTab === tab.value}
             onClick={() => setCurrentTab(tab.value)}
           >
-            <span>{tab.label}</span>
+            <span>{tab.title}</span>
           </LikesTab>
         ))}
       </LikesTabRow>
 
       <TravelogueGridBox>
-        <LikeBox>
-          <img src={testImg} alt="likes" />
-          <CarouselTitleBox name="양평 두물머리" subName="경기 양평" />
-          <Heart>
-            <HeartIcon width="24" height="24" fill="#ff5757" stroke="#ff5757" />
-          </Heart>
-        </LikeBox>
-        <LikeBox>
-          <img src={testImg} alt="likes" />
-          <CarouselTitleBox name="양평 두물머리" subName="경기 양평" />
-          <Heart>
-            <HeartIcon width="24" height="24" fill="#ff5757" stroke="#ff5757" />
-          </Heart>
-        </LikeBox>
-        <LikeBox>
-          <img src={testImg} alt="likes" />
-          <CarouselTitleBox name="양평 두물머리" subName="경기 양평" />
-          <Heart>
-            <HeartIcon width="24" height="24" fill="#ff5757" stroke="#ff5757" />
-          </Heart>
-        </LikeBox>
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <CustomSkeleton
+                key={idx}
+                width="156px"
+                height="152px"
+                borderRadius="16px"
+              />
+            ))
+          : likes?.map((like) => (
+              <LikeBox
+                key={like.id}
+                onClick={() => navigate(`/home/${like.targetId}`)}
+              >
+                <img src={like?.fileUrl} alt="like" />
+                <CarouselTitleBox
+                  name={like.targetName}
+                  subName={like.targetAddress}
+                />
+                <Heart>
+                  <HeartIcon
+                    width="24"
+                    height="24"
+                    fill="#ff5757"
+                    stroke="#ff5757"
+                  />
+                </Heart>
+              </LikeBox>
+            ))}
       </TravelogueGridBox>
     </>
   );

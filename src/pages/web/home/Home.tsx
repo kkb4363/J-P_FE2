@@ -29,7 +29,6 @@ export default function Home() {
     setHomeTab(t);
     navigate("/home/more");
   };
-
   return (
     <>
       <HomeTitle>어디로 떠날까요?</HomeTitle>

@@ -40,25 +40,32 @@ export default function useProfileEditHook({ newImg }: Props) {
     }
 
     if (newImg) {
+      if (newImg.size > 1024 * 1024) {
+        return alert("이미지 용량은 1MB 이하로 업로드해주세요.");
+      }
       promises.push(uploadProfileImg({ file: newImg }));
-      // promises.push(deleteProfileImg().then((res) => console.log(res)));
     }
 
     Promise.all(promises).then((res) => {
       if (res) {
         if (newName !== oldName) {
           userStore.setUserName(newName);
-          navigate(-1);
         }
 
-        const imgRes = res.find((res) => res?.data?.data);
+        const imgRes = res?.find((r) => r?.data?.data);
         if (imgRes) {
-          userStore.setUserProfile(imgRes.data.data);
+          userStore.setUserProfile(imgRes?.data.data);
+        }
+
+        if (newName !== oldName || imgRes) {
           navigate(-1);
         }
       }
     });
   };
+
+  // promises.push(deleteProfileImg().then((res) => console.log(res)));
+
   return {
     newNameRef,
     canSubmit,

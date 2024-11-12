@@ -1,57 +1,77 @@
 import styled from "styled-components";
 import { MyPageTitle } from "./MyReviews";
-import testImg from "../../../assets/images/testImg.png";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getLikes } from "../../../utils/axios";
+import { MyLikeProps } from "../../../types/mypage";
+import { useNavigate } from "react-router-dom";
+import CustomSkeleton from "../../../components/CustomSkeleton";
+import { webMyLikeTabs } from "../../../utils/staticDatas";
 
 export default function MyLikes() {
+  const navigate = useNavigate();
+
+  const [isLoading, SetIsLoading] = useState(true);
+  const [likes, setLikes] = useState<MyLikeProps[]>([]);
+  const [currentTab, setCurrentTab] = useState("");
+
   useEffect(() => {
-    getLikes().then((res) => console.log(res));
-  });
+    getLikes({
+      likeType: webMyLikeTabs.find((t) => t.value === currentTab)?.likeType,
+      placeType: webMyLikeTabs.find((t) => t.value === currentTab)?.placeType,
+    }).then((res) => {
+      if (res) {
+        setLikes(res?.data.data);
+        SetIsLoading(false);
+      }
+    });
+  }, [currentTab]);
 
   return (
     <div>
       <MyPageTitle>내 찜 목록</MyPageTitle>
       <TabRow>
-        <Tab $isActive={true}>전체</Tab>
-        <Tab $isActive={false}>여행지</Tab>
-        <Tab $isActive={false}>도시</Tab>
-        <Tab $isActive={false}>리뷰</Tab>
-        <Tab $isActive={false}>여행기</Tab>
+        {webMyLikeTabs.map((tab) => (
+          <Tab
+            key={tab.value}
+            $isActive={currentTab === tab.value}
+            onClick={() => setCurrentTab(tab.value)}
+          >
+            {tab.title}
+          </Tab>
+        ))}
       </TabRow>
 
       <ImgGridBox>
-        <ImgBox>
-          <HeartIconBox>
-            <HeartIcon width="24" height="24" stroke="#ff5757" fill="#ff5757" />
-          </HeartIconBox>
-          <img src={testImg} alt="like" />
-          <div>
-            <p>양평 두물머리</p>
-            <span>경기 양평</span>
-          </div>
-        </ImgBox>
-        <ImgBox>
-          <HeartIconBox>
-            <HeartIcon width="24" height="24" stroke="#ff5757" fill="#ff5757" />
-          </HeartIconBox>
-          <img src={testImg} alt="like" />
-          <div>
-            <p>양평 두물머리</p>
-            <span>경기 양평</span>
-          </div>
-        </ImgBox>
-        <ImgBox>
-          <HeartIconBox>
-            <HeartIcon width="24" height="24" stroke="#ff5757" fill="#ff5757" />
-          </HeartIconBox>
-          <img src={testImg} alt="like" />
-          <div>
-            <p>양평 두물머리</p>
-            <span>경기 양평</span>
-          </div>
-        </ImgBox>
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <CustomSkeleton
+                key={idx}
+                width="160px"
+                height="130px"
+                borderRadius="16px"
+              />
+            ))
+          : likes?.map((like) => (
+              <ImgBox
+                key={like.id}
+                onClick={() => navigate(`/home/details/${like.targetId}`)}
+              >
+                <HeartIconBox>
+                  <HeartIcon
+                    width="24"
+                    height="24"
+                    stroke="#ff5757"
+                    fill="#ff5757"
+                  />
+                </HeartIconBox>
+                <img src={like.fileUrl} alt="like" />
+                <div>
+                  <p>{like.targetName}</p>
+                  <span>{like.targetAddress}</span>
+                </div>
+              </ImgBox>
+            ))}
       </ImgGridBox>
     </div>
   );
@@ -84,6 +104,7 @@ const ImgBox = styled.div`
   flex-direction: column;
   gap: 13px;
   position: relative;
+  cursor: pointer;
 
   & > img {
     width: 100%;

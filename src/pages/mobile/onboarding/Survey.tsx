@@ -12,14 +12,15 @@ type JPProps = "J" | "P";
 const cookies = new Cookies();
 
 export default function Survey() {
-  const params = new URLSearchParams(window.location.search);
-  const userStore = useUserStore();
-  const code = params.get("code");
   const navigate = useNavigate();
+  const userStore = useUserStore();
+
+  const [_, setCookie] = useCookies(["userToken"]);
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
-  const [_, setCookie] = useCookies(["userToken"]);
-  const { setUserName, setUserType } = useUserStore();
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -36,8 +37,8 @@ export default function Survey() {
         type: type as JPProps,
       }).then((res) => {
         if (res) {
-          setUserName(nickname);
-          setUserType(type as JPProps);
+          userStore.setUserName(nickname);
+          userStore.setUserType(type as JPProps);
           navigate("/home");
         }
       });
@@ -51,7 +52,12 @@ export default function Survey() {
         `/login/oauth2/code/google?code=${code}&isDev=true`
       );
       const accessToken = res.headers.authorization;
-      setCookie("userToken", accessToken);
+      const tokenExpiryTime = new Date(Date.now() + 60 * 30 * 1000);
+
+      setCookie("userToken", accessToken, {
+        expires: tokenExpiryTime,
+      });
+      userStore.setTokenExpiryTime(tokenExpiryTime);
 
       if (res.status === 200) {
         if (res.data.isSignUp) {
@@ -77,16 +83,14 @@ export default function Survey() {
   useEffect(() => {
     if (code) {
       handleGoogleLogin();
-    } else {
-      console.log("로그인 에러");
     }
   }, [code]);
 
   useEffect(() => {
-    if (!!cookies.get("userToken")) {
+    if (!!cookies.get("userToken") && !!userStore.getUserName()) {
       navigate("/home");
     }
-  }, [cookies]);
+  }, [cookies, userStore.getUserName()]);
 
   return (
     <>

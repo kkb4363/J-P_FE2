@@ -8,6 +8,27 @@ export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_SERVER,
 });
 
+export const refreshToken = async () => {
+  try {
+    const res = await axiosInstance.post(
+      `/auth/refresh`,
+      {},
+      {
+        headers: {
+          Authorization: cookies.get("userToken"),
+          withCredentials: true,
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("엑세스 토큰 재발급 API 에러", err);
+  }
+};
+
 export const updateUser = async ({ name, type }: UserInfoProps) => {
   try {
     const body = {
@@ -159,22 +180,6 @@ export const getSearchPlaceList = async ({
   }
 };
 
-export const getMyLikes = async () => {
-  try {
-    const res = await axiosInstance.get("/like/page/my?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
-
-    if (res.status === 200) {
-      return res;
-    }
-  } catch (err) {
-    console.error("내 찜 목록 조회 API 에러", err);
-  }
-};
-
 export const getMyProfile = async () => {
   try {
     const res = await axiosInstance.get("/user/me", {
@@ -243,8 +248,44 @@ export const setLike = async ({ type, id }: { type: string; id: string }) => {
   }
 };
 
-export const getLikes = async () => {
+export const getLikes = async ({
+  likeType,
+  placeType,
+}: {
+  likeType?: string;
+  placeType?: string;
+}) => {
   try {
+    if (!!likeType) {
+      if (likeType === "PLACE") {
+        const res = await axiosInstance.get(
+          `/like/page/my?likeType=${likeType}&placeType=${placeType}&page=1`,
+          {
+            headers: {
+              Authorization: cookies.get("userToken"),
+            },
+          }
+        );
+
+        if (res.status === 200) {
+          return res;
+        }
+      } else {
+        const res = await axiosInstance.get(
+          `/like/page/my?likeType=${likeType}&page=1`,
+          {
+            headers: {
+              Authorization: cookies.get("userToken"),
+            },
+          }
+        );
+
+        if (res.status === 200) {
+          return res;
+        }
+      }
+    }
+
     const res = await axiosInstance.get("/like/page/my?page=1", {
       headers: {
         Authorization: cookies.get("userToken"),
