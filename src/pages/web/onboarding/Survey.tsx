@@ -13,6 +13,7 @@ const cookies = new Cookies();
 export default function Survey() {
   const navigate = useNavigate();
   const userStore = useUserStore();
+
   const [_, setCookie] = useCookies(["userToken"]);
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
@@ -46,7 +47,12 @@ export default function Survey() {
         `/login/oauth2/code/google?code=${code}&isDev=true`
       );
       const accessToken = res.headers.authorization;
-      setCookie("userToken", accessToken);
+      const tokenExpiryTime = new Date(Date.now() + 60 * 30 * 1000);
+
+      setCookie("userToken", accessToken, {
+        expires: tokenExpiryTime,
+      });
+      userStore.setTokenExpiryTime(tokenExpiryTime);
 
       if (res.status === 200) {
         if (res.data.isSignUp) {
@@ -76,10 +82,10 @@ export default function Survey() {
   }, [code]);
 
   useEffect(() => {
-    if (!!cookies.get("userToken")) {
+    if (!!cookies.get("userToken") && !!userStore.getUserName()) {
       navigate("/home");
     }
-  }, [cookies]);
+  }, [cookies, userStore.getUserName()]);
 
   return (
     <ExtendedContainer>

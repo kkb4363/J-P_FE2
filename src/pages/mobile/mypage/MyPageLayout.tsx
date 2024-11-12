@@ -3,12 +3,13 @@ import BellIcon from "../../../assets/icons/BellIcon";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import PenIcon from "../../../assets/icons/PenIcon";
 import { mypageTabs } from "../../../utils/staticDatas";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useUserStore } from "../../../store/user.store";
+import { UserType, useUserStore } from "../../../store/user.store";
 import { Cookies } from "react-cookie";
 import ProfileNoImg from "../../../components/ProfileNoImg";
+import { getMyProfile } from "../../../utils/axios";
 
 const cookies = new Cookies();
 
@@ -25,6 +26,14 @@ export default function MyPageLayout() {
     setCurrentTab(tab);
     navigate(tab);
   };
+
+  useEffect(() => {
+    getMyProfile().then((res) => {
+      userStore.setUserName(res?.data.nickname);
+      userStore.setUserType(res?.data.mbti as UserType);
+      userStore.setUserProfile(res?.data.profile);
+    });
+  }, []);
 
   return (
     <>

@@ -2,15 +2,28 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
 import { useCookies } from "react-cookie";
 import { useEffect } from "react";
+import { refreshToken } from "../../utils/axios";
+import { useUserStore } from "../../store/user.store";
 
 export default function Web() {
-  // const [cookies, _, removeCookie] = useCookies(["userToken"]);
+  // cookie 재발급 기능
+  const [cookies, _] = useCookies(["userToken"]);
+  const { getTokenExpiryTime } = useUserStore();
 
-  // useEffect(() => {
-  //   if (!cookies?.userToken) {
-  //     removeCookie("userToken");
-  //   }
-  // }, [cookies?.userToken]);
+  useEffect(() => {
+    if (!!cookies?.userToken) {
+      const remainTime =
+        new Date(getTokenExpiryTime()).getTime() - new Date().getTime();
+
+      // 5분
+      if (remainTime <= 5 * 60 * 1000) {
+        console.log("refresh");
+        refreshToken().then((res) => {
+          console.log(res);
+        });
+      }
+    }
+  }, [cookies?.userToken]);
 
   return <RouterProvider router={router} />;
 }

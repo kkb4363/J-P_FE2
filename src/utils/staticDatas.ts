@@ -37,13 +37,6 @@ export const webMypageTabs = [
   { icon: HeartIcon, label: "내 찜 목록", route: "likes" },
 ];
 
-export const mypageLikesTabs = [
-  { label: "전체", value: "" },
-  { label: "여행지", value: "place" },
-  { label: "도시", value: "city" },
-  { label: "여행기", value: "placeLog" },
-];
-
 export const webHeaderTabs = [
   { label: "홈", route: "/home" },
   { label: "일정", route: "/home/schedule" },
@@ -61,6 +54,30 @@ export const webHomeTabs = [
     title: "여기 어때요? 지금 가면 딱 좋은 여행지!",
     value: "THEME",
     label: "테마 여행지",
+  },
+];
+
+export const webMyLikeTabs = [
+  {
+    title: "전체",
+    value: "",
+  },
+  {
+    title: "여행지",
+    value: "travelPlace",
+    likeType: "PLACE",
+    placeType: "TRAVEL_PLACE",
+  },
+  {
+    title: "도시",
+    value: "city",
+    likeType: "PLACE",
+    placeType: "CITY",
+  },
+  {
+    title: "여행기",
+    value: "diary",
+    likeType: "DIARY",
   },
 ];
 

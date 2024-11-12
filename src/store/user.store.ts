@@ -8,6 +8,7 @@ interface State {
   userType: UserType;
   userProfileImg: string;
   searchData: string[];
+  tokenExpiryTime: any;
 }
 
 interface Action {
@@ -21,6 +22,8 @@ interface Action {
   setUserProfile: (p: string) => void;
   deleteSearchData: (s: string) => void;
   clearSearchData: () => void;
+  getTokenExpiryTime: () => any;
+  setTokenExpiryTime: (t: any) => void;
 }
 
 const initData: State = {
@@ -28,6 +31,7 @@ const initData: State = {
   userType: "J",
   userProfileImg: "",
   searchData: [],
+  tokenExpiryTime: null,
 };
 
 export const useUserStore = create<State & Action>()(
@@ -55,6 +59,8 @@ export const useUserStore = create<State & Action>()(
         set({ searchData: deletedData });
       },
       clearSearchData: () => set({ searchData: [] }),
+      getTokenExpiryTime: () => get().tokenExpiryTime,
+      setTokenExpiryTime: (t: any) => set({ tokenExpiryTime: t }),
     }),
 
     {
