@@ -4,7 +4,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { planItemProps } from "../../../types/schedule";
+import { dayLocationResDto } from "../../../types/res.dto";
 import { testDayList } from "../../../utils/staticDatas";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
@@ -14,7 +14,7 @@ import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
 
 interface Props {
-  item: planItemProps;
+  item: dayLocationResDto;
   isEdit: boolean;
 }
 
@@ -70,12 +70,12 @@ export default function PlanItem({ item, isEdit }: Props) {
           zIndex: isDragging ? "100" : "auto",
         }}
       >
-        <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
+        <TimeBox $isEdit={isEdit}>{`${item.time.hour}:${item.time.minute}`}</TimeBox>
         <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
           <PlaceNum $isEdit={isEdit}>1</PlaceNum>
           <PlaceTitleBox>
-            <p>{item.title}</p>
-            <span>{item.subtitle}</span>
+            <p>{item.name}</p>
+            <span>명소</span>
           </PlaceTitleBox>
           {isEdit && (
             <DragHandler
@@ -107,6 +107,7 @@ export default function PlanItem({ item, isEdit }: Props) {
         )}
       </PlanItemContainer>
 
+      {/* Modal */}
       {isOpenMoveModal.moveDay && (
         <OneButtonModal
           isMobile={false}

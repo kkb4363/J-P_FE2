@@ -1,14 +1,16 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
-import CustomInput from "../../../components/CustomInput";
-import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
-import PrimaryButton from "../../../components/PrimaryButton";
-import OneButtonModal from "../../../components/OneButtonModal";
-import useAddPlaceHook from "../../../hooks/useAddPlace";
 import { scrollHidden } from "../../../assets/styles/home.style";
+import CustomInput from "../../../components/CustomInput";
+import DatesBox from "../../../components/DatesBox";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import OneButtonModal from "../../../components/OneButtonModal";
+import PrimaryButton from "../../../components/PrimaryButton";
 import TimeSwiper from "../../../components/TimeSwiper";
+import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
 import SelectDayModal from "../../../components/web/schedule/SelectDayModal";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
 
 export default function CreatePlace() {
   const {
@@ -19,15 +21,16 @@ export default function CreatePlace() {
     setOpenModal,
     handleDaySelect,
   } = useAddPlaceHook();
+  const {
+    state: { title, dates },
+  } = useLocation();
+
   return (
     <>
       <CreatePlaceContainer>
         <SideBar>
-          <h1>남해 여행</h1>
-          <h2>
-            <CalendarCheckIcon />
-            4.17~4.19(2박 3일)
-          </h2>
+          <h1>{title}</h1>
+          <DatesBox dates={dates} />
 
           <InputBox>
             <CustomInput text="어디로 떠나고 싶나요?" value="" />
@@ -119,21 +122,12 @@ const SideBar = styled.div`
     font-weight: 700;
     margin-bottom: 16px;
   }
-
-  & > h2 {
-    display: flex;
-    align-items: center;
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 14px;
-    margin-bottom: 32px;
-  }
 `;
 
 const InputBox = styled.div`
   width: 439px;
-  margin: 0 auto;
+  margin: 32px auto 24px;
   height: 60px;
-  margin-bottom: 24px;
 `;
 
 const AddPlaceCardCol = styled.div`
