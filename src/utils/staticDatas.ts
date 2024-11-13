@@ -274,3 +274,13 @@ export const cities = [
     title: "제주도",
   },
 ];
+
+export const dayOfWeek = [
+  { id: "SUNDAY", name: "일" },
+  { id: "MONDAY", name: "월" },
+  { id: "TUESDAY", name: "화" },
+  { id: "WEDNESDAY", name: "수" },
+  { id: "THURSDAY", name: "목" },
+  { id: "FRIDAY", name: "금" },
+  { id: "SATURDAY", name: "토" },
+];

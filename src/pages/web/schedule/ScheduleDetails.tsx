@@ -11,13 +11,13 @@ import ActionButton from "../../../components/ActionButton";
 import DatesBox from "../../../components/DatesBox";
 import DaySlider from "../../../components/DaySlider";
 import JPToggle from "../../../components/JPToggle";
+import LoadingText from "../../../components/LoadingText";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
 import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
 import { getSchedule } from "../../../utils/axios";
 import { testImg1, testPlanItems } from "../../../utils/staticDatas";
-import LoadingText from "../../../components/LoadingText";
 
 export default function ScheduleDetails() {
   const { scheduleId } = useParams();
@@ -33,6 +33,7 @@ export default function ScheduleDetails() {
   };
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
+    // [TODO] : 일정 드래그 구현 (드래그 시 list index 이동, 편집 완료 누르면 API 호출)
     if (!over) return;
     if (active.id !== over.id) {
       const activeIndex = planItems.findIndex(
@@ -41,7 +42,7 @@ export default function ScheduleDetails() {
       const overIndex = planItems.findIndex(
         (item) => item.id === over.id.toString()
       );
-
+      
       setPlanItems(arrayMove(planItems, activeIndex, overIndex));
     }
   };
@@ -50,11 +51,13 @@ export default function ScheduleDetails() {
     if (scheduleData) {
       navigate(`/home/createPlace`, {
         state: {
-          title: scheduleData.title,
+          scheduleId: scheduleId,
+          city: scheduleData.place.name,
           dates: {
             startDate: scheduleData.startDate,
             endDate: scheduleData.endDate,
           },
+          dayResDtos: scheduleData.dayResDtos,
         },
       });
     }
@@ -73,7 +76,6 @@ export default function ScheduleDetails() {
   }, [scheduleId]);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
-  console.log(scheduleData);
   return (
     <Container>
       {scheduleData && (
@@ -141,7 +143,7 @@ export default function ScheduleDetails() {
               onDayClick={handleDayClick}
             />
             <PlanList>
-              {scheduleData.dayResDtos[currentDay].dayLocationResDtoList
+              {scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
                 .length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
@@ -158,14 +160,19 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      scheduleData.dayResDtos[currentDay].dayLocationResDtoList
+                      scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
                     }
                   >
                     {scheduleData.dayResDtos[
-                      currentDay
+                      currentDay-1
                     ].dayLocationResDtoList.map((item) => {
                       return (
-                        <PlanItem key={item.id} item={item} isEdit={isEdit} />
+                        <PlanItem
+                          key={item.id}
+                          item={item}
+                          isEdit={isEdit}
+                          dayList={scheduleData.dayResDtos}
+                        />
                       );
                     })}
                   </SortableContext>

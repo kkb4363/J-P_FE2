@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 interface Props {
   isMobile: boolean;
+  setSelectTime?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export default function TimeSwiper({ isMobile }: Props) {
-  const [selectTime, setSelectTime] = useState(0); //0 오전 1 오후
+export default function TimeSwiper({ isMobile, setSelectTime }: Props) {
+  const [selectPeriod, setSelectPeriod] = useState("AM");
   const [selectHour, setSelectHour] = useState(0);
   const [selectMin, setSelectMin] = useState(0);
 
@@ -19,6 +20,18 @@ export default function TimeSwiper({ isMobile }: Props) {
     return i === 0 ? `00` : i * 10;
   });
 
+  useEffect(() => {
+    if (setSelectTime) {
+      const hour24 =
+        selectPeriod === "PM" && selectHour < 12 ? selectHour + 12 : selectHour;
+      const formattedHour = hour24 < 10 ? `0${hour24}` : `${hour24}`;
+      const formattedTime = `${formattedHour}:${
+        selectMin < 10 ? `0${selectMin}` : selectMin
+      }`;
+      setSelectTime(formattedTime);
+    }
+  }, [selectPeriod, selectHour, selectMin, setSelectTime]);
+
   return (
     <TimeModalContainer $isMobile={isMobile}>
       <Swiper
@@ -28,7 +41,9 @@ export default function TimeSwiper({ isMobile }: Props) {
         loopAdditionalSlides={1}
         spaceBetween={40}
         slidesPerView={2}
-        onSlideChange={(swiper) => setSelectTime(swiper.realIndex)}
+        onSlideChange={(swiper) =>
+          setSelectPeriod(swiper.realIndex === 0 ? "AM" : "PM")
+        }
         centeredSlides={true}
       >
         <SwiperSlide>
