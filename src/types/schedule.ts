@@ -1,4 +1,8 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
+import { placeApiProps } from "./home";
+import { dayResDto, userCompactResDto } from "./res.dto";
+
+export type StatusType = "UPCOMING" | "NOW" | "COMPLETED";
 
 export interface planItemProps {
   id: UniqueIdentifier;
@@ -27,4 +31,16 @@ export interface CityProps {
   rating: number;
   subName: string;
   themeType: string;
+}
+
+export interface ScheduleApiProps {
+  id: number;
+  title: string;
+  place: placeApiProps;
+  startDate: string;
+  endDate: string;
+  member: userCompactResDto[];
+  status: StatusType;
+  isOpen: boolean;
+  dayResDtos: dayResDto[];
 }

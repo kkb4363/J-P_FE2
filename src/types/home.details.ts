@@ -17,20 +17,21 @@ export interface PlaceDetailAPiProps {
   tags: string[];
 }
 
-export interface NearByPlaceProps {
+export interface GooglePlaceProps {
+  placeId: string;
+  name: string;
+  shortAddress: string;
+  formattedAddress: string;
+  vicinity: string;
   geometry: {
     location: {
       lat: number;
       lng: number;
     };
   };
-  name: string;
-  photoUrl: string;
-  placeId: string;
   rating: number;
   userRatingsTotal: number;
-  vicinity: string;
-  shortAddress: string;
+  photoUrl: string;
 }
 
 // 04. [구글 플레이스] /googleplace/details

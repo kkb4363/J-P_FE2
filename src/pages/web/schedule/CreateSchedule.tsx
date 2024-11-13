@@ -8,10 +8,12 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import CustomInput from "../../../components/CustomInput";
 import CitySlider from "../../../components/web/schedule/CitySlider";
 import { useNavigate } from "react-router-dom";
-import { getPlaceList } from "../../../utils/axios";
+import { createSchedule, getPlaceList } from "../../../utils/axios";
 import { CityProps } from "../../../types/schedule";
 import { useDisplayStore } from "../../../store/display.store";
 import CustomSkeleton from "../../../components/CustomSkeleton";
+import { formatDateToString } from "./../../../utils/dateUtils";
+import { toast } from "react-toastify";
 
 export default function CreateSchedule() {
   const navigate = useNavigate();
@@ -38,9 +40,17 @@ export default function CreateSchedule() {
         endDate: date[0].endDate + "",
       });
     } else {
-      //TODO : navigate option state -> selectDate 정보 넘겨주고
-      //넘겨받은 페이지에서 4.17~4.19(2박 3일) <- 요거 계산해서 표시해주기
-      navigate(`/home/schedule/details/${selectCity}`);
+      const schedule = {
+        startDate: formatDateToString(selectDate.startDate, true),
+        endDate: formatDateToString(selectDate.endDate, true),
+        placeId: selectCity,
+      };
+      createSchedule(schedule).then((res) => {
+        if (res && res.status === 200) {
+          toast(<span>일정이 생성되었습니다!</span>);
+          navigate(`/home/schedule/details/${res.data}`);
+        }
+      });
     }
   };
 

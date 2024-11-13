@@ -4,25 +4,22 @@ import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { planItemProps } from "../../../types/schedule";
-import { testDayList } from "../../../utils/staticDatas";
+import { dayLocationResDto, dayResDto } from "../../../types/res.dto";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
 
 interface Props {
-  item: planItemProps;
+  item: dayLocationResDto;
   isEdit: boolean;
+  dayList: dayResDto[];
 }
 
-export default function PlanItem({ item, isEdit }: Props) {
-  const [isOpenMoveModal, setIsOpenMoveModal] = useState({
-    moveDay: false,
-    moveTime: false,
-  });
+export default function PlanItem({ item, isEdit, dayList }: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
     delete: false,
     deleteSuccess: false,
@@ -41,22 +38,32 @@ export default function PlanItem({ item, isEdit }: Props) {
     isDragging,
   } = useSortable({ id: item.id });
 
+  const {
+    selectDay,
+    setSelectDay,
+    selectTime,
+    setSelectTime,
+    handleDaySelect,
+    openModal,
+    setOpenModal,
+  } = useAddPlaceHook();
+
   const handleItemClick = () => {
     if (isEdit) {
-      setIsOpenMoveModal((p) => ({ ...p, moveDay: true }));
+      setOpenModal((p) => ({ ...p, selectDay: true }));
     }
   };
 
-  const handleModalNextClick = () => {
-    setIsOpenMoveModal({ moveDay: false, moveTime: true });
+  const handleMovePlanClick = () => {
+    setOpenModal((p) => ({ ...p, selectTime: false }));
+
+    // [TODO] : 일정 다른 날로 이동 구현 (장소 날짜 이동 API)
+    console.log(selectDay, selectTime);
   };
 
   const handleDeleteItemClick = () => {
+    // [TODO] : 일정 삭제 구현 (일정 편집 API)
     setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
-  };
-
-  const handleDeleteSuccessClick = () => {
-    setIsOpenDeleteModal({ delete: false, deleteSuccess: false });
   };
 
   return (
@@ -70,12 +77,12 @@ export default function PlanItem({ item, isEdit }: Props) {
           zIndex: isDragging ? "100" : "auto",
         }}
       >
-        <TimeBox $isEdit={isEdit}>{item.time}</TimeBox>
+        <TimeBox $isEdit={isEdit}>{`${item.time}`}</TimeBox>
         <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
-          <PlaceNum $isEdit={isEdit}>1</PlaceNum>
+          <PlaceNum $isEdit={isEdit}>{item.index}</PlaceNum>
           <PlaceTitleBox>
-            <p>{item.title}</p>
-            <span>{item.subtitle}</span>
+            <p>{item.name}</p>
+            <span>명소</span>
           </PlaceTitleBox>
           {isEdit && (
             <DragHandler
@@ -107,36 +114,40 @@ export default function PlanItem({ item, isEdit }: Props) {
         )}
       </PlanItemContainer>
 
-      {isOpenMoveModal.moveDay && (
+      {/* 일정 이동 Modal */}
+      {openModal.selectDay && (
         <OneButtonModal
           isMobile={false}
           width="470px"
           height="390px"
           title="다른 날로 이동"
           buttonText="다음"
-          onClick={handleModalNextClick}
-          onClose={() => setIsOpenMoveModal((p) => ({ ...p, moveDay: false }))}
+          onClick={handleDaySelect}
+          onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
           <MoveDaySlider
             isMobile={false}
-            dayList={testDayList}
-            currentDay={1}
+            dayResDtos={dayList}
+            currentDay={selectDay}
+            setSelectDay={setSelectDay}
           />
         </OneButtonModal>
       )}
-      {isOpenMoveModal.moveTime && (
+      {openModal.selectTime && (
         <OneButtonModal
           isMobile={false}
           width="470px"
           height="390px"
           title="시간 설정"
           buttonText="완료"
-          onClick={() => setIsOpenMoveModal((p) => ({ ...p, moveTime: false }))}
-          onClose={() => setIsOpenMoveModal((p) => ({ ...p, moveTime: false }))}
+          onClick={handleMovePlanClick}
+          onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
-          <TimeSwiper isMobile={false} />
+          <TimeSwiper isMobile={false} setSelectTime={setSelectTime} />
         </OneButtonModal>
       )}
+
+      {/* 일정 삭제 Modal */}
       {isOpenDeleteModal.delete && (
         <TwoButtonsModal
           isMobile={false}
@@ -154,7 +165,9 @@ export default function PlanItem({ item, isEdit }: Props) {
           height="390px"
           noCloseBtn
           buttonText="확인"
-          onClick={handleDeleteSuccessClick}
+          onClick={() =>
+            setIsOpenDeleteModal((p) => ({ ...p, deleteSuccess: false }))
+          }
         >
           <ModalText>일정이 삭제되었습니다.</ModalText>
         </OneButtonModal>

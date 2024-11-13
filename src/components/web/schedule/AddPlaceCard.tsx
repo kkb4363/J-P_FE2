@@ -4,6 +4,7 @@ import styled from "styled-components";
 import IconBox from "../../IconBox";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
+import { GooglePlaceProps } from "../../../types/home.details";
 
 interface Props {
   width?: string;
@@ -12,6 +13,7 @@ interface Props {
   isSelect: boolean;
   handleAdd: () => void;
   handleRemove: () => void;
+  item: GooglePlaceProps;
 }
 
 export default function AddPlaceCard({
@@ -21,17 +23,22 @@ export default function AddPlaceCard({
   isSelect,
   handleAdd,
   handleRemove,
+  item,
 }: Props) {
   return (
-    <AddPlaceCardContainer $width={width} $height={height} $imgSize={imgSize}>
-      <img src={testImg} alt="이미지없음" />
+    <AddPlaceCardContainer
+      $width={width}
+      $height={height}
+      $imgSize={imgSize}
+    >
+      <img src={item.photoUrl} alt="이미지없음" />
 
       <div>
         <h1>명소</h1>
-        <h2>한려해상국립공원</h2>
+        <h2>{item.name}</h2>
         <IconBox>
           <StarIcon />
-          <span>4.9</span>
+          <span>{item.rating}</span>
         </IconBox>
       </div>
 

@@ -1,21 +1,23 @@
-import { useState } from "react";
 import Slider from "react-slick";
 import styled from "styled-components";
+import { dayResDto } from "../types/res.dto";
+import { dayOfWeek } from "../utils/staticDatas";
 import NextArrow from "./mobile/schedule/NextArrow";
 import PrevArrow from "./mobile/schedule/PrevArrow";
 
 interface Props {
   isMobile: boolean;
-  dayList: number[];
-  currentDay: number;
+  dayResDtos: dayResDto[];
+  currentDay: number | undefined;
+  setSelectDay: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function MoveDaySlider({
   isMobile,
-  dayList,
+  dayResDtos,
   currentDay,
+  setSelectDay
 }: Props) {
-  const [selectDay, setSelectDay] = useState(currentDay);
   const slideSettings = {
     infinite: false,
     focusOnSelect: true,
@@ -29,19 +31,25 @@ export default function MoveDaySlider({
   };
   return (
     <StyledSlider {...slideSettings} $isMobile={isMobile}>
-      {dayList.map((day, i) => (
-        <div>
-          <DayBox
-            key={i}
-            onClick={() => setSelectDay(day)}
-            $select={selectDay === day}
-            $isMobile={isMobile}
-          >
-            <p>{`Day ${day + 1}`}</p>
-            <span>4.17 (목)</span>
-          </DayBox>
-        </div>
-      ))}
+      {dayResDtos.map((day, i) => {
+        const date = new Date(day.date);
+        const week = dayOfWeek.find((item) => item.id === day.dayOfWeek);
+        return (
+          <div key={i}>
+            <DayBox
+              key={i}
+              onClick={() => setSelectDay(day.id)}
+              $select={currentDay === day.id}
+              $isMobile={isMobile}
+            >
+              <p>{`Day ${day.dayIndex}`}</p>
+              <span>
+                {`${date.getMonth() + 1}.${date.getDate()} (${week?.name})`}
+              </span>
+            </DayBox>
+          </div>
+        );
+      })}
     </StyledSlider>
   );
 }

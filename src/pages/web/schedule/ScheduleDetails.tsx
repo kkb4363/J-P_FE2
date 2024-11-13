@@ -1,35 +1,39 @@
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
 import { ParticipantsRow } from "../../../assets/styles/scheduleDetail.style";
+import ActionButton from "../../../components/ActionButton";
+import DatesBox from "../../../components/DatesBox";
 import DaySlider from "../../../components/DaySlider";
 import JPToggle from "../../../components/JPToggle";
+import LoadingText from "../../../components/LoadingText";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
-import { planItemProps } from "../../../types/schedule";
-import {
-  testDayList,
-  testImg1,
-  testPlanItems,
-} from "../../../utils/staticDatas";
+import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
+import { getSchedule } from "../../../utils/axios";
+import { testImg1, testPlanItems } from "../../../utils/staticDatas";
 
 export default function ScheduleDetails() {
-  const [currentDay, setCurrentDay] = useState(0);
+  const { scheduleId } = useParams();
+  const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
+  const [currentDay, setCurrentDay] = useState(1);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
   };
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
+    // [TODO] : 일정 드래그 구현 (드래그 시 list index 이동, 편집 완료 누르면 API 호출)
     if (!over) return;
     if (active.id !== over.id) {
       const activeIndex = planItems.findIndex(
@@ -38,79 +42,146 @@ export default function ScheduleDetails() {
       const overIndex = planItems.findIndex(
         (item) => item.id === over.id.toString()
       );
-
+      
       setPlanItems(arrayMove(planItems, activeIndex, overIndex));
     }
   };
 
+  const handleAddPlaceClick = () => {
+    if (scheduleData) {
+      navigate(`/home/createPlace`, {
+        state: {
+          scheduleId: scheduleId,
+          city: scheduleData.place.name,
+          dates: {
+            startDate: scheduleData.startDate,
+            endDate: scheduleData.endDate,
+          },
+          dayResDtos: scheduleData.dayResDtos,
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (scheduleId) {
+      setIsLoading(true);
+      getSchedule(scheduleId).then((res) => {
+        if (res) {
+          setScheduleData(res.data);
+        }
+        setIsLoading(false);
+      });
+    }
+  }, [scheduleId]);
+
+  if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
     <Container>
-      <DetailsTitleBox>
-        <h1>일정</h1>
-        <JPToggle />
-      </DetailsTitleBox>
-      <DetailsInfoBox>
-        <InfoBox>
-          <TitleBox>
-            <p>남해 여행</p>
-            <PenIcon stroke="#4D4D4D" />
-          </TitleBox>
-          <DaysBox>
-            <CalendarCheckIcon stroke="#4D4D4D" />
-            <p>4.17 ~ 4.19 (2박 3일)</p>
-          </DaysBox>
-          <MemberBox>
-            <InviteIcon />
-            <ParticipantsRow>
-              <img src={testImg1} alt="참가자" />
-              <img src={testImg1} alt="참가자" />
-              <img src={testImg1} alt="참가자" />
-            </ParticipantsRow>
-          </MemberBox>
-        </InfoBox>
-        <AddPlaceButton>
-          <span>+</span>
-          <span>장소 추가</span>
-        </AddPlaceButton>
-      </DetailsInfoBox>
+      {scheduleData && (
+        <>
+          <DetailsTitleBox>
+            <h1>일정</h1>
+            <JPToggle />
+          </DetailsTitleBox>
+          <DetailsInfoBox>
+            <InfoBox>
+              <TitleBox>
+                <p>{scheduleData.title}</p>
+                <PenIcon stroke="#4D4D4D" />
+              </TitleBox>
+              <DatesBox
+                dates={{
+                  startDate: scheduleData.startDate,
+                  endDate: scheduleData.endDate,
+                }}
+              />
+              <MemberBox>
+                <InviteIcon />
+                <ParticipantsRow>
+                  {scheduleData.member.map((user, index) => (
+                    <img
+                      key={index}
+                      src={user.profile ? user.profile : testImg1}
+                      alt={user.nickname}
+                    />
+                  ))}
+                </ParticipantsRow>
+              </MemberBox>
+            </InfoBox>
+            <AddPlaceButton onClick={handleAddPlaceClick}>
+              <span>+</span>
+              <span>장소 추가</span>
+            </AddPlaceButton>
+          </DetailsInfoBox>
 
-      <CustomGoogleMap
-        width="100%"
-        height="342px"
-        lat={37.579617}
-        lng={126.977041}
-      />
+          <CustomGoogleMap
+            width="100%"
+            height="342px"
+            lat={37.579617}
+            lng={126.977041}
+          />
 
-      <PlansBox>
-        <EditButton $isEdit={isEdit} onClick={() => setIsEdit((prev) => !prev)}>
-          {isEdit ? (
-            <p>완료</p>
-          ) : (
-            <>
-              <PenIcon stroke="#808080" />
-              <p>편집</p>
-            </>
-          )}
-        </EditButton>
-        <DaySlider
-          web
-          dayList={testDayList}
-          currentDay={currentDay}
-          onDayClick={handleDayClick}
-        />
-        <PlanList>
-          <DndContext
-            onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis]}
-          >
-            <SortableContext items={planItems}>
-              {planItems.map((item) => {
-                return <PlanItem key={item.id} item={item} isEdit={isEdit} />;
-              })}
-            </SortableContext>
-          </DndContext>
-        </PlanList>
-      </PlansBox>
+          <PlansBox>
+            <EditButton
+              $isEdit={isEdit}
+              onClick={() => setIsEdit((prev) => !prev)}
+            >
+              {isEdit ? (
+                <p>완료</p>
+              ) : (
+                <>
+                  <PenIcon stroke="#808080" />
+                  <p>편집</p>
+                </>
+              )}
+            </EditButton>
+            <DaySlider
+              web
+              dayList={scheduleData.dayResDtos}
+              currentDay={currentDay}
+              onDayClick={handleDayClick}
+            />
+            <PlanList>
+              {scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
+                .length === 0 ? (
+                <NoPlaceBox>
+                  <NoPlaceTextBox>
+                    <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
+                  </NoPlaceTextBox>
+                  <ActionButton add onClick={handleAddPlaceClick}>
+                    + 장소 추가
+                  </ActionButton>
+                </NoPlaceBox>
+              ) : (
+                <DndContext
+                  onDragEnd={handleDragEnd}
+                  modifiers={[restrictToVerticalAxis]}
+                >
+                  <SortableContext
+                    items={
+                      scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
+                    }
+                  >
+                    {scheduleData.dayResDtos[
+                      currentDay-1
+                    ].dayLocationResDtoList.map((item) => {
+                      return (
+                        <PlanItem
+                          key={item.id}
+                          item={item}
+                          isEdit={isEdit}
+                          dayList={scheduleData.dayResDtos}
+                        />
+                      );
+                    })}
+                  </SortableContext>
+                </DndContext>
+              )}
+            </PlanList>
+          </PlansBox>
+        </>
+      )}
     </Container>
   );
 }
@@ -121,8 +192,6 @@ const DetailsTitleBox = styled.div`
   align-items: center;
   margin-bottom: 24px;
 `;
-
-
 
 const DetailsInfoBox = styled(DetailsTitleBox)`
   margin-bottom: 16px;
@@ -164,17 +233,6 @@ const TitleBox = styled.div`
   }
 `;
 
-const DaysBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-
-  & > p {
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 14px;
-  }
-`;
-
 const MemberBox = styled.div`
   display: flex;
   align-items: center;
@@ -205,4 +263,24 @@ const EditButton = styled.div<{ $isEdit: boolean }>`
 
 const PlanList = styled.div`
   padding: 40px;
+`;
+
+const NoPlaceBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+`;
+
+const NoPlaceTextBox = styled.div`
+  width: 100%;
+  display: grid;
+  place-content: center;
+  padding: 31px 0;
+  border-radius: 16px;
+  background-color: ${(props) => props.theme.color.gray100};
+
+  & > p {
+    color: ${(props) => props.theme.color.gray300};
+  }
 `;
