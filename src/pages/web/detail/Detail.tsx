@@ -8,7 +8,7 @@ import {
 } from "../../../utils/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  NearByPlaceProps,
+  GooglePlaceProps,
   PlaceDetailAPiProps,
 } from "../../../types/home.details";
 import { reviewApiProps } from "../../../types/home";
@@ -47,7 +47,7 @@ export default function Detail() {
   const [detail, setDetails] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
-  const [surrondingPlace, setSurroundingPlace] = useState<NearByPlaceProps[]>(
+  const [surrondingPlace, setSurroundingPlace] = useState<GooglePlaceProps[]>(
     []
   );
   const [review, setReviews] = useState<reviewApiProps[]>([]);
