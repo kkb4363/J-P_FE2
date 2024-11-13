@@ -1,6 +1,6 @@
 import axios from "axios";
-import { UserInfoProps } from "./axios.type";
 import { Cookies } from "react-cookie";
+import { UserInfoProps } from "./axios.type";
 
 const cookies = new Cookies();
 
@@ -361,10 +361,55 @@ export const getSchedule = async (id: string) => {
         Authorization: cookies.get("userToken"),
       },
     });
-    if (res.status == 200) { 
+    if (res.status == 200) {
       return res;
     }
   } catch (err) {
     console.error("일정 상세조회 API 에러", err);
+  }
+};
+
+export const getGoogleSearchPlaceList = async (
+  contents: string,
+  nextPageToken?: string
+) => {
+  try {
+    const url = nextPageToken
+      ? `/googleplace/text-search/page?contents=${contents}&nextPageToken=${nextPageToken}`
+      : `/googleplace/text-search/page?contents=${contents}`;
+    const res = await axiosInstance.get(url);
+    if (res.status == 200) {
+      return res.data;
+    }
+  } catch (err) {
+    console.error("구글 플레이스 장소 검색 API 에러", err);
+  }
+};
+
+export const addPlaceToSchedule = async (
+  dayId: number,
+  places: {
+    time: string;
+    location: { lat: number; lng: number };
+    placeId: string;
+    name: string;
+  }[]
+) => {
+  console.log(places);
+  try {
+    const res = await axiosInstance.post(
+      `/schedule/location/${dayId}`,
+      places,
+      {
+        headers: {
+          Authorization: cookies.get("userToken"),
+        },
+      }
+    );
+    if (res.status == 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("일정 장소 추가 API 에러", err);
   }
 };

@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { GooglePlaceProps } from "../types/home.details";
 
 export default function useAddPlaceHook() {
-  const [list, setList] = useState<number[]>([]);
+  const [list, setList] = useState<GooglePlaceProps[]>([]);
+  const [selectDay, setSelectDay] = useState<number>(1);
+  const [selectTime, setSelectTime] = useState<string>();
 
-  const handleAdd = (id: number) => {
-    setList((prevList) => [...prevList, id]);
+  const handleAdd = (place: GooglePlaceProps) => {
+    setList((prevList) => [...prevList, place]);
   };
 
-  const handleRemove = (id: number) => {
-    const newList = list.filter((prev) => prev !== id);
+  const handleRemove = (placeId: string) => {
+    const newList = list.filter((prev) => prev.placeId !== placeId);
     setList(newList);
   };
 
@@ -23,6 +26,10 @@ export default function useAddPlaceHook() {
 
   return {
     list,
+    selectDay,
+    setSelectDay,
+    selectTime,
+    setSelectTime,
     handleAdd,
     handleRemove,
     openModal,

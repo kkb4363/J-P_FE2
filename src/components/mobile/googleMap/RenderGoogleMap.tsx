@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { GoogleMapProps } from "./CustomGoogleMap";
 import { useMapStore } from "../../../store/map.store";
-import { NearByPlaceProps } from "../../../types/home.details";
+import { GooglePlaceProps } from "../../../types/home.details";
 
 // marker가 여러개일 경우 marker를 렌더링해주는 컴포넌트에서
 // mapStore.setNearPlace를 추가해주고, 페이지를 나갈 때
@@ -46,7 +46,7 @@ export default function RenderGoogleMap({
     if (map && places.length > 0) {
       const infoWindow = new (window as any).google.maps.InfoWindow();
 
-      places.forEach((place: NearByPlaceProps) => {
+      places.forEach((place: GooglePlaceProps) => {
         const lat = place.geometry.location.lat;
         const lng = place.geometry.location.lng;
 

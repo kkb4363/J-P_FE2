@@ -13,7 +13,7 @@ import {
   setLike,
 } from "../../../utils/axios";
 import {
-  NearByPlaceProps,
+  GooglePlaceProps,
   PlaceDetailAPiProps,
 } from "../../../types/home.details";
 import { reviewApiProps } from "../../../types/home";
@@ -54,7 +54,7 @@ export default function HomeDetails() {
   const [detail, setDetail] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
-  const [nearbyPlaces, setNearbyPlaces] = useState<NearByPlaceProps[]>([]);
+  const [nearbyPlaces, setNearbyPlaces] = useState<GooglePlaceProps[]>([]);
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [addPlaceId, setAddPlaceId] = useState("");

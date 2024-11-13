@@ -1,13 +1,13 @@
 import { create } from "zustand";
-import { NearByPlaceProps } from "../types/home.details";
+import { GooglePlaceProps } from "../types/home.details";
 
 interface State {
-  nearPlace: NearByPlaceProps[];
+  nearPlace: GooglePlaceProps[];
 }
 
 interface Action {
-  getNearPlace: () => NearByPlaceProps[];
-  setNearPlace: (places: NearByPlaceProps[]) => void;
+  getNearPlace: () => GooglePlaceProps[];
+  setNearPlace: (places: GooglePlaceProps[]) => void;
   clear: () => void;
 }
 
@@ -18,6 +18,6 @@ const initData: State = {
 export const useMapStore = create<State & Action>()((set, get) => ({
   ...initData,
   getNearPlace: () => get().nearPlace,
-  setNearPlace: (places: NearByPlaceProps[]) => set({ nearPlace: places }),
+  setNearPlace: (places: GooglePlaceProps[]) => set({ nearPlace: places }),
   clear: () => set({ ...initData }),
 }));
