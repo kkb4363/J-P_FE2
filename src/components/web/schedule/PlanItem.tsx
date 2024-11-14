@@ -12,7 +12,7 @@ import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
-import { moveScheduleDate } from "../../../utils/axios";
+import { moveScheduleDate } from "../../../service/axios";
 
 interface Props {
   item: dayLocationResDto;
