@@ -11,7 +11,7 @@ import {
   getReviews,
   getSurroundingPlace,
   setLike,
-} from "../../../utils/axios";
+} from "../../../service/axios";
 import {
   GooglePlaceProps,
   PlaceDetailAPiProps,

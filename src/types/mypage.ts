@@ -19,3 +19,15 @@ export interface MyLikeProps {
   fileUrl: string;
   placeType: string;
 }
+
+export interface MySchedules {
+  dayResDtos: any;
+  id: number;
+  title: string;
+  place: any;
+  startDate: string;
+  endDate: string;
+  member: any;
+  status: string;
+  isOpen: boolean;
+}

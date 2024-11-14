@@ -13,7 +13,7 @@ import { commentResDto } from "../../../types/res.dto";
 import { testImageList } from "../../../utils/staticDatas";
 import ImageSlider from "../../../components/mobile/ImageSlider";
 import testImg from "../../../assets/images/testImg2.png";
-import { axiosInstance } from "../../../utils/axios";
+import { axiosInstance } from "../../../service/axios";
 import { ReviewDetailApiProps } from "../../../types/home.details";
 
 export default function ReviewDetails() {

@@ -3,7 +3,7 @@ import { HomeTabType, useDisplayStore } from "../../../store/display.store";
 import { webHomeTabs } from "../../../utils/staticDatas";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPlaceList } from "../../../utils/axios";
+import { getPlaceList } from "../../../service/axios";
 import { placeApiProps } from "../../../types/home";
 import PlaceCard from "../../../components/web/home/PlaceCard";
 import CustomSkeleton from "../../../components/CustomSkeleton";

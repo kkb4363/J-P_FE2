@@ -15,7 +15,7 @@ import { GooglePlaceProps } from "../../../types/home.details";
 import {
   addPlaceToSchedule,
   getGoogleSearchPlaceList,
-} from "../../../utils/axios";
+} from "../../../service/axios";
 
 export default function CreatePlace() {
   const [isLoading, setIsLoading] = useState(false);

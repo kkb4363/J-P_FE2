@@ -16,7 +16,7 @@ import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMa
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
 import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
-import { getSchedule } from "../../../utils/axios";
+import { getSchedule } from "../../../service/axios";
 import { testImg1, testPlanItems } from "../../../utils/staticDatas";
 
 export default function ScheduleDetails() {

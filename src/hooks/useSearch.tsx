@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUserStore } from "../store/user.store";
 import { placeApiProps } from "../types/home";
-import { getSearchPlaceList } from "../utils/axios";
+import { getSearchPlaceList } from "../service/axios";
 
 export default function useSearchHook() {
   const userStore = useUserStore();

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useUserStore } from "../store/user.store";
 import { useNavigate } from "react-router-dom";
-import { updateUser, uploadProfileImg } from "../utils/axios";
+import { updateUser, uploadProfileImg } from "../service/axios";
 
 interface Props {
   newImg: any;
@@ -40,8 +40,8 @@ export default function useProfileEditHook({ newImg }: Props) {
     }
 
     if (newImg) {
-      if (newImg.size > 1024 * 1024) {
-        return alert("이미지 용량은 1MB 이하로 업로드해주세요.");
+      if (newImg.size > 1024 * 1024 * 10) {
+        return alert("이미지 용량은 10MB 이하로 업로드해주세요.");
       }
       promises.push(uploadProfileImg({ file: newImg }));
     }

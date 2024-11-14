@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
+import { axiosInstance } from "../../../service/axios";
 import { reviewApiProps } from "../../../types/home";
 import ReviewCard from "../../../components/mobile/ReviewCard";
-import { testReviewItem } from './../../../utils/staticDatas';
+import { testReviewItem } from "./../../../utils/staticDatas";
 
 interface Props {
   sort: string;

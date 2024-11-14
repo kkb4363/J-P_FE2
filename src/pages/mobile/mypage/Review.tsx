@@ -4,7 +4,7 @@ import CustomProfile from "../../../components/CustomProfile";
 import testImg from "../../../assets/images/testImg3.png";
 import { useEffect, useState } from "react";
 import LikeCommentBox from "../../../components/LikeCommentBox";
-import { getMyReviews } from "../../../utils/axios";
+import { getMyReviews } from "../../../service/axios";
 
 export default function Review() {
   const [reviews, setReviews] = useState([]);

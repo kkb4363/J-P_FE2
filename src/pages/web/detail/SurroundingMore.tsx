@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import {
   getGooglePlaceDetail,
   getSurroundingPlace,
-} from "../../../utils/axios";
+} from "../../../service/axios";
 import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
 

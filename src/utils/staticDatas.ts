@@ -142,7 +142,7 @@ export const testLogContents3 =
 export const testUserDto: userCompactResDto = {
   id: 123456,
   nickname: "coco1202",
-  picture: "null",
+  profile: "null",
 };
 
 export const testPlanItems: planItemProps[] = [

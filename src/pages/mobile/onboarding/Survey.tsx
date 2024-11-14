@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import NicknameIcon from "../../../assets/icons/NicknameIcon";
 import LogoutIcon from "../../../assets/icons/LogoutIcon";
 import PrimaryButton from "../../../components/PrimaryButton";
-import { axiosInstance, getMyProfile, updateUser } from "../../../utils/axios";
+import {
+  axiosInstance,
+  getMyProfile,
+  updateUser,
+} from "../../../service/axios";
 import { useNavigate } from "react-router-dom";
 import { Cookies, useCookies } from "react-cookie";
 import { UserType, useUserStore } from "../../../store/user.store";
@@ -52,7 +56,7 @@ export default function Survey() {
         `/login/oauth2/code/google?code=${code}&isDev=true`
       );
       const accessToken = res.headers.authorization;
-      const tokenExpiryTime = new Date(Date.now() + 60 * 30 * 1000);
+      const tokenExpiryTime = new Date(Date.now() + 60 * 200 * 1000);
 
       setCookie("userToken", accessToken, {
         expires: tokenExpiryTime,

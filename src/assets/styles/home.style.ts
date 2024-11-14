@@ -28,6 +28,11 @@ export const HomeHeader = styled.div`
   align-items: center;
   height: 50px;
   margin: 10px 0;
+
+  & > img {
+    width: 36px;
+    height: 36px;
+  }
 `;
 
 export const HomeBody = styled.div`
