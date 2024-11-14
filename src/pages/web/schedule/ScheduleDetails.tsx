@@ -22,14 +22,14 @@ import { testImg1, testPlanItems } from "../../../utils/staticDatas";
 export default function ScheduleDetails() {
   const { scheduleId } = useParams();
   const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
-  const [currentDay, setCurrentDay] = useState(1);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [currentDayIndex, setCurrentDayIndex] = useState(1);
 
   const handleDayClick = (day: number) => {
-    setCurrentDay(day);
+    setCurrentDayIndex(day);
   };
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
@@ -42,7 +42,7 @@ export default function ScheduleDetails() {
       const overIndex = planItems.findIndex(
         (item) => item.id === over.id.toString()
       );
-      
+
       setPlanItems(arrayMove(planItems, activeIndex, overIndex));
     }
   };
@@ -63,7 +63,7 @@ export default function ScheduleDetails() {
     }
   };
 
-  useEffect(() => {
+  const requestApi = async () => {
     if (scheduleId) {
       setIsLoading(true);
       getSchedule(scheduleId).then((res) => {
@@ -73,7 +73,11 @@ export default function ScheduleDetails() {
         setIsLoading(false);
       });
     }
-  }, [scheduleId]);
+  };
+
+  useEffect(() => {
+    requestApi();
+  }, []);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -139,12 +143,13 @@ export default function ScheduleDetails() {
             <DaySlider
               web
               dayList={scheduleData.dayResDtos}
-              currentDay={currentDay}
+              currentDayIndex={currentDayIndex}
               onDayClick={handleDayClick}
             />
             <PlanList>
-              {scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
-                .length === 0 ? (
+              {scheduleData.dayResDtos.find(
+                (day) => day.dayIndex === currentDayIndex
+              )?.dayLocationResDtoList.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
@@ -160,21 +165,22 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
+                      scheduleData.dayResDtos.find(
+                        (day) => day.dayIndex === currentDayIndex
+                      )?.dayLocationResDtoList || []
                     }
                   >
-                    {scheduleData.dayResDtos[
-                      currentDay-1
-                    ].dayLocationResDtoList.map((item) => {
-                      return (
+                    {scheduleData.dayResDtos
+                      .find((day) => day.dayIndex === currentDayIndex)
+                      ?.dayLocationResDtoList.map((item) => (
                         <PlanItem
                           key={item.id}
                           item={item}
                           isEdit={isEdit}
                           dayList={scheduleData.dayResDtos}
+                          reloadSchedule={() => requestApi()}
                         />
-                      );
-                    })}
+                      ))}
                   </SortableContext>
                 </DndContext>
               )}

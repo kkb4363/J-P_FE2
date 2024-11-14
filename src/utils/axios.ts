@@ -395,7 +395,6 @@ export const addPlaceToSchedule = async (
     name: string;
   }[]
 ) => {
-  console.log(places);
   try {
     const res = await axiosInstance.post(
       `/schedule/location/${dayId}`,
@@ -411,5 +410,30 @@ export const addPlaceToSchedule = async (
     }
   } catch (err) {
     console.error("일정 장소 추가 API 에러", err);
+  }
+};
+
+export const moveScheduleDate = async (
+  locationId: number,
+  body: {
+    newDayId: number;
+    time: string;
+  }
+) => {
+  try {
+    const res = await axiosInstance.put(
+      `/schedule/location/${locationId}`,
+      body,
+      {
+        headers: {
+          Authorization: cookies.get("userToken"),
+        },
+      }
+    );
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("일정 장소 날짜 이동 API 에러", err);
   }
 };
