@@ -8,14 +8,14 @@ import PrevArrow from "./mobile/schedule/PrevArrow";
 interface Props {
   isMobile: boolean;
   dayResDtos: dayResDto[];
-  currentDay: number | undefined;
+  selectDay: number | undefined;
   setSelectDay: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function MoveDaySlider({
   isMobile,
   dayResDtos,
-  currentDay,
+  selectDay,
   setSelectDay
 }: Props) {
   const slideSettings = {
@@ -39,7 +39,7 @@ export default function MoveDaySlider({
             <DayBox
               key={i}
               onClick={() => setSelectDay(day.id)}
-              $select={currentDay === day.id}
+              $select={selectDay === day.id}
               $isMobile={isMobile}
             >
               <p>{`Day ${day.dayIndex}`}</p>

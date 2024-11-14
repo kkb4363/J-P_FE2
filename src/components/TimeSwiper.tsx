@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 interface Props {
   isMobile: boolean;
-  setSelectTime?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setSelectTime?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function TimeSwiper({ isMobile, setSelectTime }: Props) {

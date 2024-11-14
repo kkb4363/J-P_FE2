@@ -12,14 +12,21 @@ import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
+import { moveScheduleDate } from "../../../utils/axios";
 
 interface Props {
   item: dayLocationResDto;
   isEdit: boolean;
   dayList: dayResDto[];
+  reloadSchedule: () => Promise<void>;
 }
 
-export default function PlanItem({ item, isEdit, dayList }: Props) {
+export default function PlanItem({
+  item,
+  isEdit,
+  dayList,
+  reloadSchedule,
+}: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
     delete: false,
     deleteSuccess: false,
@@ -54,11 +61,15 @@ export default function PlanItem({ item, isEdit, dayList }: Props) {
     }
   };
 
-  const handleMovePlanClick = () => {
+  const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
 
-    // [TODO] : 일정 다른 날로 이동 구현 (장소 날짜 이동 API)
-    console.log(selectDay, selectTime);
+    await moveScheduleDate(item.id, {
+      newDayId: selectDay,
+      time: selectTime,
+    }).then(() => {
+      reloadSchedule();
+    });
   };
 
   const handleDeleteItemClick = () => {
@@ -128,7 +139,7 @@ export default function PlanItem({ item, isEdit, dayList }: Props) {
           <MoveDaySlider
             isMobile={false}
             dayResDtos={dayList}
-            currentDay={selectDay}
+            selectDay={selectDay}
             setSelectDay={setSelectDay}
           />
         </OneButtonModal>
