@@ -4,7 +4,7 @@ import { GooglePlaceProps } from "../types/home.details";
 export default function useAddPlaceHook() {
   const [list, setList] = useState<GooglePlaceProps[]>([]);
   const [selectDay, setSelectDay] = useState<number>(1);
-  const [selectTime, setSelectTime] = useState<string>();
+  const [selectTime, setSelectTime] = useState<string>("");
 
   const handleAdd = (place: GooglePlaceProps) => {
     setList((prevList) => [...prevList, place]);

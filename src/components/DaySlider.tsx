@@ -7,14 +7,14 @@ import { dayResDto } from "../types/res.dto";
 interface Props {
   web?: boolean;
   dayList: dayResDto[];
-  currentDay: number;
+  currentDayIndex: number;
   onDayClick: (day: number) => void;
 }
 
 export default function DaySlider({
   web = false,
   dayList,
-  currentDay,
+  currentDayIndex,
   onDayClick,
 }: Props) {
   const slidesToShowCount = web ? 4 : 3;
@@ -35,7 +35,7 @@ export default function DaySlider({
         <DayBox
           key={i}
           onClick={() => onDayClick(day.dayIndex)}
-          $select={currentDay === day.dayIndex}
+          $select={currentDayIndex === day.dayIndex}
           $web={web}
         >{`Day ${day.dayIndex}`}</DayBox>
       ))}
