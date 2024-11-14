@@ -37,7 +37,7 @@ export default function Travel() {
         <span>목록</span>
       </TravelHeader>
 
-      {mySchedules?.length !== 0 ? (
+      {mySchedules?.length === 0 ? (
         <NotHasCard
           isMobile={true}
           text="내 일정이 없어요. 새로운 여행 일정을 만들어 주세요!"
