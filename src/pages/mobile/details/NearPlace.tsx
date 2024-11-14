@@ -5,7 +5,7 @@ import {
   getGooglePlaceDetail,
   getPlaceDetail,
   getSurroundingPlace,
-} from "../../../utils/axios";
+} from "../../../service/axios";
 import {
   PlaceDetailAPiProps,
   SelectPlaceProps,

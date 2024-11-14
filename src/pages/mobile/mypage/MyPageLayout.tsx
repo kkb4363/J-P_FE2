@@ -9,7 +9,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { UserType, useUserStore } from "../../../store/user.store";
 import { Cookies } from "react-cookie";
 import ProfileNoImg from "../../../components/ProfileNoImg";
-import { getMyProfile } from "../../../utils/axios";
+import { getMyProfile } from "../../../service/axios";
 
 const cookies = new Cookies();
 

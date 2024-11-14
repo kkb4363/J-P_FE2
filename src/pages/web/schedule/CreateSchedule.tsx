@@ -8,7 +8,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import CustomInput from "../../../components/CustomInput";
 import CitySlider from "../../../components/web/schedule/CitySlider";
 import { useNavigate } from "react-router-dom";
-import { createSchedule, getPlaceList } from "../../../utils/axios";
+import { createSchedule, getPlaceList } from "../../../service/axios";
 import { CityProps } from "../../../types/schedule";
 import { useDisplayStore } from "../../../store/display.store";
 import CustomSkeleton from "../../../components/CustomSkeleton";

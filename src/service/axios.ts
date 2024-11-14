@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Cookies } from "react-cookie";
-import { UserInfoProps } from "./axios.type";
+import { UserInfoProps } from "../types/axios.type";
 
 const cookies = new Cookies();
 
@@ -155,6 +155,10 @@ export const getMyReviews = async () => {
         Authorization: cookies.get("userToken"),
       },
     });
+
+    if (res.status === 200) {
+      return res;
+    }
   } catch (err) {
     console.error("내 리뷰 조회 API 에러", err);
   }

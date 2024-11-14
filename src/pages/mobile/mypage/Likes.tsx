@@ -5,7 +5,7 @@ import { TravelogueGridBox } from "./Travelogue";
 import { CarouselWithText } from "../../../assets/styles/home.style";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import HeartIcon from "../../../assets/icons/HeartIcon";
-import { getLikes } from "../../../utils/axios";
+import { getLikes } from "../../../service/axios";
 import { MyLikeProps } from "../../../types/mypage";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import { useNavigate } from "react-router-dom";

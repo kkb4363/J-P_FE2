@@ -5,7 +5,7 @@ import {
   getReviews,
   getSurroundingPlace,
   setLike,
-} from "../../../utils/axios";
+} from "../../../service/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   GooglePlaceProps,

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { testReviewItem } from "../../../utils/staticDatas";
 import ReviewCard from "./../../../components/web/travel-review/ReviewCard";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../utils/axios";
+import { axiosInstance } from "../../../service/axios";
 import { reviewApiProps } from "../../../types/home";
 import LoadingText from "../../../components/LoadingText";
 

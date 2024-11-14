@@ -1,44 +1,73 @@
 import styled from "styled-components";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
+import { useEffect, useState } from "react";
+import { getMySchedules } from "../../../service/axios";
+import NotHasCard from "../../../components/web/mypage/NotHasCard";
+import { useNavigate } from "react-router-dom";
+import MyTravelCard from "../../../components/web/mypage/MyTravelCard";
 
 export default function Travel() {
+  const navigate = useNavigate();
+  const [mySchedules, setMySchedules] = useState([] as any);
+
+  const groupingYear = (data: any) => {
+    const groups = data?.reduce((acc: any, schedule: any) => {
+      const year = new Date(schedule?.startDate).getFullYear();
+
+      if (!acc[year]) acc[year] = [];
+      acc[year].push(schedule);
+
+      return acc;
+    }, {});
+
+    setMySchedules(groups);
+  };
+
+  useEffect(() => {
+    getMySchedules().then((res) => {
+      if (res) {
+        const schedules = res?.data?.data;
+        groupingYear(schedules);
+      }
+    });
+  }, []);
+
   return (
     <>
       <TravelHeader>
         <span>목록</span>
       </TravelHeader>
 
-      <TravelList>
-        <p>2024년</p>
-        <TravelCard>
-          <span>제주</span>
-          <div>
-            <CalendarCheckIcon />
-            <span>12.29 ~ 12.23</span>
-          </div>
-          <span>공개</span>
-        </TravelCard>
-        <TravelCard>
-          <span>제주</span>
-          <div>
-            <CalendarCheckIcon />
-            <span>12.29 ~ 12.23</span>
-          </div>
-          <span>공개</span>
-        </TravelCard>
-      </TravelList>
-
-      <TravelList>
-        <p>2023년</p>
-        <TravelCard>
-          <span>제주</span>
-          <div>
-            <CalendarCheckIcon />
-            <span>12.29 ~ 12.23</span>
-          </div>
-          <span>공개</span>
-        </TravelCard>
-      </TravelList>
+      {mySchedules?.length === 0 ? (
+        <NotHasCard
+          isMobile={true}
+          text="내 일정이 없어요. 새로운 여행 일정을 만들어 주세요!"
+          btnText="일정 생성"
+          onClick={() => navigate(`/Schedule`)}
+        />
+      ) : (
+        <>
+          {Object.keys(mySchedules)
+            ?.reverse()
+            .map((year: any) => (
+              <TitleWithTravelBox key={year}>
+                <p>{year}년</p>
+                <div>
+                  {mySchedules[year]?.reverse().map((t: any) => (
+                    <MyTravelCard
+                      width="100%"
+                      height="85px"
+                      key={t.id}
+                      title={t.title}
+                      startDate={t.startDate}
+                      endDate={t.endDate}
+                      isOpen={t.isOpen}
+                    />
+                  ))}
+                </div>
+              </TitleWithTravelBox>
+            ))}
+        </>
+      )}
     </>
   );
 }
@@ -48,6 +77,7 @@ export const TravelHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
+  margin-bottom: 16px;
 
   & > span {
     color: ${(props) => props.theme.color.gray900};
@@ -56,17 +86,23 @@ export const TravelHeader = styled.div`
   }
 `;
 
-const TravelList = styled.div`
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-    font-weight: 700;
-    padding: 16px 0 6px 0;
+const TitleWithTravelBox = styled.div`
+  margin-top: 30px;
+  width: 100%;
+
+  & > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  & > p {
+    color: ${(props) => props.theme.color.gray900};
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
 `;
 
 export const TravelCard = styled.div`

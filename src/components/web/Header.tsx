@@ -6,6 +6,7 @@ import SearchIcon from "../../assets/icons/SearchIcon";
 import ProfileIcon from "../../assets/icons/ProfileIcon";
 import { Cookies, useCookies } from "react-cookie";
 import { useUserStore } from "../../store/user.store";
+import logoImg from "../../assets/images/logo.png";
 
 interface Props {
   minWidth: string;
@@ -44,7 +45,9 @@ export default function Header({ minWidth }: Props) {
   return (
     <HeaderContainer $minWidth={minWidth}>
       <HeaderLeft>
-        <Logo>Logo</Logo>
+        <Logo>
+          <img src={logoImg} alt="로고 이미지" />
+        </Logo>
 
         <HeaderTabRow>
           {webHeaderTabs.map((tab) => (
