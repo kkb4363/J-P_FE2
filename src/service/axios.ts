@@ -441,3 +441,18 @@ export const moveScheduleDate = async (
     console.error("일정 장소 날짜 이동 API 에러", err);
   }
 };
+
+export const deletePlaceFromSchedule = async (locationId: number) => {
+  try {
+    const res = await axiosInstance.delete(`/schedule/location/${locationId}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};

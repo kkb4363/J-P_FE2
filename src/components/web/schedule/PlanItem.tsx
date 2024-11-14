@@ -4,6 +4,11 @@ import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
+import {
+  deletePlaceFromSchedule,
+  moveScheduleDate,
+} from "../../../service/axios";
 import { dayLocationResDto, dayResDto } from "../../../types/res.dto";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
@@ -11,8 +16,6 @@ import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
-import useAddPlaceHook from "../../../hooks/useAddPlace";
-import { moveScheduleDate } from "../../../utils/axios";
 
 interface Props {
   item: dayLocationResDto;
@@ -72,9 +75,11 @@ export default function PlanItem({
     });
   };
 
-  const handleDeleteItemClick = () => {
-    // [TODO] : 일정 삭제 구현 (일정 편집 API)
-    setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+  const handleDeleteItemClick = async () => {
+    await deletePlaceFromSchedule(item.id).then(() => {
+      setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+      reloadSchedule();
+    });
   };
 
   return (
