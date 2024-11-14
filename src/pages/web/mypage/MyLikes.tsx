@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { MyPageTitle } from "./MyReviews";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import { useEffect, useState } from "react";
-import { getLikes } from "../../../utils/axios";
+import { getLikes } from "../../../service/axios";
 import { MyLikeProps } from "../../../types/mypage";
 import { useNavigate } from "react-router-dom";
 import CustomSkeleton from "../../../components/CustomSkeleton";

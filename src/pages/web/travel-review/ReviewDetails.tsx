@@ -9,7 +9,7 @@ import * as R from "../../../assets/styles/travelReview.style";
 import IconBox from "../../../components/IconBox";
 import CommentCard from "../../../components/mobile/CommentCard";
 import CustomProfile from "../../../components/CustomProfile";
-import { axiosInstance } from "../../../utils/axios";
+import { axiosInstance } from "../../../service/axios";
 import LikeCommentBox from "../../../components/LikeCommentBox";
 import styled from "styled-components";
 import LoadingText from "../../../components/LoadingText";

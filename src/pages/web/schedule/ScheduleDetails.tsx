@@ -16,7 +16,7 @@ import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMa
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
 import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
-import { getSchedule } from "../../../utils/axios";
+import { getSchedule } from "../../../service/axios";
 import { testImg1, testPlanItems } from "../../../utils/staticDatas";
 
 export default function ScheduleDetails() {
@@ -42,7 +42,7 @@ export default function ScheduleDetails() {
       const overIndex = planItems.findIndex(
         (item) => item.id === over.id.toString()
       );
-      
+
       setPlanItems(arrayMove(planItems, activeIndex, overIndex));
     }
   };
@@ -143,7 +143,7 @@ export default function ScheduleDetails() {
               onDayClick={handleDayClick}
             />
             <PlanList>
-              {scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
+              {scheduleData.dayResDtos[currentDay - 1].dayLocationResDtoList
                 .length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
@@ -160,11 +160,12 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      scheduleData.dayResDtos[currentDay-1].dayLocationResDtoList
+                      scheduleData.dayResDtos[currentDay - 1]
+                        .dayLocationResDtoList
                     }
                   >
                     {scheduleData.dayResDtos[
-                      currentDay-1
+                      currentDay - 1
                     ].dayLocationResDtoList.map((item) => {
                       return (
                         <PlanItem

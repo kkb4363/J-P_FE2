@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ScheduleSlider from "./ScheduleSlider";
 import { useUserStore } from "../../../store/user.store";
-import { getMySchedules, getRecommendSchedules } from "../../../utils/axios";
+import { getMySchedules, getRecommendSchedules } from "../../../service/axios";
 import RecommendCard from "./RecommendCard";
 
 export default function UpcomingSchedule() {

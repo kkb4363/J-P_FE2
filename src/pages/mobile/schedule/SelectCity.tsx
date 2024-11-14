@@ -3,11 +3,44 @@ import { scrollHidden } from "../../../assets/styles/home.style";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomInput from "../../../components/CustomInput";
 import { NextButtonBox } from "./ScheduleLayout";
+import { useDisplayStore } from "../../../store/display.store";
+import { useEffect, useState } from "react";
+import { getPlaceList } from "../../../service/axios";
+import { CityProps } from "../../../types/schedule";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function SelectCity() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { getCurrentCity } = useDisplayStore();
+
+  // 도시 목록
+  const [city, setCity] = useState<CityProps[]>([]);
+
+  // 선택한 도시
+  const [selectCity, setSelectCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 선택한 여행 날짜
   console.log(location?.state?.date[0]);
+
+  useEffect(() => {
+    const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
+    const cityCount = getCurrentCity() === "" ? 30 : 10;
+    setIsLoading(true);
+
+    getPlaceList({
+      type: "CITY",
+      elementCnt: cityCount,
+      cityType: cityType,
+    }).then((res) => {
+      if (res) {
+        setCity(res?.data.data);
+        setIsLoading(false);
+      }
+    });
+  }, [getCurrentCity()]);
+
   return (
     <>
       <CustomInput text="어디로 떠나고 싶나요?" value="" />
@@ -45,11 +78,24 @@ export default function SelectCity() {
       </CityRow>
 
       <CityGridBox>
-        {Array.from({ length: 20 }).map((_, idx) => (
-          <CityGrid $isActive={idx === 2} key={idx}>
-            서울
-          </CityGrid>
-        ))}
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <CustomSkeleton
+                key={idx}
+                width="100px"
+                height="64px"
+                borderRadius="16px"
+              />
+            ))
+          : city?.map((city) => (
+              <CityGrid
+                key={city.id}
+                $isActive={selectCity === city.placeId}
+                onClick={() => setSelectCity(city.placeId)}
+              >
+                {city.name}
+              </CityGrid>
+            ))}
       </CityGridBox>
 
       <NextButtonBox>

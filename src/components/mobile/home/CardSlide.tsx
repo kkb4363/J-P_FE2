@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useEffect, useState } from "react";
-import { getPlaceList } from "../../../utils/axios";
+import { getPlaceList } from "../../../service/axios";
 import { placeApiProps } from "../../../types/home";
 import ImageView from "../../ImageView";
 import testImg from "../../../assets/images/testImg.png";

@@ -2,7 +2,7 @@ import Carousel from "react-multi-carousel";
 import styled, { keyframes } from "styled-components";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
-import { axiosInstance } from "../../../utils/axios";
+import { axiosInstance } from "../../../service/axios";
 import { useEffect, useState } from "react";
 import { placeApiProps } from "../../../types/home";
 import { useNavigate } from "react-router-dom";

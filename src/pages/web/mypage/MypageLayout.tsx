@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { webMypageTabs } from "../../../utils/staticDatas";
 import Container from "./../../../components/web/Container";
 import { useEffect } from "react";
-import { getMyProfile } from "../../../utils/axios";
+import { getMyProfile } from "../../../service/axios";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { UserType, useUserStore } from "../../../store/user.store";
 import { Cookies } from "react-cookie";

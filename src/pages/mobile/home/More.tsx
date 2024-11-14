@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import MoreContainer from "../../../components/mobile/MoreContainer";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getPlaceList } from "../../../utils/axios";
+import { getPlaceList } from "../../../service/axios";
 import { placeApiProps } from "../../../types/home";
 import ImageView from "../../../components/ImageView";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";

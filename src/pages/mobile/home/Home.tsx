@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import CardSlide from "../../../components/mobile/home/CardSlide";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 import TravelogueCard from "../../../components/mobile/home/TravelogueCard";
+import logoImg from "../../../assets/images/logo.png";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
 
@@ -22,7 +23,7 @@ export default function Home() {
   return (
     <S.HomeContainer>
       <S.HomeHeader>
-        <div>Logo</div>
+        <img src={logoImg} alt="로고이미지" />
         <BellIcon />
       </S.HomeHeader>
 
