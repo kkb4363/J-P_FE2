@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import PencilIcon from "../../../assets/icons/PencilIcon";
 import { planItemProps } from "../../../types/schedule";
@@ -10,11 +10,13 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext } from "@dnd-kit/sortable";
 import PlanItem from "./PlanItem";
 import CustomGoogleMap from "../../mobile/googleMap/CustomGoogleMap";
+import { getMySchedules } from "../../../service/axios";
 
 export default function OngoingSchedule() {
   const [currentDay, setCurrentDay] = useState(0);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
+  const [schedule, setSchedule] = useState([] as any);
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -33,12 +35,23 @@ export default function OngoingSchedule() {
       setPlanItems(arrayMove(planItems, activeIndex, overIndex));
     }
   };
+
+  useEffect(() => {
+    getMySchedules().then((res) => {
+      if (res) {
+        if (res?.data?.data.length !== 0) {
+          setSchedule(res?.data?.data.find((s: any) => s.status === "NOW"));
+        }
+      }
+    });
+  }, []);
+
   return (
     <OngoingScheduleContainer>
       <OngoingLeftBox>
         <OngoingTitle>
           <div>
-            <p>남해 여행</p>
+            <p>{schedule?.title}</p>
             <div>
               <span>여행중</span>
             </div>

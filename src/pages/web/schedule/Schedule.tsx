@@ -8,10 +8,14 @@ import UpcomingSchedule from "../../../components/web/schedule/UpcomingSchedule"
 import OngoingSchedule from "../../../components/web/schedule/OngoingSchedule";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import { useEffect, useState } from "react";
+import { getMySchedules } from "../../../service/axios";
 
 export default function Schedule() {
   const navigate = useNavigate();
   const { getUserName } = useUserStore();
+
+  const [mySchedules, setMySchedules] = useState([]);
+  const [isListView, setIsListView] = useState(true);
 
   const handleScheduleCreate = () => {
     if (!getUserName()) {
@@ -21,17 +25,26 @@ export default function Schedule() {
     }
   };
 
-  const [isListView, setIsListView] = useState(true);
-
   const handleListView = () => {
     setIsListView((p) => !p);
   };
 
-  // useEffect(() => {
-  //   if(여행중?){
-  //     setIsListView(false)
-  //   }
-  // },[condition])
+  useEffect(() => {
+    getMySchedules().then((res) => {
+      if (res) {
+        setMySchedules(res?.data?.data);
+      }
+    });
+  }, []);
+
+  // 여행중인 일정이 있으면 로직
+  useEffect(() => {
+    if (mySchedules?.length !== 0) {
+      if (mySchedules.find((s: any) => s.status === "NOW")) {
+        setIsListView(false);
+      }
+    }
+  }, [mySchedules]);
 
   return (
     <>

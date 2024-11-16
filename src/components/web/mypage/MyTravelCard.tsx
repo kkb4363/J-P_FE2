@@ -10,11 +10,11 @@ interface Props {
   placeId?: string;
   width: string;
   height: string;
+  handleClick?: () => void;
 }
 
 export default function MyTravelCard(props: Props) {
-  const calculateTravelInfo = (start: string, end: string) => {
-    const today = new Date();
+  const handleTravelInfo = (start: string, end: string) => {
     const startDay = new Date(start);
     const endDay = new Date(end);
 
@@ -22,10 +22,6 @@ export default function MyTravelCard(props: Props) {
       ((endDay as any) - (startDay as any)) / (1000 * 60 * 60 * 24)
     );
     const days = nights + 1;
-
-    const daysUntilStart = Math.ceil(
-      ((startDay as any) - (today as any)) / (1000 * 60 * 60 * 24)
-    );
 
     const startString =
       props.startDate.split("-")[1] + "." + props.startDate.split("-").pop();
@@ -35,32 +31,43 @@ export default function MyTravelCard(props: Props) {
     return {
       nights,
       days,
-      daysUntilStart,
       startString,
       endString,
     };
   };
 
-  const handleDate = (day: number) => {
+  const handleDate = () => {
     const today = new Date();
     const endDate = new Date(props.endDate);
+    const startDate = new Date(props.startDate);
+
+    endDate.setHours(23, 59, 59, 999);
 
     if (endDate < today) {
       return "지난 여행";
-    } else if (day !== 0) {
-      return `다가오는 일정 D-${day}`;
-    } else if (day === 0) {
-      return "여행중";
     }
+
+    if (startDate > today) {
+      const diffDays = Math.ceil(
+        (startDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      return `다가오는 일정 D-${diffDays}`;
+    }
+
+    return "여행 중";
   };
 
-  const travelInfo = calculateTravelInfo(props.startDate, props.endDate);
+  const travelInfo = handleTravelInfo(props.startDate, props.endDate);
 
   return (
-    <MyTravelCardContainer $width={props.width} $height={props.height}>
+    <MyTravelCardContainer
+      $width={props.width}
+      $height={props.height}
+      onClick={props.handleClick}
+    >
       <Header>
         <Tag>
-          <span>{handleDate(travelInfo?.daysUntilStart)}</span>
+          <span>{handleDate()}</span>
         </Tag>
 
         <DateBox>
@@ -97,6 +104,7 @@ const MyTravelCardContainer = styled.div<{ $width: string; $height: string }>`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  cursor: pointer;
 `;
 
 const Header = styled.div`

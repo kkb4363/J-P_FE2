@@ -14,9 +14,22 @@ import BellIcon from "../../../assets/icons/BellIcon";
 import CheckIcon from "../../../assets/icons/CheckIcon";
 import { useNavigate } from "react-router-dom";
 import CustomProfile from "../../../components/CustomProfile";
+import { useEffect, useState } from "react";
+import { getMySchedules } from "../../../service/axios";
 
 export default function Schedule() {
   const navigate = useNavigate();
+
+  const [mySchedules, setMySchedules] = useState([]);
+
+  useEffect(() => {
+    getMySchedules().then((res) => {
+      if (res) {
+        setMySchedules(res?.data?.data);
+      }
+    });
+  });
+
   return (
     <ScheduleContainer>
       <CustomHeader title="일정" hidePrevIcon={true}>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Container from "../../../components/web/Container";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DayProps } from "../../mobile/schedule/Calendar";
 import { DateRange } from "react-date-range";
 import { ko } from "date-fns/locale";
@@ -33,6 +33,10 @@ export default function CreateSchedule() {
   });
   const [selectCity, setSelectCity] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageToken, setPageToken] = useState<number>(1);
+  const observer = useRef<IntersectionObserver | null>(null);
+
   const handleSubmit = () => {
     if (!selectDate.startDate) {
       setSelectDate({
@@ -54,7 +58,7 @@ export default function CreateSchedule() {
     }
   };
 
-  useEffect(() => {
+  const requestApi = () => {
     const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
     const cityCount = getCurrentCity() === "" ? 30 : 10;
     setCityLoading(true);
@@ -63,13 +67,81 @@ export default function CreateSchedule() {
       type: "CITY",
       elementCnt: cityCount,
       cityType: cityType,
-    }).then((res) => {
+    }).then((res: any) => {
       if (res) {
-        setCity(res?.data.data);
+        setCity(res?.data?.data);
         setCityLoading(false);
+        console.log(res);
+        // 백엔드 분들한테 얘기해서 totalPage 맞게 수정해달라고 하기
+        if (res?.data?.pageInfo.totalPages !== 15) {
+          setTotalPage(res?.data?.pageInfo.totalPages);
+        }
       }
     });
+  };
+
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading || !pageToken) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && pageToken) {
+            setPageToken((p) => p + 1);
+          }
+        },
+        { threshold: 1.0 }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [pageToken, isLoading]
+  );
+
+  const [totalPage, setTotalPage] = useState(0);
+
+  const scrollApi = (page?: number) => {
+    const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
+    const cityCount = getCurrentCity() === "" ? 30 : 10;
+
+    if (pageToken <= totalPage) {
+      setIsLoading(true);
+
+      getPlaceList({
+        type: "CITY",
+        elementCnt: cityCount,
+        cityType: cityType,
+        page: page,
+      }).then((res: any) => {
+        if (res) {
+          setCity((prev) => {
+            const newCity = res?.data?.data?.filter(
+              (n: any) => !prev.some((e) => e.placeId === n.placeId)
+            );
+            return [...prev, ...newCity];
+          });
+          setIsLoading(false);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (selectDate.startDate) {
+      requestApi();
+    }
+  }, [getCurrentCity(), selectDate.startDate]);
+
+  useEffect(() => {
+    setPageToken(1);
   }, [getCurrentCity()]);
+
+  useEffect(() => {
+    if (totalPage !== 0) {
+      scrollApi(pageToken);
+    }
+  }, [pageToken]);
 
   return (
     <Container>
@@ -101,6 +173,7 @@ export default function CreateSchedule() {
               height="60px"
               text="도시를 선택해주세요."
               value=""
+              onChange={() => {}}
             />
           </InputBox>
 
@@ -124,11 +197,23 @@ export default function CreateSchedule() {
                   <City
                     $isActive={selectCity === city.placeId}
                     key={city.id}
-                    onClick={() => setSelectCity(city.placeId)}
+                    onClick={() => {
+                      setSelectCity(city.placeId);
+                    }}
                   >
                     <span>{city.name}</span>
                   </City>
                 ))}
+            <div ref={lastElementRef} />
+            {isLoading &&
+              Array.from({ length: 7 }).map((_, idx) => (
+                <CustomSkeleton
+                  width="106px"
+                  height="78px"
+                  key={idx}
+                  borderRadius="16px"
+                />
+              ))}
           </CityBox>
         </SelectCityBox>
       )}
