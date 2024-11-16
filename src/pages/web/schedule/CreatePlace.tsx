@@ -186,7 +186,7 @@ export default function CreatePlace() {
           isMobile={false}
           width="470px"
           height="390px"
-          title="다른 날로 이동"
+          title="날짜 선택"
           buttonText="다음"
           onClick={handleDaySelect}
           onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
@@ -194,7 +194,7 @@ export default function CreatePlace() {
           <MoveDaySlider
             isMobile={false}
             dayResDtos={dayResDtos}
-            currentDay={selectDay}
+            selectDay={selectDay}
             setSelectDay={setSelectDay}
           />
         </OneButtonModal>

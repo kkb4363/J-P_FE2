@@ -4,6 +4,11 @@ import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
+import {
+  deletePlaceFromSchedule,
+  moveScheduleDate,
+} from "../../../service/axios";
 import { dayLocationResDto, dayResDto } from "../../../types/res.dto";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
@@ -11,15 +16,20 @@ import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
-import useAddPlaceHook from "../../../hooks/useAddPlace";
 
 interface Props {
   item: dayLocationResDto;
   isEdit: boolean;
   dayList: dayResDto[];
+  reloadSchedule: () => Promise<void>;
 }
 
-export default function PlanItem({ item, isEdit, dayList }: Props) {
+export default function PlanItem({
+  item,
+  isEdit,
+  dayList,
+  reloadSchedule,
+}: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
     delete: false,
     deleteSuccess: false,
@@ -54,16 +64,22 @@ export default function PlanItem({ item, isEdit, dayList }: Props) {
     }
   };
 
-  const handleMovePlanClick = () => {
+  const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
 
-    // [TODO] : 일정 다른 날로 이동 구현 (장소 날짜 이동 API)
-    console.log(selectDay, selectTime);
+    await moveScheduleDate(item.id, {
+      newDayId: selectDay,
+      time: selectTime,
+    }).then(() => {
+      reloadSchedule();
+    });
   };
 
-  const handleDeleteItemClick = () => {
-    // [TODO] : 일정 삭제 구현 (일정 편집 API)
-    setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+  const handleDeleteItemClick = async () => {
+    await deletePlaceFromSchedule(item.id).then(() => {
+      setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+      reloadSchedule();
+    });
   };
 
   return (
@@ -128,7 +144,7 @@ export default function PlanItem({ item, isEdit, dayList }: Props) {
           <MoveDaySlider
             isMobile={false}
             dayResDtos={dayList}
-            currentDay={selectDay}
+            selectDay={selectDay}
             setSelectDay={setSelectDay}
           />
         </OneButtonModal>
