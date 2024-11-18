@@ -19,7 +19,6 @@ export default function CreateSchedule() {
   const navigate = useNavigate();
   const { getCurrentCity } = useDisplayStore();
   const [city, setCity] = useState<CityProps[]>([]);
-  const [cityLoading, setCityLoading] = useState(false);
   const [date, setDate] = useState<DayProps[]>([
     {
       startDate: new Date(),
@@ -32,10 +31,6 @@ export default function CreateSchedule() {
     endDate: "",
   });
   const [selectCity, setSelectCity] = useState("");
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [pageToken, setPageToken] = useState<number>(1);
-  const observer = useRef<IntersectionObserver | null>(null);
 
   const handleSubmit = () => {
     if (!selectDate.startDate) {
@@ -58,90 +53,74 @@ export default function CreateSchedule() {
     }
   };
 
-  const requestApi = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageToken, setPageToken] = useState<number>(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading || !hasNextPage || getCurrentCity() !== "") return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !isLoading) {
+            setPageToken((prev) => prev + 1);
+          }
+        },
+        { threshold: 1.0 }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasNextPage]
+  );
+
+  const getCityApi = (page?: number) => {
     const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
     const cityCount = getCurrentCity() === "" ? 30 : 10;
-    setCityLoading(true);
+
+    setIsLoading(true);
+    if (page === 1) setCity([]);
 
     getPlaceList({
       type: "CITY",
       elementCnt: cityCount,
       cityType: cityType,
+      page: page,
     }).then((res: any) => {
       if (res) {
-        setCity(res?.data?.data);
-        setCityLoading(false);
-        console.log(res);
-        // 백엔드 분들한테 얘기해서 totalPage 맞게 수정해달라고 하기
-        if (res?.data?.pageInfo.totalPages !== 15) {
-          setTotalPage(res?.data?.pageInfo.totalPages);
-        }
+        setCity((prev) => {
+          if (page === 1) {
+            return res?.data?.data;
+          }
+          const newCity = res?.data?.data?.filter(
+            (n: any) => !prev.some((e) => e.placeId === n.placeId)
+          );
+          return [...prev, ...newCity];
+        });
+        setIsLoading(false);
+        setHasNextPage(res?.data?.pageInfo.hasNext);
       }
     });
   };
 
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (isLoading || !pageToken) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && pageToken) {
-            setPageToken((p) => p + 1);
-          }
-        },
-        { threshold: 1.0 }
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [pageToken, isLoading]
-  );
-
-  const [totalPage, setTotalPage] = useState(0);
-
-  const scrollApi = (page?: number) => {
-    const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
-    const cityCount = getCurrentCity() === "" ? 30 : 10;
-
-    if (pageToken <= totalPage) {
-      setIsLoading(true);
-
-      getPlaceList({
-        type: "CITY",
-        elementCnt: cityCount,
-        cityType: cityType,
-        page: page,
-      }).then((res: any) => {
-        if (res) {
-          setCity((prev) => {
-            const newCity = res?.data?.data?.filter(
-              (n: any) => !prev.some((e) => e.placeId === n.placeId)
-            );
-            return [...prev, ...newCity];
-          });
-          setIsLoading(false);
-        }
-      });
-    }
-  };
-
   useEffect(() => {
     if (selectDate.startDate) {
-      requestApi();
+      setPageToken(1);
+      getCityApi(1);
     }
-  }, [getCurrentCity(), selectDate.startDate]);
+  }, [selectDate.startDate]);
 
   useEffect(() => {
+    getCityApi(1);
     setPageToken(1);
   }, [getCurrentCity()]);
 
   useEffect(() => {
-    if (totalPage !== 0) {
-      scrollApi(pageToken);
+    if (pageToken > 1 && getCurrentCity() === "") {
+      getCityApi(pageToken);
     }
-  }, [pageToken]);
+  }, [pageToken, getCurrentCity()]);
 
   return (
     <Container>
@@ -184,29 +163,20 @@ export default function CreateSchedule() {
           </CitySliderBox>
 
           <CityBox>
-            {cityLoading
-              ? Array.from({ length: 7 }).map((_, idx) => (
-                  <CustomSkeleton
-                    width="106px"
-                    height="78px"
-                    key={idx}
-                    borderRadius="16px"
-                  />
-                ))
-              : city?.map((city) => (
-                  <City
-                    $isActive={selectCity === city.placeId}
-                    key={city.id}
-                    onClick={() => {
-                      setSelectCity(city.placeId);
-                    }}
-                  >
-                    <span>{city.name}</span>
-                  </City>
-                ))}
-            <div ref={lastElementRef} />
+            {city?.map((city) => (
+              <City
+                $isActive={selectCity === city.placeId}
+                key={city.id}
+                onClick={() => {
+                  setSelectCity(city.placeId);
+                }}
+              >
+                <span>{city.name}</span>
+              </City>
+            ))}
+
             {isLoading &&
-              Array.from({ length: 7 }).map((_, idx) => (
+              Array.from({ length: 1 }).map((_, idx) => (
                 <CustomSkeleton
                   width="106px"
                   height="78px"
@@ -218,6 +188,7 @@ export default function CreateSchedule() {
         </SelectCityBox>
       )}
 
+      {selectDate.startDate && <div ref={lastElementRef} />}
       <ButtonBox>
         <PrimaryButton
           onClick={handleSubmit}
