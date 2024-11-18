@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import CheckIcon from "../../../assets/icons/CheckIcon";
+import { formatDayNights } from "../../../utils/dayNights";
 
 interface Props {
   title: string;
@@ -14,28 +15,6 @@ interface Props {
 }
 
 export default function MyTravelCard(props: Props) {
-  const handleTravelInfo = (start: string, end: string) => {
-    const startDay = new Date(start);
-    const endDay = new Date(end);
-
-    const nights = Math.floor(
-      ((endDay as any) - (startDay as any)) / (1000 * 60 * 60 * 24)
-    );
-    const days = nights + 1;
-
-    const startString =
-      props.startDate.split("-")[1] + "." + props.startDate.split("-").pop();
-    const endString =
-      props.endDate.split("-")[1] + "." + props.endDate.split("-").pop();
-
-    return {
-      nights,
-      days,
-      startString,
-      endString,
-    };
-  };
-
   const handleDate = () => {
     const today = new Date();
     const endDate = new Date(props.endDate);
@@ -57,7 +36,7 @@ export default function MyTravelCard(props: Props) {
     return "여행 중";
   };
 
-  const travelInfo = handleTravelInfo(props.startDate, props.endDate);
+  const travelInfo = formatDayNights(props.startDate, props.endDate);
 
   return (
     <MyTravelCardContainer

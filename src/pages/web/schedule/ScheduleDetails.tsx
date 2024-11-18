@@ -32,6 +32,8 @@ export default function ScheduleDetails() {
     setCurrentDayIndex(day);
   };
 
+  console.log(scheduleData);
+
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     // [TODO] : 일정 드래그 구현 (드래그 시 list index 이동, 편집 완료 누르면 API 호출)
     if (!over) return;

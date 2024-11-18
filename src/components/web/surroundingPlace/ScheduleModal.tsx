@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ScheduleIcon from "../../../assets/icons/ScheduleIcon";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,14 @@ import { useUserStore } from "../../../store/user.store";
 import { toast } from "react-toastify";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useModalStore } from "../../../store/modal.store";
+import {
+  getDaylistFromSchedule,
+  getMySchedules,
+  getSchedule,
+} from "../../../service/axios";
+import { ScheduleApiProps } from "../../../types/schedule";
+import { formatDayNights } from "../../../utils/dayNights";
+import { dayOfWeek } from "../../../utils/staticDatas";
 
 interface Props {
   placeId: string;
@@ -15,9 +23,10 @@ export default function ScheduleModal({ placeId }: Props) {
   const navigate = useNavigate();
   const { getUserName } = useUserStore();
   const modalStore = useModalStore();
-
-  const [selectPlan, setSelectPlan] = useState(false);
-  const [selectDay, setSelectDay] = useState(false);
+  const [schedules, setSchedules] = useState<ScheduleApiProps[]>([]);
+  const [days, setDays] = useState([]);
+  const [selectedCityId, setSelectedCityId] = useState("");
+  const [selectedDayId, setSelectedDayId] = useState("");
 
   const handlePlanCreate = () => {
     if (!!getUserName()) {
@@ -33,38 +42,75 @@ export default function ScheduleModal({ placeId }: Props) {
     modalStore.setCurrentModal("successAddPlan");
   };
 
-  const hasSchedule = true;
+  const filterMySchedules = () => {
+    getMySchedules().then((res) => {
+      if (res) {
+        const filteredSchedules = res?.data.data.filter(
+          (i: ScheduleApiProps) => i.status !== "COMPLETED"
+        );
+        setSchedules(filteredSchedules);
+      }
+    });
+  };
 
-  console.log(placeId);
+  useEffect(() => {
+    filterMySchedules();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCityId) {
+      getSchedule(selectedCityId).then((res) => {
+        if (res) {
+          setDays(res?.data.dayResDtos);
+        }
+      });
+    }
+  }, [selectedCityId]);
 
   return (
     <>
-      {hasSchedule ? (
-        <ScheduleModalContainer>
+      {schedules?.length !== 0 ? (
+        <ScheduleModalContainer $isSelectCity={!!selectedCityId}>
           <h1>내 여행 일정</h1>
           <div>
-            <ScheduleBox $isActive={selectPlan}>
-              <p>경주</p>
-              <span>4.25 ~ 4.27(2박3일)</span>
-              <h5 onClick={() => setSelectPlan(true)}>선택</h5>
-            </ScheduleBox>
+            {schedules?.map((s) => {
+              const sInfo = formatDayNights(s.startDate, s.endDate);
+              return (
+                <ScheduleBox
+                  $isActive={selectedCityId === s.id + ""}
+                  key={s.id}
+                >
+                  <p>{s.title.split(" ")[0]}</p>
+                  <span>
+                    {sInfo.startString} ~ {sInfo.endString}({sInfo.nights}박
+                    {sInfo.days}일)
+                  </span>
+                  <h5 onClick={() => setSelectedCityId(s.id + "")}>선택</h5>
+                </ScheduleBox>
+              );
+            })}
           </div>
 
-          {selectPlan && (
+          {!!selectedCityId && (
             <>
               <DayRow>
-                <DayBox $isActive={true}>
-                  <p>Day1</p>
-                  <span>4.25(목)</span>
-                </DayBox>
-                <DayBox $isActive={false}>
-                  <p>Day1</p>
-                  <span>4.25(목)</span>
-                </DayBox>
-                <DayBox $isActive={false}>
-                  <p>Day1</p>
-                  <span>4.25(목)</span>
-                </DayBox>
+                {days?.map((day: any) => {
+                  const stringDay =
+                    day.date.split("-")[1] + "." + day.date.split("-").pop();
+                  return (
+                    <DayBox
+                      $isActive={selectedDayId === day.id}
+                      key={day.id}
+                      onClick={() => setSelectedDayId(day.id)}
+                    >
+                      <p>Day{day.dayIndex}</p>
+                      <span>
+                        {stringDay}(
+                        {dayOfWeek.find((d) => d.id === day.dayOfWeek)?.name})
+                      </span>
+                    </DayBox>
+                  );
+                })}
               </DayRow>
               <DayAddButton onClick={handlePlanAdd}>
                 <span>추가하기</span>
@@ -86,7 +132,7 @@ export default function ScheduleModal({ placeId }: Props) {
   );
 }
 
-const ScheduleModalContainer = styled.div`
+const ScheduleModalContainer = styled.div<{ $isSelectCity?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,7 +149,7 @@ const ScheduleModalContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
-    height: 85px;
+    height: ${(props) => (props.$isSelectCity ? "85px" : "160px")};
     overflow-y: scroll;
     ${scrollHidden};
   }

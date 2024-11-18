@@ -31,32 +31,21 @@ export default function CreateSchedule() {
     endDate: "",
   });
   const [selectCity, setSelectCity] = useState("");
-
-  const handleSubmit = () => {
-    if (!selectDate.startDate) {
-      setSelectDate({
-        startDate: date[0].startDate + "",
-        endDate: date[0].endDate + "",
-      });
-    } else {
-      const schedule = {
-        startDate: formatDateToString(selectDate.startDate, true),
-        endDate: formatDateToString(selectDate.endDate, true),
-        placeId: selectCity,
-      };
-      createSchedule(schedule).then((res) => {
-        if (res && res.status === 200) {
-          toast(<span>일정이 생성되었습니다!</span>);
-          navigate(`/home/schedule/details/${res.data}`);
-        }
-      });
-    }
-  };
-
   const [isLoading, setIsLoading] = useState(false);
   const [pageToken, setPageToken] = useState<number>(1);
   const [hasNextPage, setHasNextPage] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredCities = () => {
+    const filteredCities = city.filter((c) => c.name.includes(search));
+    return filteredCities;
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
 
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
@@ -104,20 +93,43 @@ export default function CreateSchedule() {
     });
   };
 
+  const handleSubmit = () => {
+    if (!selectDate.startDate) {
+      setSelectDate({
+        startDate: date[0].startDate + "",
+        endDate: date[0].endDate + "",
+      });
+    } else {
+      const schedule = {
+        startDate: formatDateToString(selectDate.startDate, true),
+        endDate: formatDateToString(selectDate.endDate, true),
+        placeId: selectCity,
+      };
+      createSchedule(schedule).then((res) => {
+        if (res && res.status === 200) {
+          toast(<span>일정이 생성되었습니다!</span>);
+          navigate(`/home/schedule/details/${res.data}`);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
-    if (selectDate.startDate) {
+    if (selectDate.startDate && !search) {
       setPageToken(1);
       getCityApi(1);
     }
   }, [selectDate.startDate]);
 
   useEffect(() => {
-    getCityApi(1);
-    setPageToken(1);
+    if (!search) {
+      getCityApi(1);
+      setPageToken(1);
+    }
   }, [getCurrentCity()]);
 
   useEffect(() => {
-    if (pageToken > 1 && getCurrentCity() === "") {
+    if (pageToken > 1 && getCurrentCity() === "" && !search) {
       getCityApi(pageToken);
     }
   }, [pageToken, getCurrentCity()]);
@@ -151,8 +163,8 @@ export default function CreateSchedule() {
               width="500px"
               height="60px"
               text="도시를 선택해주세요."
-              value=""
-              onChange={() => {}}
+              value={search}
+              onChange={handleSearch}
             />
           </InputBox>
 
@@ -163,7 +175,7 @@ export default function CreateSchedule() {
           </CitySliderBox>
 
           <CityBox>
-            {city?.map((city) => (
+            {filteredCities()?.map((city) => (
               <City
                 $isActive={selectCity === city.placeId}
                 key={city.id}

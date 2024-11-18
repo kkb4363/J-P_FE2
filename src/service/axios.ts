@@ -456,3 +456,18 @@ export const deletePlaceFromSchedule = async (locationId: number) => {
     console.error(err);
   }
 };
+
+export const getDaylistFromSchedule = async (id: string) => {
+  try {
+    const res = await axiosInstance.get(`/schedule/days/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status == 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("Day 리스트 조회 API 에러", err);
+  }
+};
