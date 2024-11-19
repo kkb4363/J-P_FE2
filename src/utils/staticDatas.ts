@@ -12,6 +12,7 @@ import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import TicketIcon from "../assets/icons/TicketIcon";
 import { reviewApiProps } from "../types/home";
+import { SelectPlaceProps } from "../types/home.details";
 import { CommentProps, UserProps } from "../types/res.dto";
 import { planItemProps } from "../types/schedule";
 
@@ -284,3 +285,21 @@ export const dayOfWeek = [
   { id: "FRIDAY", name: "금" },
   { id: "SATURDAY", name: "토" },
 ];
+
+export const testGoogleSelectPlaceItem: SelectPlaceProps = {
+  businessStatus: "7:00 ~ 21:00",
+  fullAddress: "전남 구례군",
+  formattedPhoneNumber: "055-862-6500",
+  location: {
+    lat: 37,
+    lng: 45,
+  },
+  name: "금산 보리암",
+  openNow: true,
+  photoUrls: [testImg1, testImg2],
+  placeId: "testPlaceId",
+  website: "",
+  weekdayText: ["월", "화"],
+  rating: 4.9,
+  shortAddress: "전남 구례군",
+};
