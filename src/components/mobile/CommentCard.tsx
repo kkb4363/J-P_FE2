@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as R from "../../assets/styles/travelReview.style";
 import CustomProfile from "../CustomProfile";
-import { commentResDto, userCompactResDto } from "../../types/res.dto";
+import { CommentProps, UserProps } from "../../types/res.dto";
 import ReplyIcon from "../../assets/icons/ReplyIcon";
 import { useEffect, useRef, useState } from "react";
 import PencilIcon from "../../assets/icons/PencilIcon";
@@ -15,8 +15,8 @@ interface Props {
   web?: boolean;
   content: string;
   createdAt: string;
-  user: userCompactResDto;
-  replyList?: commentResDto[];
+  user: UserProps;
+  replyList?: CommentProps[];
 }
 
 export default function CommentCard({
@@ -133,7 +133,7 @@ export default function CommentCard({
               </CommentEditIconBox>
             </CommentFooter>
             {replyList &&
-              replyList.map((item: commentResDto) => {
+              replyList.map((item: CommentProps) => {
                 return (
                   <CommentCard
                     key={item.id}

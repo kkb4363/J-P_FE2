@@ -9,7 +9,7 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import CustomProfile from "../../../components/CustomProfile";
 import ImageView from "../../../components/ImageView";
 import CommentCard from "../../../components/mobile/CommentCard";
-import { commentResDto } from "../../../types/res.dto";
+import { CommentProps } from "../../../types/res.dto";
 import { testImageList } from "../../../utils/staticDatas";
 import ImageSlider from "../../../components/mobile/ImageSlider";
 import testImg from "../../../assets/images/testImg2.png";
@@ -132,7 +132,7 @@ export default function ReviewDetails() {
               <NoCommentBox>첫 댓글을 작성해주세요!</NoCommentBox>
             )}
             {commentCnt > 0 &&
-              review?.commentResDtoList.map((item: commentResDto) => {
+              review?.commentResDtoList.map((item: CommentProps) => {
                 return (
                   <CommentCard
                     key={item.id}

@@ -12,7 +12,7 @@ import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import TicketIcon from "../assets/icons/TicketIcon";
 import { reviewApiProps } from "../types/home";
-import { commentResDto, userCompactResDto } from "../types/res.dto";
+import { CommentProps, UserProps } from "../types/res.dto";
 import { planItemProps } from "../types/schedule";
 
 export const footerTabs = [
@@ -139,7 +139,7 @@ export const testLogContents3 =
   "밤에는 달모양의 보트를 탈 수 있는데 나는 혼자라 타지는 않았다. " +
   "근데 너무 달모양의 조명이 들어오는 보트라서 멀리서 보니 너무 이뻤다.";
 
-export const testUserDto: userCompactResDto = {
+export const testUserDto: UserProps = {
   id: 123456,
   nickname: "coco1202",
   profile: "null",
@@ -179,7 +179,7 @@ export const testReviewItem: reviewApiProps = {
   userCompactResDto: testUserDto,
 };
 
-export const textCommentItem: commentResDto = {
+export const textCommentItem: CommentProps = {
   id: 1,
   content: "좋은 리뷰네요!",
   userCompactResDto: testUserDto,

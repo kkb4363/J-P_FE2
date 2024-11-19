@@ -9,7 +9,7 @@ import {
   deletePlaceFromSchedule,
   moveScheduleDate,
 } from "../../../service/axios";
-import { dayLocationResDto, dayResDto } from "../../../types/res.dto";
+import { DayLocationProps, DayProps } from "../../../types/res.dto";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
@@ -18,9 +18,9 @@ import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
 
 interface Props {
-  item: dayLocationResDto;
+  item: DayLocationProps;
   isEdit: boolean;
-  dayList: dayResDto[];
+  dayList: DayProps[];
   reloadSchedule: () => Promise<void>;
 }
 
