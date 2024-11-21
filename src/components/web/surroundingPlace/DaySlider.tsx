@@ -1,6 +1,6 @@
 import Carousel from "react-multi-carousel";
 import { CustomLeftArrow, CustomRightArrow } from "../home/CardSlide";
-import MyTravelCard from "../mypage/MyTravelCard";
+import MyTravelCard from "../../MyTravelCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getMySchedules } from "../../../service/axios";

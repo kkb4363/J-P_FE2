@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ScheduleSlider from "./ScheduleSlider";
-import { getMySchedules, getRecommendSchedules } from "../../../service/axios";
 import RecommendCard from "./RecommendCard";
+import { ScheduleApiProps } from "../../../types/schedule";
 
-export default function UpcomingSchedule() {
-  const [mySchedules, setMySchedules] = useState([]);
+interface Props {
+  schedules: ScheduleApiProps[];
+}
 
-  // useEffect(() => {
-  //   getRecommendSchedules().then((res) => console.log(res));
-  // }, []);
-
-  useEffect(() => {
-    getMySchedules().then((res) => {
-      setMySchedules(res?.data?.data);
-    });
-  }, []);
-
+export default function UpcomingSchedule({ schedules }: Props) {
   return (
     <>
       <SubTitleWithMore>
         <h2>내 일정</h2>
       </SubTitleWithMore>
 
-      {mySchedules?.length !== 0 && (
+      {schedules?.length !== 0 && (
         <ScheduleCardBox>
-          <ScheduleSlider />
+          <ScheduleSlider schedules={schedules} />
         </ScheduleCardBox>
       )}
 

@@ -89,7 +89,7 @@ export default function SelectCity() {
     if (!!selectedCityId) {
       createSchedule(schedule).then((res) => {
         if (res && res.status === 200) {
-          navigate(`/Schedule/details`);
+          navigate(`/schedule/details/${res.data}`);
         }
       });
     }

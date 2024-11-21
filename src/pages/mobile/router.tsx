@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
     element: <NearPlace />,
   },
   {
-    path: "Schedule",
+    path: "schedule",
     element: <ScheduleLayout />,
     children: [
       {
@@ -57,7 +57,7 @@ export const router = createBrowserRouter([
         element: <SelectCity />,
       },
       {
-        path: "details",
+        path: "details/:id",
         element: <Details />,
       },
     ],

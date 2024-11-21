@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import BottomSheet from "../BottomSheet";
 import CalendarIcon from "../../../assets/icons/CalendarIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
+import { getMySchedules } from "../../../service/axios";
 
 interface Props {
   handleClose: () => void;
@@ -42,7 +43,11 @@ export default function CreateScheduleSheet({ handleClose, placeId }: Props) {
     }
   };
 
-  const hasSchedule = false;
+  useEffect(() => {
+    getMySchedules().then((res) => console.log(res));
+  });
+
+  const hasSchedule = true;
   console.log(placeId);
 
   return (

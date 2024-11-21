@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
-import CheckIcon from "../../../assets/icons/CheckIcon";
-import { formatDayNights } from "../../../utils/dayNights";
+import CalendarCheckIcon from "../assets/icons/CalendarCheckIcon";
+import CheckIcon from "../assets/icons/CheckIcon";
+import { formatDayNights } from "../utils/dayNights";
 
 interface Props {
   title: string;

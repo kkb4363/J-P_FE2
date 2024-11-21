@@ -9,12 +9,13 @@ import OngoingSchedule from "../../../components/web/schedule/OngoingSchedule";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import { useEffect, useState } from "react";
 import { getMySchedules } from "../../../service/axios";
+import { ScheduleApiProps } from "../../../types/schedule";
 
 export default function Schedule() {
   const navigate = useNavigate();
   const { getUserName } = useUserStore();
 
-  const [mySchedules, setMySchedules] = useState([]);
+  const [mySchedules, setMySchedules] = useState<ScheduleApiProps[]>([]);
   const [isListView, setIsListView] = useState(true);
 
   const handleScheduleCreate = () => {
@@ -37,7 +38,6 @@ export default function Schedule() {
     });
   }, []);
 
-  // 여행중인 일정이 있으면 로직
   useEffect(() => {
     if (mySchedules?.length !== 0) {
       if (mySchedules.find((s: any) => s.status === "NOW")) {
@@ -65,7 +65,21 @@ export default function Schedule() {
           )}
         </TitleWithButton>
 
-        {isListView ? <UpcomingSchedule /> : <OngoingSchedule />}
+        {isListView ? (
+          <UpcomingSchedule
+            schedules={mySchedules
+              .filter((p) => p.status !== "COMPLETED")
+              .reverse()}
+          />
+        ) : (
+          <OngoingSchedule
+            schedules={
+              mySchedules.find(
+                (s: ScheduleApiProps) => s.status === "NOW"
+              ) as ScheduleApiProps
+            }
+          />
+        )}
       </Container>
     </>
   );

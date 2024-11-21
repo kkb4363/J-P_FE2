@@ -1,11 +1,14 @@
 import Carousel from "react-multi-carousel";
 import { CustomLeftArrow, CustomRightArrow } from "../home/CardSlide";
-import MyTravelCard from "../mypage/MyTravelCard";
+import MyTravelCard from "../../MyTravelCard";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { ScheduleApiProps } from "../../../types/schedule";
 
-export default function ScheduleSlider() {
+interface Props {
+  schedules: ScheduleApiProps[];
+}
+
+export default function ScheduleSlider({ schedules }: Props) {
   const navigate = useNavigate();
   const responsive = {
     desktop: {
@@ -14,14 +17,6 @@ export default function ScheduleSlider() {
       slidesToSlide: 2,
     },
   };
-
-  const [mySchedules, setMySchedules] = useState([]);
-
-  useEffect(() => {
-    getMySchedules().then((res) => {
-      setMySchedules(res?.data?.data);
-    });
-  }, []);
 
   return (
     <Carousel
@@ -35,7 +30,7 @@ export default function ScheduleSlider() {
       customLeftArrow={<CustomLeftArrow onClick={() => {}} />}
       customRightArrow={<CustomRightArrow onClick={() => {}} />}
     >
-      {mySchedules?.reverse().map((s: any) => (
+      {schedules?.map((s: any) => (
         <MyTravelCard
           handleClick={() => navigate(`/home/schedule/details/${s.id}`)}
           width="392px"

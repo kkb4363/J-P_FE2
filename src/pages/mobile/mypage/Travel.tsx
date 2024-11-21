@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getMySchedules } from "../../../service/axios";
 import NotHasCard from "../../../components/web/mypage/NotHasCard";
 import { useNavigate } from "react-router-dom";
-import MyTravelCard from "../../../components/web/mypage/MyTravelCard";
+import MyTravelCard from "../../../components/MyTravelCard";
 
 export default function Travel() {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function Travel() {
           isMobile={true}
           text="내 일정이 없어요. 새로운 여행 일정을 만들어 주세요!"
           btnText="일정 생성"
-          onClick={() => navigate(`/Schedule`)}
+          onClick={() => navigate(`/schedule`)}
         />
       ) : (
         <>
