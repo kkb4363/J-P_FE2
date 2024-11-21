@@ -36,19 +36,19 @@ export default function CardSlide({ placeType, bottomText, topText }: Props) {
   }, []);
 
   return (
-    <CarouselRow>
+    <CardSlideContainer>
       {isLoading
         ? Array.from({ length: 3 }).map((_, index) => (
-            <CarouselWithText key={index}>
+            <CardBox key={index}>
               <CustomSkeleton
                 width="120px"
                 height="120px"
                 borderRadius="16px"
               />
-            </CarouselWithText>
+            </CardBox>
           ))
         : data?.map((item: placeApiProps) => (
-            <CarouselWithText key={item.id}>
+            <CardBox key={item.id}>
               <ImageView
                 src={testImg}
                 alt={item.name}
@@ -59,20 +59,20 @@ export default function CardSlide({ placeType, bottomText, topText }: Props) {
               {placeType !== "CITY" && (
                 <CarouselTitleBox name={item.name} subName={item.subName} />
               )}
-            </CarouselWithText>
+            </CardBox>
           ))}
-    </CarouselRow>
+    </CardSlideContainer>
   );
 }
 
-const CarouselRow = styled.div`
+const CardSlideContainer = styled.section`
   display: flex;
   gap: 8px;
   overflow-x: scroll;
   ${scrollHidden};
 `;
 
-const CarouselWithText = styled.div`
+const CardBox = styled.article`
   display: flex;
   flex-direction: column;
   gap: 4px;

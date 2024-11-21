@@ -15,14 +15,14 @@ export const scrollHidden = css`
   scrollbar-width: none; /* Firefox */
 `;
 
-export const HomeContainer = styled.div`
+export const HomeContainer = styled.section`
   padding: 0 18px 18px 18px;
   height: 100%;
   overflow-y: scroll;
   ${scrollHidden};
 `;
 
-export const HomeHeader = styled.div`
+export const HomeHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,7 +35,7 @@ export const HomeHeader = styled.div`
   }
 `;
 
-export const HomeBody = styled.div`
+export const HomeBody = styled.main`
   flex: 1;
   height: calc(100% - 50px - 45px);
 `;
@@ -118,12 +118,12 @@ export const ReviewTextCol = styled.div`
   }
 `;
 
-export const ReviewTagRow = styled.div`
+export const ReviewTagRow = styled.ul`
   display: flex;
   gap: 3px;
 `;
 
-export const ReviewTag = styled.div`
+export const ReviewTag = styled.li`
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray700};
   background: ${(props) => props.theme.color.white};

@@ -8,6 +8,7 @@ import { scrollHidden } from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { getMySchedules } from "../../../service/axios";
+import { ScheduleApiProps } from "../../../types/schedule";
 
 interface Props {
   handleClose: () => void;
@@ -19,6 +20,8 @@ const cookies = new Cookies();
 export default function CreateScheduleSheet({ handleClose, placeId }: Props) {
   const navigate = useNavigate();
   const [isSelect, setIsSelect] = useState(false);
+  const [schedule, setSchedule] = useState<ScheduleApiProps[]>([]);
+
   const handleSelect = () => {
     setIsSelect(true);
   };
@@ -44,11 +47,12 @@ export default function CreateScheduleSheet({ handleClose, placeId }: Props) {
   };
 
   useEffect(() => {
-    getMySchedules().then((res) => console.log(res));
-  });
-
-  const hasSchedule = true;
-  console.log(placeId);
+    getMySchedules().then((res) => {
+      if (res) {
+        setSchedule(res?.data.data);
+      }
+    });
+  }, []);
 
   return (
     <BottomSheet
@@ -57,7 +61,7 @@ export default function CreateScheduleSheet({ handleClose, placeId }: Props) {
       isDismiss={true}
       handleClose={handleClose}
     >
-      {hasSchedule ? (
+      {schedule?.length !== undefined ? (
         <AddPlaceContainer>
           <h1>내 여행 일정</h1>
           <AddPlaceCardCol>

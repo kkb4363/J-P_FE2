@@ -24,7 +24,7 @@ export default function EditProfile() {
 
   return (
     <>
-      <CustomHeader title="마이페이지" />
+      <CustomHeader title="프로필 수정" />
 
       <EditProfileContainer>
         <ImgBox>

@@ -75,6 +75,7 @@ export default function Schedule() {
                   startDate={t.startDate}
                   endDate={t.endDate}
                   isOpen={t.isOpen}
+                  handleClick={() => navigate(`/schedule/details/${t.id}`)}
                 />
               ))}
           </ScheduleCardCol>

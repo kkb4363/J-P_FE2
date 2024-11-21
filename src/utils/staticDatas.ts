@@ -24,7 +24,7 @@ export const footerTabs = [
 ];
 
 export const mypageTabs = [
-  { icon: LuggageIcon, label: "여행", route: "" },
+  { icon: LuggageIcon, label: "일정", route: "" },
   { icon: NoteIcon, label: "여행기", route: "Travelogue" },
   { icon: MessageIcon, label: "리뷰", route: "review" },
   { icon: HeartIcon, label: "찜 목록", route: "likes" },

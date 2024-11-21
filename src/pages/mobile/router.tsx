@@ -29,6 +29,7 @@ import SelectPlace from "./mypage/SelectPlace";
 import Travelogue from "./mypage/Travelogue";
 import TravelogueDetails from "./travel-review/TravelogueDetails";
 import ErrorPage from "./ErrorPage";
+import Setting from "./mypage/Setting";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +146,10 @@ export const router = createBrowserRouter([
       {
         path: "editProfile",
         element: <EditProfile />,
+      },
+      {
+        path: "setting",
+        element: <Setting />,
       },
     ],
   },

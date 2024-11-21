@@ -7,14 +7,14 @@ interface Props {
 
 export default function TitleMoreBox({ title, handleClick }: Props) {
   return (
-    <InfoRow>
+    <TitleMoreBoxContainer>
       <InfoText>{title}</InfoText>
       <MoreText onClick={handleClick}>더보기</MoreText>
-    </InfoRow>
+    </TitleMoreBoxContainer>
   );
 }
 
-const InfoRow = styled.div`
+const TitleMoreBoxContainer = styled.section`
   display: flex;
   justify-content: space-between;
   align-items: center;
