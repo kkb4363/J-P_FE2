@@ -23,10 +23,10 @@ import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMa
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import useImgLoading from "../../../hooks/useImgLoading";
 import CustomSkeleton from "../../../components/CustomSkeleton";
-import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 import { Cookies } from "react-cookie";
 import { toast } from "react-toastify";
 import StyledToast from "../../../components/mobile/StyledToast";
+import TravelPlaceAddSheet from "../../../components/mobile/bottomSheets/TravelPlaceAddSheet";
 
 const cookies = new Cookies();
 
@@ -233,7 +233,7 @@ export default function NearPlace() {
       </S.NearPlaceContainer>
 
       {!!addPlaceId && (
-        <CreateScheduleSheet
+        <TravelPlaceAddSheet
           handleClose={() => setAddPlaceId("")}
           placeId={addPlaceId}
         />

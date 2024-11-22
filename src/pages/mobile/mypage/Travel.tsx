@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { getScheduleList } from "../../../service/axios";
 import NotHasCard from "../../../components/web/mypage/NotHasCard";
 import { useNavigate } from "react-router-dom";
 import MyTravelCard from "../../../components/MyTravelCard";
@@ -23,7 +23,7 @@ export default function Travel() {
   };
 
   useEffect(() => {
-    getMySchedules().then((res) => {
+    getScheduleList().then((res) => {
       if (res) {
         const schedules = res?.data?.data;
         groupingYear(schedules);

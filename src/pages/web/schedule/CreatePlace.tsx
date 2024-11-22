@@ -25,6 +25,7 @@ export default function CreatePlace() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver | null>(null);
   const navigate = useNavigate();
+
   const {
     list,
     selectDay,

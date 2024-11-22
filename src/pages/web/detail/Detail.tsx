@@ -31,9 +31,9 @@ import { toast } from "react-toastify";
 import { useModalStore } from "../../../store/modal.store";
 import NoButtonModal from "../../../components/web/NoButtonModal";
 import { PlaceAddModalContainer } from "./SurroundingMore";
-import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 import { Cookies } from "react-cookie";
+import TravelPlaceAddModal from "../../../components/web/surroundingPlace/TravelPlaceAddModal";
 
 const cookies = new Cookies();
 
@@ -330,7 +330,7 @@ export default function Detail() {
         >
           <PlaceAddModalContainer>
             {modalStore.getCurrentModal() === "addPlan" && (
-              <ScheduleModal placeId={addPlaceId} />
+              <TravelPlaceAddModal placeId={addPlaceId} />
             )}
 
             {modalStore.getCurrentModal() === "successAddPlan" && (
@@ -343,7 +343,6 @@ export default function Detail() {
   );
 }
 
-//기범 TODO = ReviewCard 컴포넌트화하기
 const PhotoBoxRow = styled.div`
   display: flex;
   align-items: center;

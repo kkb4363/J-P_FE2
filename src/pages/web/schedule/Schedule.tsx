@@ -8,7 +8,7 @@ import UpcomingSchedule from "../../../components/web/schedule/UpcomingSchedule"
 import OngoingSchedule from "../../../components/web/schedule/OngoingSchedule";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { getScheduleList } from "../../../service/axios";
 import { ScheduleApiProps } from "../../../types/schedule";
 
 export default function Schedule() {
@@ -31,7 +31,7 @@ export default function Schedule() {
   };
 
   useEffect(() => {
-    getMySchedules().then((res) => {
+    getScheduleList().then((res) => {
       if (res) {
         setMySchedules(res?.data?.data);
       }

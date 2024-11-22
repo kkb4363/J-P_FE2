@@ -142,12 +142,14 @@ export default function ScheduleDetails() {
                 </>
               )}
             </EditButton>
-            <DaySlider
-              web
-              dayList={scheduleData.dayResDtos}
-              currentDayIndex={currentDayIndex}
-              onDayClick={handleDayClick}
-            />
+            <DaySliderBox>
+              <DaySlider
+                web
+                dayList={scheduleData.dayResDtos}
+                currentDayIndex={currentDayIndex}
+                onDayClick={handleDayClick}
+              />
+            </DaySliderBox>
             <PlanList>
               {scheduleData.dayResDtos.find(
                 (day) => day.dayIndex === currentDayIndex
@@ -291,4 +293,8 @@ const NoPlaceTextBox = styled.div`
   & > p {
     color: ${(props) => props.theme.color.gray300};
   }
+`;
+
+const DaySliderBox = styled.section`
+  width: 100%;
 `;

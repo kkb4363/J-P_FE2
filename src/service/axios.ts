@@ -200,22 +200,6 @@ export const getMyProfile = async () => {
   }
 };
 
-export const getMySchedules = async () => {
-  try {
-    const res = await axiosInstance.get("/schedules/my?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
-
-    if (res.status === 200) {
-      return res;
-    }
-  } catch (err) {
-    console.error("내 일정 리스트 조회 API 에러", err);
-  }
-};
-
 export const getRecommendSchedules = async () => {
   try {
     const res = await axiosInstance.get("/schedules?page=1", {
@@ -355,6 +339,22 @@ export const createSchedule = async (schedule: {
     }
   } catch (err) {
     console.error("일정 초기 생성 API 에러", err);
+  }
+};
+
+export const getScheduleList = async () => {
+  try {
+    const res = await axiosInstance.get("/schedules/my?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 일정 리스트 조회 API 에러", err);
   }
 };
 

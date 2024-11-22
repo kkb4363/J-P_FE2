@@ -14,7 +14,7 @@ import BellIcon from "../../../assets/icons/BellIcon";
 import { useNavigate } from "react-router-dom";
 import CustomProfile from "../../../components/CustomProfile";
 import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { getScheduleList } from "../../../service/axios";
 import { toast } from "react-toastify";
 import { useUserStore } from "../../../store/user.store";
 import { ScheduleApiProps } from "../../../types/schedule";
@@ -35,7 +35,7 @@ export default function Schedule() {
   };
 
   useEffect(() => {
-    getMySchedules().then((res) => {
+    getScheduleList().then((res) => {
       if (res) {
         setMySchedules(res?.data?.data);
       }

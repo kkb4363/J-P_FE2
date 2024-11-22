@@ -90,12 +90,12 @@ export default function TimeSwiper({ isMobile, setSelectTime }: Props) {
 }
 
 const TimeModalContainer = styled.div<{ $isMobile: boolean }>`
-  max-height: ${({ $isMobile }) => ($isMobile ? "90px" : "120px")};
+  height: ${({ $isMobile }) => ($isMobile ? "130px" : "120px")};
   margin-top: ${({ $isMobile }) => ($isMobile ? 0 : "30px")};
   width: 100%;
   align-items: center;
   display: flex;
-  padding: 0 50px;
+  /* padding: 0 50px; */
 `;
 
 const Text = styled.p<{ $isMobile: boolean }>`

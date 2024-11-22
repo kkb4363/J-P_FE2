@@ -13,16 +13,14 @@ import {
 } from "../../../service/axios";
 import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
-
 import { SelectPlaceProps } from "../../../types/home.details";
 import InfoModal from "../../../components/web/surroundingPlace/InfoModal";
 import NoButtonModal from "../../../components/web/NoButtonModal";
-
-import ScheduleModal from "../../../components/web/surroundingPlace/ScheduleModal";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 import { useModalStore } from "../../../store/modal.store";
 import { Cookies } from "react-cookie";
 import { toast } from "react-toastify";
+import TravelPlaceAddModal from "../../../components/web/surroundingPlace/TravelPlaceAddModal";
 
 const cookies = new Cookies();
 
@@ -126,7 +124,7 @@ export default function SurroundingMore() {
             )}
 
             {modalStore.getCurrentModal() === "addPlan" && (
-              <ScheduleModal placeId={selectPlace?.placeId} />
+              <TravelPlaceAddModal placeId={selectPlace?.placeId} />
             )}
 
             {modalStore.getCurrentModal() === "successAddPlan" && (

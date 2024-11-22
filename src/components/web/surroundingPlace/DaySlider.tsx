@@ -3,7 +3,7 @@ import { CustomLeftArrow, CustomRightArrow } from "../home/CardSlide";
 import MyTravelCard from "../../MyTravelCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { getScheduleList } from "../../../service/axios";
 
 export default function DaySlider() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function DaySlider() {
   const [mySchedules, setMySchedules] = useState([]);
 
   useEffect(() => {
-    getMySchedules().then((res) => {
+    getScheduleList().then((res) => {
       setMySchedules(res?.data?.data);
     });
   }, []);
