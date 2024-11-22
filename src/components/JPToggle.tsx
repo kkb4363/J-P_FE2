@@ -3,13 +3,22 @@ import { useJPStore } from "../store/JPType.store";
 
 export default function JPToggle() {
   const { jpState, setJpState } = useJPStore();
+
+  const handleJPState = () => {
+    if (jpState === "J") {
+      setJpState("P");
+    } else {
+      setJpState("J");
+    }
+  };
+
   return (
-    <JPToggleContainer>
-      <J onClick={() => setJpState("P")} $isActive={jpState === "J"}>
+    <JPToggleContainer onClick={handleJPState}>
+      <J $isActive={jpState === "J"}>
         <span>J</span>
       </J>
       <div />
-      <P onClick={() => setJpState("J")} $isActive={jpState === "P"}>
+      <P $isActive={jpState === "P"}>
         <span>P</span>
       </P>
     </JPToggleContainer>
@@ -44,6 +53,8 @@ const J = styled.div<{ $isActive: boolean }>`
     font-weight: 700;
     user-select: none;
   }
+
+  cursor: pointer;
 `;
 
 const P = styled(J)`
