@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import JPToggle from "../../../components/JPToggle";
 import CustomHeader from "../../../components/mobile/CustomHeader";

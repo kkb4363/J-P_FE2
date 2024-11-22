@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import PencilIcon from "../../../assets/icons/PencilIcon";
-import { planItemProps } from "../../../types/schedule";
-import { testDayList, testPlanItems } from "../../../utils/staticDatas";
+import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
+import { testPlanItems } from "../../../utils/staticDatas";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "react-sortable-hoc";
 import DaySlider from "../../DaySlider";
@@ -10,11 +10,18 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext } from "@dnd-kit/sortable";
 import PlanItem from "./PlanItem";
 import CustomGoogleMap from "../../mobile/googleMap/CustomGoogleMap";
+import { getDaylistFromSchedule } from "../../../service/axios";
+import { dayResDto } from "../../../types/res.dto";
 
-export default function OngoingSchedule() {
+interface Props {
+  schedules: ScheduleApiProps;
+}
+
+export default function OngoingSchedule({ schedules }: Props) {
   const [currentDay, setCurrentDay] = useState(0);
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
+  const [days, setDays] = useState<dayResDto[]>([]);
 
   const handleDayClick = (day: number) => {
     setCurrentDay(day);
@@ -33,12 +40,21 @@ export default function OngoingSchedule() {
       setPlanItems(arrayMove(planItems, activeIndex, overIndex));
     }
   };
+
+  useEffect(() => {
+    getDaylistFromSchedule(schedules.id + "").then((res) => {
+      if (res) {
+        setDays(res?.data);
+      }
+    });
+  }, [schedules?.id]);
+
   return (
     <OngoingScheduleContainer>
       <OngoingLeftBox>
         <OngoingTitle>
           <div>
-            <p>남해 여행</p>
+            <p>{schedules?.title}</p>
             <div>
               <span>여행중</span>
             </div>
@@ -52,8 +68,8 @@ export default function OngoingSchedule() {
 
         <DaySlider
           web={false}
-          dayList={testDayList}
-          currentDay={currentDay}
+          dayList={days}
+          currentDayIndex={currentDay}
           onDayClick={handleDayClick}
         />
 

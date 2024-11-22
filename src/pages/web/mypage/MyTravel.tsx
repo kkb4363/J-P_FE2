@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { MyPageTitle } from "./MyReviews";
-import MyTravelCard from "../../../components/web/mypage/MyTravelCard";
+import MyTravelCard from "../../../components/MyTravelCard";
 import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { getScheduleList } from "../../../service/axios";
 import NotHasCard from "../../../components/web/mypage/NotHasCard";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +24,7 @@ export default function MyTravel() {
   };
 
   useEffect(() => {
-    getMySchedules().then((res) => {
+    getScheduleList().then((res) => {
       if (res) {
         const schedules = res?.data?.data;
         groupingYear(schedules);
@@ -59,6 +59,9 @@ export default function MyTravel() {
                       startDate={t.startDate}
                       endDate={t.endDate}
                       isOpen={t.isOpen}
+                      handleClick={() =>
+                        navigate(`/home/schedule/details/${t.id}`)
+                      }
                     />
                   ))}
                 </div>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { scrollHidden } from "./home.style";
 
-export const HomeDetailsContainer = styled.div`
+export const HomeDetailsContainer = styled.section`
   width: 100%;
   min-width: 360px;
   height: 100%;
@@ -58,7 +58,7 @@ export const ImagePageIndicatorBox = styled.div`
   }
 `;
 
-export const DetailsBody = styled.div`
+export const DetailsBody = styled.main`
   padding: 6px 16px 16px 16px;
 `;
 

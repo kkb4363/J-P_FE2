@@ -25,6 +25,7 @@ export default function CreatePlace() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver | null>(null);
   const navigate = useNavigate();
+
   const {
     list,
     selectDay,
@@ -102,7 +103,6 @@ export default function CreatePlace() {
     (node: HTMLDivElement) => {
       if (isLoading || !nextPageToken) return;
       if (observer.current) observer.current.disconnect();
-
       observer.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting && nextPageToken) {

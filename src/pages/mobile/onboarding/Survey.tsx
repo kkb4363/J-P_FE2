@@ -121,13 +121,13 @@ export default function Survey() {
               <p>성향을 선택해주세요.</p>
               <SurveyTypeBox>
                 <SurveyTypeButton
-                  isSelected={type === ("J" as JPProps)}
+                  $isSelected={type === ("J" as JPProps)}
                   onClick={() => handleJPSelect("J" as JPProps)}
                 >
                   J 형/계획형
                 </SurveyTypeButton>
                 <SurveyTypeButton
-                  isSelected={type === ("P" as JPProps)}
+                  $isSelected={type === ("P" as JPProps)}
                   onClick={() => handleJPSelect("P" as JPProps)}
                 >
                   P 형/즉흥형
@@ -218,12 +218,12 @@ const SurveyTypeBox = styled.div`
   gap: 7px;
 `;
 
-const SurveyTypeButton = styled.button<{ isSelected: boolean }>`
+const SurveyTypeButton = styled.button<{ $isSelected: boolean }>`
   width: 100%;
   padding: 18px 0;
   white-space: nowrap;
   background-color: ${(props) =>
-    props.isSelected ? props.theme.color.gray200 : props.theme.color.white};
+    props.$isSelected ? props.theme.color.gray200 : props.theme.color.white};
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
   font-size: 14px;

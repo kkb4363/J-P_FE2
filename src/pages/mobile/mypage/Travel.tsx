@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { getMySchedules } from "../../../service/axios";
+import { getScheduleList } from "../../../service/axios";
 import NotHasCard from "../../../components/web/mypage/NotHasCard";
 import { useNavigate } from "react-router-dom";
-import MyTravelCard from "../../../components/web/mypage/MyTravelCard";
+import MyTravelCard from "../../../components/MyTravelCard";
 
 export default function Travel() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function Travel() {
   };
 
   useEffect(() => {
-    getMySchedules().then((res) => {
+    getScheduleList().then((res) => {
       if (res) {
         const schedules = res?.data?.data;
         groupingYear(schedules);
@@ -42,7 +42,7 @@ export default function Travel() {
           isMobile={true}
           text="내 일정이 없어요. 새로운 여행 일정을 만들어 주세요!"
           btnText="일정 생성"
-          onClick={() => navigate(`/Schedule`)}
+          onClick={() => navigate(`/schedule`)}
         />
       ) : (
         <>
@@ -61,6 +61,7 @@ export default function Travel() {
                       startDate={t.startDate}
                       endDate={t.endDate}
                       isOpen={t.isOpen}
+                      handleClick={() => navigate(`/schedule/details/${t.id}`)}
                     />
                   ))}
                 </div>

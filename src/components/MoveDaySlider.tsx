@@ -16,13 +16,13 @@ export default function MoveDaySlider({
   isMobile,
   dayResDtos,
   selectDay,
-  setSelectDay
+  setSelectDay,
 }: Props) {
   const slideSettings = {
     infinite: false,
     focusOnSelect: true,
     focusOnChange: true,
-    slidesToShow: 3,
+    slidesToShow: dayResDtos.length < 3 ? dayResDtos.length : 3,
     slidesToScroll: 1,
     swipeToSlide: true,
     speed: 500,
@@ -95,4 +95,6 @@ const DayBox = styled.div<{ $select: boolean; $isMobile: boolean }>`
     color: ${(props) =>
       props.$select ? props.theme.color.secondary : props.theme.color.gray400};
   }
+
+  cursor: pointer;
 `;

@@ -29,6 +29,7 @@ import SelectPlace from "./mypage/SelectPlace";
 import Travelogue from "./mypage/Travelogue";
 import TravelogueDetails from "./travel-review/TravelogueDetails";
 import ErrorPage from "./ErrorPage";
+import Setting from "./mypage/Setting";
 
 export const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
     element: <NearPlace />,
   },
   {
-    path: "Schedule",
+    path: "schedule",
     element: <ScheduleLayout />,
     children: [
       {
@@ -57,7 +58,7 @@ export const router = createBrowserRouter([
         element: <SelectCity />,
       },
       {
-        path: "details",
+        path: "details/:id",
         element: <Details />,
       },
     ],
@@ -145,6 +146,10 @@ export const router = createBrowserRouter([
       {
         path: "editProfile",
         element: <EditProfile />,
+      },
+      {
+        path: "setting",
+        element: <Setting />,
       },
     ],
   },

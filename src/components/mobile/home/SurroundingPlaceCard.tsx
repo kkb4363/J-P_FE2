@@ -26,7 +26,7 @@ export default function SurroundingPlaceCard({
   const { loading } = useImgLoading({ imgSrc: photoUrl });
 
   return (
-    <NearPlaceBox $height={height}>
+    <SurroundingPlaceCardContainer $height={height}>
       <ImageView
         width="60px"
         height="60px"
@@ -42,24 +42,24 @@ export default function SurroundingPlaceCard({
         </SkeletonBox>
       )}
 
-      <NearPlaceDetailCol>
+      <InfoCol>
         <p>{name}</p>
 
-        <div>
+        <article>
           <StarIcon />
           {rating} | <span onClick={handleDetails}>위치보기</span>
-        </div>
-      </NearPlaceDetailCol>
+        </article>
+      </InfoCol>
 
       <ActionButton onClick={handleClick}>
         <PlusIcon />
         <span>추가</span>
       </ActionButton>
-    </NearPlaceBox>
+    </SurroundingPlaceCardContainer>
   );
 }
 
-export const NearPlaceBox = styled.div<{ $height: string }>`
+export const SurroundingPlaceCardContainer = styled.aside<{ $height: string }>`
   height: ${({ $height }) => $height && $height};
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
@@ -71,12 +71,12 @@ export const NearPlaceBox = styled.div<{ $height: string }>`
   padding: 0 10px;
 `;
 
-const SkeletonBox = styled.div`
+const SkeletonBox = styled.section`
   position: absolute;
   left: 10px;
 `;
 
-export const NearPlaceDetailCol = styled.div`
+export const InfoCol = styled.section`
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -87,10 +87,13 @@ export const NearPlaceDetailCol = styled.div`
     font-size: 16px;
     font-weight: 700;
     line-height: 150%;
-    letter-spacing: -0.048px;
+    width: 142px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
-  & > div {
+  & > article {
     color: ${(props) => props.theme.color.gray500};
     font-size: 12px;
     font-weight: 400;

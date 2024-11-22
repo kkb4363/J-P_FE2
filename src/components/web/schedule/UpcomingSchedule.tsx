@@ -1,37 +1,24 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ScheduleSlider from "./ScheduleSlider";
-import { useUserStore } from "../../../store/user.store";
-import { getMySchedules, getRecommendSchedules } from "../../../service/axios";
 import RecommendCard from "./RecommendCard";
+import { ScheduleApiProps } from "../../../types/schedule";
 
-export default function UpcomingSchedule() {
-  const { getUserName } = useUserStore();
-  const [mySchedules, setMySchedules] = useState([]);
+interface Props {
+  schedules: ScheduleApiProps[];
+}
 
-  useEffect(() => {
-    getRecommendSchedules().then((res) => console.log(res));
-  }, []);
-
-  useEffect(() => {
-    if (!!getUserName()) {
-      getMySchedules().then((res) => {
-        setMySchedules(res?.data);
-      });
-    }
-  }, []);
-
+export default function UpcomingSchedule({ schedules }: Props) {
   return (
     <>
       <SubTitleWithMore>
-        <h2>다가오는 일정 1</h2>
+        <h2>내 일정</h2>
       </SubTitleWithMore>
 
-      <ScheduleCardBox>
-        <ScheduleSlider
-        // schedules={mySchedules?.data.data}
-        />
-      </ScheduleCardBox>
+      {schedules?.length !== 0 && (
+        <ScheduleCardBox>
+          <ScheduleSlider schedules={schedules} />
+        </ScheduleCardBox>
+      )}
 
       <SubTitleWithMore>
         <h2>여행 일정 추천</h2>
@@ -69,7 +56,6 @@ const SubTitleWithMore = styled.div`
 
 const ScheduleCardBox = styled.div`
   margin-bottom: 104px;
-  margin-left: -30px;
   width: 100%;
 `;
 

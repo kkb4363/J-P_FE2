@@ -22,7 +22,6 @@ import * as S from "../../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../../utils/staticDatas";
 import EditIcon from "../../../assets/icons/EditIcon";
 import CustomSkeleton from "../../../components/CustomSkeleton";
-import CreateScheduleSheet from "../../../components/mobile/bottomSheets/CreateScheduleSheet";
 import styled from "styled-components";
 import Slider from "react-slick";
 import SurroundingPlaceCard from "../../../components/mobile/home/SurroundingPlaceCard";
@@ -32,6 +31,7 @@ import useImgLoading from "../../../hooks/useImgLoading";
 import LikeCommentBox from "../../../components/LikeCommentBox";
 import { Cookies } from "react-cookie";
 import { toast } from "react-toastify";
+import TravelPlaceAddSheet from "../../../components/mobile/bottomSheets/TravelPlaceAddSheet";
 
 const cookies = new Cookies();
 
@@ -40,8 +40,8 @@ export default function HomeDetails() {
   const param = useParams();
   const { clear } = useMapStore();
 
-  const [imageIndex, setImageIndex] = useState<number>(0);
-  const imageSliderSetting = {
+  const [imgIdx, setImgIdx] = useState<number>(0);
+  const imgSliderSetting = {
     arrows: false,
     dots: false,
     infinite: false,
@@ -49,24 +49,28 @@ export default function HomeDetails() {
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
-    beforeChange: (current: number, next: number) => setImageIndex(next),
+    beforeChange: (current: number, next: number) => setImgIdx(next),
   };
-  const [detail, setDetail] = useState<PlaceDetailAPiProps>(
+
+  const [placeInfo, setPlaceInfo] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
   );
-  const [nearbyPlaces, setNearbyPlaces] = useState<GooglePlaceProps[]>([]);
+  const [surroundingPlaces, setSurroundingPlaces] = useState<
+    GooglePlaceProps[]
+  >([]);
+
   const [reviews, setReviews] = useState<reviewApiProps[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [addPlaceId, setAddPlaceId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectPlaceId, setSelectPlaceId] = useState("");
 
   const { loading: imgLoading } = useImgLoading({
-    imgSrc: detail?.photoUrls?.[0],
+    imgSrc: placeInfo?.photoUrls?.[0],
   });
 
-  const getDetail = async () => {
+  const getPlaceInfo = async () => {
     getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
-      setDetail(res?.data);
-      setLoading(false);
+      setPlaceInfo(res?.data);
+      setIsLoading(false);
     });
   };
 
@@ -78,43 +82,43 @@ export default function HomeDetails() {
 
   const getNearPlace = async () => {
     getSurroundingPlace({
-      lat: detail?.location.lat + "",
-      lng: detail?.location.lng + "",
+      lat: placeInfo?.location.lat + "",
+      lng: placeInfo?.location.lng + "",
     }).then((res) => {
-      setNearbyPlaces(res?.data.results);
+      setSurroundingPlaces(res?.data.results);
     });
   };
 
-  const handleLike = () => {
+  const handleHeartClick = () => {
     if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
-    } else if (detail?.id) {
-      setLike({ type: "PLACE", id: detail?.placeId }).then(() => {
-        getDetail();
+    } else if (placeInfo?.id) {
+      setLike({ type: "PLACE", id: placeInfo?.placeId }).then(() => {
+        getPlaceInfo();
       });
     }
   };
 
-  const handlePlaceAdd = (placeId: string) => {
+  const handlePlaceAddBtnClick = (placeId: string) => {
     if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     }
 
-    setAddPlaceId(placeId);
+    setSelectPlaceId(placeId);
   };
 
   useEffect(() => {
     if (param?.placeId) {
-      getDetail();
+      getPlaceInfo();
       getReview();
     }
   }, [param?.placeId]);
 
   useEffect(() => {
-    if (detail?.id) {
+    if (placeInfo?.id) {
       getNearPlace();
     }
-  }, [detail?.id]);
+  }, [placeInfo?.id]);
 
   return (
     <>
@@ -123,8 +127,8 @@ export default function HomeDetails() {
           <CustomSkeleton height="250px" />
         ) : (
           <S.DetailsImageBox>
-            <StyledSlider {...imageSliderSetting}>
-              {detail?.photoUrls?.map((img, idx) => (
+            <StyledSlider {...imgSliderSetting}>
+              {placeInfo?.photoUrls?.map((img, idx) => (
                 <img aria-placeholder="loading" src={img} alt={img} key={idx} />
               ))}
             </StyledSlider>
@@ -138,16 +142,16 @@ export default function HomeDetails() {
               <ArrowLeftIcon stroke="#fff" />
             </S.ArrowLeftBox>
 
-            <S.LikeBox onClick={handleLike}>
+            <S.LikeBox onClick={handleHeartClick}>
               <HeartIcon
-                stroke={detail?.isLiked ? "#FF5757" : "#b8b8b8"}
-                fill={detail?.isLiked ? "#FF5757" : "none"}
+                stroke={placeInfo?.isLiked ? "#FF5757" : "#b8b8b8"}
+                fill={placeInfo?.isLiked ? "#FF5757" : "none"}
               />
             </S.LikeBox>
 
             <S.ImagePageIndicatorBox>
               <span>
-                {imageIndex + 1} / {detail?.photoUrls.length}
+                {imgIdx + 1} / {placeInfo?.photoUrls.length}
               </span>
             </S.ImagePageIndicatorBox>
           </S.DetailsImageBox>
@@ -156,33 +160,33 @@ export default function HomeDetails() {
         <S.DetailsBody>
           <S.DetailsTitle>
             <MarkIcon />
-            {detail?.name}
+            {placeInfo?.name}
           </S.DetailsTitle>
 
           <ReviewTagRow>
-            {detail?.tags?.map((tag) => (
+            {placeInfo?.tags?.map((tag) => (
               <ReviewTag key={tag}>
                 <span>#{tag}</span>
               </ReviewTag>
             ))}
           </ReviewTagRow>
 
-          <S.DetailsInfo>{detail?.description}</S.DetailsInfo>
+          <S.DetailsInfo>{placeInfo?.description}</S.DetailsInfo>
 
-          {detail?.placeType === "TRAVEL_PLACE" && (
+          {placeInfo?.placeType === "TRAVEL_PLACE" && (
             <>
               <S.DetailsTitle>기본 정보</S.DetailsTitle>
               <S.DetailsSubTitle>
                 <MarkIcon width="18" height="18" />
-                <span>{detail?.formattedAddress}</span>
+                <span>{placeInfo?.formattedAddress}</span>
               </S.DetailsSubTitle>
 
-              {!loading && (
+              {!isLoading && (
                 <CustomGoogleMap
                   width="100%"
                   height="146px"
-                  lat={detail?.location.lat}
-                  lng={detail?.location.lng}
+                  lat={placeInfo?.location.lat}
+                  lng={placeInfo?.location.lng}
                 />
               )}
             </>
@@ -194,7 +198,7 @@ export default function HomeDetails() {
           />
 
           <S.NearPlaceCol>
-            {nearbyPlaces.length === 0
+            {surroundingPlaces.length === 0
               ? Array.from({ length: 3 }).map((_, index) => (
                   <CustomSkeleton
                     key={index}
@@ -202,7 +206,7 @@ export default function HomeDetails() {
                     borderRadius="16px"
                   />
                 ))
-              : nearbyPlaces?.slice(0, 3).map((place) => (
+              : surroundingPlaces?.slice(0, 3).map((place) => (
                   <SurroundingPlaceCard
                     handleDetails={() =>
                       navigate(`/nearby/${place.placeId}`, {
@@ -215,7 +219,7 @@ export default function HomeDetails() {
                     photoUrl={place.photoUrl}
                     name={place.name}
                     rating={place.rating}
-                    handleClick={() => handlePlaceAdd(place.placeId)}
+                    handleClick={() => handlePlaceAddBtnClick(place.placeId)}
                   />
                 ))}
           </S.NearPlaceCol>
@@ -268,11 +272,11 @@ export default function HomeDetails() {
             </S.DetailsReviewRow>
           )}
 
-          {(detail?.placeType === "TRAVEL_PLACE" ||
-            detail?.placeType === "THEME") && (
+          {(placeInfo?.placeType === "TRAVEL_PLACE" ||
+            placeInfo?.placeType === "THEME") && (
             <S.AddScheduleBox>
               <S.AddScheduleButton
-                onClick={() => handlePlaceAdd(detail?.placeId)}
+                onClick={() => handlePlaceAddBtnClick(placeInfo?.placeId)}
               >
                 <PlusIcon stroke="#fff" />
                 <span>여행지 추가</span>
@@ -282,10 +286,10 @@ export default function HomeDetails() {
         </S.DetailsBody>
       </S.HomeDetailsContainer>
 
-      {!!addPlaceId && (
-        <CreateScheduleSheet
-          handleClose={() => setAddPlaceId("")}
-          placeId={addPlaceId}
+      {!!selectPlaceId && (
+        <TravelPlaceAddSheet
+          handleClose={() => setSelectPlaceId("")}
+          placeId={selectPlaceId}
         />
       )}
     </>

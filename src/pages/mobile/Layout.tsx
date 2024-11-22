@@ -71,25 +71,25 @@ const MainContainer = styled.div`
   flex-direction: column;
 `;
 
-const OutletBox = styled.div`
+const OutletBox = styled.main`
   flex: 1;
   height: calc(100% - 80px);
   padding-bottom: 10px;
 `;
 
-const Footer = styled.div`
+const Footer = styled.footer`
   height: 60px;
   width: 100%;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
-const FooterRow = styled.div`
+const FooterRow = styled.ul`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 `;
 
-const FooterTab = styled.div`
+const FooterTab = styled.li`
   display: flex;
   width: 75px;
   padding-top: 8px;

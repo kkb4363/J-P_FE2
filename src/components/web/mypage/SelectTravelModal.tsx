@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import OneButtonModal from "../../OneButtonModal";
-import MyTravelCard from "./MyTravelCard";
+import MyTravelCard from "../../MyTravelCard";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";

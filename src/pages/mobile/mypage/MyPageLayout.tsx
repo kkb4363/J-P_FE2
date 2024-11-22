@@ -10,6 +10,7 @@ import { UserType, useUserStore } from "../../../store/user.store";
 import { Cookies } from "react-cookie";
 import ProfileNoImg from "../../../components/ProfileNoImg";
 import { getMyProfile } from "../../../service/axios";
+import SettingIcon from "../../../assets/icons/SettingIcon";
 
 const cookies = new Cookies();
 
@@ -38,7 +39,14 @@ export default function MyPageLayout() {
   return (
     <>
       <CustomHeader hidePrevIcon={true} title="마이페이지">
-        <BellIcon />
+        <SettingRow>
+          <div>
+            <BellIcon />
+          </div>
+          <div onClick={() => navigate("/home/setting")}>
+            <SettingIcon />
+          </div>
+        </SettingRow>
       </CustomHeader>
 
       <MyPageHeader>
@@ -88,7 +96,12 @@ export default function MyPageLayout() {
   );
 }
 
-const MyPageHeader = styled.div`
+const SettingRow = styled.aside`
+  display: flex;
+  align-items: center;
+`;
+
+const MyPageHeader = styled.header`
   min-height: 140px;
   display: flex;
   gap: 20px;
@@ -129,13 +142,13 @@ const MyPageHeader = styled.div`
   }
 `;
 
-const MypageTabRow = styled.div`
+const MypageTabRow = styled.section`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const MypageTab = styled.div<{ $isActive: boolean }>`
+const MypageTab = styled.article<{ $isActive: boolean }>`
   min-height: 35px;
   height: 35px;
   color: ${(props) =>
@@ -155,7 +168,7 @@ const MypageTab = styled.div<{ $isActive: boolean }>`
       props.$isActive ? props.theme.color.main : props.theme.color.gray200};
 `;
 
-const MypageOutletBox = styled.div`
+const MypageOutletBox = styled.main`
   height: calc(100% - 60px - 140px - 35px);
   overflow: auto;
   ${scrollHidden};

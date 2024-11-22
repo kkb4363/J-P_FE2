@@ -32,6 +32,8 @@ export default function ScheduleDetails() {
     setCurrentDayIndex(day);
   };
 
+  console.log(scheduleData);
+
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     // [TODO] : 일정 드래그 구현 (드래그 시 list index 이동, 편집 완료 누르면 API 호출)
     if (!over) return;
@@ -140,12 +142,14 @@ export default function ScheduleDetails() {
                 </>
               )}
             </EditButton>
-            <DaySlider
-              web
-              dayList={scheduleData.dayResDtos}
-              currentDayIndex={currentDayIndex}
-              onDayClick={handleDayClick}
-            />
+            <DaySliderBox>
+              <DaySlider
+                web
+                dayList={scheduleData.dayResDtos}
+                currentDayIndex={currentDayIndex}
+                onDayClick={handleDayClick}
+              />
+            </DaySliderBox>
             <PlanList>
               {scheduleData.dayResDtos.find(
                 (day) => day.dayIndex === currentDayIndex
@@ -289,4 +293,8 @@ const NoPlaceTextBox = styled.div`
   & > p {
     color: ${(props) => props.theme.color.gray300};
   }
+`;
+
+const DaySliderBox = styled.section`
+  width: 100%;
 `;

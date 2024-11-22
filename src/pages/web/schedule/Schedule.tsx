@@ -8,10 +8,15 @@ import UpcomingSchedule from "../../../components/web/schedule/UpcomingSchedule"
 import OngoingSchedule from "../../../components/web/schedule/OngoingSchedule";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import { useEffect, useState } from "react";
+import { getScheduleList } from "../../../service/axios";
+import { ScheduleApiProps } from "../../../types/schedule";
 
 export default function Schedule() {
   const navigate = useNavigate();
   const { getUserName } = useUserStore();
+
+  const [mySchedules, setMySchedules] = useState<ScheduleApiProps[]>([]);
+  const [isListView, setIsListView] = useState(true);
 
   const handleScheduleCreate = () => {
     if (!getUserName()) {
@@ -21,17 +26,25 @@ export default function Schedule() {
     }
   };
 
-  const [isListView, setIsListView] = useState(true);
-
   const handleListView = () => {
     setIsListView((p) => !p);
   };
 
-  // useEffect(() => {
-  //   if(여행중?){
-  //     setIsListView(false)
-  //   }
-  // },[condition])
+  useEffect(() => {
+    getScheduleList().then((res) => {
+      if (res) {
+        setMySchedules(res?.data?.data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (mySchedules?.length !== 0) {
+      if (mySchedules.find((s: any) => s.status === "NOW")) {
+        setIsListView(false);
+      }
+    }
+  }, [mySchedules]);
 
   return (
     <>
@@ -52,7 +65,21 @@ export default function Schedule() {
           )}
         </TitleWithButton>
 
-        {isListView ? <UpcomingSchedule /> : <OngoingSchedule />}
+        {isListView ? (
+          <UpcomingSchedule
+            schedules={mySchedules
+              .filter((p) => p.status !== "COMPLETED")
+              .reverse()}
+          />
+        ) : (
+          <OngoingSchedule
+            schedules={
+              mySchedules.find(
+                (s: ScheduleApiProps) => s.status === "NOW"
+              ) as ScheduleApiProps
+            }
+          />
+        )}
       </Container>
     </>
   );

@@ -6,36 +6,80 @@ import {
   InfoText,
   MoreText,
   scrollHidden,
-  ReviewCol as SuggestionCol,
+  ReviewCol,
 } from "../../../assets/styles/home.style";
 import testImg from "../../../assets/images/testImg.png";
 import ImageView from "../../../components/ImageView";
 import BellIcon from "../../../assets/icons/BellIcon";
-import CheckIcon from "../../../assets/icons/CheckIcon";
 import { useNavigate } from "react-router-dom";
 import CustomProfile from "../../../components/CustomProfile";
+import { useEffect, useState } from "react";
+import { getScheduleList } from "../../../service/axios";
+import { toast } from "react-toastify";
+import { useUserStore } from "../../../store/user.store";
+import { ScheduleApiProps } from "../../../types/schedule";
+import MyTravelCard from "../../../components/MyTravelCard";
 
 export default function Schedule() {
   const navigate = useNavigate();
+  const { getUserName } = useUserStore();
+
+  const [mySchedules, setMySchedules] = useState<ScheduleApiProps[]>([]);
+
+  const handleScheduleCreate = () => {
+    if (!getUserName()) {
+      toast(<span>로그인이 필요합니다.</span>);
+    } else {
+      navigate("/schedule");
+    }
+  };
+
+  useEffect(() => {
+    getScheduleList().then((res) => {
+      if (res) {
+        setMySchedules(res?.data?.data);
+      }
+    });
+  }, []);
+
   return (
     <ScheduleContainer>
       <CustomHeader title="일정" hidePrevIcon={true}>
-        <ScheduleLayout onClick={() => navigate("/Schedule")}>
+        <ScheduleLayout onClick={handleScheduleCreate}>
           <ScheduleIcon />
           <span>일정 생성</span>
         </ScheduleLayout>
       </CustomHeader>
 
-      {/* 일정이 없는 경우 */}
       <ScheduleBody>
         <InfoRow>
           <InfoText>내 일정</InfoText>
         </InfoRow>
 
-        <NoSchedule>
-          <ScheduleIcon stroke="#b8b8b8" />
-          <span>일정이 없어요. 새로운 여행 일정을 추가해요!</span>
-        </NoSchedule>
+        {mySchedules?.length === 0 ? (
+          <NoSchedule>
+            <ScheduleIcon stroke="#b8b8b8" />
+            <span>일정이 없어요. 새로운 여행 일정을 추가해요!</span>
+          </NoSchedule>
+        ) : (
+          <ScheduleCardCol>
+            {mySchedules
+              ?.filter((p) => p.status !== "COMPLETED")
+              .reverse()
+              .map((t: any) => (
+                <MyTravelCard
+                  width="100%"
+                  height="100px"
+                  key={t.id}
+                  title={t.title}
+                  startDate={t.startDate}
+                  endDate={t.endDate}
+                  isOpen={t.isOpen}
+                  handleClick={() => navigate(`/schedule/details/${t.id}`)}
+                />
+              ))}
+          </ScheduleCardCol>
+        )}
 
         <InfoRow>
           <InfoText>여행 일정 추천</InfoText>
@@ -67,94 +111,13 @@ export default function Schedule() {
               </div>
             </SuggestTextCol>
           </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
         </SuggestionCol>
-
-        <MoreButtonBox>
-          <AlarmButton>
-            <BellIcon stroke="#fff" width="18" height="18" />
-            <span>초대 알림</span>
-          </AlarmButton>
-        </MoreButtonBox>
       </ScheduleBody>
 
-      {/* 일정이 있는 경우 */}
-      {/* <ScheduleBody2>
-        <p>내 일정</p>
-
-        <ScheduleCol>
-          <ScheduleCard>
-            <ImageView src={testImg} alt="일정" width="66px" height="66px" />
-
-            <TextCol>
-              <p>남해 여행</p>
-              <div>
-                <ScheduleIcon stroke="#4d4d4d" />
-                <span>4.17 ~ 4.19</span>
-              </div>
-            </TextCol>
-
-            <VisibilityToggle>
-              <CheckIcon />
-              <span>공개</span>
-            </VisibilityToggle>
-          </ScheduleCard>
-        </ScheduleCol>
-
-        <MoreButtonBox>
-          <AlarmButton>
-            <BellIcon stroke="#fff" width="18" height="18" />
-            <span>초대 알림</span>
-          </AlarmButton>
-        </MoreButtonBox>
-      </ScheduleBody2> */}
+      <AlarmButton>
+        <BellIcon stroke="#fff" width="18" height="18" />
+        <span>초대 알림</span>
+      </AlarmButton>
     </ScheduleContainer>
   );
 }
@@ -163,6 +126,8 @@ const ScheduleContainer = styled.div`
   overflow: auto;
   ${scrollHidden};
   height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ScheduleLayout = styled.div`
@@ -181,22 +146,10 @@ const ScheduleLayout = styled.div`
 
 export const ScheduleBody = styled.div`
   padding: 0 20px;
-  height: calc(100% - 50px - 20px);
+  height: calc(100% - 50px - 70px);
 `;
 
-const NoSchedule = styled.div`
-  padding: 32px 0 70px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 14px;
-    font-weight: 400;
-    white-space: nowrap;
-  }
-`;
+const SuggestionCol = styled(ReviewCol)``;
 
 export const SuggestionBox = styled.div`
   border-radius: 16px;
@@ -214,6 +167,7 @@ export const SuggestTextCol = styled.div`
   justify-content: center;
   gap: 10px;
   overflow: hidden;
+
   & > div:first-child {
     display: flex;
     gap: 6px;
@@ -256,17 +210,10 @@ export const SuggestTextCol = styled.div`
   }
 `;
 
-const MoreButtonBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 0 55px 0;
-  position: relative;
-`;
-
 const AlarmButton = styled.button`
   position: absolute;
-  right: 0;
+  right: 10px;
+  bottom: 70px;
   margin: auto 0;
   display: flex;
   align-items: center;
@@ -286,73 +233,25 @@ const AlarmButton = styled.button`
   }
 `;
 
-const ScheduleBody2 = styled.div`
-  padding: 0 20px;
-  height: calc(100% - 50px);
-  display: flex;
-  flex-direction: column;
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 16px;
-    font-weight: 700;
-  }
-`;
-
-const ScheduleCol = styled.div`
-  padding-top: 40px;
+const ScheduleCardCol = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
+  height: 208px;
+  overflow-y: scroll;
+  ${scrollHidden};
 `;
 
-const ScheduleCard = styled.div`
-  border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.gray200};
-  height: 85px;
+const NoSchedule = styled.div`
+  padding: 32px 0 70px 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-`;
-
-const TextCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  flex: 1;
-  padding-left: 20px;
-
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  & > div {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-
-    & > span {
-      color: ${(props) => props.theme.color.gray700};
-      font-size: 12px;
-      font-weight: 400;
-    }
-  }
-`;
-
-const VisibilityToggle = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
   justify-content: center;
   align-items: center;
-
+  gap: 3px;
   & > span {
-    color: ${(props) => props.theme.color.gray700};
-    font-size: 12px;
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 14px;
     font-weight: 400;
+    white-space: nowrap;
   }
 `;

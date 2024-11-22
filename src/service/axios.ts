@@ -200,22 +200,6 @@ export const getMyProfile = async () => {
   }
 };
 
-export const getMySchedules = async () => {
-  try {
-    const res = await axiosInstance.get("/schedules/my?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
-
-    if (res.status === 200) {
-      return res;
-    }
-  } catch (err) {
-    console.error("내 일정 리스트 조회 API 에러", err);
-  }
-};
-
 export const getRecommendSchedules = async () => {
   try {
     const res = await axiosInstance.get("/schedules?page=1", {
@@ -358,6 +342,22 @@ export const createSchedule = async (schedule: {
   }
 };
 
+export const getScheduleList = async () => {
+  try {
+    const res = await axiosInstance.get("/schedules/my?page=1", {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 일정 리스트 조회 API 에러", err);
+  }
+};
+
 export const getSchedule = async (id: string) => {
   try {
     const res = await axiosInstance.get(`/schedule/${id}`, {
@@ -454,5 +454,20 @@ export const deletePlaceFromSchedule = async (locationId: number) => {
     }
   } catch (err) {
     console.error(err);
+  }
+};
+
+export const getDaylistFromSchedule = async (id: string) => {
+  try {
+    const res = await axiosInstance.get(`/schedule/days/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status == 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("Day 리스트 조회 API 에러", err);
   }
 };

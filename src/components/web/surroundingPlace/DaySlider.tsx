@@ -2,21 +2,26 @@ import Carousel from "react-multi-carousel";
 import { CustomLeftArrow, CustomRightArrow } from "../home/CardSlide";
 import MyTravelCard from "../../MyTravelCard";
 import { useNavigate } from "react-router-dom";
-import { ScheduleApiProps } from "../../../types/schedule";
+import { useEffect, useState } from "react";
+import { getScheduleList } from "../../../service/axios";
 
-interface Props {
-  schedules: ScheduleApiProps[];
-}
-
-export default function ScheduleSlider({ schedules }: Props) {
+export default function DaySlider() {
   const navigate = useNavigate();
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 464 },
-      items: 2,
-      slidesToSlide: 2,
+      items: 3,
+      slidesToSlide: 3,
     },
   };
+
+  const [mySchedules, setMySchedules] = useState([]);
+
+  useEffect(() => {
+    getScheduleList().then((res) => {
+      setMySchedules(res?.data?.data);
+    });
+  }, []);
 
   return (
     <Carousel
@@ -30,7 +35,7 @@ export default function ScheduleSlider({ schedules }: Props) {
       customLeftArrow={<CustomLeftArrow onClick={() => {}} />}
       customRightArrow={<CustomRightArrow onClick={() => {}} />}
     >
-      {schedules?.map((s: any) => (
+      {mySchedules?.reverse().map((s: any) => (
         <MyTravelCard
           handleClick={() => navigate(`/home/schedule/details/${s.id}`)}
           width="392px"

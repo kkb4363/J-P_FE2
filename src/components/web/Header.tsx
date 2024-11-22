@@ -51,9 +51,9 @@ export default function Header({ minWidth }: Props) {
 
         <HeaderTabRow>
           {webHeaderTabs.map((tab) => (
-            <span onClick={() => handleTab(tab.route)} key={tab.label}>
+            <li onClick={() => handleTab(tab.route)} key={tab.label}>
               {tab.label}
-            </span>
+            </li>
           ))}
         </HeaderTabRow>
       </HeaderLeft>
@@ -75,7 +75,7 @@ export default function Header({ minWidth }: Props) {
   );
 }
 
-const HeaderContainer = styled.div<{ $minWidth: string }>`
+const HeaderContainer = styled.header<{ $minWidth: string }>`
   width: 100%;
   min-width: ${(props) => props.$minWidth && props.$minWidth};
   height: 90px;
@@ -97,18 +97,18 @@ const headerTextStyle = css`
   font-weight: 700;
 `;
 
-const HeaderLeft = styled.div`
+const HeaderLeft = styled.section`
   display: flex;
   align-items: center;
   gap: 200px;
 `;
 
-const HeaderTabRow = styled.div`
+const HeaderTabRow = styled.ul`
   display: flex;
   align-items: center;
   gap: 89px;
 
-  & > span {
+  & > li {
     ${headerTextStyle}
   }
 `;

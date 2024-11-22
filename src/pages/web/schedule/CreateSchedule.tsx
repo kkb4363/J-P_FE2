@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Container from "../../../components/web/Container";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DayProps } from "../../mobile/schedule/Calendar";
 import { DateRange } from "react-date-range";
 import { ko } from "date-fns/locale";
@@ -19,7 +19,6 @@ export default function CreateSchedule() {
   const navigate = useNavigate();
   const { getCurrentCity } = useDisplayStore();
   const [city, setCity] = useState<CityProps[]>([]);
-  const [cityLoading, setCityLoading] = useState(false);
   const [date, setDate] = useState<DayProps[]>([
     {
       startDate: new Date(),
@@ -32,6 +31,67 @@ export default function CreateSchedule() {
     endDate: "",
   });
   const [selectCity, setSelectCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageToken, setPageToken] = useState<number>(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredCities = () => {
+    const filteredCities = city.filter((c) => c.name.includes(search));
+    return filteredCities;
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading || !hasNextPage || getCurrentCity() !== "") return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !isLoading) {
+            setPageToken((prev) => prev + 1);
+          }
+        },
+        { threshold: 1.0 }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasNextPage]
+  );
+
+  const getCityApi = (page?: number) => {
+    const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
+    const cityCount = getCurrentCity() === "" ? 30 : 10;
+
+    setIsLoading(true);
+    if (page === 1) setCity([]);
+
+    getPlaceList({
+      type: "CITY",
+      elementCnt: cityCount,
+      cityType: cityType,
+      page: page,
+    }).then((res: any) => {
+      if (res) {
+        setCity((prev) => {
+          if (page === 1) {
+            return res?.data?.data;
+          }
+          const newCity = res?.data?.data?.filter(
+            (n: any) => !prev.some((e) => e.placeId === n.placeId)
+          );
+          return [...prev, ...newCity];
+        });
+        setIsLoading(false);
+        setHasNextPage(res?.data?.pageInfo.hasNext);
+      }
+    });
+  };
 
   const handleSubmit = () => {
     if (!selectDate.startDate) {
@@ -55,21 +115,24 @@ export default function CreateSchedule() {
   };
 
   useEffect(() => {
-    const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
-    const cityCount = getCurrentCity() === "" ? 30 : 10;
-    setCityLoading(true);
+    if (selectDate.startDate && !search) {
+      setPageToken(1);
+      getCityApi(1);
+    }
+  }, [selectDate.startDate]);
 
-    getPlaceList({
-      type: "CITY",
-      elementCnt: cityCount,
-      cityType: cityType,
-    }).then((res) => {
-      if (res) {
-        setCity(res?.data.data);
-        setCityLoading(false);
-      }
-    });
+  useEffect(() => {
+    if (!search) {
+      getCityApi(1);
+      setPageToken(1);
+    }
   }, [getCurrentCity()]);
+
+  useEffect(() => {
+    if (pageToken > 1 && getCurrentCity() === "" && !search) {
+      getCityApi(pageToken);
+    }
+  }, [pageToken, getCurrentCity()]);
 
   return (
     <Container>
@@ -100,7 +163,8 @@ export default function CreateSchedule() {
               width="500px"
               height="60px"
               text="도시를 선택해주세요."
-              value=""
+              value={search}
+              onChange={handleSearch}
             />
           </InputBox>
 
@@ -111,28 +175,32 @@ export default function CreateSchedule() {
           </CitySliderBox>
 
           <CityBox>
-            {cityLoading
-              ? Array.from({ length: 7 }).map((_, idx) => (
-                  <CustomSkeleton
-                    width="106px"
-                    height="78px"
-                    key={idx}
-                    borderRadius="16px"
-                  />
-                ))
-              : city?.map((city) => (
-                  <City
-                    $isActive={selectCity === city.placeId}
-                    key={city.id}
-                    onClick={() => setSelectCity(city.placeId)}
-                  >
-                    <span>{city.name}</span>
-                  </City>
-                ))}
+            {filteredCities()?.map((city) => (
+              <City
+                $isActive={selectCity === city.placeId}
+                key={city.id}
+                onClick={() => {
+                  setSelectCity(city.placeId);
+                }}
+              >
+                <span>{city.name}</span>
+              </City>
+            ))}
+
+            {isLoading &&
+              Array.from({ length: 1 }).map((_, idx) => (
+                <CustomSkeleton
+                  width="106px"
+                  height="78px"
+                  key={idx}
+                  borderRadius="16px"
+                />
+              ))}
           </CityBox>
         </SelectCityBox>
       )}
 
+      {selectDate.startDate && <div ref={lastElementRef} />}
       <ButtonBox>
         <PrimaryButton
           onClick={handleSubmit}

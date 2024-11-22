@@ -13,11 +13,14 @@ import UserIcon from "../../../assets/icons/UserIcon";
 import testImg from "../../../assets/images/testImg.png";
 import { InfoRow } from "../../../assets/styles/home.style";
 import { useDisplayStore } from "../../../store/display.store";
+import { useParams } from "react-router-dom";
 
 type BottomSheetType = "AddPlace" | "Invite";
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
+  const param = useParams();
+  console.log(param.id);
 
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);

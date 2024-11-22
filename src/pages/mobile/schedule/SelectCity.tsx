@@ -4,102 +4,156 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CustomInput from "../../../components/CustomInput";
 import { NextButtonBox } from "./ScheduleLayout";
 import { useDisplayStore } from "../../../store/display.store";
-import { useEffect, useState } from "react";
-import { getPlaceList } from "../../../service/axios";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createSchedule, getPlaceList } from "../../../service/axios";
 import { CityProps } from "../../../types/schedule";
 import CustomSkeleton from "../../../components/CustomSkeleton";
+import { cities } from "../../../utils/staticDatas";
+import { formatDateToString } from "../../../utils/dateUtils";
 
 export default function SelectCity() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { getCurrentCity } = useDisplayStore();
-
-  // 도시 목록
+  const { getCurrentCity, setCurrentCity } = useDisplayStore();
   const [city, setCity] = useState<CityProps[]>([]);
-
-  // 선택한 도시
-  const [selectCity, setSelectCity] = useState("");
+  const [selectedCityId, setSelectedCityId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [pageToken, setPageToken] = useState<number>(1);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const [search, setSearch] = useState("");
 
-  // 선택한 여행 날짜
-  console.log(location?.state?.date[0]);
+  const filteredCities = () => {
+    const filteredCities = city.filter((c) => c.name.includes(search));
+    return filteredCities;
+  };
 
-  useEffect(() => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading || !hasNextPage || getCurrentCity() !== "") return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !isLoading) {
+            setPageToken((prev) => prev + 1);
+          }
+        },
+        { threshold: 1.0 }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasNextPage]
+  );
+
+  const getCityApi = (page?: number) => {
     const cityType = getCurrentCity() !== "" ? getCurrentCity() : null;
     const cityCount = getCurrentCity() === "" ? 30 : 10;
+
     setIsLoading(true);
+    if (page === 1) setCity([]);
 
     getPlaceList({
       type: "CITY",
       elementCnt: cityCount,
       cityType: cityType,
-    }).then((res) => {
+      page: page,
+    }).then((res: any) => {
       if (res) {
-        setCity(res?.data.data);
+        setCity((prev) => {
+          if (page === 1) {
+            return res?.data?.data;
+          }
+          const newCity = res?.data?.data?.filter(
+            (n: any) => !prev.some((e) => e.placeId === n.placeId)
+          );
+          return [...prev, ...newCity];
+        });
         setIsLoading(false);
+        setHasNextPage(res?.data?.pageInfo.hasNext);
       }
     });
+  };
+
+  const handleSubmit = () => {
+    const schedule = {
+      startDate: formatDateToString(location?.state?.date[0].startDate, true),
+      endDate: formatDateToString(location?.state?.date[0].endDate, true),
+      placeId: selectedCityId,
+    };
+
+    if (!!selectedCityId) {
+      createSchedule(schedule).then((res) => {
+        if (res && res.status === 200) {
+          navigate(`/schedule/details/${res.data}`);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!search) {
+      getCityApi(1);
+      setPageToken(1);
+    }
   }, [getCurrentCity()]);
+
+  useEffect(() => {
+    if (pageToken > 1 && getCurrentCity() === "" && !search) {
+      getCityApi(pageToken);
+    }
+  }, [pageToken, getCurrentCity()]);
 
   return (
     <>
-      <CustomInput text="어디로 떠나고 싶나요?" value="" />
+      <CustomInput
+        text="어디로 떠나고 싶나요?"
+        value={search}
+        onChange={handleSearch}
+      />
 
       <SelectCityText>도시 선택</SelectCityText>
 
       <CityRow>
-        <City $isSelect={true}>
+        <City
+          $isSelect={getCurrentCity() === ""}
+          onClick={() => setCurrentCity("")}
+        >
           <span>전체</span>
         </City>
-        <City $isSelect={false}>
-          <span>서울</span>
-        </City>
-        <City $isSelect={false}>
-          <span>경기</span>
-        </City>
-        <City $isSelect={false}>
-          <span>서울</span>
-        </City>
-        <City $isSelect={false}>
-          <span>경기</span>
-        </City>
-        <City $isSelect={false}>
-          <span>서울</span>
-        </City>
-        <City $isSelect={false}>
-          <span>경기</span>
-        </City>
-        <City $isSelect={false}>
-          <span>서울</span>
-        </City>
-        <City $isSelect={false}>
-          <span>경기</span>
-        </City>
+        {cities.map((city) => (
+          <City
+            $isSelect={getCurrentCity() === city.id}
+            key={city.id}
+            onClick={() => setCurrentCity(city.id)}
+          >
+            <span>{city.title}</span>
+          </City>
+        ))}
       </CityRow>
 
       <CityGridBox>
-        {isLoading
-          ? Array.from({ length: 3 }).map((_, idx) => (
-              <CustomSkeleton
-                key={idx}
-                width="100px"
-                height="64px"
-                borderRadius="16px"
-              />
-            ))
-          : city?.map((city) => (
-              <CityGrid
-                key={city.id}
-                $isActive={selectCity === city.placeId}
-                onClick={() => setSelectCity(city.placeId)}
-              >
-                {city.name}
-              </CityGrid>
-            ))}
+        {filteredCities()?.map((city) => (
+          <CityGrid
+            key={city.id}
+            $isActive={selectedCityId === city.placeId}
+            onClick={() => setSelectedCityId(city.placeId)}
+          >
+            {city.name}
+          </CityGrid>
+        ))}
+        {isLoading && (
+          <CustomSkeleton width="100px" height="64px" borderRadius="16px" />
+        )}
+        {city?.length !== 0 && <div ref={lastElementRef} />}
       </CityGridBox>
 
       <NextButtonBox>
-        <button onClick={() => navigate("/Schedule/details")}>다음</button>
+        <button onClick={handleSubmit}>다음</button>
       </NextButtonBox>
     </>
   );
