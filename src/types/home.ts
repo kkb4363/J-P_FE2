@@ -1,4 +1,4 @@
-import { userCompactResDto } from "./res.dto";
+import { UserProps } from "./res.dto";
 
 export type ThemeType = "TRAVEL" | "FESTIVAL";
 
@@ -22,5 +22,5 @@ export interface reviewApiProps {
   star: number;
   subject: string;
   content: string;
-  userCompactResDto: userCompactResDto;
+  userCompactResDto: UserProps;
 }

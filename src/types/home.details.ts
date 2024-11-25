@@ -1,4 +1,4 @@
-import { commentResDto, userCompactResDto } from "./res.dto";
+import { CommentProps, UserProps } from "./res.dto";
 
 export interface PlaceDetailAPiProps {
   description: string;
@@ -57,11 +57,11 @@ export interface ReviewDetailApiProps {
   id: number;
   subject: string;
   content: string;
-  userCompactResDto: userCompactResDto;
+  userCompactResDto: UserProps;
   placeId: string;
   star: number;
   likeCnt: number;
   viewCnt: number;
   createdAt: string;
-  commentResDtoList: commentResDto[];
+  commentResDtoList: CommentProps[];
 }

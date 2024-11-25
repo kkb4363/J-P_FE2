@@ -7,29 +7,24 @@ export type DayOfWeekType =
   | "SATURDAY"
   | "SUNDAY";
 
-export interface userCompactResDto {
+export interface UserProps {
   id: number;
   nickname: string;
   profile: string;
 }
 
-export interface commentResDto {
+export interface CommentProps {
   id: number;
   content: string;
-  userCompactResDto: userCompactResDto;
+  userCompactResDto: UserProps;
   createdAt: string;
-  replyList: commentResDto[];
+  replyList: CommentProps[];
 }
 
-export interface dayLocationResDto {
+export interface DayLocationProps {
   id: number;
   index: number;
-  time: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
+  time: string;
   memo: string;
   location: {
     lat: number;
@@ -45,10 +40,10 @@ export interface dayLocationResDto {
   name: string;
 }
 
-export interface dayResDto {
+export interface DayProps {
   id: number;
   date: string;
   dayIndex: number;
   dayOfWeek: DayOfWeekType;
-  dayLocationResDtoList: dayLocationResDto[];
+  dayLocationResDtoList: DayLocationProps[];
 }

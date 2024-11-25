@@ -1,6 +1,6 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { placeApiProps } from "./home";
-import { dayResDto, userCompactResDto } from "./res.dto";
+import { DayProps, UserProps } from "./res.dto";
 
 export type StatusType = "UPCOMING" | "NOW" | "COMPLETED";
 
@@ -39,8 +39,8 @@ export interface ScheduleApiProps {
   place: placeApiProps;
   startDate: string;
   endDate: string;
-  member: userCompactResDto[];
+  member: UserProps[];
   status: StatusType;
   isOpen: boolean;
-  dayResDtos: dayResDto[];
+  dayResDtos: DayProps[];
 }

@@ -1,4 +1,4 @@
-export interface googleSearchApiProps {
+export interface GoogleSearchProps {
   placeId: string;
   name: string;
   formattedAddress: string;

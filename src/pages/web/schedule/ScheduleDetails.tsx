@@ -16,12 +16,15 @@ import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMa
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
 import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
-import { getSchedule } from "../../../service/axios";
+import { editSchedule, getSchedule } from "../../../service/axios";
 import { testImg1, testPlanItems } from "../../../utils/staticDatas";
+import { DayProps } from "../../../types/res.dto";
+import { toast } from "react-toastify";
 
 export default function ScheduleDetails() {
   const { scheduleId } = useParams();
   const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
+  const [dayListData, setDayListData] = useState<DayProps[]>();
   const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,18 +38,41 @@ export default function ScheduleDetails() {
   console.log(scheduleData);
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
-    // [TODO] : 일정 드래그 구현 (드래그 시 list index 이동, 편집 완료 누르면 API 호출)
-    if (!over) return;
-    if (active.id !== over.id) {
-      const activeIndex = planItems.findIndex(
-        (item) => item.id === active.id.toString()
-      );
-      const overIndex = planItems.findIndex(
-        (item) => item.id === over.id.toString()
+    if (!over || active.id === over.id) return;
+
+    setDayListData((prevDayListData) => {
+      if (!prevDayListData) return;
+
+      const currentDay = prevDayListData.find(
+        (day) => day.dayIndex === currentDayIndex
       );
 
-      setPlanItems(arrayMove(planItems, activeIndex, overIndex));
-    }
+      if (!currentDay) return prevDayListData;
+
+      const updatedLocations = [...currentDay.dayLocationResDtoList];
+      const activeIndex = updatedLocations.findIndex(
+        (item) => item.id.toString() === active.id.toString()
+      );
+      const overIndex = updatedLocations.findIndex(
+        (item) => item.id.toString() === over.id.toString()
+      );
+
+      const [movedItem] = updatedLocations.splice(activeIndex, 1);
+      updatedLocations.splice(overIndex, 0, movedItem);
+
+      const reorderedLocations = updatedLocations.map((item, index) => ({
+        ...item,
+        index: index + 1,
+      }));
+
+      const updatedDayListData = prevDayListData.map((day) =>
+        day.dayIndex === currentDayIndex
+          ? { ...day, dayLocationResDtoList: reorderedLocations }
+          : day
+      );
+
+      return updatedDayListData;
+    });
   };
 
   const handleAddPlaceClick = () => {
@@ -65,16 +91,34 @@ export default function ScheduleDetails() {
     }
   };
 
+  const handleEditClick = async () => {
+    if (isEdit) {
+      editRequestApi();
+    }
+    setIsEdit((prev) => !prev);
+  };
+
   const requestApi = async () => {
     if (scheduleId) {
       setIsLoading(true);
       getSchedule(scheduleId).then((res) => {
         if (res) {
           setScheduleData(res.data);
+          setDayListData(res.data.dayResDtos);
         }
         setIsLoading(false);
       });
     }
+  };
+
+  const editRequestApi = async () => {
+    if (!dayListData) return;
+
+    Promise.all(
+      dayListData.map((day) => editSchedule(day.id, day.dayLocationResDtoList))
+    ).then(() => {
+      toast(<span>일정 편집 완료!</span>);
+    });
   };
 
   useEffect(() => {
@@ -84,7 +128,7 @@ export default function ScheduleDetails() {
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
     <Container>
-      {scheduleData && (
+      {scheduleData && dayListData && (
         <>
           <DetailsTitleBox>
             <h1>일정</h1>
@@ -129,10 +173,7 @@ export default function ScheduleDetails() {
           />
 
           <PlansBox>
-            <EditButton
-              $isEdit={isEdit}
-              onClick={() => setIsEdit((prev) => !prev)}
-            >
+            <EditButton $isEdit={isEdit} onClick={handleEditClick}>
               {isEdit ? (
                 <p>완료</p>
               ) : (
@@ -151,9 +192,8 @@ export default function ScheduleDetails() {
               />
             </DaySliderBox>
             <PlanList>
-              {scheduleData.dayResDtos.find(
-                (day) => day.dayIndex === currentDayIndex
-              )?.dayLocationResDtoList.length === 0 ? (
+              {dayListData.find((day) => day.dayIndex === currentDayIndex)
+                ?.dayLocationResDtoList.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
@@ -169,19 +209,19 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      scheduleData.dayResDtos.find(
+                      dayListData.find(
                         (day) => day.dayIndex === currentDayIndex
                       )?.dayLocationResDtoList || []
                     }
                   >
-                    {scheduleData.dayResDtos
+                    {dayListData
                       .find((day) => day.dayIndex === currentDayIndex)
                       ?.dayLocationResDtoList.map((item) => (
                         <PlanItem
                           key={item.id}
                           item={item}
                           isEdit={isEdit}
-                          dayList={scheduleData.dayResDtos}
+                          dayList={dayListData}
                           reloadSchedule={() => requestApi()}
                         />
                       ))}

@@ -1,13 +1,13 @@
 import Slider from "react-slick";
 import styled from "styled-components";
-import { dayResDto } from "../types/res.dto";
+import { DayProps } from "../types/res.dto";
 import { dayOfWeek } from "../utils/staticDatas";
 import NextArrow from "./mobile/schedule/NextArrow";
 import PrevArrow from "./mobile/schedule/PrevArrow";
 
 interface Props {
   isMobile: boolean;
-  dayResDtos: dayResDto[];
+  dayResDtos: DayProps[];
   selectDay: number | undefined;
   setSelectDay: React.Dispatch<React.SetStateAction<number>>;
 }

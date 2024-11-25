@@ -7,20 +7,30 @@ import TrashIcon from "../../../assets/icons/TrashIcon";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
 import {
   deletePlaceFromSchedule,
+  getGooglePlaceDetail,
   moveScheduleDate,
 } from "../../../service/axios";
-import { dayLocationResDto, dayResDto } from "../../../types/res.dto";
+import { SelectPlaceProps } from "../../../types/home.details";
+import { DayLocationProps, DayProps } from "../../../types/res.dto";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
+import IconBox from "../../IconBox";
+import StarIcon from "../../../assets/icons/StarIcon";
+import { testGoogleSelectPlaceItem } from "../../../utils/staticDatas";
+import InfoModal from "../surroundingPlace/InfoModal";
+import ImageView from "../ImageView";
+import AlarmIcon from "../../../assets/icons/AlarmIcon";
+import TicketIcon from "../../../assets/icons/TicketIcon";
+import PhoneIcon from "../../../assets/icons/PhoneIcon";
 
 interface Props {
-  item: dayLocationResDto;
+  item: DayLocationProps;
   isEdit: boolean;
-  dayList: dayResDto[];
+  dayList: DayProps[];
   reloadSchedule: () => Promise<void>;
 }
 
@@ -38,6 +48,9 @@ export default function PlanItem({
     memo: false,
     cost: false,
   });
+  const [isOpenPlaceModal, setIsOpenPlaceModal] = useState(false);
+  const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
+
   const {
     attributes,
     listeners,
@@ -58,9 +71,15 @@ export default function PlanItem({
     setOpenModal,
   } = useAddPlaceHook();
 
-  const handleItemClick = () => {
+  const handleItemClick = async () => {
     if (isEdit) {
       setOpenModal((p) => ({ ...p, selectDay: true }));
+    } else {
+      // await getGooglePlaceDetail({ placeId: item.placeId }).then((res) =>
+      //   setPlaceInfo(res!.data)
+      // );
+      setPlaceInfo(testGoogleSelectPlaceItem);
+      setIsOpenPlaceModal(true);
     }
   };
 
@@ -129,6 +148,48 @@ export default function PlanItem({
           </MemoButton>
         )}
       </PlanItemContainer>
+
+      {/* 일정 장소 상세 Modal */}
+      {isOpenPlaceModal && placeInfo && (
+        <NoButtonModal
+          width="470px"
+          height="390px"
+          onClose={() => setIsOpenPlaceModal(false)}
+        >
+          <>
+            <ModalTopBox>
+              <ImageView
+                src={placeInfo?.photoUrls[0]}
+                alt={placeInfo.name}
+                width="130px"
+                height="110px"
+              />
+              <div>
+                <h1>{placeInfo.name}</h1>
+                <span>{placeInfo.shortAddress}</span>
+                <IconBox>
+                  <StarIcon />
+                  <span>{placeInfo.rating}</span>
+                </IconBox>
+              </div>
+            </ModalTopBox>
+            <ModalBottomBox>
+              <div>
+                <AlarmIcon />
+                <span>{placeInfo.businessStatus}</span>
+              </div>
+              <div>
+                <TicketIcon />
+                <span>스카이워크 3,000</span>
+              </div>
+              <div>
+                <PhoneIcon />
+                <span>{placeInfo.formattedPhoneNumber}</span>
+              </div>
+            </ModalBottomBox>
+          </>
+        </NoButtonModal>
+      )}
 
       {/* 일정 이동 Modal */}
       {openModal.selectDay && (
@@ -308,3 +369,24 @@ const ModalText = styled.p`
   font-size: 20px;
   font-weight: 700;
 `;
+
+const ModalTopBox = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding: 0 20px;
+  gap: 28px;
+
+  & > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+  }
+`;
+
+const ModalBottomBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`
