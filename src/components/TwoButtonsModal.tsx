@@ -39,7 +39,7 @@ export default function TwoButtonsModal({
   );
 }
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.header`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -47,7 +47,7 @@ const ModalHeader = styled.div`
   font-weight: 700;
 `;
 
-const ModalBody = styled.div<{ $isMobile: boolean }>`
+const ModalBody = styled.section<{ $isMobile: boolean }>`
   height: 100%;
   display: flex;
   flex-direction: column;

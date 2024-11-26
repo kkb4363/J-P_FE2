@@ -113,7 +113,7 @@ const HeaderTabRow = styled.ul`
   }
 `;
 
-const HeaderRight = styled.div`
+const HeaderRight = styled.section`
   display: flex;
   align-items: center;
   gap: 60px;

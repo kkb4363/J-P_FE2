@@ -25,6 +25,8 @@ export default function Survey() {
   const nickNameRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleJPSelect = (type: string) => {
     setType(type);
   };
@@ -46,6 +48,7 @@ export default function Survey() {
 
   // 개발환경 isDev=true , 빌드환경 isDev=false
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
     try {
       const res = await axiosInstance.get(
         `/login/oauth2/code/google?code=${code}&isDev=true`
@@ -59,6 +62,7 @@ export default function Survey() {
       userStore.setTokenExpiryTime(tokenExpiryTime);
 
       if (res.status === 200) {
+        setIsLoading(false);
         if (res.data.isSignUp) {
           setUserProfile();
           navigate("/home");
@@ -93,40 +97,48 @@ export default function Survey() {
 
   return (
     <ExtendedContainer>
-      <Header minWidth="1440px" />
+      {isLoading ? (
+        <LoadingText>
+          <p>로딩중...</p>
+        </LoadingText>
+      ) : (
+        <>
+          <Header minWidth="1440px" />
 
-      <SurveyBox>
-        <p>닉네임을 입력해주세요.</p>
+          <SurveyBox>
+            <p>닉네임을 입력해주세요.</p>
 
-        <NameInput>
-          <NicknameIcon />
-          <input placeholder="닉네임을 입력해주세요." ref={nickNameRef} />
-        </NameInput>
+            <NameInput>
+              <NicknameIcon />
+              <input placeholder="닉네임을 입력해주세요." ref={nickNameRef} />
+            </NameInput>
 
-        <p>성향을 선택해주세요.</p>
+            <p>성향을 선택해주세요.</p>
 
-        <SelectJPBoxRow>
-          <SelectJPBox
-            $isSelected={type === "J"}
-            onClick={() => handleJPSelect("J")}
-          >
-            <span>J형/계획형</span>
-          </SelectJPBox>
-          <SelectJPBox
-            $isSelected={type === "P"}
-            onClick={() => handleJPSelect("P")}
-          >
-            <span>P형/즉흥형</span>
-          </SelectJPBox>
-        </SelectJPBoxRow>
+            <SelectJPBoxRow>
+              <SelectJPBox
+                $isSelected={type === "J"}
+                onClick={() => handleJPSelect("J")}
+              >
+                <span>J형/계획형</span>
+              </SelectJPBox>
+              <SelectJPBox
+                $isSelected={type === "P"}
+                onClick={() => handleJPSelect("P")}
+              >
+                <span>P형/즉흥형</span>
+              </SelectJPBox>
+            </SelectJPBoxRow>
 
-        <PrimaryButton
-          width="260px"
-          height="50px"
-          text="시작하기"
-          onClick={handleSubmit}
-        />
-      </SurveyBox>
+            <PrimaryButton
+              width="260px"
+              height="50px"
+              text="시작하기"
+              onClick={handleSubmit}
+            />
+          </SurveyBox>
+        </>
+      )}
     </ExtendedContainer>
   );
 }
@@ -196,5 +208,19 @@ const SelectJPBox = styled.button<{ $isSelected: boolean }>`
     color: ${(props) => props.theme.color.black};
     font-size: 16px;
     font-weight: 400;
+  }
+`;
+
+const LoadingText = styled.aside`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+
+  & > p {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 16px;
   }
 `;

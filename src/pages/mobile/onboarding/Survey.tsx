@@ -26,6 +26,8 @@ export default function Survey() {
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   };
@@ -51,6 +53,7 @@ export default function Survey() {
 
   // 개발환경 isDev=true , 빌드환경 isDev=false
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
     try {
       const res = await axiosInstance.get(
         `/login/oauth2/code/google?code=${code}&isDev=true`
@@ -64,6 +67,7 @@ export default function Survey() {
       userStore.setTokenExpiryTime(tokenExpiryTime);
 
       if (res.status === 200) {
+        setIsLoading(false);
         if (res.data.isSignUp) {
           setUserProfile();
           navigate("/home");
@@ -98,60 +102,66 @@ export default function Survey() {
 
   return (
     <>
-      <SurveyContainer>
-        <SurveyHeader>
-          <LogoutIcon />
-        </SurveyHeader>
-        <SurveyBody>
-          <SurveyBox>
-            <SurveyInputBox>
-              <p>닉네임을 입력해주세요.</p>
-              <SurveyNicknameInput>
-                <NicknameIcon />
-                <input
-                  type="text"
-                  name="nickname"
-                  placeholder="닉네임을 입력해주세요."
-                  value={nickname}
-                  onChange={handleNicknameChange}
-                />
-              </SurveyNicknameInput>
-            </SurveyInputBox>
-            <SurveyInputBox>
-              <p>성향을 선택해주세요.</p>
-              <SurveyTypeBox>
-                <SurveyTypeButton
-                  $isSelected={type === ("J" as JPProps)}
-                  onClick={() => handleJPSelect("J" as JPProps)}
-                >
-                  J 형/계획형
-                </SurveyTypeButton>
-                <SurveyTypeButton
-                  $isSelected={type === ("P" as JPProps)}
-                  onClick={() => handleJPSelect("P" as JPProps)}
-                >
-                  P 형/즉흥형
-                </SurveyTypeButton>
-              </SurveyTypeBox>
-            </SurveyInputBox>
-          </SurveyBox>
-          <SurveyButtonBox>
-            <PrimaryButton text="시작하기" onClick={handleSubmit} />
-          </SurveyButtonBox>
-        </SurveyBody>
-      </SurveyContainer>
+      {isLoading ? (
+        <LoadingText>
+          <p>로딩중...</p>
+        </LoadingText>
+      ) : (
+        <SurveyContainer>
+          <SurveyHeader>
+            <LogoutIcon />
+          </SurveyHeader>
+          <SurveyBody>
+            <SurveyBox>
+              <SurveyInputBox>
+                <p>닉네임을 입력해주세요.</p>
+                <SurveyNicknameInput>
+                  <NicknameIcon />
+                  <input
+                    type="text"
+                    name="nickname"
+                    placeholder="닉네임을 입력해주세요."
+                    value={nickname}
+                    onChange={handleNicknameChange}
+                  />
+                </SurveyNicknameInput>
+              </SurveyInputBox>
+              <SurveyInputBox>
+                <p>성향을 선택해주세요.</p>
+                <SurveyTypeBox>
+                  <SurveyTypeButton
+                    $isSelected={type === ("J" as JPProps)}
+                    onClick={() => handleJPSelect("J" as JPProps)}
+                  >
+                    J 형/계획형
+                  </SurveyTypeButton>
+                  <SurveyTypeButton
+                    $isSelected={type === ("P" as JPProps)}
+                    onClick={() => handleJPSelect("P" as JPProps)}
+                  >
+                    P 형/즉흥형
+                  </SurveyTypeButton>
+                </SurveyTypeBox>
+              </SurveyInputBox>
+            </SurveyBox>
+            <SurveyButtonBox>
+              <PrimaryButton text="시작하기" onClick={handleSubmit} />
+            </SurveyButtonBox>
+          </SurveyBody>
+        </SurveyContainer>
+      )}
     </>
   );
 }
 
-const SurveyContainer = styled.div`
+const SurveyContainer = styled.section`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-const SurveyHeader = styled.div`
+const SurveyHeader = styled.header`
   height: 50px;
   display: flex;
   justify-content: flex-end;
@@ -160,7 +170,7 @@ const SurveyHeader = styled.div`
   padding: 0 22px;
 `;
 
-const SurveyBody = styled.div`
+const SurveyBody = styled.main`
   height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
@@ -169,14 +179,14 @@ const SurveyBody = styled.div`
   gap: 34px;
 `;
 
-const SurveyBox = styled.div`
+const SurveyBox = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 40px;
 `;
 
-const SurveyInputBox = styled.div`
+const SurveyInputBox = styled.article`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -233,4 +243,18 @@ const SurveyButtonBox = styled.div`
   width: 100%;
   min-width: 280px;
   padding: 0 57px;
+`;
+
+const LoadingText = styled.aside`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100dvw;
+  height: 100dvh;
+
+  & > p {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 14px;
+  }
 `;
