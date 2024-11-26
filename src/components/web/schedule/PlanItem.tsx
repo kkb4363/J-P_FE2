@@ -26,6 +26,7 @@ import ImageView from "../ImageView";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
 import PhoneIcon from "../../../assets/icons/PhoneIcon";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
   item: DayLocationProps;
@@ -50,6 +51,7 @@ export default function PlanItem({
   });
   const [isOpenPlaceModal, setIsOpenPlaceModal] = useState(false);
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     attributes,
@@ -75,13 +77,18 @@ export default function PlanItem({
     if (isEdit) {
       setOpenModal((p) => ({ ...p, selectDay: true }));
     } else {
-      // await getGooglePlaceDetail({ placeId: item.placeId }).then((res) =>
-      //   setPlaceInfo(res!.data)
-      // );
-      setPlaceInfo(testGoogleSelectPlaceItem);
+      setIsLoading(true);
       setIsOpenPlaceModal(true);
+      await getGooglePlaceDetail({ placeId: item.placeId }).then((res) => {
+        setPlaceInfo(res!.data);
+      });
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
     }
   };
+
+  console.log(placeInfo);
 
   const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
@@ -158,12 +165,20 @@ export default function PlanItem({
         >
           <>
             <ModalTopBox>
-              <ImageView
-                src={placeInfo?.photoUrls[0]}
-                alt={placeInfo.name}
-                width="130px"
-                height="110px"
-              />
+              {isLoading ? (
+                <CustomSkeleton
+                  width="130px"
+                  height="110px"
+                  borderRadius="16px"
+                />
+              ) : (
+                <ImageView
+                  src={placeInfo?.photoUrls[0]}
+                  alt={placeInfo.name}
+                  width="130px"
+                  height="110px"
+                />
+              )}
               <div>
                 <h1>{placeInfo.name}</h1>
                 <span>{placeInfo.shortAddress}</span>
@@ -174,18 +189,20 @@ export default function PlanItem({
               </div>
             </ModalTopBox>
             <ModalBottomBox>
-              <div>
-                <AlarmIcon />
-                <span>{placeInfo.businessStatus}</span>
-              </div>
-              <div>
-                <TicketIcon />
-                <span>스카이워크 3,000</span>
-              </div>
-              <div>
-                <PhoneIcon />
-                <span>{placeInfo.formattedPhoneNumber}</span>
-              </div>
+              <PlaceInfoBox>
+                <div>
+                  <AlarmIcon />
+                  <span>{placeInfo.businessStatus}</span>
+                </div>
+                <div>
+                  <TicketIcon />
+                  <span>스카이워크 3,000</span>
+                </div>
+                <div>
+                  <PhoneIcon />
+                  <span>{placeInfo.formattedPhoneNumber}</span>
+                </div>
+              </PlaceInfoBox>
             </ModalBottomBox>
           </>
         </NoButtonModal>
@@ -387,6 +404,21 @@ const ModalTopBox = styled.div`
 `;
 
 const ModalBottomBox = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
-`
+  align-self: flex-start;
+  justify-content: center;
+  padding: 36px;
+`;
+
+const PlaceInfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & > div {
+    display: flex;
+    gap: 10px;
+  }
+`;
