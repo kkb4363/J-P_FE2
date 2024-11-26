@@ -1,33 +1,27 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Container from "../../../components/web/Container";
-import { useUserStore } from "../../../store/user.store";
 import { toast } from "react-toastify";
-import ListIcon from "../../../assets/icons/ListIcon";
 import UpcomingSchedule from "../../../components/web/schedule/UpcomingSchedule";
-import OngoingSchedule from "../../../components/web/schedule/OngoingSchedule";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import { useEffect, useState } from "react";
 import { getScheduleList } from "../../../service/axios";
 import { ScheduleApiProps } from "../../../types/schedule";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 export default function Schedule() {
   const navigate = useNavigate();
-  const { getUserName } = useUserStore();
 
   const [mySchedules, setMySchedules] = useState<ScheduleApiProps[]>([]);
-  const [isListView, setIsListView] = useState(true);
 
   const handleScheduleCreate = () => {
-    if (!getUserName()) {
+    if (!cookies.get("userToken")) {
       toast(<span>로그인이 필요합니다.</span>);
     } else {
       navigate("/home/createSchedule");
     }
-  };
-
-  const handleListView = () => {
-    setIsListView((p) => !p);
   };
 
   useEffect(() => {
@@ -38,54 +32,29 @@ export default function Schedule() {
     });
   }, []);
 
-  useEffect(() => {
-    if (mySchedules?.length !== 0) {
-      if (mySchedules.find((s: any) => s.status === "NOW")) {
-        setIsListView(false);
-      }
-    }
-  }, [mySchedules]);
-
   return (
     <>
       <Container>
         <TitleWithButton>
-          <h1>내 일정</h1>
+          <h1>일정</h1>
 
-          {isListView ? (
-            <button onClick={handleScheduleCreate}>
-              <CalendarCheckIcon stroke="#6979f8" />
-              <span>일정 생성</span>
-            </button>
-          ) : (
-            <button onClick={handleListView}>
-              <ListIcon />
-              <span>일정 목록</span>
-            </button>
-          )}
+          <button onClick={handleScheduleCreate}>
+            <CalendarCheckIcon stroke="#6979f8" />
+            <span>일정 생성</span>
+          </button>
         </TitleWithButton>
 
-        {isListView ? (
-          <UpcomingSchedule
-            schedules={mySchedules
-              .filter((p) => p.status !== "COMPLETED")
-              .reverse()}
-          />
-        ) : (
-          <OngoingSchedule
-            schedules={
-              mySchedules.find(
-                (s: ScheduleApiProps) => s.status === "NOW"
-              ) as ScheduleApiProps
-            }
-          />
-        )}
+        <UpcomingSchedule
+          schedules={mySchedules
+            .filter((p) => p.status !== "COMPLETED")
+            .reverse()}
+        />
       </Container>
     </>
   );
 }
 
-const TitleWithButton = styled.div`
+const TitleWithButton = styled.section`
   display: flex;
   align-items: center;
   justify-content: space-between;
