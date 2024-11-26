@@ -20,8 +20,6 @@ import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
 import IconBox from "../../IconBox";
 import StarIcon from "../../../assets/icons/StarIcon";
-import { testGoogleSelectPlaceItem } from "../../../utils/staticDatas";
-import InfoModal from "../surroundingPlace/InfoModal";
 import ImageView from "../ImageView";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
@@ -87,8 +85,6 @@ export default function PlanItem({
       }, 300);
     }
   };
-
-  console.log(placeInfo);
 
   const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
@@ -266,6 +262,8 @@ export default function PlanItem({
           <ModalText>일정이 삭제되었습니다.</ModalText>
         </OneButtonModal>
       )}
+
+      {/* 일정 - 나의 플랜 Modal */}
       {isOpenMemoModal.memo && (
         <NoButtonModal
           width="666px"
@@ -273,7 +271,11 @@ export default function PlanItem({
           onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
-          <PlanMemo isAddCost={false} setIsOpenMemoModal={setIsOpenMemoModal} />
+          <PlanMemo
+            isAddCost={false}
+            planItemId={item.id}
+            setIsOpenMemoModal={setIsOpenMemoModal}
+          />
         </NoButtonModal>
       )}
       {isOpenMemoModal.cost && (
@@ -283,7 +285,11 @@ export default function PlanItem({
           onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
-          <PlanMemo isAddCost={true} setIsOpenMemoModal={setIsOpenMemoModal} />
+          <PlanMemo
+            isAddCost={true}
+            planItemId={item.id}
+            setIsOpenMemoModal={setIsOpenMemoModal}
+          />
         </NoButtonModal>
       )}
     </>
@@ -420,5 +426,6 @@ const PlaceInfoBox = styled.div`
   & > div {
     display: flex;
     gap: 10px;
+    color: ${(props) => props.theme.color.gray700};
   }
 `;

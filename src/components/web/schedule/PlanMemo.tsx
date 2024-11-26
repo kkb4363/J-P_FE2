@@ -1,18 +1,20 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import AddSquareIcon from "../../../assets/icons/AddSquareIcon";
 import CalendarIcon from "../../../assets/icons/CalendarIcon";
 import CardIcon from "../../../assets/icons/CardIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import { TitlePlusBox } from "../../../assets/styles/scheduleDetail.style";
-import { testCostList } from "../../../utils/staticDatas";
+import { DayLocationProps } from "../../../types/res.dto";
+import { AddCostDataTypes, PlanDetailsProps } from "../../../types/schedule";
 import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
 import TransportBox from "../../TransportBox";
-import { AddCostDataTypes } from "../../../types/schedule";
+import { editPlan, getPlan } from "../../../service/axios";
 
 interface Props {
   isAddCost: boolean;
+  planItemId: number;
   setIsOpenMemoModal: React.Dispatch<
     React.SetStateAction<{
       memo: boolean;
@@ -21,18 +23,23 @@ interface Props {
   >;
 }
 
-export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
+export default function PlanMemo({
+  isAddCost,
+  planItemId,
+  setIsOpenMemoModal,
+}: Props) {
+  const [isLoading, setIsLoading] = useState(false);
   const [isPlanMemoEdit, setIsPlanMemoEdit] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [planMemoData, setPlanMemoData] = useState({
-    content: "",
-    cost: testCostList,
-    transport: [] as string[],
+  const [planMemoData, setPlanMemoData] = useState<PlanDetailsProps>({
+    memo: "",
+    expense: [],
+    mobility: [],
   });
   const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
-    category: "Car",
+    type: "Car",
     name: "",
-    cost: null,
+    expense: null,
   });
 
   const adjustTextareaHeight = () => {
@@ -43,14 +50,33 @@ export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
     }
   };
 
-  const handleEditDoneClick = () => {
+  const handleEditDoneClick = async () => {
     if (isAddCost) {
+      await editPlan(planItemId, planMemoData).then((res) => console.log(res));
       setIsOpenMemoModal({ memo: true, cost: false });
       console.log(addCostData);
     } else {
       setIsPlanMemoEdit(false);
     }
   };
+
+  const getPlanApi = async () => {
+    setIsLoading(true);
+    getPlan(planItemId).then((res) =>
+      setPlanMemoData({
+        memo: res?.data.memo ?? "",
+        expense: res?.data.expense,
+        mobility: res?.data.mobility,
+      })
+    );
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getPlanApi();
+  }, []);
+
+  console.log(planMemoData);
 
   return (
     <PlanMemoContainer>
@@ -68,7 +94,7 @@ export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
       ) : (
         <Title>나의 플랜</Title>
       )}
-      {!isAddCost && (
+      {!isAddCost && planMemoData && (
         <PlanMemoBody>
           <div>
             <SubtitleBox>
@@ -80,11 +106,11 @@ export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
                 ref={textareaRef}
                 placeholder="여행 상세 일정"
                 readOnly={!isPlanMemoEdit}
-                value={planMemoData.content}
+                value={planMemoData.memo}
                 onChange={(e) =>
                   setPlanMemoData((prev) => ({
-                    ...prev,
-                    content: e.target.value,
+                    ...prev!,
+                    memo: e.target.value,
                   }))
                 }
                 onInput={adjustTextareaHeight}
@@ -109,7 +135,7 @@ export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
                 <AddSquareIcon />
               </div>
             </TitlePlusBox>
-            <CostList isWeb={true} costList={planMemoData.cost} />
+            <CostList isWeb={true} costList={planMemoData.expense} />
           </div>
           <div>
             <TitlePlusBox>
@@ -123,18 +149,20 @@ export default function PlanMemo({ isAddCost, setIsOpenMemoModal }: Props) {
             </TitlePlusBox>
             <TransportBox
               isWeb={true}
-              transport={planMemoData.transport}
+              transport={planMemoData.mobility || []}
               isPlanMemoEdit={isPlanMemoEdit}
               setData={setPlanMemoData}
             />
           </div>
         </PlanMemoBody>
       )}
+
+      {/* 비용 추가 Modal */}
       {isAddCost && (
         <AddCostBody>
           <AddCostBox
             isWeb
-            selectedCategory={addCostData.category}
+            selectedType={addCostData.type}
             setAddCostData={setAddCostData}
           />
         </AddCostBody>
