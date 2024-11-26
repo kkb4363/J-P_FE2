@@ -471,3 +471,18 @@ export const getDaylistFromSchedule = async (id: string) => {
     console.error("Day 리스트 조회 API 에러", err);
   }
 };
+
+export const deleteSchedule = async (id: number) => {
+  try {
+    const res = await axiosInstance.delete(`/schedule/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("일정 삭제 API 에러", err);
+  }
+};

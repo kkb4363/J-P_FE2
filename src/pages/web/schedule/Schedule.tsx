@@ -48,6 +48,7 @@ export default function Schedule() {
           schedules={mySchedules
             .filter((p) => p.status !== "COMPLETED")
             .reverse()}
+          setSchedules={setMySchedules}
         />
       </Container>
     </>

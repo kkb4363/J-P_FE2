@@ -3,13 +3,22 @@ import { CustomLeftArrow, CustomRightArrow } from "../home/CardSlide";
 import MyTravelCard from "../../MyTravelCard";
 import { useNavigate } from "react-router-dom";
 import { ScheduleApiProps } from "../../../types/schedule";
+import { useEffect, useState } from "react";
 
 interface Props {
   schedules: ScheduleApiProps[];
+  isDelete: boolean;
+  setDeleteId: (id: number) => void;
 }
 
-export default function ScheduleSlider({ schedules }: Props) {
+export default function ScheduleSlider({
+  schedules,
+  isDelete,
+  setDeleteId,
+}: Props) {
   const navigate = useNavigate();
+  const [selectId, setSelectId] = useState<number>();
+
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 464 },
@@ -17,6 +26,22 @@ export default function ScheduleSlider({ schedules }: Props) {
       slidesToSlide: 2,
     },
   };
+
+  const handleClick = (id: number) => {
+    if (isDelete) {
+      setSelectId(id);
+      setDeleteId(id);
+    } else {
+      navigate(`/home/schedule/details/${id}`);
+    }
+  };
+
+  useEffect(() => {
+    if (isDelete) {
+      setSelectId(schedules[0]?.id);
+      setDeleteId(schedules[0]?.id);
+    }
+  }, [isDelete]);
 
   return (
     <Carousel
@@ -32,14 +57,15 @@ export default function ScheduleSlider({ schedules }: Props) {
     >
       {schedules?.map((s: any) => (
         <MyTravelCard
-          handleClick={() => navigate(`/home/schedule/details/${s.id}`)}
+          key={s.id}
           width="392px"
           height="110px"
-          key={s.id}
           title={s.title}
           startDate={s.startDate}
           endDate={s.endDate}
           isOpen={s.isOpen}
+          isSelect={selectId === s.id}
+          handleClick={() => handleClick(s.id)}
         />
       ))}
     </Carousel>
