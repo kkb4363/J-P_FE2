@@ -55,7 +55,7 @@ export const ExtendedContainer = styled.div`
   overflow: auto;
 `;
 
-const BackgroundBox = styled.div`
+const BackgroundBox = styled.section`
   width: 100%;
   min-width: 1440px;
   min-height: calc(712px - 90px);

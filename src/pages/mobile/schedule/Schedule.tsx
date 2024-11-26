@@ -14,23 +14,71 @@ import BellIcon from "../../../assets/icons/BellIcon";
 import { useNavigate } from "react-router-dom";
 import CustomProfile from "../../../components/CustomProfile";
 import { useEffect, useState } from "react";
-import { getScheduleList } from "../../../service/axios";
+import { deleteSchedule, getScheduleList } from "../../../service/axios";
 import { toast } from "react-toastify";
-import { useUserStore } from "../../../store/user.store";
 import { ScheduleApiProps } from "../../../types/schedule";
 import MyTravelCard from "../../../components/MyTravelCard";
+import { Cookies } from "react-cookie";
+import OneButtonModal from "../../../components/OneButtonModal";
+import TwoButtonsModal from "../../../components/TwoButtonsModal";
+import TrashIcon from "../../../assets/icons/TrashIcon";
+
+const cookies = new Cookies();
 
 export default function Schedule() {
   const navigate = useNavigate();
-  const { getUserName } = useUserStore();
 
   const [mySchedules, setMySchedules] = useState<ScheduleApiProps[]>([]);
 
+  // 지난 일정 제외
+  const filteredSchedules = mySchedules?.filter(
+    (p) => p.status !== "COMPLETED"
+  );
+
+  // 일정 삭제
+  const [isDelete, setIsDelete] = useState(false);
+  const [selectId, setSelectId] = useState<number>();
+  const [openModal, setOpenModal] = useState({
+    deleteSchedule: false,
+    deleteSuccess: false,
+  });
+
   const handleScheduleCreate = () => {
-    if (!getUserName()) {
+    if (!cookies.get("userToken")) {
       toast(<span>로그인이 필요합니다.</span>);
     } else {
       navigate("/schedule");
+    }
+  };
+
+  const handleCardClick = (id: number) => {
+    if (isDelete) {
+      setSelectId(id);
+    } else {
+      navigate(`/schedule/details/${id}`);
+    }
+  };
+
+  const handleDelete = () => {
+    if (isDelete) {
+      setOpenModal((p) => ({ ...p, deleteSchedule: true }));
+    } else {
+      setIsDelete(true);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (selectId) {
+      deleteSchedule(selectId).then((res) => {
+        if (res?.data) {
+          const newSchedules = mySchedules.filter(
+            (prev) => prev.id !== selectId
+          );
+          setIsDelete(false);
+          setMySchedules(newSchedules);
+          setOpenModal({ deleteSchedule: false, deleteSuccess: true });
+        }
+      });
     }
   };
 
@@ -42,87 +90,123 @@ export default function Schedule() {
     });
   }, []);
 
+  useEffect(() => {
+    if (isDelete) {
+      setSelectId(filteredSchedules[0]?.id);
+    }
+  }, [isDelete]);
+
   return (
-    <ScheduleContainer>
-      <CustomHeader title="일정" hidePrevIcon={true}>
-        <ScheduleLayout onClick={handleScheduleCreate}>
-          <ScheduleIcon />
-          <span>일정 생성</span>
-        </ScheduleLayout>
-      </CustomHeader>
+    <>
+      <ScheduleContainer>
+        <CustomHeader title="일정" hidePrevIcon={true}>
+          <CreateScheduleBtn onClick={handleScheduleCreate}>
+            <ScheduleIcon />
+            <span>일정 생성</span>
+          </CreateScheduleBtn>
+        </CustomHeader>
 
-      <ScheduleBody>
-        <InfoRow>
-          <InfoText>내 일정</InfoText>
-        </InfoRow>
+        <ScheduleSection>
+          <InfoRow>
+            <InfoText>내 일정</InfoText>
+            <DeleteText onClick={handleDelete}>
+              {isDelete && <TrashIcon width={16} height={16} />}
+              {isDelete ? "삭제" : "편집"}
+            </DeleteText>
+          </InfoRow>
 
-        {mySchedules?.length === 0 ? (
-          <NoSchedule>
-            <ScheduleIcon stroke="#b8b8b8" />
-            <span>일정이 없어요. 새로운 여행 일정을 추가해요!</span>
-          </NoSchedule>
-        ) : (
-          <ScheduleCardCol>
-            {mySchedules
-              ?.filter((p) => p.status !== "COMPLETED")
-              .reverse()
-              .map((t: any) => (
+          {filteredSchedules?.length === 0 ? (
+            <NotScheduleSection>
+              <ScheduleIcon stroke="#b8b8b8" />
+              <span>일정이 없어요. 새로운 여행 일정을 추가해요!</span>
+            </NotScheduleSection>
+          ) : (
+            <ScheduleCardCol>
+              {filteredSchedules?.reverse().map((t: any) => (
                 <MyTravelCard
+                  key={t.id}
                   width="100%"
                   height="100px"
-                  key={t.id}
                   title={t.title}
                   startDate={t.startDate}
                   endDate={t.endDate}
                   isOpen={t.isOpen}
-                  handleClick={() => navigate(`/schedule/details/${t.id}`)}
+                  isSelect={selectId === t.id}
+                  handleClick={() => handleCardClick(t.id)}
                 />
               ))}
-          </ScheduleCardCol>
-        )}
+            </ScheduleCardCol>
+          )}
 
-        <InfoRow>
-          <InfoText>여행 일정 추천</InfoText>
-          <MoreText onClick={() => navigate("/home/travels")}>더보기</MoreText>
-        </InfoRow>
+          <InfoRow>
+            <InfoText>여행 일정 추천</InfoText>
+            <MoreText onClick={() => navigate("/home/travels")}>
+              더보기
+            </MoreText>
+          </InfoRow>
 
-        <SuggestionCol>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
+          <SuggestionCol>
+            <SuggestionBox>
+              <ImageView
                 src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
+                alt="여행 일정 추천 이미지"
+                width="80px"
+                height="80px"
               />
 
-              <p>남해로 힐링 여행 떠나기</p>
+              <SuggestTextCol>
+                <CustomProfile
+                  src={testImg}
+                  nickname="Minah"
+                  content="1박 2일"
+                  fontSize="12px"
+                />
 
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-        </SuggestionCol>
-      </ScheduleBody>
+                <p>남해로 힐링 여행 떠나기</p>
 
-      <AlarmButton>
-        <BellIcon stroke="#fff" width="18" height="18" />
-        <span>초대 알림</span>
-      </AlarmButton>
-    </ScheduleContainer>
+                <div>
+                  <span>#한려해상국립공원</span>
+                  <span>#바람흔적미술관</span>
+                </div>
+              </SuggestTextCol>
+            </SuggestionBox>
+          </SuggestionCol>
+        </ScheduleSection>
+
+        <AlarmButton>
+          <BellIcon stroke="#fff" width="18" height="18" />
+          <span>초대 알림</span>
+        </AlarmButton>
+      </ScheduleContainer>
+
+      {openModal.deleteSchedule && (
+        <TwoButtonsModal
+          isMobile={true}
+          width="320px"
+          height="230px"
+          text="일정을 삭제할까요?"
+          onClick={handleDeleteClick}
+          onClose={() => setOpenModal((p) => ({ ...p, deleteSchedule: false }))}
+        />
+      )}
+
+      {openModal.deleteSuccess && (
+        <OneButtonModal
+          isMobile={true}
+          width="320px"
+          height="230px"
+          noCloseBtn
+          buttonText="확인"
+          onClick={() => setOpenModal((p) => ({ ...p, deleteSuccess: false }))}
+        >
+          <DeleteSuccessText>일정이 삭제되었습니다.</DeleteSuccessText>
+        </OneButtonModal>
+      )}
+    </>
   );
 }
 
-const ScheduleContainer = styled.div`
+const ScheduleContainer = styled.section`
   overflow: auto;
   ${scrollHidden};
   height: 100%;
@@ -130,7 +214,7 @@ const ScheduleContainer = styled.div`
   flex-direction: column;
 `;
 
-const ScheduleLayout = styled.div`
+const CreateScheduleBtn = styled.button`
   min-width: 60px;
   display: flex;
   gap: 3px;
@@ -144,7 +228,7 @@ const ScheduleLayout = styled.div`
   }
 `;
 
-export const ScheduleBody = styled.div`
+export const ScheduleSection = styled.section`
   padding: 0 20px;
   height: calc(100% - 50px - 70px);
 `;
@@ -242,7 +326,7 @@ const ScheduleCardCol = styled.div`
   ${scrollHidden};
 `;
 
-const NoSchedule = styled.div`
+const NotScheduleSection = styled.div`
   padding: 32px 0 70px 0;
   display: flex;
   justify-content: center;
@@ -254,4 +338,18 @@ const NoSchedule = styled.div`
     font-weight: 400;
     white-space: nowrap;
   }
+`;
+
+const DeleteSuccessText = styled.p`
+  color: ${(props) => props.theme.color.gray900};
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+const DeleteText = styled.div`
+  color: ${(props) => props.theme.color.gray500};
+  font-size: 12px;
+
+  display: flex;
+  align-items: center;
 `;

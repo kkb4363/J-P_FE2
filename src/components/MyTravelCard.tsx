@@ -8,13 +8,15 @@ interface Props {
   startDate: string;
   endDate: string;
   isOpen: boolean;
-  placeId?: string;
   width: string;
   height: string;
+  isSelect: boolean;
   handleClick?: () => void;
 }
 
 export default function MyTravelCard(props: Props) {
+  const travelInfo = formatDayNights(props.startDate, props.endDate);
+
   const handleDate = () => {
     const today = new Date();
     const endDate = new Date(props.endDate);
@@ -36,12 +38,11 @@ export default function MyTravelCard(props: Props) {
     return "여행 중";
   };
 
-  const travelInfo = formatDayNights(props.startDate, props.endDate);
-
   return (
     <MyTravelCardContainer
       $width={props.width}
       $height={props.height}
+      $isSelect={props.isSelect}
       onClick={props.handleClick}
     >
       <Header>
@@ -72,12 +73,20 @@ export default function MyTravelCard(props: Props) {
   );
 }
 
-const MyTravelCardContainer = styled.div<{ $width: string; $height: string }>`
+const MyTravelCardContainer = styled.article<{
+  $width: string;
+  $height: string;
+  $isSelect: boolean;
+}>`
   width: ${(props) => props.$width && props.$width};
   height: ${(props) => props.$height && props.$height};
   padding: 14px 16px;
   border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.gray200};
+  border: 1px solid
+    ${(props) =>
+      props.$isSelect
+        ? props.theme.color.secondary
+        : props.theme.color.gray200};
   background-color: ${(props) => props.theme.color.white};
 
   display: flex;
@@ -86,13 +95,13 @@ const MyTravelCardContainer = styled.div<{ $width: string; $height: string }>`
   cursor: pointer;
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const Tag = styled.div`
+const Tag = styled.section`
   padding: 3px 12px;
   border: 1px solid ${(props) => props.theme.color.secondary};
   border-radius: 16px;
@@ -106,7 +115,7 @@ const Tag = styled.div`
   }
 `;
 
-const DateBox = styled.div`
+const DateBox = styled.section`
   display: flex;
   align-items: center;
   gap: 3px;
@@ -128,7 +137,7 @@ const DateBox = styled.div`
   }
 `;
 
-const Footer = styled.div`
+const Footer = styled.footer`
   display: flex;
   align-items: center;
   justify-content: space-between;

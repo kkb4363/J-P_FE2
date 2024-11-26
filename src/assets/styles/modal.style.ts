@@ -13,7 +13,7 @@ export const ModalOverlay = styled.div`
   z-index: 4;
 `;
 
-export const ModalWrapper = styled.div<{ $width?: string; $height?: string }>`
+export const ModalWrapper = styled.aside<{ $width?: string; $height?: string }>`
   background-color: ${(props) => props.theme.color.background};
   border-radius: 30px;
   box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.08),

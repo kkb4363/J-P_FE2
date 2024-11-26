@@ -42,7 +42,7 @@ export default function CustomHeader({
   );
 }
 
-const CustomHeaderContainer = styled.div`
+const CustomHeaderContainer = styled.header`
   height: 50px;
   display: flex;
   justify-content: space-between;
