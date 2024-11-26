@@ -15,7 +15,7 @@ import LoadingText from "../../../components/LoadingText";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
-import { planItemProps, ScheduleApiProps } from "../../../types/schedule";
+import { PlanItemProps, ScheduleApiProps } from "../../../types/schedule";
 import { editSchedule, getSchedule } from "../../../service/axios";
 import { testImg1, testPlanItems } from "../../../utils/staticDatas";
 import { DayProps } from "../../../types/res.dto";
@@ -25,7 +25,7 @@ export default function ScheduleDetails() {
   const { scheduleId } = useParams();
   const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
   const [dayListData, setDayListData] = useState<DayProps[]>();
-  const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
+  const [planItems, setPlanItems] = useState<PlanItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
