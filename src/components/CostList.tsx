@@ -7,9 +7,14 @@ import { AddCostDataTypes } from "../types/schedule";
 interface Props {
   isWeb?: boolean;
   costList: AddCostDataTypes[];
+  onDeleteCost: (index: number) => Promise<void>;
 }
 
-export default function CostList({ isWeb = false, costList }: Props) {
+export default function CostList({
+  isWeb = false,
+  costList,
+  onDeleteCost,
+}: Props) {
   return (
     <CostItemList $isWeb={isWeb}>
       {costList.length > 0 ? (
@@ -31,7 +36,7 @@ export default function CostList({ isWeb = false, costList }: Props) {
                 </CostCategory>
                 <p>{item.expense}원</p>
               </CostBox>
-              <div>
+              <div onClick={() => onDeleteCost(idx)}>
                 <TrashIcon />
               </div>
             </CostItem>

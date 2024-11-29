@@ -10,6 +10,7 @@ import { AddCostDataTypes, PlanDetailsProps } from "../../../types/schedule";
 import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
 import TransportBox from "../../TransportBox";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
   isAddCost: boolean;
@@ -49,22 +50,34 @@ export default function PlanMemo({
     }
   };
 
+  const handleDeleteCostClick = async (index: number) => {
+    const updatedPlanMemoData = {
+      ...planMemoData,
+      expense: planMemoData.expense.filter((_, idx) => idx !== index),
+    };
+    await editPlanApi(planItemId, updatedPlanMemoData);
+  };
+
   const handleEditDoneClick = async () => {
     if (isAddCost) {
       const updatedPlanMemoData = {
         ...planMemoData,
         expense: [...planMemoData.expense, addCostData],
       };
-      await editPlan(planItemId, updatedPlanMemoData).then((res) =>
-        console.log("editplan", planMemoData)
-      );
+      editPlanApi(planItemId, updatedPlanMemoData);
       setIsOpenMemoModal({ memo: true, cost: false });
-      await getPlanApi();
     } else {
-      await editPlan(planItemId, planMemoData).then((res) => console.log(res));
+      editPlanApi(planItemId, planMemoData);
       setIsPlanMemoEdit(false);
-      await getPlanApi();
     }
+  };
+
+  const editPlanApi = async (
+    planItemId: number,
+    planMemoData: PlanDetailsProps
+  ) => {
+    await editPlan(planItemId, planMemoData);
+    await getPlanApi();
   };
 
   const getPlanApi = async () => {
@@ -82,6 +95,10 @@ export default function PlanMemo({
   useEffect(() => {
     getPlanApi();
   }, []);
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [planMemoData.memo]);
 
   return (
     <PlanMemoContainer>
@@ -140,7 +157,15 @@ export default function PlanMemo({
                 <AddSquareIcon />
               </div>
             </TitlePlusBox>
-            <CostList isWeb={true} costList={planMemoData.expense} />
+            {isLoading ? (
+              <CustomSkeleton width="495px" height="66px" borderRadius="16px" />
+            ) : (
+              <CostList
+                isWeb={true}
+                costList={planMemoData.expense}
+                onDeleteCost={handleDeleteCostClick}
+              />
+            )}
           </div>
           <div>
             <TitlePlusBox>
