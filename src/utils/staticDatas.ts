@@ -14,7 +14,7 @@ import TicketIcon from "../assets/icons/TicketIcon";
 import { reviewApiProps } from "../types/home";
 import { SelectPlaceProps } from "../types/home.details";
 import { CommentProps, UserProps } from "../types/res.dto";
-import { planItemProps } from "../types/schedule";
+import { PlanItemProps } from "../types/schedule";
 
 export const footerTabs = [
   { icon: HomeIcon, label: "홈", route: "/home" },
@@ -146,7 +146,7 @@ export const testUserDto: UserProps = {
   profile: "null",
 };
 
-export const testPlanItems: planItemProps[] = [
+export const testPlanItems: PlanItemProps[] = [
   {
     id: "1",
     time: "10:10",
@@ -190,7 +190,7 @@ export const textCommentItem: CommentProps = {
 
 export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
 
-export const testTransportList: string[] = [
+export const mobilityList: string[] = [
   "자동차",
   "버스/지하철",
   "기차",

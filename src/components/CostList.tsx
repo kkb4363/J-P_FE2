@@ -1,33 +1,47 @@
 import styled from "styled-components";
-import { testCostTypes } from "../utils/staticDatas";
-import { RoundIconBox } from "../assets/styles/scheduleDetail.style";
 import TrashIcon from "../assets/icons/TrashIcon";
+import { RoundIconBox } from "../assets/styles/scheduleDetail.style";
+import { costCategories } from "../utils/staticDatas";
+import { AddCostDataTypes } from "../types/schedule";
 
 interface Props {
   isWeb?: boolean;
-  costList: testCostTypes[];
+  costList: AddCostDataTypes[];
+  onDeleteCost: (index: number) => Promise<void>;
 }
 
-export default function CostList({ isWeb = false, costList }: Props) {
+export default function CostList({
+  isWeb = false,
+  costList,
+  onDeleteCost,
+}: Props) {
   return (
     <CostItemList $isWeb={isWeb}>
       {costList.length > 0 ? (
-        costList.map((item, idx) => (
-          <CostItem $isWeb={isWeb}>
-            <CostBox key={idx} $isWeb={isWeb}>
-              <CostCategory>
-                <CostCategoryIcon>
-                  <item.type.icon stroke="#6979F8" />
-                </CostCategoryIcon>
-                <p>{item.name}</p>
-              </CostCategory>
-              <p>{item.cost}원</p>
-            </CostBox>
-            <div>
-              <TrashIcon />
-            </div>
-          </CostItem>
-        ))
+        costList.map((item, idx) => {
+          const matchedCategory = costCategories.find(
+            (category) => category.id == item.type
+          );
+
+          return (
+            <CostItem key={idx} $isWeb={isWeb}>
+              <CostBox $isWeb={isWeb}>
+                <CostCategory>
+                  <CostCategoryIcon>
+                    {matchedCategory && (
+                      <matchedCategory.icon stroke="#6979F8" />
+                    )}
+                  </CostCategoryIcon>
+                  <p>{item.name}</p>
+                </CostCategory>
+                <p>{item.expense}원</p>
+              </CostBox>
+              <div onClick={() => onDeleteCost(idx)}>
+                <TrashIcon />
+              </div>
+            </CostItem>
+          );
+        })
       ) : (
         <p>비용을 추가해주세요.</p>
       )}

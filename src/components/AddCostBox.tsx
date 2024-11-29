@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import { costCategories } from "../utils/staticDatas";
 import { AddCostDataTypes } from "../types/schedule";
+import { costCategories } from "../utils/staticDatas";
 
 interface Props {
   isWeb?: boolean;
-  selectedCategory: string;
+  selectedType: string;
   setAddCostData: React.Dispatch<React.SetStateAction<AddCostDataTypes>>;
 }
 
 export default function AddCostBox({
   isWeb = false,
-  selectedCategory,
+  selectedType,
   setAddCostData,
 }: Props) {
   return (
@@ -22,19 +22,17 @@ export default function AddCostBox({
             <SelectCostItem
               key={idx}
               $isWeb={isWeb}
-              $isSelected={selectedCategory === category.id}
+              $isSelected={selectedType === category.id}
               onClick={() =>
                 setAddCostData((prev) => ({
                   ...prev,
-                  category: category.id,
+                  type: category.id,
                 }))
               }
             >
-              <CategoryIconBox $isSelected={selectedCategory === category.id}>
+              <CategoryIconBox $isSelected={selectedType === category.id}>
                 <category.icon
-                  stroke={
-                    selectedCategory === category.id ? "#6979F8" : "#B8B8B8"
-                  }
+                  stroke={selectedType === category.id ? "#6979F8" : "#B8B8B8"}
                 />
               </CategoryIconBox>
               <span>{category.label}</span>
@@ -67,7 +65,7 @@ export default function AddCostBox({
             onChange={(e) =>
               setAddCostData((prev) => ({
                 ...prev,
-                cost: e.target.value ? parseFloat(e.target.value) : null,
+                expense: e.target.value ? parseFloat(e.target.value) : null,
               }))
             }
           />

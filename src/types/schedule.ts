@@ -4,23 +4,23 @@ import { DayProps, UserProps } from "./res.dto";
 
 export type StatusType = "UPCOMING" | "NOW" | "COMPLETED";
 
-export interface planItemProps {
+export interface PlanItemProps {
   id: UniqueIdentifier;
   time: string;
   title: string;
   subtitle: string;
 }
 
-export interface planDetailsProps {
-  details: string;
-  cost: number;
-  moveTo: string;
+export interface PlanDetailsProps {
+  memo: string;
+  expense: AddCostDataTypes[];
+  mobility: string[];
 }
 
 export interface AddCostDataTypes {
-  category: string;
+  type: string;
   name: string;
-  cost: number | null;
+  expense: number | null;
 }
 
 export interface CityProps {

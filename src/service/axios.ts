@@ -2,6 +2,7 @@ import axios from "axios";
 import { Cookies } from "react-cookie";
 import { UserInfoProps } from "../types/axios.type";
 import { DayLocationProps } from "../types/res.dto";
+import { PlanDetailsProps } from "../types/schedule";
 
 const cookies = new Cookies();
 
@@ -500,5 +501,35 @@ export const deleteSchedule = async (id: number) => {
     }
   } catch (err) {
     console.error("일정 삭제 API 에러", err);
+  }
+};
+
+export const getPlan = async (id: number) => {
+  try {
+    const res = await axiosInstance.get(`/schedule/location/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("장소 상세조회 API 에러", err);
+  }
+};
+
+export const editPlan = async (id: number, body: PlanDetailsProps) => {
+  try {
+    const res = await axiosInstance.put(`/schedule/location/plan/${id}`, body, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+    if (res.status == 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("플랜 편집 API 에러", err);
   }
 };

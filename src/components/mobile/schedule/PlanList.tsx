@@ -1,11 +1,11 @@
 import { ComponentClass } from "react";
 import { SortableContainer, SortableContainerProps } from "react-sortable-hoc";
-import { planItemProps } from "../../../types/schedule";
+import { PlanItemProps } from "../../../types/schedule";
 import { PlanItem } from "./PlanItem";
 import styled from "styled-components";
 
 interface Props {
-  planItems: planItemProps[];
+  planItems: PlanItemProps[];
   isEdit: boolean;
   jpState: string;
   setIsPlanDetail: () => void;
