@@ -26,7 +26,7 @@ export default function AddCostBox({
               onClick={() =>
                 setAddCostData((prev) => ({
                   ...prev,
-                  category: category.id,
+                  type: category.id,
                 }))
               }
             >

@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { testCostTypes, testTransportList } from "../utils/staticDatas";
-import { AddCostDataTypes, PlanDetailsProps } from "../types/schedule";
+import { PlanDetailsProps } from "../types/schedule";
+import { mobilityList } from "../utils/staticDatas";
 
 interface Props {
   isWeb?: boolean;
@@ -21,7 +21,7 @@ export default function TransportBox({
 
         return {
           ...prev,
-          transport: isItemInTransport
+          mobility: isItemInTransport
             ? prev.mobility.filter(
                 (transportItem: string) => transportItem !== item
               )
@@ -34,7 +34,7 @@ export default function TransportBox({
   return (
     <TransportBoxContainer>
       {isPlanMemoEdit &&
-        testTransportList.map((item, i) => (
+        mobilityList.map((item, i) => (
           <TransPortItem
             key={i}
             onClick={() => handleTransportClick(item)}

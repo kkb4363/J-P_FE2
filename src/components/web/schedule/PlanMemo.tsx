@@ -5,12 +5,11 @@ import CalendarIcon from "../../../assets/icons/CalendarIcon";
 import CardIcon from "../../../assets/icons/CardIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import { TitlePlusBox } from "../../../assets/styles/scheduleDetail.style";
-import { DayLocationProps } from "../../../types/res.dto";
+import { editPlan, getPlan } from "../../../service/axios";
 import { AddCostDataTypes, PlanDetailsProps } from "../../../types/schedule";
 import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
 import TransportBox from "../../TransportBox";
-import { editPlan, getPlan } from "../../../service/axios";
 
 interface Props {
   isAddCost: boolean;
@@ -52,11 +51,19 @@ export default function PlanMemo({
 
   const handleEditDoneClick = async () => {
     if (isAddCost) {
-      await editPlan(planItemId, planMemoData).then((res) => console.log(res));
+      const updatedPlanMemoData = {
+        ...planMemoData,
+        expense: [...planMemoData.expense, addCostData],
+      };
+      await editPlan(planItemId, updatedPlanMemoData).then((res) =>
+        console.log("editplan", planMemoData)
+      );
       setIsOpenMemoModal({ memo: true, cost: false });
-      console.log(addCostData);
+      await getPlanApi();
     } else {
+      await editPlan(planItemId, planMemoData).then((res) => console.log(res));
       setIsPlanMemoEdit(false);
+      await getPlanApi();
     }
   };
 
@@ -75,8 +82,6 @@ export default function PlanMemo({
   useEffect(() => {
     getPlanApi();
   }, []);
-
-  console.log(planMemoData);
 
   return (
     <PlanMemoContainer>

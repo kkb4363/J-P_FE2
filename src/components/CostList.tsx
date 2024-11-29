@@ -19,8 +19,8 @@ export default function CostList({ isWeb = false, costList }: Props) {
           );
 
           return (
-            <CostItem $isWeb={isWeb}>
-              <CostBox key={idx} $isWeb={isWeb}>
+            <CostItem key={idx} $isWeb={isWeb}>
+              <CostBox $isWeb={isWeb}>
                 <CostCategory>
                   <CostCategoryIcon>
                     {matchedCategory && (

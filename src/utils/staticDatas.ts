@@ -190,7 +190,7 @@ export const textCommentItem: CommentProps = {
 
 export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
 
-export const testTransportList: string[] = [
+export const mobilityList: string[] = [
   "자동차",
   "버스/지하철",
   "기차",
