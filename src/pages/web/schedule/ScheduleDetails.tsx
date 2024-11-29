@@ -1,8 +1,9 @@
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import { SortableContext } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
@@ -15,17 +16,15 @@ import LoadingText from "../../../components/LoadingText";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
-import { PlanItemProps, ScheduleApiProps } from "../../../types/schedule";
 import { editSchedule, getSchedule } from "../../../service/axios";
-import { testImg1, testPlanItems } from "../../../utils/staticDatas";
 import { DayProps } from "../../../types/res.dto";
-import { toast } from "react-toastify";
+import { ScheduleApiProps } from "../../../types/schedule";
+import { testImg1 } from "../../../utils/staticDatas";
 
 export default function ScheduleDetails() {
   const { scheduleId } = useParams();
   const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
   const [dayListData, setDayListData] = useState<DayProps[]>();
-  const [planItems, setPlanItems] = useState<PlanItemProps[]>(testPlanItems);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -124,6 +123,7 @@ export default function ScheduleDetails() {
   useEffect(() => {
     requestApi();
   }, []);
+  console.log(dayListData);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -221,6 +221,7 @@ export default function ScheduleDetails() {
                           key={item.id}
                           item={item}
                           isEdit={isEdit}
+                          currentDayIdx={currentDayIndex}
                           dayList={dayListData}
                           reloadSchedule={() => requestApi()}
                         />

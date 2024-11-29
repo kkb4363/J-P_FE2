@@ -30,6 +30,7 @@ interface Props {
   item: DayLocationProps;
   isEdit: boolean;
   dayList: DayProps[];
+  currentDayIdx: number;
   reloadSchedule: () => Promise<void>;
 }
 
@@ -37,6 +38,7 @@ export default function PlanItem({
   item,
   isEdit,
   dayList,
+  currentDayIdx,
   reloadSchedule,
 }: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
@@ -48,6 +50,7 @@ export default function PlanItem({
     cost: false,
   });
   const [isOpenPlaceModal, setIsOpenPlaceModal] = useState(false);
+  const [isMove, setIsMove] = useState(false);
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -73,6 +76,7 @@ export default function PlanItem({
 
   const handleItemClick = async () => {
     if (isEdit) {
+      setIsMove(true);
       setOpenModal((p) => ({ ...p, selectDay: true }));
     } else {
       setIsLoading(true);
@@ -88,13 +92,28 @@ export default function PlanItem({
 
   const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
+    if (isMove) {
+      setIsMove(false);
+      await moveScheduleDate(item.id, {
+        newDayId: selectDay,
+        time: selectTime,
+      }).then(() => {
+        reloadSchedule();
+      });
+    } else {
+      
+      // await moveScheduleDate(item.id, {
+      //   newDayId: currentDayIdx,
+      //   time: selectTime,
+      // }).then((res) => {
+      //   console.log('res', res);
+      //   reloadSchedule();
+      // });
+    }
+  };
 
-    await moveScheduleDate(item.id, {
-      newDayId: selectDay,
-      time: selectTime,
-    }).then(() => {
-      reloadSchedule();
-    });
+  const handleEditTimeClick = async () => {
+    setOpenModal((p) => ({ ...p, selectTime: true }));
   };
 
   const handleDeleteItemClick = async () => {
@@ -115,7 +134,10 @@ export default function PlanItem({
           zIndex: isDragging ? "100" : "auto",
         }}
       >
-        <TimeBox $isEdit={isEdit}>{`${item.time}`}</TimeBox>
+        <TimeBox
+          $isEdit={isEdit}
+          onClick={handleEditTimeClick}
+        >{`${item.time}`}</TimeBox>
         <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
           <PlaceNum $isEdit={isEdit}>{item.index}</PlaceNum>
           <PlaceTitleBox>
@@ -278,6 +300,8 @@ export default function PlanItem({
           />
         </NoButtonModal>
       )}
+
+      {/* 일정 - 비용 추가 Modal */}
       {isOpenMemoModal.cost && (
         <NoButtonModal
           width="666px"
