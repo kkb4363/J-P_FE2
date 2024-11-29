@@ -2,11 +2,11 @@ import Slider from "react-slick";
 import styled from "styled-components";
 import PrevArrow from "./mobile/schedule/PrevArrow";
 import NextArrow from "./mobile/schedule/NextArrow";
-import { dayResDto } from "../types/res.dto";
+import { DayProps } from "../types/res.dto";
 
 interface Props {
   web?: boolean;
-  dayList: dayResDto[];
+  dayList: DayProps[];
   currentDayIndex: number;
   onDayClick: (day: number) => void;
 }
@@ -17,7 +17,7 @@ export default function DaySlider({
   currentDayIndex,
   onDayClick,
 }: Props) {
-  const slidesToShowCount = web ? 4 : 3;
+  const slidesToShowCount = dayList.length < 3 ? dayList.length : 3;
   const daySlideSettings = {
     infinite: false,
     focusOnSelect: true,
@@ -50,6 +50,11 @@ const StyledSlider = styled(Slider)`
   .slick-slider {
     position: relative;
   }
+
+  .slick-list {
+    width: 100%;
+  }
+
 `;
 
 const DayBox = styled.div<{ $select: boolean; $web: boolean }>`

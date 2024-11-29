@@ -1,17 +1,12 @@
 import styled from "styled-components";
-import { testCostTypes, testTransportList } from "../utils/staticDatas";
+import { PlanDetailsProps } from "../types/schedule";
+import { mobilityList } from "../utils/staticDatas";
 
 interface Props {
   isWeb?: boolean;
   transport: string[];
   isPlanMemoEdit: boolean;
-  setData: React.Dispatch<
-    React.SetStateAction<{
-      content: string;
-      cost: testCostTypes[];
-      transport: string[];
-    }>
-  >;
+  setData: React.Dispatch<React.SetStateAction<PlanDetailsProps>>;
 }
 export default function TransportBox({
   isWeb = false,
@@ -22,15 +17,15 @@ export default function TransportBox({
   const handleTransportClick = (item: string) => {
     if (isPlanMemoEdit) {
       setData((prev) => {
-        const isItemInTransport = prev.transport.includes(item);
+        const isItemInTransport = prev.mobility.includes(item);
 
         return {
           ...prev,
-          transport: isItemInTransport
-            ? prev.transport.filter(
+          mobility: isItemInTransport
+            ? prev.mobility.filter(
                 (transportItem: string) => transportItem !== item
               )
-            : [...prev.transport, item],
+            : [...prev.mobility, item],
         };
       });
     }
@@ -39,7 +34,7 @@ export default function TransportBox({
   return (
     <TransportBoxContainer>
       {isPlanMemoEdit &&
-        testTransportList.map((item, i) => (
+        mobilityList.map((item, i) => (
           <TransPortItem
             key={i}
             onClick={() => handleTransportClick(item)}

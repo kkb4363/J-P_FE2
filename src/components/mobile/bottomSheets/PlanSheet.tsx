@@ -9,7 +9,7 @@ import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
 import { useJPStore } from "../../../store/JPType.store";
-import { AddCostDataTypes, planItemProps } from "../../../types/schedule";
+import { AddCostDataTypes, PlanItemProps } from "../../../types/schedule";
 import {
   testCostList,
   testDayList,
@@ -33,7 +33,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
   const [isPlanDetailEdit, setIsPlanDetailEdit] = useState(false);
   const [isAddCostMode, setIsAddCostMode] = useState(false);
   const [currentDay, setCurrentDay] = useState(0);
-  const [planItems, setPlanItems] = useState<planItemProps[]>(testPlanItems);
+  const [planItems, setPlanItems] = useState<PlanItemProps[]>(testPlanItems);
   const [planDetails, setPlanDetails] = useState({
     content: "",
     cost: testCostList,
@@ -229,7 +229,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
 
             <D.AddCostBox>
               <AddCostBox
-                selectedCategory={addCostData.category}
+                selectedType={addCostData.category}
                 setAddCostData={setAddCostData}
               />
             </D.AddCostBox>

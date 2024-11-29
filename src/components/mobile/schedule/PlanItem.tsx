@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { planItemProps } from "../../../types/schedule";
+import { PlanItemProps } from "../../../types/schedule";
 import {
   SortableElement,
   SortableElementProps,
@@ -14,7 +14,7 @@ export interface Props {
   setIsPlanDetail: () => void;
   setIsPlanPlace: () => void;
   handleDeleteOpen: () => void;
-  planItem: planItemProps;
+  planItem: PlanItemProps;
   jpState: string;
 }
 

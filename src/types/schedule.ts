@@ -1,26 +1,26 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { placeApiProps } from "./home";
-import { dayResDto, userCompactResDto } from "./res.dto";
+import { DayProps, UserProps } from "./res.dto";
 
 export type StatusType = "UPCOMING" | "NOW" | "COMPLETED";
 
-export interface planItemProps {
+export interface PlanItemProps {
   id: UniqueIdentifier;
   time: string;
   title: string;
   subtitle: string;
 }
 
-export interface planDetailsProps {
-  details: string;
-  cost: number;
-  moveTo: string;
+export interface PlanDetailsProps {
+  memo: string;
+  expense: AddCostDataTypes[];
+  mobility: string[];
 }
 
 export interface AddCostDataTypes {
-  category: string;
+  type: string;
   name: string;
-  cost: number | null;
+  expense: number | null;
 }
 
 export interface CityProps {
@@ -39,8 +39,8 @@ export interface ScheduleApiProps {
   place: placeApiProps;
   startDate: string;
   endDate: string;
-  member: userCompactResDto[];
+  member: UserProps[];
   status: StatusType;
   isOpen: boolean;
-  dayResDtos: dayResDto[];
+  dayResDtos: DayProps[];
 }

@@ -7,20 +7,30 @@ import TrashIcon from "../../../assets/icons/TrashIcon";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
 import {
   deletePlaceFromSchedule,
+  getGooglePlaceDetail,
   moveScheduleDate,
 } from "../../../service/axios";
-import { dayLocationResDto, dayResDto } from "../../../types/res.dto";
+import { SelectPlaceProps } from "../../../types/home.details";
+import { DayLocationProps, DayProps } from "../../../types/res.dto";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
+import IconBox from "../../IconBox";
+import StarIcon from "../../../assets/icons/StarIcon";
+import ImageView from "../ImageView";
+import AlarmIcon from "../../../assets/icons/AlarmIcon";
+import TicketIcon from "../../../assets/icons/TicketIcon";
+import PhoneIcon from "../../../assets/icons/PhoneIcon";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
-  item: dayLocationResDto;
+  item: DayLocationProps;
   isEdit: boolean;
-  dayList: dayResDto[];
+  dayList: DayProps[];
+  currentDayIdx: number;
   reloadSchedule: () => Promise<void>;
 }
 
@@ -28,6 +38,7 @@ export default function PlanItem({
   item,
   isEdit,
   dayList,
+  currentDayIdx,
   reloadSchedule,
 }: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
@@ -38,6 +49,11 @@ export default function PlanItem({
     memo: false,
     cost: false,
   });
+  const [isOpenPlaceModal, setIsOpenPlaceModal] = useState(false);
+  const [isMove, setIsMove] = useState(false);
+  const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     attributes,
     listeners,
@@ -58,21 +74,46 @@ export default function PlanItem({
     setOpenModal,
   } = useAddPlaceHook();
 
-  const handleItemClick = () => {
+  const handleItemClick = async () => {
     if (isEdit) {
+      setIsMove(true);
       setOpenModal((p) => ({ ...p, selectDay: true }));
+    } else {
+      setIsLoading(true);
+      setIsOpenPlaceModal(true);
+      await getGooglePlaceDetail({ placeId: item.placeId }).then((res) => {
+        setPlaceInfo(res!.data);
+      });
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
     }
   };
 
   const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
+    if (isMove) {
+      setIsMove(false);
+      await moveScheduleDate(item.id, {
+        newDayId: selectDay,
+        time: selectTime,
+      }).then(() => {
+        reloadSchedule();
+      });
+    } else {
+      
+      // await moveScheduleDate(item.id, {
+      //   newDayId: currentDayIdx,
+      //   time: selectTime,
+      // }).then((res) => {
+      //   console.log('res', res);
+      //   reloadSchedule();
+      // });
+    }
+  };
 
-    await moveScheduleDate(item.id, {
-      newDayId: selectDay,
-      time: selectTime,
-    }).then(() => {
-      reloadSchedule();
-    });
+  const handleEditTimeClick = async () => {
+    setOpenModal((p) => ({ ...p, selectTime: true }));
   };
 
   const handleDeleteItemClick = async () => {
@@ -93,7 +134,10 @@ export default function PlanItem({
           zIndex: isDragging ? "100" : "auto",
         }}
       >
-        <TimeBox $isEdit={isEdit}>{`${item.time}`}</TimeBox>
+        <TimeBox
+          $isEdit={isEdit}
+          onClick={handleEditTimeClick}
+        >{`${item.time}`}</TimeBox>
         <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
           <PlaceNum $isEdit={isEdit}>{item.index}</PlaceNum>
           <PlaceTitleBox>
@@ -129,6 +173,58 @@ export default function PlanItem({
           </MemoButton>
         )}
       </PlanItemContainer>
+
+      {/* 일정 장소 상세 Modal */}
+      {isOpenPlaceModal && placeInfo && (
+        <NoButtonModal
+          width="470px"
+          height="390px"
+          onClose={() => setIsOpenPlaceModal(false)}
+        >
+          <>
+            <ModalTopBox>
+              {isLoading ? (
+                <CustomSkeleton
+                  width="130px"
+                  height="110px"
+                  borderRadius="16px"
+                />
+              ) : (
+                <ImageView
+                  src={placeInfo?.photoUrls[0]}
+                  alt={placeInfo.name}
+                  width="130px"
+                  height="110px"
+                />
+              )}
+              <div>
+                <h1>{placeInfo.name}</h1>
+                <span>{placeInfo.shortAddress}</span>
+                <IconBox>
+                  <StarIcon />
+                  <span>{placeInfo.rating}</span>
+                </IconBox>
+              </div>
+            </ModalTopBox>
+            <ModalBottomBox>
+              <PlaceInfoBox>
+                <div>
+                  <AlarmIcon />
+                  <span>{placeInfo.businessStatus}</span>
+                </div>
+                <div>
+                  <TicketIcon />
+                  <span>스카이워크 3,000</span>
+                </div>
+                <div>
+                  <PhoneIcon />
+                  <span>{placeInfo.formattedPhoneNumber}</span>
+                </div>
+              </PlaceInfoBox>
+            </ModalBottomBox>
+          </>
+        </NoButtonModal>
+      )}
 
       {/* 일정 이동 Modal */}
       {openModal.selectDay && (
@@ -188,6 +284,8 @@ export default function PlanItem({
           <ModalText>일정이 삭제되었습니다.</ModalText>
         </OneButtonModal>
       )}
+
+      {/* 일정 - 나의 플랜 Modal */}
       {isOpenMemoModal.memo && (
         <NoButtonModal
           width="666px"
@@ -195,9 +293,15 @@ export default function PlanItem({
           onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
-          <PlanMemo isAddCost={false} setIsOpenMemoModal={setIsOpenMemoModal} />
+          <PlanMemo
+            isAddCost={false}
+            planItemId={item.id}
+            setIsOpenMemoModal={setIsOpenMemoModal}
+          />
         </NoButtonModal>
       )}
+
+      {/* 일정 - 비용 추가 Modal */}
       {isOpenMemoModal.cost && (
         <NoButtonModal
           width="666px"
@@ -205,7 +309,11 @@ export default function PlanItem({
           onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
-          <PlanMemo isAddCost={true} setIsOpenMemoModal={setIsOpenMemoModal} />
+          <PlanMemo
+            isAddCost={true}
+            planItemId={item.id}
+            setIsOpenMemoModal={setIsOpenMemoModal}
+          />
         </NoButtonModal>
       )}
     </>
@@ -307,4 +415,41 @@ const MemoButton = styled.button`
 const ModalText = styled.p`
   font-size: 20px;
   font-weight: 700;
+`;
+
+const ModalTopBox = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding: 0 20px;
+  gap: 28px;
+
+  & > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+  }
+`;
+
+const ModalBottomBox = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  justify-content: center;
+  padding: 36px;
+`;
+
+const PlaceInfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & > div {
+    display: flex;
+    gap: 10px;
+    color: ${(props) => props.theme.color.gray700};
+  }
 `;

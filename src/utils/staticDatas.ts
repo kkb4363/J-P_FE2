@@ -12,8 +12,9 @@ import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import TicketIcon from "../assets/icons/TicketIcon";
 import { reviewApiProps } from "../types/home";
-import { commentResDto, userCompactResDto } from "../types/res.dto";
-import { planItemProps } from "../types/schedule";
+import { SelectPlaceProps } from "../types/home.details";
+import { CommentProps, UserProps } from "../types/res.dto";
+import { PlanItemProps } from "../types/schedule";
 
 export const footerTabs = [
   { icon: HomeIcon, label: "홈", route: "/home" },
@@ -139,13 +140,13 @@ export const testLogContents3 =
   "밤에는 달모양의 보트를 탈 수 있는데 나는 혼자라 타지는 않았다. " +
   "근데 너무 달모양의 조명이 들어오는 보트라서 멀리서 보니 너무 이뻤다.";
 
-export const testUserDto: userCompactResDto = {
+export const testUserDto: UserProps = {
   id: 123456,
   nickname: "coco1202",
   profile: "null",
 };
 
-export const testPlanItems: planItemProps[] = [
+export const testPlanItems: PlanItemProps[] = [
   {
     id: "1",
     time: "10:10",
@@ -179,7 +180,7 @@ export const testReviewItem: reviewApiProps = {
   userCompactResDto: testUserDto,
 };
 
-export const textCommentItem: commentResDto = {
+export const textCommentItem: CommentProps = {
   id: 1,
   content: "좋은 리뷰네요!",
   userCompactResDto: testUserDto,
@@ -189,7 +190,7 @@ export const textCommentItem: commentResDto = {
 
 export const testDayList: number[] = Array.from({ length: 7 }, (_, i) => i);
 
-export const testTransportList: string[] = [
+export const mobilityList: string[] = [
   "자동차",
   "버스/지하철",
   "기차",
@@ -284,3 +285,21 @@ export const dayOfWeek = [
   { id: "FRIDAY", name: "금" },
   { id: "SATURDAY", name: "토" },
 ];
+
+export const testGoogleSelectPlaceItem: SelectPlaceProps = {
+  businessStatus: "7:00 ~ 21:00",
+  fullAddress: "전남 구례군",
+  formattedPhoneNumber: "055-862-6500",
+  location: {
+    lat: 37,
+    lng: 45,
+  },
+  name: "금산 보리암",
+  openNow: true,
+  photoUrls: [testImg1, testImg2],
+  placeId: "testPlaceId",
+  website: "",
+  weekdayText: ["월", "화"],
+  rating: 4.9,
+  shortAddress: "전남 구례군",
+};
