@@ -28,6 +28,7 @@ export default function ScheduleDetails() {
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentDayId, setCurrentDayId] = useState<number>(-1);
+  const [hashtag, setHashtag] = useState("");
   const navigate = useNavigate();
 
   const handleDayClick = (day: number) => {
@@ -121,6 +122,8 @@ export default function ScheduleDetails() {
   useEffect(() => {
     requestApi();
   }, []);
+
+  console.log(hashtag);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -229,6 +232,21 @@ export default function ScheduleDetails() {
               )}
             </PlanList>
           </PlansBox>
+
+          <HashtagBox>
+            <HashtagInputBox>
+              <input
+                type="text"
+                value={hashtag}
+                onChange={(e) => setHashtag(e.target.value)}
+                placeholder="태그를 작성해주세요. (최대 5개/10자 이내)"
+              />
+            </HashtagInputBox>
+            <HashtagList>
+              <span># 산책코스</span>
+              <span># 태그입력</span>
+            </HashtagList>
+          </HashtagBox>
         </>
       )}
     </Container>
@@ -336,4 +354,29 @@ const NoPlaceTextBox = styled.div`
 
 const DaySliderBox = styled.section`
   width: 100%;
+`;
+
+const HashtagBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+const HashtagInputBox = styled.div`
+  width: 100%;
+
+  & > input {
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+  }
+`;
+
+const HashtagList = styled.div`
+  display: flex;
+  gap: 11px;
+
+  & > span {
+    color: ${(props) => props.theme.color.gray700};
+  }
 `;
