@@ -38,28 +38,31 @@ export default function ScheduleDetails() {
     if (!over || active.id === over.id) return;
 
     setDayListData((prevDayListData) => {
+      console.log(prevDayListData);
       if (!prevDayListData) return;
 
-      const currentDay = prevDayListData.find(
-        (day) => day.id === currentDayId
-      );
+      const currentDay = prevDayListData.find((day) => day.id === currentDayId);
 
       if (!currentDay) return prevDayListData;
 
       const updatedLocations = [...currentDay.dayLocationResDtoList];
+      const originalTimes = updatedLocations.map((item) => item.time);
       const activeIndex = updatedLocations.findIndex(
         (item) => item.id.toString() === active.id.toString()
       );
       const overIndex = updatedLocations.findIndex(
         (item) => item.id.toString() === over.id.toString()
       );
+      console.log(activeIndex, overIndex);
 
       const [movedItem] = updatedLocations.splice(activeIndex, 1);
       updatedLocations.splice(overIndex, 0, movedItem);
 
+      console.log(originalTimes);
       const reorderedLocations = updatedLocations.map((item, index) => ({
         ...item,
         index: index + 1,
+        time: originalTimes[index],
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
