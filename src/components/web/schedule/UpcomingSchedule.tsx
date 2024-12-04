@@ -43,6 +43,7 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
     }
   };
 
+  // 페이지 이동 시 깜박이는점 수정해야함
   return (
     <>
       {schedules?.length !== 0 && (

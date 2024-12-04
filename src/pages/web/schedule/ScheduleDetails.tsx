@@ -16,10 +16,15 @@ import LoadingText from "../../../components/LoadingText";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
-import { editSchedule, getSchedule } from "../../../service/axios";
+import {
+  editSchedule,
+  getPlaceDetail,
+  getSchedule,
+} from "../../../service/axios";
 import { DayProps } from "../../../types/res.dto";
 import { ScheduleApiProps } from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function ScheduleDetails() {
   const { scheduleId } = useParams();
@@ -33,8 +38,6 @@ export default function ScheduleDetails() {
   const handleDayClick = (day: number) => {
     setCurrentDayIndex(day);
   };
-
-  console.log(scheduleData);
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
@@ -74,22 +77,6 @@ export default function ScheduleDetails() {
     });
   };
 
-  const handleAddPlaceClick = () => {
-    if (scheduleData) {
-      navigate(`/home/createPlace`, {
-        state: {
-          scheduleId: scheduleId,
-          city: scheduleData.place.name,
-          dates: {
-            startDate: scheduleData.startDate,
-            endDate: scheduleData.endDate,
-          },
-          dayResDtos: scheduleData.dayResDtos,
-        },
-      });
-    }
-  };
-
   const handleEditClick = async () => {
     if (isEdit) {
       editRequestApi();
@@ -123,7 +110,50 @@ export default function ScheduleDetails() {
   useEffect(() => {
     requestApi();
   }, []);
-  console.log(dayListData);
+
+  // 장소 location 관련
+  const [placeLoc, setPlaceLoc] = useState({
+    lat: null,
+    lng: null,
+  });
+
+  const handleAddPlaceClick = () => {
+    if (scheduleData) {
+      navigate(`/home/createPlace`, {
+        state: {
+          scheduleId: scheduleId,
+          city: scheduleData.place.name,
+          dates: {
+            startDate: scheduleData.startDate,
+            endDate: scheduleData.endDate,
+          },
+          location: {
+            lat: placeLoc?.lat,
+            lng: placeLoc?.lng,
+          },
+          dayResDtos: scheduleData.dayResDtos,
+        },
+      });
+    }
+  };
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: scheduleData?.place?.placeId + "" }).then(
+      (res) => {
+        const location = res?.data.location;
+        setPlaceLoc({
+          lat: location.lat,
+          lng: location.lng,
+        });
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (scheduleData?.id) {
+      getPlaceLocation();
+    }
+  }, [scheduleData]);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -165,12 +195,16 @@ export default function ScheduleDetails() {
             </AddPlaceButton>
           </DetailsInfoBox>
 
-          <CustomGoogleMap
-            width="100%"
-            height="342px"
-            lat={37.579617}
-            lng={126.977041}
-          />
+          {!placeLoc?.lat ? (
+            <CustomSkeleton width="100%" height="340px" />
+          ) : (
+            <CustomGoogleMap
+              width="100%"
+              height="342px"
+              lat={Number(placeLoc?.lat)}
+              lng={Number(placeLoc?.lng)}
+            />
+          )}
 
           <PlansBox>
             <EditButton $isEdit={isEdit} onClick={handleEditClick}>

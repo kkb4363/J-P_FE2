@@ -38,8 +38,9 @@ export default function CreatePlace() {
     setOpenModal,
     handleDaySelect,
   } = useAddPlaceHook();
+
   const {
-    state: { scheduleId, city, dates, dayResDtos },
+    state: { scheduleId, city, dates, dayResDtos, location },
   } = useLocation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,13 +173,15 @@ export default function CreatePlace() {
         </SideBar>
 
         <GoogleMapBox>
-          <CustomGoogleMap
-            width="100%"
-            height="98%"
-            lat={12.424}
-            lng={14.242}
-            handleMarkerClick={() => {}}
-          />
+          {!!location?.lat && (
+            <CustomGoogleMap
+              width="100%"
+              height="98%"
+              lat={location.lat}
+              lng={location.lng}
+              handleMarkerClick={() => {}}
+            />
+          )}
         </GoogleMapBox>
       </CreatePlaceContainer>
 

@@ -54,7 +54,6 @@ const StyledSlider = styled(Slider)`
   .slick-list {
     width: 100%;
   }
-
 `;
 
 const DayBox = styled.div<{ $select: boolean; $web: boolean }>`
@@ -71,4 +70,5 @@ const DayBox = styled.div<{ $select: boolean; $web: boolean }>`
   border-radius: ${({ $web }) => ($web ? "30px" : "16px")};
   font-size: ${({ $web }) => !$web && "14px"};
   font-weight: 700;
+  cursor: pointer;
 `;
