@@ -399,11 +399,12 @@ export const addPlaceToSchedule = async (
     location: { lat: number; lng: number };
     placeId: string;
     name: string;
-  }[]
+  }[],
+  jpState: string
 ) => {
   try {
     const res = await axiosInstance.post(
-      `/schedule/location/${dayId}`,
+      `/schedule/location/${dayId}?mbti=${jpState}`,
       places,
       {
         headers: {
@@ -424,11 +425,12 @@ export const moveScheduleDate = async (
   body: {
     newDayId: number;
     time: string;
-  }
+  },
+  jpState: string
 ) => {
   try {
     const res = await axiosInstance.put(
-      `/schedule/location/${locationId}`,
+      `/schedule/location/${locationId}?mbti=${jpState}`,
       body,
       {
         headers: {

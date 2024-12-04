@@ -16,6 +16,7 @@ import {
   addPlaceToSchedule,
   getGoogleSearchPlaceList,
 } from "../../../service/axios";
+import { useJPStore } from "../../../store/JPType.store";
 
 export default function CreatePlace() {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +25,7 @@ export default function CreatePlace() {
   const [searchString, setSearchString] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver | null>(null);
+  const { jpState } = useJPStore();
   const navigate = useNavigate();
 
   const {
@@ -70,7 +72,7 @@ export default function CreatePlace() {
       name: place.name,
     }));
 
-    await addPlaceToSchedule(selectDay, places).then((res) => {
+    await addPlaceToSchedule(selectDay, places, jpState).then((res) => {
       if (res?.data) {
         navigate(`/home/schedule/details/${scheduleId}`);
       }

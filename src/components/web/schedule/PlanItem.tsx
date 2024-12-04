@@ -25,12 +25,13 @@ import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
 import PhoneIcon from "../../../assets/icons/PhoneIcon";
 import CustomSkeleton from "../../CustomSkeleton";
+import { useJPStore } from "../../../store/JPType.store";
 
 interface Props {
   item: DayLocationProps;
   isEdit: boolean;
   dayList: DayProps[];
-  currentDayIdx: number;
+  currentDayId: number;
   reloadSchedule: () => Promise<void>;
 }
 
@@ -38,7 +39,7 @@ export default function PlanItem({
   item,
   isEdit,
   dayList,
-  currentDayIdx,
+  currentDayId,
   reloadSchedule,
 }: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
@@ -53,6 +54,7 @@ export default function PlanItem({
   const [isMove, setIsMove] = useState(false);
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
   const [isLoading, setIsLoading] = useState(false);
+  const { jpState } = useJPStore();
 
   const {
     attributes,
@@ -94,21 +96,27 @@ export default function PlanItem({
     setOpenModal((p) => ({ ...p, selectTime: false }));
     if (isMove) {
       setIsMove(false);
-      await moveScheduleDate(item.id, {
-        newDayId: selectDay,
-        time: selectTime,
-      }).then(() => {
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: selectDay,
+          time: selectTime,
+        },
+        jpState
+      ).then(() => {
         reloadSchedule();
       });
     } else {
-      
-      // await moveScheduleDate(item.id, {
-      //   newDayId: currentDayIdx,
-      //   time: selectTime,
-      // }).then((res) => {
-      //   console.log('res', res);
-      //   reloadSchedule();
-      // });
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: currentDayId,
+          time: selectTime,
+        },
+        jpState
+      ).then((res) => {
+        reloadSchedule();
+      });
     }
   };
 
