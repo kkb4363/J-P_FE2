@@ -25,6 +25,7 @@ import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
 import PhoneIcon from "../../../assets/icons/PhoneIcon";
 import CustomSkeleton from "../../CustomSkeleton";
+import { useJPStore } from "../../../store/JPType.store";
 
 interface Props {
   item: DayLocationProps;
@@ -53,6 +54,7 @@ export default function PlanItem({
   const [isMove, setIsMove] = useState(false);
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
   const [isLoading, setIsLoading] = useState(false);
+  const { jpState } = useJPStore();
 
   const {
     attributes,
@@ -90,24 +92,29 @@ export default function PlanItem({
     }
   };
 
-  console.log(item);
-
   const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
     if (isMove) {
       setIsMove(false);
-      await moveScheduleDate(item.id, {
-        newDayId: selectDay,
-        time: selectTime,
-      }).then(() => {
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: selectDay,
+          time: selectTime,
+        },
+        jpState
+      ).then(() => {
         reloadSchedule();
       });
     } else {
-      await moveScheduleDate(item.id, {
-        newDayId: 101,
-        time: selectTime,
-      }).then((res) => {
-        console.log('res', res);
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: currentDayId,
+          time: selectTime,
+        },
+        jpState
+      ).then((res) => {
         reloadSchedule();
       });
     }

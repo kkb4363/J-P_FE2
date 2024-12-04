@@ -27,8 +27,8 @@ export default function ScheduleDetails() {
   const [dayListData, setDayListData] = useState<DayProps[]>();
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const [currentDayId, setCurrentDayId] = useState<number>(-1);
+  const navigate = useNavigate();
 
   const handleDayClick = (day: number) => {
     setCurrentDayId(day);
@@ -38,7 +38,6 @@ export default function ScheduleDetails() {
     if (!over || active.id === over.id) return;
 
     setDayListData((prevDayListData) => {
-      console.log(prevDayListData);
       if (!prevDayListData) return;
 
       const currentDay = prevDayListData.find((day) => day.id === currentDayId);
@@ -53,12 +52,10 @@ export default function ScheduleDetails() {
       const overIndex = updatedLocations.findIndex(
         (item) => item.id.toString() === over.id.toString()
       );
-      console.log(activeIndex, overIndex);
 
       const [movedItem] = updatedLocations.splice(activeIndex, 1);
       updatedLocations.splice(overIndex, 0, movedItem);
 
-      console.log(originalTimes);
       const reorderedLocations = updatedLocations.map((item, index) => ({
         ...item,
         index: index + 1,
@@ -70,7 +67,6 @@ export default function ScheduleDetails() {
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
-
       return updatedDayListData;
     });
   };
@@ -210,26 +206,24 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      dayListData.find(
-                        (day) => day.id === currentDayId
-                      )?.dayLocationResDtoList || []
+                      dayListData.find((day) => day.id === currentDayId)
+                        ?.dayLocationResDtoList || []
                     }
                   >
                     {dayListData
                       .find((day) => day.id === currentDayId)
-                        ?.dayLocationResDtoList.map((item) => {
-                          console.log(item);
-                          return (
-                            <PlanItem
-                              key={item.id}
-                              item={item}
-                              isEdit={isEdit}
-                              currentDayId={currentDayId}
-                              dayList={dayListData}
-                              reloadSchedule={() => requestApi()}
-                            />
-                          )
-                        })}
+                      ?.dayLocationResDtoList.map((item) => {
+                        return (
+                          <PlanItem
+                            key={item.id}
+                            item={item}
+                            isEdit={isEdit}
+                            currentDayId={currentDayId}
+                            dayList={dayListData}
+                            reloadSchedule={() => requestApi()}
+                          />
+                        );
+                      })}
                   </SortableContext>
                 </DndContext>
               )}
