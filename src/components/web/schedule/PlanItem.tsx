@@ -30,7 +30,7 @@ interface Props {
   item: DayLocationProps;
   isEdit: boolean;
   dayList: DayProps[];
-  currentDayIdx: number;
+  currentDayId: number;
   reloadSchedule: () => Promise<void>;
 }
 
@@ -38,7 +38,7 @@ export default function PlanItem({
   item,
   isEdit,
   dayList,
-  currentDayIdx,
+  currentDayId,
   reloadSchedule,
 }: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
@@ -90,6 +90,8 @@ export default function PlanItem({
     }
   };
 
+  console.log(item);
+
   const handleMovePlanClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
     if (isMove) {
@@ -101,14 +103,13 @@ export default function PlanItem({
         reloadSchedule();
       });
     } else {
-      
-      // await moveScheduleDate(item.id, {
-      //   newDayId: currentDayIdx,
-      //   time: selectTime,
-      // }).then((res) => {
-      //   console.log('res', res);
-      //   reloadSchedule();
-      // });
+      await moveScheduleDate(item.id, {
+        newDayId: 101,
+        time: selectTime,
+      }).then((res) => {
+        console.log('res', res);
+        reloadSchedule();
+      });
     }
   };
 

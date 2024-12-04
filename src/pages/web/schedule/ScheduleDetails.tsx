@@ -28,13 +28,11 @@ export default function ScheduleDetails() {
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [currentDayIndex, setCurrentDayIndex] = useState(1);
+  const [currentDayId, setCurrentDayId] = useState<number>(-1);
 
   const handleDayClick = (day: number) => {
-    setCurrentDayIndex(day);
+    setCurrentDayId(day);
   };
-
-  console.log(scheduleData);
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
@@ -43,7 +41,7 @@ export default function ScheduleDetails() {
       if (!prevDayListData) return;
 
       const currentDay = prevDayListData.find(
-        (day) => day.dayIndex === currentDayIndex
+        (day) => day.id === currentDayId
       );
 
       if (!currentDay) return prevDayListData;
@@ -65,7 +63,7 @@ export default function ScheduleDetails() {
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
-        day.dayIndex === currentDayIndex
+        day.id === currentDayId
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
@@ -104,6 +102,7 @@ export default function ScheduleDetails() {
         if (res) {
           setScheduleData(res.data);
           setDayListData(res.data.dayResDtos);
+          setCurrentDayId(res.data.dayResDtos[0].id);
         }
         setIsLoading(false);
       });
@@ -123,7 +122,6 @@ export default function ScheduleDetails() {
   useEffect(() => {
     requestApi();
   }, []);
-  console.log(dayListData);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -161,7 +159,7 @@ export default function ScheduleDetails() {
             </InfoBox>
             <AddPlaceButton onClick={handleAddPlaceClick}>
               <span>+</span>
-              <span>장소 추가</span>
+              <span>여행지 추가</span>
             </AddPlaceButton>
           </DetailsInfoBox>
 
@@ -187,19 +185,19 @@ export default function ScheduleDetails() {
               <DaySlider
                 web
                 dayList={scheduleData.dayResDtos}
-                currentDayIndex={currentDayIndex}
+                currentDayId={currentDayId}
                 onDayClick={handleDayClick}
               />
             </DaySliderBox>
             <PlanList>
-              {dayListData.find((day) => day.dayIndex === currentDayIndex)
+              {dayListData.find((day) => day.id === currentDayId)
                 ?.dayLocationResDtoList.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
                   </NoPlaceTextBox>
                   <ActionButton add onClick={handleAddPlaceClick}>
-                    + 장소 추가
+                    + 여행지 추가
                   </ActionButton>
                 </NoPlaceBox>
               ) : (
@@ -210,22 +208,25 @@ export default function ScheduleDetails() {
                   <SortableContext
                     items={
                       dayListData.find(
-                        (day) => day.dayIndex === currentDayIndex
+                        (day) => day.id === currentDayId
                       )?.dayLocationResDtoList || []
                     }
                   >
                     {dayListData
-                      .find((day) => day.dayIndex === currentDayIndex)
-                      ?.dayLocationResDtoList.map((item) => (
-                        <PlanItem
-                          key={item.id}
-                          item={item}
-                          isEdit={isEdit}
-                          currentDayIdx={currentDayIndex}
-                          dayList={dayListData}
-                          reloadSchedule={() => requestApi()}
-                        />
-                      ))}
+                      .find((day) => day.id === currentDayId)
+                        ?.dayLocationResDtoList.map((item) => {
+                          console.log(item);
+                          return (
+                            <PlanItem
+                              key={item.id}
+                              item={item}
+                              isEdit={isEdit}
+                              currentDayId={currentDayId}
+                              dayList={dayListData}
+                              reloadSchedule={() => requestApi()}
+                            />
+                          )
+                        })}
                   </SortableContext>
                 </DndContext>
               )}
