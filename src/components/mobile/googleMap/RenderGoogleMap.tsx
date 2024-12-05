@@ -178,11 +178,10 @@ export default function RenderGoogleMap({
             handleMarkerClick && handleMarkerClick(place.placeId);
           });
 
-          //점선 패턴
           const lineSymbol = {
-            path: "M 0,-1 0,1", // 선 모양
+            path: "M 0,-1 0,1",
             strokeOpacity: 1,
-            scale: 2, // 점선 간격
+            scale: 2,
           };
 
           if (

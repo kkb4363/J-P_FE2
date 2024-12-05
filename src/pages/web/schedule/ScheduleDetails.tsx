@@ -21,29 +21,16 @@ import {
   getSchedule,
   getPlaceDetail,
 } from "../../../service/axios";
-import {
-  DayProps,
-  ScheduleApiProps,
-  AddedPlaceProps,
-} from "../../../types/schedule";
+import { DayProps, ScheduleApiProps } from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import { useMapStore } from "../../../store/map.store";
 
 export default function ScheduleDetails() {
-  const { scheduleId } = useParams();
-  const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
-  const [dayListData, setDayListData] = useState<DayProps[]>();
-  const [isEdit, setIsEdit] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentDayId, setCurrentDayId] = useState<number>(-1);
-  const [hashtag, setHashtag] = useState("");
   const navigate = useNavigate();
+  const { scheduleId } = useParams();
 
-  const handleDayClick = (day: number) => {
-    setCurrentDayId(day);
-  };
-
+  const [isEdit, setIsEdit] = useState(false);
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
 
@@ -88,6 +75,25 @@ export default function ScheduleDetails() {
     setIsEdit((prev) => !prev);
   };
 
+  const editRequestApi = async () => {
+    if (!dayListData) return;
+
+    Promise.all(
+      dayListData.map((day) => editSchedule(day.id, day.dayLocationResDtoList))
+    ).then(() => {
+      toast(<span>일정 편집 완료!</span>);
+    });
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
+  const [currentDayId, setCurrentDayId] = useState<number>(-1);
+  const [dayListData, setDayListData] = useState<DayProps[]>();
+
+  const handleDayClick = (day: number) => {
+    setCurrentDayId(day);
+  };
+
   const requestApi = async () => {
     if (scheduleId) {
       setIsLoading(true);
@@ -102,31 +108,18 @@ export default function ScheduleDetails() {
     }
   };
 
-  const editRequestApi = async () => {
-    if (!dayListData) return;
-
-    Promise.all(
-      dayListData.map((day) => editSchedule(day.id, day.dayLocationResDtoList))
-    ).then(() => {
-      toast(<span>일정 편집 완료!</span>);
-    });
-  };
-
   useEffect(() => {
     requestApi();
   }, []);
 
-  // 장소 location 부분
+  const mapStore = useMapStore();
   const [placeLoc, setPlaceLoc] = useState({
     lat: null,
     lng: null,
   });
-
-  useEffect(() => {
-    if (scheduleData?.id) {
-      getPlaceLocation();
-    }
-  }, [scheduleData]);
+  const currentDayPlaces = dayListData?.find(
+    (d) => d.id === currentDayId
+  )?.dayLocationResDtoList;
 
   const getPlaceLocation = () => {
     getPlaceDetail({ placeId: scheduleData?.place?.placeId + "" }).then(
@@ -139,6 +132,18 @@ export default function ScheduleDetails() {
       }
     );
   };
+
+  useEffect(() => {
+    if (scheduleData?.id) {
+      getPlaceLocation();
+    }
+  }, [scheduleData]);
+
+  useEffect(() => {
+    if (placeLoc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces?.reverse() as any[]);
+    }
+  }, [currentDayId, placeLoc?.lat]);
 
   const handleAddPlaceClick = () => {
     if (scheduleData) {
@@ -160,20 +165,7 @@ export default function ScheduleDetails() {
     }
   };
 
-  // 지도 마커 부분
-  const mapStore = useMapStore();
-
-  const currentDayPlaces = dayListData?.find(
-    (d) => d.id === currentDayId
-  )?.dayLocationResDtoList;
-
-  useEffect(() => {
-    if (mapStore.getAddedPlace()?.length !== 0) {
-      mapStore.clear();
-    }
-
-    if (placeLoc?.lat) mapStore.setAddedPlace(currentDayPlaces as any[]);
-  }, [currentDayId, placeLoc?.lat]);
+  const [hashtag, setHashtag] = useState("");
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -271,12 +263,12 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      dayListData.find((day) => day.id === currentDayId)
+                      dayListData?.find((day) => day.id === currentDayId)
                         ?.dayLocationResDtoList || []
                     }
                   >
                     {dayListData
-                      .find((day) => day.id === currentDayId)
+                      ?.find((day) => day.id === currentDayId)
                       ?.dayLocationResDtoList.map((item: any) => {
                         return (
                           <PlanItem
