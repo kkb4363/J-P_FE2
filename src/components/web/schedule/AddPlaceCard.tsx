@@ -1,5 +1,4 @@
 import StarIcon from "../../../assets/icons/StarIcon";
-import testImg from "../../../assets/images/testImg1.png";
 import styled from "styled-components";
 import IconBox from "../../IconBox";
 import PlusIcon from "../../../assets/icons/PlusIcon";
@@ -13,6 +12,7 @@ interface Props {
   isSelect: boolean;
   handleAdd: () => void;
   handleRemove: () => void;
+  handleClick: (id: string) => void;
   item: GooglePlaceProps;
 }
 
@@ -23,17 +23,14 @@ export default function AddPlaceCard({
   isSelect,
   handleAdd,
   handleRemove,
+  handleClick,
   item,
 }: Props) {
   return (
-    <AddPlaceCardContainer
-      $width={width}
-      $height={height}
-      $imgSize={imgSize}
-    >
+    <AddPlaceCardContainer $width={width} $height={height} $imgSize={imgSize}>
       <img src={item.photoUrl} alt="이미지없음" />
 
-      <div>
+      <div onClick={() => handleClick(item.placeId)}>
         <h1>명소</h1>
         <h2>{item.name}</h2>
         <IconBox>
@@ -78,6 +75,7 @@ const AddPlaceCardContainer = styled.div<{
 
   & > div:nth-child(2) {
     padding-left: 32px;
+    cursor: pointer;
     flex: 1;
     height: 100%;
     display: flex;
