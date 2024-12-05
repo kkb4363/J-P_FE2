@@ -18,11 +18,14 @@ import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
 import {
   editSchedule,
-  getPlaceDetail,
   getSchedule,
+  getPlaceDetail,
 } from "../../../service/axios";
-import { DayProps } from "../../../types/res.dto";
-import { AddedPlaceProps, ScheduleApiProps } from "../../../types/schedule";
+import {
+  DayProps,
+  ScheduleApiProps,
+  AddedPlaceProps,
+} from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import { useMapStore } from "../../../store/map.store";
@@ -33,11 +36,12 @@ export default function ScheduleDetails() {
   const [dayListData, setDayListData] = useState<DayProps[]>();
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentDayId, setCurrentDayId] = useState<number>(-1);
+  const [hashtag, setHashtag] = useState("");
   const navigate = useNavigate();
-  const [currentDayIndex, setCurrentDayIndex] = useState(1);
 
   const handleDayClick = (day: number) => {
-    setCurrentDayIndex(day);
+    setCurrentDayId(day);
   };
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
@@ -46,13 +50,12 @@ export default function ScheduleDetails() {
     setDayListData((prevDayListData) => {
       if (!prevDayListData) return;
 
-      const currentDay = prevDayListData.find(
-        (day) => day.dayIndex === currentDayIndex
-      );
+      const currentDay = prevDayListData.find((day) => day.id === currentDayId);
 
       if (!currentDay) return prevDayListData;
 
       const updatedLocations = [...currentDay.dayLocationResDtoList];
+      const originalTimes = updatedLocations.map((item) => item.time);
       const activeIndex = updatedLocations.findIndex(
         (item) => item.id.toString() === active.id.toString()
       );
@@ -66,14 +69,14 @@ export default function ScheduleDetails() {
       const reorderedLocations = updatedLocations.map((item, index) => ({
         ...item,
         index: index + 1,
+        time: originalTimes[index],
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
-        day.dayIndex === currentDayIndex
+        day.id === currentDayId
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
-
       return updatedDayListData;
     });
   };
@@ -92,6 +95,7 @@ export default function ScheduleDetails() {
         if (res) {
           setScheduleData(res.data);
           setDayListData(res.data.dayResDtos);
+          setCurrentDayId(res.data.dayResDtos[0].id);
         }
         setIsLoading(false);
       });
@@ -159,16 +163,16 @@ export default function ScheduleDetails() {
   // 지도 마커 부분
   const mapStore = useMapStore();
   const currentDayPlaces =
-    dayListData?.[currentDayIndex - 1]?.dayLocationResDtoList;
+    dayListData?.[currentDayId - 1]?.dayLocationResDtoList;
 
   useEffect(() => {
     if (mapStore.getAddedPlace().length !== 0) {
       mapStore.clear();
     }
 
-    if (placeLoc?.lat)
-      mapStore.setAddedPlace(currentDayPlaces as AddedPlaceProps[]);
-  }, [currentDayIndex, placeLoc?.lat]);
+    if (placeLoc?.lat) mapStore.setAddedPlace(currentDayPlaces as any[]);
+  }, [currentDayId, placeLoc?.lat]);
+  console.log(hashtag);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -206,7 +210,7 @@ export default function ScheduleDetails() {
             </InfoBox>
             <AddPlaceButton onClick={handleAddPlaceClick}>
               <span>+</span>
-              <span>장소 추가</span>
+              <span>여행지 추가</span>
             </AddPlaceButton>
           </DetailsInfoBox>
 
@@ -244,19 +248,19 @@ export default function ScheduleDetails() {
               <DaySlider
                 web
                 dayList={scheduleData.dayResDtos}
-                currentDayIndex={currentDayIndex}
+                currentDayId={currentDayId}
                 onDayClick={handleDayClick}
               />
             </DaySliderBox>
             <PlanList>
-              {dayListData.find((day) => day.dayIndex === currentDayIndex)
-                ?.dayLocationResDtoList?.length === 0 ? (
+              {dayListData.find((day) => day.id === currentDayId)
+                ?.dayLocationResDtoList.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
                   </NoPlaceTextBox>
                   <ActionButton add onClick={handleAddPlaceClick}>
-                    + 장소 추가
+                    + 여행지 추가
                   </ActionButton>
                 </NoPlaceBox>
               ) : (
@@ -266,28 +270,44 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      dayListData.find(
-                        (day) => day.dayIndex === currentDayIndex
-                      )?.dayLocationResDtoList || []
+                      dayListData.find((day) => day.id === currentDayId)
+                        ?.dayLocationResDtoList || []
                     }
                   >
                     {dayListData
-                      .find((day) => day.dayIndex === currentDayIndex)
-                      ?.dayLocationResDtoList.map((item) => (
-                        <PlanItem
-                          key={item.id}
-                          item={item}
-                          isEdit={isEdit}
-                          currentDayIdx={currentDayIndex}
-                          dayList={dayListData}
-                          reloadSchedule={() => requestApi()}
-                        />
-                      ))}
+                      .find((day) => day.id === currentDayId)
+                      ?.dayLocationResDtoList.map((item: any) => {
+                        return (
+                          <PlanItem
+                            key={item.id}
+                            item={item}
+                            isEdit={isEdit}
+                            currentDayId={currentDayId}
+                            dayList={dayListData}
+                            reloadSchedule={() => requestApi()}
+                          />
+                        );
+                      })}
                   </SortableContext>
                 </DndContext>
               )}
             </PlanList>
           </PlansBox>
+
+          <HashtagBox>
+            <HashtagInputBox>
+              <input
+                type="text"
+                value={hashtag}
+                onChange={(e) => setHashtag(e.target.value)}
+                placeholder="태그를 작성해주세요. (최대 5개/10자 이내)"
+              />
+            </HashtagInputBox>
+            <HashtagList>
+              <span># 산책코스</span>
+              <span># 태그입력</span>
+            </HashtagList>
+          </HashtagBox>
         </>
       )}
     </Container>
@@ -395,4 +415,29 @@ const NoPlaceTextBox = styled.div`
 
 const DaySliderBox = styled.section`
   width: 100%;
+`;
+
+const HashtagBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+const HashtagInputBox = styled.div`
+  width: 100%;
+
+  & > input {
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+  }
+`;
+
+const HashtagList = styled.div`
+  display: flex;
+  gap: 11px;
+
+  & > span {
+    color: ${(props) => props.theme.color.gray700};
+  }
 `;

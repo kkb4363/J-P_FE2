@@ -1,6 +1,6 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { placeApiProps } from "./home";
-import { DayProps, UserProps } from "./res.dto";
+import { PlaceProps } from "./place";
+import { UserProps } from "./mypage";
 
 export type StatusType = "UPCOMING" | "NOW" | "COMPLETED";
 
@@ -36,7 +36,7 @@ export interface CityProps {
 export interface ScheduleApiProps {
   id: number;
   title: string;
-  place: placeApiProps;
+  place: PlaceProps;
   startDate: string;
   endDate: string;
   member: UserProps[];
@@ -53,9 +53,35 @@ export interface AddedPlaceProps {
     lat: number;
     lng: number;
   };
-  memo: any;
-  mobility: any[];
-  name: string;
-  placeId: string;
+}
+export type DayOfWeekType =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY"
+  | "SATURDAY"
+  | "SUNDAY";
+
+export interface DayLocationProps {
+  id: number;
+  index: number;
   time: string;
+  memo: string;
+  placeId: string;
+  expense: {
+    type: string;
+    name: string;
+    expense: number;
+  }[];
+  mobility: string[];
+  name: string;
+}
+
+export interface DayProps {
+  id: number;
+  date: string;
+  dayIndex: number;
+  dayOfWeek: DayOfWeekType;
+  dayLocationResDtoList: DayLocationProps[];
 }

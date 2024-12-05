@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { GooglePlaceProps } from "../types/home.details";
 import { AddedPlaceProps } from "../types/schedule";
+import { GooglePlaceProps } from "../types/place";
 
 interface State {
   nearPlace: GooglePlaceProps[];

@@ -1,27 +1,19 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import EditIcon from "../../../assets/icons/EditIcon";
-import CustomHeader from "../../../components/mobile/CustomHeader";
-import { useEffect, useState } from "react";
-import { reviewApiProps } from "../../../types/home";
-import { axiosInstance, getReviews } from "../../../service/axios";
-import ReviewCard from "../../../components/mobile/ReviewCard";
 import { scrollHidden } from "../../../assets/styles/home.style";
+import CustomHeader from "../../../components/mobile/CustomHeader";
+import ReviewCard from "../../../components/mobile/ReviewCard";
+import { getReviews } from "../../../service/axios";
+import { ReviewProps } from "../../../types/travelreview";
 
 export default function Reviews() {
-  const [data, setData] = useState<reviewApiProps[]>([]);
+  const [data, setData] = useState<ReviewProps[]>([]);
 
   const requestApi = async () => {
-    try {
-      const res = await axiosInstance.get(`/reviews?page=1&sort=HOT`);
-
-      if (res.status === 200) {
-        const newData = res.data.data;
-        setData(newData);
-      }
-    } catch (error) {
-      console.error("api error=", error);
-    } finally {
-    }
+    getReviews({ page: 1, sort: "HOT" }).then((res) => {
+      setData(res?.data.data);
+    });
   };
 
   useEffect(() => {

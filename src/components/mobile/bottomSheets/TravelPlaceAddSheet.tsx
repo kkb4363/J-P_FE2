@@ -14,7 +14,7 @@ import {
   getScheduleList,
 } from "../../../service/axios";
 import { ScheduleApiProps } from "../../../types/schedule";
-import { PlaceDetailAPiProps } from "../../../types/home.details";
+import { PlaceDetailAPiProps } from "../../../types/place";
 import { formatDayNights } from "../../../utils/dayNights";
 import { ScheduleBox } from "../../web/surroundingPlace/TravelPlaceAddModal";
 import useAddPlaceHook from "../../../hooks/useAddPlace";

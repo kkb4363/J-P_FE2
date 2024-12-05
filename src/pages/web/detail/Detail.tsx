@@ -10,8 +10,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   GooglePlaceProps,
   PlaceDetailAPiProps,
-} from "../../../types/home.details";
-import { reviewApiProps } from "../../../types/home";
+} from "../../../types/place";
+import { ReviewProps } from "../../../types/travelreview";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
@@ -51,7 +51,7 @@ export default function Detail() {
   const [surrondingPlace, setSurroundingPlace] = useState<GooglePlaceProps[]>(
     []
   );
-  const [review, setReviews] = useState<reviewApiProps[]>([]);
+  const [review, setReviews] = useState<ReviewProps[]>([]);
 
   const getDetail = async () => {
     getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
@@ -61,9 +61,11 @@ export default function Detail() {
   };
 
   const getReview = async () => {
-    getReviews({ placeId: param.placeId + "" }).then((res) => {
-      setReviews(res?.data.data);
-    });
+    getReviews({ page: 1, sort: "HOT", placeId: param.placeId + "" }).then(
+      (res) => {
+        setReviews(res?.data.data);
+      }
+    );
   };
 
   const getNearPlace = async () => {

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import IconBox from "../../IconBox";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
-import { GooglePlaceProps } from "../../../types/home.details";
+import { GooglePlaceProps } from "../../../types/place";
 
 interface Props {
   width?: string;

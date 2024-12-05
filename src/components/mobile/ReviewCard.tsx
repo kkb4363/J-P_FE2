@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { reviewApiProps } from "../../types/home";
+import { ReviewProps } from "../../types/travelreview";
 import CustomProfile from "../CustomProfile";
 import StarIcon from "../../assets/icons/StarIcon";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import IconBox from "../IconBox";
 import LikeCommentBox from "../LikeCommentBox";
 
 interface Props {
-  item: reviewApiProps;
+  item: ReviewProps;
   ref?: (node: HTMLDivElement) => void;
 }
 

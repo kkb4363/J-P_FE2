@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useUserStore } from "../store/user.store";
-import { placeApiProps } from "../types/home";
+import { PlaceProps } from "../types/place";
 import { getSearchPlaceList } from "../service/axios";
 
 export default function useSearchHook() {
   const userStore = useUserStore();
   const [search, setSearch] = useState("");
-  const [searchData, setSearchData] = useState<placeApiProps[]>([]);
+  const [searchData, setSearchData] = useState<PlaceProps[]>([]);
   const [deleteEveryOpen, setDeleteEveryOpen] = useState(false);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {

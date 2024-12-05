@@ -4,7 +4,7 @@ import { webHomeTabs } from "../../../utils/staticDatas";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlaceList } from "../../../service/axios";
-import { placeApiProps } from "../../../types/home";
+import { PlaceProps } from "../../../types/place";
 import PlaceCard from "../../../components/web/home/PlaceCard";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 
@@ -60,7 +60,7 @@ export default function More() {
                 borderRadius="16px"
               />
             ))
-          : data?.map((item: placeApiProps) => (
+          : data?.map((item: PlaceProps) => (
               <PlaceCard
                 key={item.id}
                 bottomText={getHomeTab() === "CITY" ? item.name : ""}

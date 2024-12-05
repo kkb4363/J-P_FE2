@@ -17,7 +17,7 @@ import useAddPlaceHook from "../../../hooks/useAddPlace";
 import MoveDaySlider from "../../MoveDaySlider";
 import PrimaryButton from "../../PrimaryButton";
 import TimeSwiper from "../../TimeSwiper";
-import { PlaceDetailAPiProps } from "../../../types/home.details";
+import { PlaceDetailAPiProps } from "../../../types/place";
 import { Cookies } from "react-cookie";
 import { useUserStore } from "../../../store/user.store";
 

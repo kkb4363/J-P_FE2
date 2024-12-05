@@ -1,16 +1,15 @@
-import styled from "styled-components";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../../../service/axios";
-import { reviewApiProps } from "../../../types/home";
+import styled from "styled-components";
 import ReviewCard from "../../../components/mobile/ReviewCard";
-import { testReviewItem } from "./../../../utils/staticDatas";
+import { getReviews } from "../../../service/axios";
+import { ReviewProps } from "../../../types/travelreview";
 
 interface Props {
   sort: string;
 }
 
 export default function Review({ sort }: Props) {
-  const [data, setData] = useState<reviewApiProps[]>([]);
+  const [data, setData] = useState<ReviewProps[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -18,24 +17,13 @@ export default function Review({ sort }: Props) {
 
   const requestApi = async () => {
     setLoading(true);
-    try {
-      const res = await axiosInstance.get(`/reviews?page=${page}&sort=${sort}`);
 
-      if (res.status === 200) {
-        const newData = res.data.data;
-        setData(newData);
-        setHasMore(newData.length > 0);
-      }
-    } catch (error) {
-      console.error("api error=", error);
-    } finally {
+    await getReviews({ page, sort }).then((res) => {
+      setData(res?.data.data);
+      setHasMore(res?.data.data.length > 0);
       setLoading(false);
-    }
+    });
   };
-
-  useEffect(() => {
-    requestApi();
-  }, [page, sort]);
 
   // 마지막 요소 감지 후 페이지 증가
   const lastElementRef = useCallback(
@@ -59,14 +47,18 @@ export default function Review({ sort }: Props) {
     [hasMore, loading]
   );
 
+  useEffect(() => {
+    requestApi();
+  }, [page, sort]);
+
   return (
     <ReviewContainer>
-      {/* {data.length === 0 && !loading && (
-        <NoResultsText>리뷰가 없습니다.</NoResultsText>
+      {data.length === 0 && !loading && (
+        <NoResultsText>첫 리뷰를 작성해주세요!</NoResultsText>
       )}
       {loading && <NoResultsText>로딩중...</NoResultsText>}
       {!loading &&
-        data?.map((item: reviewApiProps, index: number) => {
+        data?.map((item: ReviewProps, index: number) => {
           if (data.length === index + 1) {
             // 마지막 요소에 ref 설정
             return (
@@ -75,8 +67,7 @@ export default function Review({ sort }: Props) {
           } else {
             return <ReviewCard key={item.id} item={item} />;
           }
-        })} */}
-      <ReviewCard key={1} item={testReviewItem} />
+        })}
     </ReviewContainer>
   );
 }
