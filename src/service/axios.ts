@@ -1,8 +1,7 @@
 import axios from "axios";
 import { Cookies } from "react-cookie";
-import { UserInfoProps } from "../types/axios.type";
-import { DayLocationProps } from "../types/res.dto";
-import { PlanDetailsProps } from "../types/schedule";
+import { UserInfoProps } from "../types/mypage";
+import { DayLocationProps, PlanDetailsProps } from "../types/schedule";
 
 const cookies = new Cookies();
 
@@ -98,17 +97,39 @@ export const getPlaceDetail = async ({ placeId }: { placeId: string }) => {
   }
 };
 
-export const getReviews = async ({ placeId }: { placeId: string }) => {
+export const getReviews = async ({
+  page,
+  sort,
+  placeId,
+}: {
+  page: number;
+  sort: string;
+  placeId?: string;
+}) => {
   try {
-    const res = await axiosInstance.get(
-      `/reviews?page=1&sort=HOT&placeId=${placeId}`
-    );
+    const url = placeId
+      ? `/reviews?page=${page}&sort=${sort}&placeId=${placeId}`
+      : `/reviews?page=${page}&sort=${sort}`;
+
+    const res = await axiosInstance.get(url);
 
     if (res.status === 200) {
       return res;
     }
   } catch (err) {
     console.error("리뷰 조회 API 에러", err);
+  }
+};
+
+export const getReviewDetail = async (reviewId: number) => {
+  try {
+    const res = await axiosInstance(`/review/${reviewId}`);
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error(err);
   }
 };
 

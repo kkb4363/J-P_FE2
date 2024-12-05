@@ -7,7 +7,7 @@ import StarIcon from "../../../assets/icons/StarIcon";
 import ActionButton from "../../../components/ActionButton";
 import { realTimeWords, testImg1 } from "../../../utils/staticDatas";
 import TwoButtonsModal from "../../../components/TwoButtonsModal";
-import { placeApiProps } from "../../../types/home";
+import { PlaceProps } from "../../../types/place";
 import { useUserStore } from "../../../store/user.store";
 import useSearchHook from "../../../hooks/useSearch";
 import { useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ export default function Search() {
               <CenterText>검색 결과가 없습니다.</CenterText>
             )}
 
-            {searchData.map((item: placeApiProps) => (
+            {searchData.map((item: PlaceProps) => (
               <SearchPlaceCard
                 key={item.placeId}
                 onClick={() => navigate(`/home/${item.placeId}`)}

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import MoreContainer from "../../../components/mobile/MoreContainer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPlaceList } from "../../../service/axios";
-import { placeApiProps } from "../../../types/home";
+import { PlaceProps } from "../../../types/place";
 import ImageView from "../../../components/ImageView";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import testImg from "../../../assets/images/testImg.png";
@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 export default function More() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [data, setData] = useState<placeApiProps[]>([]);
+  const [data, setData] = useState<PlaceProps[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ export default function More() {
 
   return (
     <MoreContainer title={getTitle() + ""}>
-      {data?.map((item: placeApiProps, index: number) => {
+      {data?.map((item: PlaceProps, index: number) => {
         if (data?.length === index + 1) {
           // 마지막 요소에 ref 설정
           return (

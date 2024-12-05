@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ReviewDetailApiProps } from "../../../types/home.details";
-import { testImageList, testReviewItem } from "../../../utils/staticDatas";
-import ImageView from "../../../components/ImageView";
+import styled from "styled-components";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
 import * as R from "../../../assets/styles/travelReview.style";
-import IconBox from "../../../components/IconBox";
-import CommentCard from "../../../components/mobile/CommentCard";
 import CustomProfile from "../../../components/CustomProfile";
-import { axiosInstance } from "../../../service/axios";
+import IconBox from "../../../components/IconBox";
+import ImageView from "../../../components/ImageView";
 import LikeCommentBox from "../../../components/LikeCommentBox";
-import styled from "styled-components";
 import LoadingText from "../../../components/LoadingText";
+import CommentCard from "../../../components/mobile/CommentCard";
 import Container from "../../../components/web/Container";
+import { getReviewDetail } from "../../../service/axios";
+import { ReviewDetailProps } from "../../../types/travelreview";
+import { testImageList, testReviewItem } from "../../../utils/staticDatas";
 
 export default function ReviewDetails() {
-  const params = useParams();
-  const [review, setReview] = useState<ReviewDetailApiProps>();
+  const { reviewId } = useParams();
+  const [review, setReview] = useState<ReviewDetailProps>();
   const [isLoading, setIsLoading] = useState(false);
   const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");
@@ -26,19 +26,12 @@ export default function ReviewDetails() {
 
   const requestApi = async () => {
     setIsLoading(true);
-    try {
-      const res = await axiosInstance.get(`/review/${params?.reviewId}`);
 
-      if (res.status === 200) {
-        console.log(res);
-        setReview(res.data);
-        setCommentCnt(res.data.commentResDtoList.length);
-      }
-    } catch (error) {
-      console.error("api error=", error);
-    } finally {
+    await getReviewDetail(Number(reviewId)).then((res) => {
+      setReview(res?.data);
+      setCommentCnt(res?.data.commentResDtoList.length);
       setIsLoading(false);
-    }
+    });
   };
 
   const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,15 +40,15 @@ export default function ReviewDetails() {
   };
 
   const handleImageClick = (index: number) => {
-    navigate(`/home/review/${params.reviewId}/photo`, {
+    navigate(`/home/review/${reviewId}/photo`, {
       state: { currentIndex: index, images: testImageList }, // 이미지 인덱스와 목록을 state로 전달
     });
   };
 
   useEffect(() => {
-    //requestApi();
-    setCommentCnt(1);
-  }, [params.reviewId]);
+    requestApi();
+  }, [reviewId]);
+  
   return (
     <div>
       {isLoading && <LoadingText text="로딩중..." />}

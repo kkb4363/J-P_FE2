@@ -1,4 +1,14 @@
-import { CommentProps, UserProps } from "./res.dto";
+export type ThemeType = "TRAVEL" | "FESTIVAL";
+
+export interface PlaceProps {
+  id: number;
+  placeId: string;
+  name: string;
+  subName: string;
+  themeType: ThemeType;
+  rating: number;
+  photourl: string;
+}
 
 export interface PlaceDetailAPiProps {
   description: string;
@@ -51,17 +61,4 @@ export interface SelectPlaceProps {
   weekdayText: string[];
   rating: number;
   shortAddress: string;
-}
-
-export interface ReviewDetailApiProps {
-  id: number;
-  subject: string;
-  content: string;
-  userCompactResDto: UserProps;
-  placeId: string;
-  star: number;
-  likeCnt: number;
-  viewCnt: number;
-  createdAt: string;
-  commentResDtoList: CommentProps[];
 }

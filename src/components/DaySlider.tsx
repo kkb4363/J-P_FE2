@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import styled from "styled-components";
 import PrevArrow from "./mobile/schedule/PrevArrow";
 import NextArrow from "./mobile/schedule/NextArrow";
-import { DayProps } from "../types/res.dto";
+import { DayProps } from "../types/schedule";
 
 interface Props {
   web?: boolean;

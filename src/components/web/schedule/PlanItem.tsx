@@ -10,8 +10,7 @@ import {
   getGooglePlaceDetail,
   moveScheduleDate,
 } from "../../../service/axios";
-import { SelectPlaceProps } from "../../../types/home.details";
-import { DayLocationProps, DayProps } from "../../../types/res.dto";
+import { SelectPlaceProps } from "../../../types/place";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
@@ -26,6 +25,7 @@ import TicketIcon from "../../../assets/icons/TicketIcon";
 import PhoneIcon from "../../../assets/icons/PhoneIcon";
 import CustomSkeleton from "../../CustomSkeleton";
 import { useJPStore } from "../../../store/JPType.store";
+import { DayLocationProps, DayProps } from "../../../types/schedule";
 
 interface Props {
   item: DayLocationProps;

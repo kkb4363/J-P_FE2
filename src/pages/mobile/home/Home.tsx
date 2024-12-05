@@ -61,7 +61,7 @@ export default function Home() {
 
         <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} />
         {/* <S.ReviewCol>
-          {review?.slice(0, 2).map((item: reviewApiProps) => (
+          {review?.slice(0, 2).map((item: ReviewProps) => (
             <S.ReviewRow key={item.id}>
               <ImageView src={testImg} alt={""} width="85px" height="80px" />
 
