@@ -25,10 +25,6 @@ export default function Review({ sort }: Props) {
     });
   };
 
-  useEffect(() => {
-    requestApi();
-  }, [page, sort]);
-
   // 마지막 요소 감지 후 페이지 증가
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
@@ -50,6 +46,10 @@ export default function Review({ sort }: Props) {
     },
     [hasMore, loading]
   );
+
+  useEffect(() => {
+    requestApi();
+  }, [page, sort]);
 
   return (
     <ReviewContainer>

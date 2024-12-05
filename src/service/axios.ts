@@ -122,6 +122,18 @@ export const getReviews = async ({
   }
 };
 
+export const getReviewDetail = async (reviewId: number) => {
+  try {
+    const res = await axiosInstance(`/review/${reviewId}`);
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getSurroundingPlace = async ({
   lat,
   lng,

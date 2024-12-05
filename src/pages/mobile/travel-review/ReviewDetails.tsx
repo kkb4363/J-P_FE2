@@ -2,54 +2,46 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import StarIcon from "../../../assets/icons/StarIcon";
+import testImg from "../../../assets/images/testImg2.png";
 import * as R from "../../../assets/styles/travelReview.style";
-import IconBox from "../../../components/IconBox";
-import LikeCommentBox from "../../../components/LikeCommentBox";
-import CustomHeader from "../../../components/mobile/CustomHeader";
 import CustomProfile from "../../../components/CustomProfile";
+import IconBox from "../../../components/IconBox";
 import ImageView from "../../../components/ImageView";
+import LikeCommentBox from "../../../components/LikeCommentBox";
 import CommentCard from "../../../components/mobile/CommentCard";
+import CustomHeader from "../../../components/mobile/CustomHeader";
+import ImageSlider from "../../../components/mobile/ImageSlider";
+import { getReviewDetail } from "../../../service/axios";
+import { ReviewDetailApiProps } from "../../../types/home.details";
 import { CommentProps } from "../../../types/res.dto";
 import { testImageList } from "../../../utils/staticDatas";
-import ImageSlider from "../../../components/mobile/ImageSlider";
-import testImg from "../../../assets/images/testImg2.png";
-import { axiosInstance } from "../../../service/axios";
-import { ReviewDetailApiProps } from "../../../types/home.details";
 
 export default function ReviewDetails() {
-  const params = useParams();
+  const { reviewId } = useParams();
   const [review, setReview] = useState<ReviewDetailApiProps>();
   const [loading, setLoading] = useState(false);
-  const [fillLike, setFillLike] = useState(false);
+  const [fillLike, setFillLike ] = useState(false);
   const [comment, setComment] = useState("");
   const [commentCnt, setCommentCnt] = useState(-1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [focusImgIdx, setFocusImgIdx] = useState(0);
 
-  useEffect(() => {
-    const requestApi = async () => {
-      setLoading(true);
-      try {
-        const res = await axiosInstance.get(`/review/${params?.reviewId}`);
-
-        if (res.status === 200) {
-          console.log(res);
-          setReview(res.data);
-          setCommentCnt(res.data.commentResDtoList.length);
-        }
-      } catch (error) {
-        console.error("api error=", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    requestApi();
-  }, [params?.reviewId]);
-
+  const requestApi = async () => {
+    setLoading(true);
+    await getReviewDetail(Number(reviewId)).then((res) => {
+      setReview(res?.data);
+      setCommentCnt(res?.data.commentResDtoList.length);
+      setLoading(false);
+    });
+  };
   const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log(`${comment} submit`);
   };
+
+  useEffect(() => {
+    requestApi();
+  }, [reviewId]);
 
   return (
     <ReviewDetailContainer>
