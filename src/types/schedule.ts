@@ -44,3 +44,18 @@ export interface ScheduleApiProps {
   isOpen: boolean;
   dayResDtos: DayProps[];
 }
+
+export interface AddedPlaceProps {
+  expense: any[];
+  id: number;
+  index: number;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  memo: any;
+  mobility: any[];
+  name: string;
+  placeId: string;
+  time: string;
+}

@@ -22,9 +22,10 @@ import {
   getSchedule,
 } from "../../../service/axios";
 import { DayProps } from "../../../types/res.dto";
-import { ScheduleApiProps } from "../../../types/schedule";
+import { AddedPlaceProps, ScheduleApiProps } from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
 import CustomSkeleton from "../../../components/CustomSkeleton";
+import { useMapStore } from "../../../store/map.store";
 
 export default function ScheduleDetails() {
   const { scheduleId } = useParams();
@@ -111,11 +112,29 @@ export default function ScheduleDetails() {
     requestApi();
   }, []);
 
-  // 장소 location 관련
+  // 장소 location 부분
   const [placeLoc, setPlaceLoc] = useState({
     lat: null,
     lng: null,
   });
+
+  useEffect(() => {
+    if (scheduleData?.id) {
+      getPlaceLocation();
+    }
+  }, [scheduleData]);
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: scheduleData?.place?.placeId + "" }).then(
+      (res) => {
+        const location = res?.data.location;
+        setPlaceLoc({
+          lat: location.lat,
+          lng: location.lng,
+        });
+      }
+    );
+  };
 
   const handleAddPlaceClick = () => {
     if (scheduleData) {
@@ -137,23 +156,19 @@ export default function ScheduleDetails() {
     }
   };
 
-  const getPlaceLocation = () => {
-    getPlaceDetail({ placeId: scheduleData?.place?.placeId + "" }).then(
-      (res) => {
-        const location = res?.data.location;
-        setPlaceLoc({
-          lat: location.lat,
-          lng: location.lng,
-        });
-      }
-    );
-  };
+  // 지도 마커 부분
+  const mapStore = useMapStore();
+  const currentDayPlaces =
+    dayListData?.[currentDayIndex - 1]?.dayLocationResDtoList;
 
   useEffect(() => {
-    if (scheduleData?.id) {
-      getPlaceLocation();
+    if (mapStore.getAddedPlace().length !== 0) {
+      mapStore.clear();
     }
-  }, [scheduleData]);
+
+    if (placeLoc?.lat)
+      mapStore.setAddedPlace(currentDayPlaces as AddedPlaceProps[]);
+  }, [currentDayIndex, placeLoc?.lat]);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -201,8 +216,16 @@ export default function ScheduleDetails() {
             <CustomGoogleMap
               width="100%"
               height="342px"
-              lat={Number(placeLoc?.lat)}
-              lng={Number(placeLoc?.lng)}
+              lat={
+                currentDayPlaces?.length === 0
+                  ? Number(placeLoc?.lat)
+                  : undefined
+              }
+              lng={
+                currentDayPlaces?.length === 0
+                  ? Number(placeLoc?.lng)
+                  : undefined
+              }
             />
           )}
 
@@ -227,7 +250,7 @@ export default function ScheduleDetails() {
             </DaySliderBox>
             <PlanList>
               {dayListData.find((day) => day.dayIndex === currentDayIndex)
-                ?.dayLocationResDtoList.length === 0 ? (
+                ?.dayLocationResDtoList?.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>

@@ -34,6 +34,7 @@ import { PlaceAddModalContainer } from "./SurroundingMore";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 import { Cookies } from "react-cookie";
 import TravelPlaceAddModal from "../../../components/web/surroundingPlace/TravelPlaceAddModal";
+import { useMapStore } from "../../../store/map.store";
 
 const cookies = new Cookies();
 

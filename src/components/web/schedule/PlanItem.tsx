@@ -101,7 +101,6 @@ export default function PlanItem({
         reloadSchedule();
       });
     } else {
-      
       // await moveScheduleDate(item.id, {
       //   newDayId: currentDayIdx,
       //   time: selectTime,
@@ -340,6 +339,7 @@ const TimeBox = styled.div<{ $isEdit: boolean }>`
       ? props.theme.color.gray100
       : props.theme.color.secondaryLight};
   font-size: 14px;
+  cursor: pointer;
 `;
 
 const PlaceBox = styled.div<{ $isDragging: boolean }>`
@@ -356,6 +356,7 @@ const PlaceBox = styled.div<{ $isDragging: boolean }>`
         : props.theme.color.gray200};
   border-radius: 16px;
   gap: 16px;
+  cursor: pointer;
 `;
 
 const PlaceNum = styled.div<{ $isEdit: boolean }>`

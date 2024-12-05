@@ -21,6 +21,7 @@ import useAddPlaceHook from "../../../hooks/useAddPlace";
 import MoveDaySlider from "../../MoveDaySlider";
 import PrimaryButton from "../../PrimaryButton";
 import TimeSwiper from "../../TimeSwiper";
+import { useUserStore } from "../../../store/user.store";
 
 interface Props {
   handleClose: () => void;
@@ -75,6 +76,7 @@ export default function TravelPlaceAddSheet({ handleClose, placeId }: Props) {
     }
   };
 
+  const { getUserType } = useUserStore();
   const handlePlaceAdd = () => {
     const place = [
       {
@@ -85,7 +87,7 @@ export default function TravelPlaceAddSheet({ handleClose, placeId }: Props) {
       },
     ];
 
-    addPlaceToSchedule(selectDay, place).then((res) => {
+    addPlaceToSchedule(selectDay, getUserType(), place).then((res) => {
       if (res?.data) {
         toast(
           <SuccessModal>

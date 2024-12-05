@@ -211,7 +211,7 @@ const SelectJPBox = styled.button<{ $isSelected: boolean }>`
   }
 `;
 
-const LoadingText = styled.aside`
+export const LoadingText = styled.aside`
   display: flex;
   justify-content: center;
   align-items: center;

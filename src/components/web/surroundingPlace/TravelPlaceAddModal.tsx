@@ -19,6 +19,7 @@ import PrimaryButton from "../../PrimaryButton";
 import TimeSwiper from "../../TimeSwiper";
 import { PlaceDetailAPiProps } from "../../../types/home.details";
 import { Cookies } from "react-cookie";
+import { useUserStore } from "../../../store/user.store";
 
 interface Props {
   placeId: string;
@@ -73,6 +74,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
     }
   };
 
+  const { getUserType } = useUserStore();
   const handlePlaceAdd = () => {
     const place = [
       {
@@ -83,7 +85,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
       },
     ];
 
-    addPlaceToSchedule(selectDay, place).then((res) => {
+    addPlaceToSchedule(selectDay, getUserType(), place).then((res) => {
       if (res?.data) {
         modalStore.setCurrentModal("successAddPlan");
       }

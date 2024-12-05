@@ -16,6 +16,8 @@ import {
   addPlaceToSchedule,
   getGoogleSearchPlaceList,
 } from "../../../service/axios";
+import { useUserStore } from "../../../store/user.store";
+import { useMapStore } from "../../../store/map.store";
 
 export default function CreatePlace() {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +60,7 @@ export default function CreatePlace() {
     }
   };
 
+  const { getUserType } = useUserStore();
   const handleAddPlaceClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
     if (!selectDay || !selectTime) {
@@ -71,7 +74,7 @@ export default function CreatePlace() {
       name: place.name,
     }));
 
-    await addPlaceToSchedule(selectDay, places).then((res) => {
+    await addPlaceToSchedule(selectDay, getUserType(), places).then((res) => {
       if (res?.data) {
         navigate(`/home/schedule/details/${scheduleId}`);
       }
@@ -130,37 +133,51 @@ export default function CreatePlace() {
     }
   }, [searchString, isSubmitted]);
 
+  // 장소 추가
+  const mapStore = useMapStore();
+  useEffect(() => {
+    mapStore.setNearPlace(placeList);
+  }, [placeList]);
+
+  const [focusPlaceId, setFocusPlaceId] = useState("");
+
+  const handleMarkerFocus = (placeId: string) => {
+    setFocusPlaceId(placeId);
+  };
+
   return (
     <>
       <CreatePlaceContainer>
         <SideBar>
-          <h1>{`${city} 여행`}</h1>
-          <DatesBox dates={dates} />
+          <SideHeader>
+            <h1>{`${city} 여행`}</h1>
+            <DatesBox dates={dates} />
 
-          <InputBox>
-            <CustomInput
-              text="어디로 떠나고 싶나요?"
-              value={searchString}
-              onChange={handleInputChange}
-              onSubmit={handleInputSubmit}
-            />
-          </InputBox>
+            <SideInputBox>
+              <CustomInput
+                text="어디로 떠나고 싶나요?"
+                value={searchString}
+                onChange={handleInputChange}
+                onSubmit={handleInputSubmit}
+              />
+            </SideInputBox>
+          </SideHeader>
 
-          <AddPlaceCardCol>
+          <SideCardCol>
             {placeList.map((item, idx) => (
               <AddPlaceCard
                 key={idx}
                 isSelect={list.some((place) => place.placeId === item.placeId)}
                 handleAdd={() => handleAdd(item)}
                 handleRemove={() => handleRemove(item.placeId)}
+                handleClick={handleMarkerFocus}
                 item={item}
               />
             ))}
             <div ref={lastElementRef} />
-            {isLoading && <div>로딩중</div>}
-          </AddPlaceCardCol>
+          </SideCardCol>
 
-          <ButtonBox>
+          <SideBtnBox>
             <PrimaryButton
               width="190px"
               height="44px"
@@ -169,7 +186,7 @@ export default function CreatePlace() {
               isDisabled={list.length === 0}
               onClick={() => setOpenModal((p) => ({ ...p, selectDay: true }))}
             />
-          </ButtonBox>
+          </SideBtnBox>
         </SideBar>
 
         <GoogleMapBox>
@@ -180,6 +197,7 @@ export default function CreatePlace() {
               lat={location.lat}
               lng={location.lng}
               handleMarkerClick={() => {}}
+              focusCenterId={focusPlaceId}
             />
           )}
         </GoogleMapBox>
@@ -232,7 +250,7 @@ const CreatePlaceContainer = styled.div`
   overflow-y: scroll;
 `;
 
-const SideBar = styled.div`
+const SideBar = styled.nav`
   width: 509px;
   height: 100%;
   padding: 37px 35px;
@@ -242,6 +260,12 @@ const SideBar = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   ${scrollHidden};
+`;
+
+const SideHeader = styled.section`
+  display: flex;
+  flex-direction: column;
+  height: 175px;
 
   & > h1 {
     color: ${(props) => props.theme.color.gray900};
@@ -251,23 +275,28 @@ const SideBar = styled.div`
   }
 `;
 
-const InputBox = styled.div`
+const SideInputBox = styled.div`
   width: 439px;
   margin: 32px auto 24px;
   height: 60px;
 `;
 
-const AddPlaceCardCol = styled.div`
+const SideCardCol = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex: 3;
+  height: calc(100% - 175px - 60px - 40px);
+  ${scrollHidden};
+  overflow: scroll;
 `;
 
-const ButtonBox = styled.div`
+const SideBtnBox = styled.div`
   margin-top: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 60px;
 `;
 
 const GoogleMapBox = styled.div`

@@ -394,6 +394,7 @@ export const getGoogleSearchPlaceList = async (
 
 export const addPlaceToSchedule = async (
   dayId: number,
+  mbti: string,
   places: {
     time: string;
     location: { lat: number; lng: number };
@@ -403,7 +404,7 @@ export const addPlaceToSchedule = async (
 ) => {
   try {
     const res = await axiosInstance.post(
-      `/schedule/location/${dayId}`,
+      `/schedule/location/${dayId}?mbti=${mbti}`,
       places,
       {
         headers: {
