@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { reviewApiProps } from "../../../types/home";
+import { ReviewProps } from "../../../types/travelreview";
 import { testImageList } from "../../../utils/staticDatas";
 import CustomProfile from "../../CustomProfile";
 import MarkIcon from "../../../assets/icons/MarkIcon";
@@ -10,7 +10,7 @@ import LikeCommentBox from "../../LikeCommentBox";
 import IconBox from "../../IconBox";
 
 interface Props {
-  item: reviewApiProps;
+  item: ReviewProps;
 }
 
 export default function ReviewCard({ item }: Props) {

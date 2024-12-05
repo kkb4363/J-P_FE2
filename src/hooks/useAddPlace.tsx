@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GooglePlaceProps } from "../types/home.details";
+import { GooglePlaceProps } from "../types/place";
 
 export default function useAddPlaceHook() {
   const [list, setList] = useState<GooglePlaceProps[]>([]);

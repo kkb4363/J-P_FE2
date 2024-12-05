@@ -1,14 +1,15 @@
-import styled from "styled-components";
-import * as R from "../../assets/styles/travelReview.style";
-import CustomProfile from "../CustomProfile";
-import { CommentProps, UserProps } from "../../types/res.dto";
-import ReplyIcon from "../../assets/icons/ReplyIcon";
 import { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import PencilIcon from "../../assets/icons/PencilIcon";
+import ReplyIcon from "../../assets/icons/ReplyIcon";
 import TrashIcon from "../../assets/icons/TrashIcon";
+import testImg from "../../assets/images/testImg.png";
+import * as R from "../../assets/styles/travelReview.style";
+import { UserProps } from "../../types/mypage";
+import { CommentProps } from "../../types/travelreview";
+import CustomProfile from "../CustomProfile";
 import IconBox from "../IconBox";
 import TwoButtonsModal from "../TwoButtonsModal";
-import testImg from "../../assets/images/testImg.png";
 
 interface Props {
   isReply?: boolean;

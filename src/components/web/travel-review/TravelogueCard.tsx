@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { reviewApiProps } from "../../../types/home";
+import { ReviewProps } from "../../../types/travelreview";
 import { testImageList, testLogTags } from "../../../utils/staticDatas";
 import TwoImageBox from "./TwoImageBox";
 import LikeCommentBox from "../../LikeCommentBox";
 import CustomProfile from "../../CustomProfile";
 
 interface Props {
-  item: reviewApiProps;
+  item: ReviewProps;
 }
 
 export default function TravelogueCard({ item }: Props) {

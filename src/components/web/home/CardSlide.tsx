@@ -4,7 +4,7 @@ import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import { axiosInstance } from "../../../service/axios";
 import { useEffect, useState } from "react";
-import { placeApiProps } from "../../../types/home";
+import { PlaceProps } from "../../../types/place";
 import { useNavigate } from "react-router-dom";
 import PlaceCard from "./PlaceCard";
 
@@ -86,7 +86,7 @@ export default function CardSlide({
         ? Array.from({ length: 4 }).map((_, index) => (
             <CustomSkeleton key={index} />
           ))
-        : data?.map((item: placeApiProps) => (
+        : data?.map((item: PlaceProps) => (
             <PlaceCard
               key={item.id}
               bottomText={bottomText ? item.name : ""}

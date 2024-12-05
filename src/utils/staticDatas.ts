@@ -11,10 +11,10 @@ import NoteIcon from "../assets/icons/NoteIcon";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import SearchIcon from "../assets/icons/SearchIcon";
 import TicketIcon from "../assets/icons/TicketIcon";
-import { reviewApiProps } from "../types/home";
-import { SelectPlaceProps } from "../types/home.details";
-import { CommentProps, UserProps } from "../types/res.dto";
+import { ReviewProps, CommentProps } from "../types/travelreview";
+import { SelectPlaceProps } from "../types/place";
 import { PlanItemProps } from "../types/schedule";
+import { UserProps } from "../types/mypage";
 
 export const footerTabs = [
   { icon: HomeIcon, label: "홈", route: "/home" },
@@ -167,7 +167,7 @@ export const testPlanItems: PlanItemProps[] = [
   },
 ];
 
-export const testReviewItem: reviewApiProps = {
+export const testReviewItem: ReviewProps = {
   commentCnt: 1,
   id: 1,
   createdAt: "24.9.15",

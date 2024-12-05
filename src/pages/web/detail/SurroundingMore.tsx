@@ -13,7 +13,7 @@ import {
 } from "../../../service/axios";
 import { useEffect, useState } from "react";
 import { useMapStore } from "../../../store/map.store";
-import { SelectPlaceProps } from "../../../types/home.details";
+import { SelectPlaceProps } from "../../../types/place";
 import InfoModal from "../../../components/web/surroundingPlace/InfoModal";
 import NoButtonModal from "../../../components/web/NoButtonModal";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";

@@ -1,37 +1,27 @@
-import styled from "styled-components";
-import { testReviewItem } from "../../../utils/staticDatas";
-import ReviewCard from "./../../../components/web/travel-review/ReviewCard";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../service/axios";
-import { reviewApiProps } from "../../../types/home";
+import styled from "styled-components";
 import LoadingText from "../../../components/LoadingText";
+import { getReviews } from "../../../service/axios";
+import { ReviewProps } from "../../../types/travelreview";
+import ReviewCard from "./../../../components/web/travel-review/ReviewCard";
 
 interface Props {
   sort: string;
 }
 
 export default function Review({ sort }: Props) {
-  const [data, setData] = useState<reviewApiProps[]>([]);
+  const [data, setData] = useState<ReviewProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  // [세연 TODO] : DB에 리뷰 데이터 들어오면 확인 후 수정
   const requestApi = async () => {
     setIsLoading(true);
-    try {
-      const res = await axiosInstance.get(`/reviews?page=${page}&sort=${sort}`);
-
-      if (res.status === 200) {
-        const newData = res.data.data;
-        setData(newData);
-        setHasMore(newData.length > 0);
-      }
-    } catch (error) {
-      console.error("api error=", error);
-    } finally {
+    getReviews({ page, sort }).then((res) => {
+      setData(res?.data.data);
+      setHasMore(res?.data.data.length > 0);
       setIsLoading(false);
-    }
+    });
   };
   console.log(data, hasMore);
 
@@ -42,8 +32,7 @@ export default function Review({ sort }: Props) {
   };
 
   useEffect(() => {
-    //requestApi();
-    setData([testReviewItem]);
+    requestApi();
   }, [page, sort]);
 
   return (

@@ -9,7 +9,7 @@ import {
 import {
   PlaceDetailAPiProps,
   SelectPlaceProps,
-} from "../../../types/home.details";
+} from "../../../types/place";
 import { useMapStore } from "../../../store/map.store";
 import ImageView from "../../../components/ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
