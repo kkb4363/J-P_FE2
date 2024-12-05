@@ -105,7 +105,7 @@ export default function RenderGoogleMap({
   useEffect(() => {
     if (map) {
       const infoWindow = new (window as any).google.maps.InfoWindow();
-      places.forEach(
+      places?.forEach(
         (place: {
           location: {
             lat: number;

@@ -85,7 +85,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
       },
     ];
 
-    addPlaceToSchedule(selectDay, getUserType(), place).then((res) => {
+    addPlaceToSchedule(selectDay, place, getUserType()).then((res) => {
       if (res?.data) {
         modalStore.setCurrentModal("successAddPlan");
       }

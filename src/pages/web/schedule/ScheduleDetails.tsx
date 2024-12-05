@@ -162,17 +162,18 @@ export default function ScheduleDetails() {
 
   // 지도 마커 부분
   const mapStore = useMapStore();
-  const currentDayPlaces =
-    dayListData?.[currentDayId - 1]?.dayLocationResDtoList;
+
+  const currentDayPlaces = dayListData?.find(
+    (d) => d.id === currentDayId
+  )?.dayLocationResDtoList;
 
   useEffect(() => {
-    if (mapStore.getAddedPlace().length !== 0) {
+    if (mapStore.getAddedPlace()?.length !== 0) {
       mapStore.clear();
     }
 
     if (placeLoc?.lat) mapStore.setAddedPlace(currentDayPlaces as any[]);
   }, [currentDayId, placeLoc?.lat]);
-  console.log(hashtag);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -254,7 +255,7 @@ export default function ScheduleDetails() {
             </DaySliderBox>
             <PlanList>
               {dayListData.find((day) => day.id === currentDayId)
-                ?.dayLocationResDtoList.length === 0 ? (
+                ?.dayLocationResDtoList?.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>

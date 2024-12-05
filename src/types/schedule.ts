@@ -18,9 +18,12 @@ export interface PlanDetailsProps {
 }
 
 export interface AddCostDataTypes {
-  type: string;
+  // type: string;
+  // name: string;
+  // expense: number | null;
+  category: string;
   name: string;
-  expense: number | null;
+  cost: number | null;
 }
 
 export interface CityProps {
@@ -49,6 +52,7 @@ export interface AddedPlaceProps {
   expense: any[];
   id: number;
   index: number;
+  name: string;
   location: {
     lat: number;
     lng: number;

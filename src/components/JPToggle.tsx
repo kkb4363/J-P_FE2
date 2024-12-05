@@ -1,24 +1,24 @@
 import styled from "styled-components";
-import { useJPStore } from "../store/JPType.store";
+import { useUserStore } from "../store/user.store";
 
 export default function JPToggle() {
-  const { jpState, setJpState } = useJPStore();
+  const { getUserType, setUserType } = useUserStore();
 
   const handleJPState = () => {
-    if (jpState === "J") {
-      setJpState("P");
+    if (getUserType() === "J") {
+      setUserType("P");
     } else {
-      setJpState("J");
+      setUserType("J");
     }
   };
 
   return (
     <JPToggleContainer onClick={handleJPState}>
-      <J $isActive={jpState === "J"}>
+      <J $isActive={getUserType() === "J"}>
         <span>J</span>
       </J>
       <div />
-      <P $isActive={jpState === "P"}>
+      <P $isActive={getUserType() === "P"}>
         <span>P</span>
       </P>
     </JPToggleContainer>

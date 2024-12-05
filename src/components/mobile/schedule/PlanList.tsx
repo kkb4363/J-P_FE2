@@ -7,7 +7,6 @@ import styled from "styled-components";
 interface Props {
   planItems: PlanItemProps[];
   isEdit: boolean;
-  jpState: string;
   setIsPlanDetail: () => void;
   setIsPlanPlace: () => void;
   handleDeleteOpen: () => void;
@@ -18,7 +17,6 @@ export const PlanList: ComponentClass<SortableContainerProps & Props> =
     ({
       planItems,
       isEdit,
-      jpState,
       setIsPlanDetail,
       setIsPlanPlace,
       handleDeleteOpen,
@@ -35,7 +33,6 @@ export const PlanList: ComponentClass<SortableContainerProps & Props> =
                 setIsPlanDetail={setIsPlanDetail}
                 setIsPlanPlace={setIsPlanPlace}
                 planItem={item}
-                jpState={jpState}
                 handleDeleteOpen={handleDeleteOpen}
               />
             ))}
