@@ -26,11 +26,11 @@ export default function TravelReview() {
         <ToggleLabel onClick={() => reviewStore.setIsReview(false)}>
           여행기
         </ToggleLabel>
-        <ToggleButton isReview={reviewStore.getIsReview()}>
+        <ToggleButton $isReview={reviewStore.getIsReview()}>
           {reviewStore.getIsReview() ? "리뷰" : "여행기"}
         </ToggleButton>
       </ToggleLabelBox>
-      <FilterBox onClick={() => setIsFilterOpen(!isFilterOpen)}>
+      <FilterBox onClick={() => setIsFilterOpen((prev) => !prev)}>
         <span>{selectedFilter.name}</span>
         <ArrowDownIcon />
       </FilterBox>
@@ -100,8 +100,8 @@ const ToggleLabel = styled.label`
   font-size: 16px;
 `;
 
-const ToggleButton = styled.button<{ isReview: boolean }>`
-  width: ${(props) => (props.isReview ? "75px" : "87px")};
+const ToggleButton = styled.button<{ $isReview: boolean }>`
+  width: ${(props) => (props.$isReview ? "75px" : "87px")};
   height: 33px;
   z-index: 1;
   position: absolute;
@@ -112,7 +112,7 @@ const ToggleButton = styled.button<{ isReview: boolean }>`
   border-radius: 30px;
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.06);
   left: ${(props) =>
-    props.isReview
+    props.$isReview
       ? "calc(100% / 2 - 180px / 2 + 7px)"
       : "calc(100% / 2 - 3px)"};
   transition: left 0.2s ease-out;
@@ -133,11 +133,6 @@ const FilterBox = styled.div`
     font-size: 12px;
   }
 `;
-
-// const BottomSheetContainer = styled.div`
-//   width: 100%;
-//   z-index: 2;
-// `;
 
 const SelectFilterBox = styled.div`
   display: flex;

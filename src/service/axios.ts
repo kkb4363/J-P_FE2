@@ -98,11 +98,21 @@ export const getPlaceDetail = async ({ placeId }: { placeId: string }) => {
   }
 };
 
-export const getReviews = async ({ placeId }: { placeId: string }) => {
+export const getReviews = async ({
+  page,
+  sort,
+  placeId,
+}: {
+  page: number;
+  sort: string;
+  placeId?: string;
+}) => {
   try {
-    const res = await axiosInstance.get(
-      `/reviews?page=1&sort=HOT&placeId=${placeId}`
-    );
+    const url = placeId
+      ? `/reviews?page=${page}&sort=${sort}&placeId=${placeId}`
+      : `/reviews?page=${page}&sort=${sort}`;
+
+    const res = await axiosInstance.get(url);
 
     if (res.status === 200) {
       return res;

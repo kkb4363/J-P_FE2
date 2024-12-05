@@ -60,9 +60,11 @@ export default function Detail() {
   };
 
   const getReview = async () => {
-    getReviews({ placeId: param.placeId + "" }).then((res) => {
-      setReviews(res?.data.data);
-    });
+    getReviews({ page: 1, sort: "HOT", placeId: param.placeId + "" }).then(
+      (res) => {
+        setReviews(res?.data.data);
+      }
+    );
   };
 
   const getNearPlace = async () => {

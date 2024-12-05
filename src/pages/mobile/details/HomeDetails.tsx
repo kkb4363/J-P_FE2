@@ -1,37 +1,37 @@
+import { useEffect, useState } from "react";
+import { Cookies } from "react-cookie";
+import { useNavigate, useParams } from "react-router-dom";
+import Slider from "react-slick";
+import { toast } from "react-toastify";
+import styled from "styled-components";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
+import EditIcon from "../../../assets/icons/EditIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
-import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
-import { useEffect, useState } from "react";
-import StarIcon from "../../../assets/icons/StarIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
-import { useNavigate, useParams } from "react-router-dom";
+import StarIcon from "../../../assets/icons/StarIcon";
+import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
+import * as S from "../../../assets/styles/homeDetail.style";
+import CustomSkeleton from "../../../components/CustomSkeleton";
+import LikeCommentBox from "../../../components/LikeCommentBox";
+import TravelPlaceAddSheet from "../../../components/mobile/bottomSheets/TravelPlaceAddSheet";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import SurroundingPlaceCard from "../../../components/mobile/home/SurroundingPlaceCard";
+import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
+import useImgLoading from "../../../hooks/useImgLoading";
 import {
   getPlaceDetail,
   getReviews,
   getSurroundingPlace,
   setLike,
 } from "../../../service/axios";
+import { useMapStore } from "../../../store/map.store";
+import { reviewApiProps } from "../../../types/home";
 import {
   GooglePlaceProps,
   PlaceDetailAPiProps,
 } from "../../../types/home.details";
-import { reviewApiProps } from "../../../types/home";
-import { useMapStore } from "../../../store/map.store";
-import * as S from "../../../assets/styles/homeDetail.style";
 import { testImg2 } from "../../../utils/staticDatas";
-import EditIcon from "../../../assets/icons/EditIcon";
-import CustomSkeleton from "../../../components/CustomSkeleton";
-import styled from "styled-components";
-import Slider from "react-slick";
-import SurroundingPlaceCard from "../../../components/mobile/home/SurroundingPlaceCard";
-import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
-import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
-import useImgLoading from "../../../hooks/useImgLoading";
-import LikeCommentBox from "../../../components/LikeCommentBox";
-import { Cookies } from "react-cookie";
-import { toast } from "react-toastify";
-import TravelPlaceAddSheet from "../../../components/mobile/bottomSheets/TravelPlaceAddSheet";
 
 const cookies = new Cookies();
 
@@ -75,9 +75,11 @@ export default function HomeDetails() {
   };
 
   const getReview = async () => {
-    getReviews({ placeId: param.placeId + "" }).then((res) => {
-      setReviews(res?.data.data);
-    });
+    getReviews({ page: 1, sort: "HOT", placeId: param.placeId + "" }).then(
+      (res) => {
+        setReviews(res?.data.data);
+      }
+    );
   };
 
   const getNearPlace = async () => {
