@@ -13,7 +13,7 @@ import { AddCostDataTypes, PlanItemProps } from "../../../types/schedule";
 import {
   testCostList,
   testDayList,
-  testPlanItems
+  testPlanItems,
 } from "../../../utils/staticDatas";
 import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
@@ -46,7 +46,7 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { jpState } = useJPStore();
+
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState({
     deleteSchedule: false,
@@ -127,7 +127,6 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                   onSortEnd={handleSortEnd}
                   helperClass="dragging-helper-class"
                   isEdit={isPlanEdit}
-                  jpState={jpState}
                   setIsPlanDetail={() => setIsPlanDetail((prev) => !prev)}
                   setIsPlanPlace={() => setIsPlanPlace((prev) => !prev)}
                   handleDeleteOpen={() =>

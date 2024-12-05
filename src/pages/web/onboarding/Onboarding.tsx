@@ -55,7 +55,7 @@ export const ExtendedContainer = styled.div`
   overflow: auto;
 `;
 
-const BackgroundBox = styled.section`
+const BackgroundBox = styled.div`
   width: 100%;
   min-width: 1440px;
   min-height: calc(712px - 90px);
@@ -64,19 +64,15 @@ const BackgroundBox = styled.section`
   background: url(${bgImg});
   background-size: cover;
   background-position: center;
-
-  @media screen and (min-width: 1440px) {
-    padding-left: 200px;
-  }
 `;
 
-const OnboardingBox = styled.div`
-  width: 50%;
+const OnboardingBox = styled.section`
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  padding: 161px 0 189px 207px;
+  align-items: center;
+  padding: 161px 0;
 
   & > h1 {
     color: ${(props) => props.theme.color.white};

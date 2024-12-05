@@ -24,8 +24,8 @@ import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
 import PhoneIcon from "../../../assets/icons/PhoneIcon";
 import CustomSkeleton from "../../CustomSkeleton";
-import { useJPStore } from "../../../store/JPType.store";
 import { DayLocationProps, DayProps } from "../../../types/schedule";
+import { useUserStore } from "../../../store/user.store";
 
 interface Props {
   item: DayLocationProps;
@@ -54,7 +54,7 @@ export default function PlanItem({
   const [isMove, setIsMove] = useState(false);
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
   const [isLoading, setIsLoading] = useState(false);
-  const { jpState } = useJPStore();
+  const { getUserType } = useUserStore();
 
   const {
     attributes,
@@ -102,7 +102,7 @@ export default function PlanItem({
           newDayId: selectDay,
           time: selectTime,
         },
-        jpState
+        getUserType()
       ).then(() => {
         reloadSchedule();
       });
@@ -113,7 +113,7 @@ export default function PlanItem({
           newDayId: currentDayId,
           time: selectTime,
         },
-        jpState
+        getUserType()
       ).then((res) => {
         reloadSchedule();
       });
@@ -348,6 +348,7 @@ const TimeBox = styled.div<{ $isEdit: boolean }>`
       ? props.theme.color.gray100
       : props.theme.color.secondaryLight};
   font-size: 14px;
+  cursor: pointer;
 `;
 
 const PlaceBox = styled.div<{ $isDragging: boolean }>`
@@ -364,6 +365,7 @@ const PlaceBox = styled.div<{ $isDragging: boolean }>`
         : props.theme.color.gray200};
   border-radius: 16px;
   gap: 16px;
+  cursor: pointer;
 `;
 
 const PlaceNum = styled.div<{ $isEdit: boolean }>`

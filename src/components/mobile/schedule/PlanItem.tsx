@@ -7,6 +7,7 @@ import {
   SortableElementProps,
   SortableHandle,
 } from "react-sortable-hoc";
+import { useUserStore } from "../../../store/user.store";
 
 export interface Props {
   id: number;
@@ -15,7 +16,6 @@ export interface Props {
   setIsPlanPlace: () => void;
   handleDeleteOpen: () => void;
   planItem: PlanItemProps;
-  jpState: string;
 }
 
 export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
@@ -27,13 +27,14 @@ export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
       setIsPlanPlace,
       handleDeleteOpen,
       planItem,
-      jpState,
     }: Props) => {
       const DragHandler = SortableHandle(() => {
         return <EditSelectText>선택</EditSelectText>;
       });
 
       const handlePlaceClick = isEdit ? undefined : setIsPlanPlace;
+
+      const { getUserType } = useUserStore();
 
       return (
         <PlanItemContainer>
@@ -46,7 +47,7 @@ export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
             </PlaceTitleCol>
             {isEdit && <DragHandler />}
           </PlaceBox>
-          {!isEdit && jpState === "J" && (
+          {!isEdit && getUserType() === "J" && (
             <PlaceDetailsButton $fill={true} onClick={setIsPlanDetail}>
               <FileCheckIcon />
             </PlaceDetailsButton>

@@ -18,9 +18,12 @@ export interface PlanDetailsProps {
 }
 
 export interface AddCostDataTypes {
-  type: string;
+  // type: string;
+  // name: string;
+  // expense: number | null;
+  category: string;
   name: string;
-  expense: number | null;
+  cost: number | null;
 }
 
 export interface CityProps {
@@ -45,6 +48,16 @@ export interface ScheduleApiProps {
   dayResDtos: DayProps[];
 }
 
+export interface AddedPlaceProps {
+  expense: any[];
+  id: number;
+  index: number;
+  name: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
 export type DayOfWeekType =
   | "MONDAY"
   | "TUESDAY"
@@ -59,10 +72,6 @@ export interface DayLocationProps {
   index: number;
   time: string;
   memo: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
   placeId: string;
   expense: {
     type: string;

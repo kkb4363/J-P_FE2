@@ -16,24 +16,21 @@ import LoadingText from "../../../components/LoadingText";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import Container from "../../../components/web/Container";
 import PlanItem from "../../../components/web/schedule/PlanItem";
-import { editSchedule, getSchedule } from "../../../service/axios";
+import {
+  editSchedule,
+  getSchedule,
+  getPlaceDetail,
+} from "../../../service/axios";
 import { DayProps, ScheduleApiProps } from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
+import CustomSkeleton from "../../../components/CustomSkeleton";
+import { useMapStore } from "../../../store/map.store";
 
 export default function ScheduleDetails() {
-  const { scheduleId } = useParams();
-  const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
-  const [dayListData, setDayListData] = useState<DayProps[]>();
-  const [isEdit, setIsEdit] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentDayId, setCurrentDayId] = useState<number>(-1);
-  const [hashtag, setHashtag] = useState("");
   const navigate = useNavigate();
+  const { scheduleId } = useParams();
 
-  const handleDayClick = (day: number) => {
-    setCurrentDayId(day);
-  };
-
+  const [isEdit, setIsEdit] = useState(false);
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
 
@@ -71,27 +68,30 @@ export default function ScheduleDetails() {
     });
   };
 
-  const handleAddPlaceClick = () => {
-    if (scheduleData) {
-      navigate(`/home/createPlace`, {
-        state: {
-          scheduleId: scheduleId,
-          city: scheduleData.place.name,
-          dates: {
-            startDate: scheduleData.startDate,
-            endDate: scheduleData.endDate,
-          },
-          dayResDtos: scheduleData.dayResDtos,
-        },
-      });
-    }
-  };
-
   const handleEditClick = async () => {
     if (isEdit) {
       editRequestApi();
     }
     setIsEdit((prev) => !prev);
+  };
+
+  const editRequestApi = async () => {
+    if (!dayListData) return;
+
+    Promise.all(
+      dayListData.map((day) => editSchedule(day.id, day.dayLocationResDtoList))
+    ).then(() => {
+      toast(<span>일정 편집 완료!</span>);
+    });
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
+  const [currentDayId, setCurrentDayId] = useState<number>(-1);
+  const [dayListData, setDayListData] = useState<DayProps[]>();
+
+  const handleDayClick = (day: number) => {
+    setCurrentDayId(day);
   };
 
   const requestApi = async () => {
@@ -108,21 +108,64 @@ export default function ScheduleDetails() {
     }
   };
 
-  const editRequestApi = async () => {
-    if (!dayListData) return;
-
-    Promise.all(
-      dayListData.map((day) => editSchedule(day.id, day.dayLocationResDtoList))
-    ).then(() => {
-      toast(<span>일정 편집 완료!</span>);
-    });
-  };
-
   useEffect(() => {
     requestApi();
   }, []);
 
-  console.log(hashtag);
+  const mapStore = useMapStore();
+  const [placeLoc, setPlaceLoc] = useState({
+    lat: null,
+    lng: null,
+  });
+  const currentDayPlaces = dayListData?.find(
+    (d) => d.id === currentDayId
+  )?.dayLocationResDtoList;
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: scheduleData?.place?.placeId + "" }).then(
+      (res) => {
+        const location = res?.data.location;
+        setPlaceLoc({
+          lat: location.lat,
+          lng: location.lng,
+        });
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (scheduleData?.id) {
+      getPlaceLocation();
+    }
+  }, [scheduleData]);
+
+  useEffect(() => {
+    if (placeLoc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces?.reverse() as any[]);
+    }
+  }, [currentDayId, placeLoc?.lat]);
+
+  const handleAddPlaceClick = () => {
+    if (scheduleData) {
+      navigate(`/home/createPlace`, {
+        state: {
+          scheduleId: scheduleId,
+          city: scheduleData.place.name,
+          dates: {
+            startDate: scheduleData.startDate,
+            endDate: scheduleData.endDate,
+          },
+          location: {
+            lat: placeLoc?.lat,
+            lng: placeLoc?.lng,
+          },
+          dayResDtos: scheduleData.dayResDtos,
+        },
+      });
+    }
+  };
+
+  const [hashtag, setHashtag] = useState("");
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -164,12 +207,24 @@ export default function ScheduleDetails() {
             </AddPlaceButton>
           </DetailsInfoBox>
 
-          <CustomGoogleMap
-            width="100%"
-            height="342px"
-            lat={37.579617}
-            lng={126.977041}
-          />
+          {!placeLoc?.lat ? (
+            <CustomSkeleton width="100%" height="340px" />
+          ) : (
+            <CustomGoogleMap
+              width="100%"
+              height="342px"
+              lat={
+                currentDayPlaces?.length === 0
+                  ? Number(placeLoc?.lat)
+                  : undefined
+              }
+              lng={
+                currentDayPlaces?.length === 0
+                  ? Number(placeLoc?.lng)
+                  : undefined
+              }
+            />
+          )}
 
           <PlansBox>
             <EditButton $isEdit={isEdit} onClick={handleEditClick}>
@@ -192,7 +247,7 @@ export default function ScheduleDetails() {
             </DaySliderBox>
             <PlanList>
               {dayListData.find((day) => day.id === currentDayId)
-                ?.dayLocationResDtoList.length === 0 ? (
+                ?.dayLocationResDtoList?.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
                     <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
@@ -208,13 +263,13 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      dayListData.find((day) => day.id === currentDayId)
+                      dayListData?.find((day) => day.id === currentDayId)
                         ?.dayLocationResDtoList || []
                     }
                   >
                     {dayListData
-                      .find((day) => day.id === currentDayId)
-                      ?.dayLocationResDtoList.map((item) => {
+                      ?.find((day) => day.id === currentDayId)
+                      ?.dayLocationResDtoList.map((item: any) => {
                         return (
                           <PlanItem
                             key={item.id}

@@ -14,7 +14,7 @@ export function formatDateToString(
     ? dateObj.getFullYear()
     : String(dateObj.getFullYear()).slice(2);
   const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-  const day = String(dateObj.getDate()).padStart(1, "0");
+  const day = String(dateObj.getDate()).padStart(2, "0");
 
   if (schedule) {
     return `${year}-${month}-${day}`;

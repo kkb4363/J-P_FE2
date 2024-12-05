@@ -6,9 +6,10 @@ export interface GoogleMapProps {
   width: string;
   height: string;
   style?: React.CSSProperties;
-  lat: number;
-  lng: number;
+  lat?: number;
+  lng?: number;
   handleMarkerClick?: (id: string) => void;
+  focusCenterId?: string;
 }
 
 export default function CustomGoogleMap({
@@ -18,6 +19,7 @@ export default function CustomGoogleMap({
   lng,
   style,
   handleMarkerClick,
+  focusCenterId,
 }: GoogleMapProps) {
   const render = (status: Status) => {
     switch (status) {
@@ -36,6 +38,7 @@ export default function CustomGoogleMap({
             lng={lng}
             style={style}
             handleMarkerClick={handleMarkerClick}
+            focusCenterId={focusCenterId}
           />
         );
     }

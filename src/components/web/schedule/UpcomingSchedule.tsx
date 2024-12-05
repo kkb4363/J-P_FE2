@@ -7,6 +7,7 @@ import { useState } from "react";
 import { deleteSchedule } from "../../../service/axios";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import OneButtonModal from "../../OneButtonModal";
+import { LoadingText } from "../../../pages/web/onboarding/Survey";
 
 interface Props {
   schedules: ScheduleApiProps[];
@@ -45,37 +46,41 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
 
   return (
     <>
-      {schedules?.length !== 0 && (
-        <>
-          <SubTitleWithMore>
-            <h2>내 일정</h2>
+      <>
+        {schedules?.length !== 0 ? (
+          <>
+            <SubTitleWithMore>
+              <h2>내 일정</h2>
 
-            <div onClick={handleDelete}>
-              {isDelete && <TrashIcon width={16} height={16} />}
-              {isDelete ? "삭제" : "편집"}
-            </div>
-          </SubTitleWithMore>
+              <div onClick={handleDelete}>
+                {isDelete && <TrashIcon width={16} height={16} />}
+                {isDelete ? "삭제" : "편집"}
+              </div>
+            </SubTitleWithMore>
 
-          <ScheduleCardBox>
-            <ScheduleSlider
-              schedules={schedules}
-              isDelete={isDelete}
-              setDeleteId={setDeleteId}
-            />
-          </ScheduleCardBox>
-        </>
-      )}
+            <ScheduleCardBox>
+              <ScheduleSlider
+                schedules={schedules}
+                isDelete={isDelete}
+                setDeleteId={setDeleteId}
+              />
+            </ScheduleCardBox>
+          </>
+        ) : (
+          <LoadingText>로딩중...</LoadingText>
+        )}
 
-      <SubTitleWithMore>
-        <h2>여행 일정 추천</h2>
-        <span>더보기</span>
-      </SubTitleWithMore>
+        <SubTitleWithMore>
+          <h2>여행 일정 추천</h2>
+          <span>더보기</span>
+        </SubTitleWithMore>
 
-      <RecommendCardBox>
-        <RecommendCard />
-        <RecommendCard />
-        <RecommendCard />
-      </RecommendCardBox>
+        <RecommendCardBox>
+          <RecommendCard />
+          <RecommendCard />
+          <RecommendCard />
+        </RecommendCardBox>
+      </>
 
       {openModal.deleteSchedule && (
         <TwoButtonsModal

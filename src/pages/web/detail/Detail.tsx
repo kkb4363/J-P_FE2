@@ -7,10 +7,7 @@ import {
   setLike,
 } from "../../../service/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  GooglePlaceProps,
-  PlaceDetailAPiProps,
-} from "../../../types/place";
+import { GooglePlaceProps, PlaceDetailAPiProps } from "../../../types/place";
 import { ReviewProps } from "../../../types/travelreview";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
@@ -244,58 +241,6 @@ export default function Detail() {
       </SubTitle>
 
       <ReviewCardRow>
-        <ReviewCard>
-          <ImageView
-            width="110px"
-            height="100px"
-            src={testImg}
-            alt="review-img"
-          />
-
-          <ReviewInfoCol>
-            <ReviewTitle>
-              <div>
-                <img src={testImg} alt="user-img" />
-                <span>jiwoo</span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>드라이브, 산책 코스로 딱좋았던</span>
-            </ReviewInfo>
-            <LikeCommentBox likeCnt={10} commentCnt={1} />
-          </ReviewInfoCol>
-        </ReviewCard>
-        <ReviewCard>
-          <ImageView
-            width="110px"
-            height="100px"
-            src={testImg}
-            alt="review-img"
-          />
-
-          <ReviewInfoCol>
-            <ReviewTitle>
-              <div>
-                <img src={testImg} alt="user-img" />
-                <span>jiwoo</span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>드라이브, 산책 코스로 딱좋았던</span>
-            </ReviewInfo>
-            <LikeCommentBox likeCnt={10} commentCnt={1} />
-          </ReviewInfoCol>
-        </ReviewCard>
         <ReviewCard>
           <ImageView
             width="110px"
