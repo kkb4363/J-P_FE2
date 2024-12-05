@@ -1,3 +1,14 @@
+export interface UserInfoProps {
+  name: string;
+  type: "J" | "P";
+}
+
+export interface UserProps {
+  id: number;
+  nickname: string;
+  profile: string;
+}
+
 export interface ProfileAPIProps {
   email: string;
   mbti: string;

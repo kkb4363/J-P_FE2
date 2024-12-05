@@ -12,12 +12,12 @@ import LoadingText from "../../../components/LoadingText";
 import CommentCard from "../../../components/mobile/CommentCard";
 import Container from "../../../components/web/Container";
 import { getReviewDetail } from "../../../service/axios";
-import { ReviewDetailApiProps } from "../../../types/home.details";
+import { ReviewDetailProps } from "../../../types/travelreview";
 import { testImageList, testReviewItem } from "../../../utils/staticDatas";
 
 export default function ReviewDetails() {
   const { reviewId } = useParams();
-  const [review, setReview] = useState<ReviewDetailApiProps>();
+  const [review, setReview] = useState<ReviewDetailProps>();
   const [isLoading, setIsLoading] = useState(false);
   const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");

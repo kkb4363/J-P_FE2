@@ -1,10 +1,9 @@
 import StarIcon from "../../../assets/icons/StarIcon";
-import testImg from "../../../assets/images/testImg1.png";
 import styled from "styled-components";
 import IconBox from "../../IconBox";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
-import { GooglePlaceProps } from "../../../types/home.details";
+import { GooglePlaceProps } from "../../../types/place";
 
 interface Props {
   width?: string;

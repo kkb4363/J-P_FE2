@@ -1,8 +1,7 @@
 import axios from "axios";
 import { Cookies } from "react-cookie";
-import { UserInfoProps } from "../types/axios.type";
-import { DayLocationProps } from "../types/res.dto";
-import { PlanDetailsProps } from "../types/schedule";
+import { UserInfoProps } from "../types/mypage";
+import { DayLocationProps, PlanDetailsProps } from "../types/schedule";
 
 const cookies = new Cookies();
 

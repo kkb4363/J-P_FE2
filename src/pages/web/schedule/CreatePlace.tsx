@@ -11,7 +11,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import TimeSwiper from "../../../components/TimeSwiper";
 import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
-import { GooglePlaceProps } from "../../../types/home.details";
+import { GooglePlaceProps } from "../../../types/place";
 import {
   addPlaceToSchedule,
   getGoogleSearchPlaceList,

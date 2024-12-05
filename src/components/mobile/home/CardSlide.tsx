@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import { useEffect, useState } from "react";
 import { getPlaceList } from "../../../service/axios";
-import { placeApiProps } from "../../../types/home";
+import { PlaceProps } from "../../../types/place";
 import ImageView from "../../ImageView";
 import testImg from "../../../assets/images/testImg.png";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ export default function CardSlide({ placeType, bottomText, topText }: Props) {
               />
             </CardBox>
           ))
-        : data?.map((item: placeApiProps) => (
+        : data?.map((item: PlaceProps) => (
             <CardBox key={item.id}>
               <ImageView
                 src={testImg}

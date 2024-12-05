@@ -26,11 +26,11 @@ import {
   setLike,
 } from "../../../service/axios";
 import { useMapStore } from "../../../store/map.store";
-import { reviewApiProps } from "../../../types/home";
+import { ReviewProps } from "../../../types/travelreview";
 import {
   GooglePlaceProps,
   PlaceDetailAPiProps,
-} from "../../../types/home.details";
+} from "../../../types/place";
 import { testImg2 } from "../../../utils/staticDatas";
 
 const cookies = new Cookies();
@@ -59,7 +59,7 @@ export default function HomeDetails() {
     GooglePlaceProps[]
   >([]);
 
-  const [reviews, setReviews] = useState<reviewApiProps[]>([]);
+  const [reviews, setReviews] = useState<ReviewProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectPlaceId, setSelectPlaceId] = useState("");
 

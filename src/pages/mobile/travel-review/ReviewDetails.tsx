@@ -12,15 +12,14 @@ import CommentCard from "../../../components/mobile/CommentCard";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import ImageSlider from "../../../components/mobile/ImageSlider";
 import { getReviewDetail } from "../../../service/axios";
-import { ReviewDetailApiProps } from "../../../types/home.details";
-import { CommentProps } from "../../../types/res.dto";
 import { testImageList } from "../../../utils/staticDatas";
+import { CommentProps, ReviewDetailProps } from "../../../types/travelreview";
 
 export default function ReviewDetails() {
   const { reviewId } = useParams();
-  const [review, setReview] = useState<ReviewDetailApiProps>();
+  const [review, setReview] = useState<ReviewDetailProps>();
   const [loading, setLoading] = useState(false);
-  const [fillLike, setFillLike ] = useState(false);
+  const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");
   const [commentCnt, setCommentCnt] = useState(-1);
   const [isModalOpen, setIsModalOpen] = useState(false);

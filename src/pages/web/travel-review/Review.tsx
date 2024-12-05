@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import LoadingText from "../../../components/LoadingText";
-import { axiosInstance, getReviews } from "../../../service/axios";
-import { reviewApiProps } from "../../../types/home";
+import { getReviews } from "../../../service/axios";
+import { ReviewProps } from "../../../types/travelreview";
 import ReviewCard from "./../../../components/web/travel-review/ReviewCard";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function Review({ sort }: Props) {
-  const [data, setData] = useState<reviewApiProps[]>([]);
+  const [data, setData] = useState<ReviewProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

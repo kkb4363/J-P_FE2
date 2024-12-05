@@ -1,6 +1,6 @@
 import Slider from "react-slick";
 import styled from "styled-components";
-import { DayProps } from "../types/res.dto";
+import { DayProps } from "../types/schedule";
 import { dayOfWeek } from "../utils/staticDatas";
 import NextArrow from "./mobile/schedule/NextArrow";
 import PrevArrow from "./mobile/schedule/PrevArrow";

@@ -2,14 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ReviewCard from "../../../components/mobile/ReviewCard";
 import { getReviews } from "../../../service/axios";
-import { reviewApiProps } from "../../../types/home";
+import { ReviewProps } from "../../../types/travelreview";
 
 interface Props {
   sort: string;
 }
 
 export default function Review({ sort }: Props) {
-  const [data, setData] = useState<reviewApiProps[]>([]);
+  const [data, setData] = useState<ReviewProps[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ export default function Review({ sort }: Props) {
       )}
       {loading && <NoResultsText>로딩중...</NoResultsText>}
       {!loading &&
-        data?.map((item: reviewApiProps, index: number) => {
+        data?.map((item: ReviewProps, index: number) => {
           if (data.length === index + 1) {
             // 마지막 요소에 ref 설정
             return (
