@@ -3,44 +3,46 @@ import ImageView from "../ImageView";
 import StarIcon from "../../../assets/icons/StarIcon";
 import useImgLoading from "../../../hooks/useImgLoading";
 import CustomSkeleton from "../../CustomSkeleton";
+import { GooglePlaceProps } from "../../../types/place";
 
 interface Props {
-  imgSrc: string;
-  name: string;
-  subName: string;
-  rating: number;
-  onClick: () => void;
+  data: GooglePlaceProps;
+  handleAdd: () => void;
+  setFocusCenterId: (id: string) => void;
 }
 
 export default function SurroundingMoreAddCard({
-  imgSrc,
-  name,
-  subName,
-  rating,
-  onClick,
+  data,
+  handleAdd,
+  setFocusCenterId,
 }: Props) {
-  const { loading } = useImgLoading({ imgSrc: imgSrc });
+  const { loading } = useImgLoading({ imgSrc: data.photoUrl });
 
   return (
-    <MoreAddCardContainer>
+    <MoreAddCardContainer onClick={() => setFocusCenterId(data.placeId)}>
       {loading ? (
         <CustomSkeleton width="90px" height="95px" borderRadius="16px" />
       ) : (
-        <ImageView src={imgSrc} alt="이미지없음" width="90px" height="95px" />
+        <ImageView
+          src={data.photoUrl}
+          alt="이미지없음"
+          width="90px"
+          height="95px"
+        />
       )}
       <MoreAddCardTextCol>
         <div>
           <span>주변 여행지</span>
         </div>
-        <p>{name}</p>
-        <span>{subName}</span>
+        <p>{data.name}</p>
+        <span>{data.shortAddress}</span>
       </MoreAddCardTextCol>
       <MoreAddCardAddBox>
         <div>
           <StarIcon width="14" height="14" />
-          <span>{rating}</span>
+          <span>{data.rating}</span>
         </div>
-        <button onClick={onClick}>
+        <button onClick={handleAdd}>
           <span>+ 추가</span>
         </button>
       </MoreAddCardAddBox>
@@ -55,6 +57,7 @@ const MoreAddCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.color.gray200};
   padding: 14px;
 
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -68,6 +71,7 @@ const MoreAddCardTextCol = styled.div`
   height: 100%;
   gap: 12px;
   flex: 1;
+  width: 135px;
 
   & > div {
     width: 75px;
@@ -88,6 +92,10 @@ const MoreAddCardTextCol = styled.div`
     color: ${(props) => props.theme.color.gray900};
     font-size: 16px;
     font-weight: 700;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   & > span {

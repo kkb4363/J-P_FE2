@@ -1,4 +1,3 @@
-import Slider from "react-slick";
 import styled from "styled-components";
 import { SubInfo } from "../../pages/mobile/schedule/Calendar";
 import { InfoText } from "./home.style";
@@ -24,6 +23,7 @@ export const InviteRow = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-top: 6px;
 `;
 
 export const ParticipantsRow = styled.div`

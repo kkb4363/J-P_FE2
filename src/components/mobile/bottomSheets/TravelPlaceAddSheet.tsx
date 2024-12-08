@@ -87,7 +87,7 @@ export default function TravelPlaceAddSheet({ handleClose, placeId }: Props) {
       },
     ];
 
-    addPlaceToSchedule(selectDay, getUserType(), place).then((res) => {
+    addPlaceToSchedule(selectDay, place, getUserType()).then((res) => {
       if (res?.data) {
         toast(
           <SuccessModal>
@@ -136,7 +136,7 @@ export default function TravelPlaceAddSheet({ handleClose, placeId }: Props) {
         <TravelPlaceAddSheetContainer>
           <h1>{getTitle()}</h1>
           {!selectScheduleId && (
-            <article>
+            <ul>
               {myScheduleList?.map((s) => {
                 const sInfo = formatDayNights(s.startDate, s.endDate);
                 return (
@@ -150,7 +150,7 @@ export default function TravelPlaceAddSheet({ handleClose, placeId }: Props) {
                   </ScheduleBox>
                 );
               })}
-            </article>
+            </ul>
           )}
 
           {openModal.selectDay && (
@@ -220,11 +220,11 @@ const TravelPlaceAddSheetContainer = styled.aside`
     margin-bottom: 32px;
   }
 
-  & > article {
+  & > ul {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    height: 160px;
+    min-height: 230px;
     overflow-y: scroll;
     ${scrollHidden};
   }

@@ -7,14 +7,7 @@ import { useEffect, useState } from "react";
 import { PlaceProps } from "../../../types/place";
 import { useNavigate } from "react-router-dom";
 import PlaceCard from "./PlaceCard";
-
-export interface ReactMultiCarouselProps {
-  [key: string]: {
-    breakpoint: { max: number; min: number };
-    items: number;
-    slidesToSlide: number;
-  };
-}
+import { ReactMultiCarouselProps } from "../../../types/common";
 
 interface Props {
   responsive: ReactMultiCarouselProps;
