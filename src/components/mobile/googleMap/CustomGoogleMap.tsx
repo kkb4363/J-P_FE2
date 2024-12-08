@@ -1,16 +1,7 @@
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import RenderGoogleMap from "./RenderGoogleMap";
 import CustomSkeleton from "../../CustomSkeleton";
-
-export interface GoogleMapProps {
-  width: string;
-  height: string;
-  style?: React.CSSProperties;
-  lat?: number;
-  lng?: number;
-  handleMarkerClick?: (id: string) => void;
-  focusCenterId?: string;
-}
+import { GoogleMapProps } from "../../../types/common";
 
 export default function CustomGoogleMap({
   width,

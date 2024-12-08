@@ -70,6 +70,8 @@ export default function SurroundingMore() {
     }
   }, [param?.lng, param?.lat]);
 
+  const [focusCenterId, setFocusCenterId] = useState("");
+
   return (
     <>
       <MoreContainer>
@@ -83,11 +85,9 @@ export default function SurroundingMore() {
             {mapStore.getNearPlace()?.map((card) => (
               <SurroundingMoreAddCard
                 key={card.placeId}
-                imgSrc={card.photoUrl}
-                name={card.name}
-                subName={card.shortAddress}
-                rating={card.rating}
-                onClick={() => handlePlaceAddCardClick(card.placeId)}
+                data={card}
+                handleAdd={() => handlePlaceAddCardClick(card.placeId)}
+                setFocusCenterId={setFocusCenterId}
               />
             ))}
           </CardCol>
@@ -100,6 +100,7 @@ export default function SurroundingMore() {
             lat={Number(param?.lat)}
             lng={Number(param?.lng)}
             handleMarkerClick={handleMarkerClick}
+            focusCenterId={focusCenterId}
           />
         )}
       </MoreContainer>

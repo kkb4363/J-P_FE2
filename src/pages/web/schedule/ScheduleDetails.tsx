@@ -29,15 +29,100 @@ import { useMapStore } from "../../../store/map.store";
 export default function ScheduleDetails() {
   const navigate = useNavigate();
   const { scheduleId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [detail, setDetail] = useState<ScheduleApiProps>(
+    {} as ScheduleApiProps
+  );
+  const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
+  const [currentDayIdx, setCurrentDayIdx] = useState<number>(1);
+
+  const requestApi = async () => {
+    if (scheduleId) {
+      setIsLoading(true);
+      getSchedule(scheduleId).then((res) => {
+        if (res) {
+          setAddedPlaces(res.data.dayResDtos);
+          setDetail(res?.data);
+        }
+        setIsLoading(false);
+      });
+    }
+  };
+
+  useEffect(() => {
+    requestApi();
+  }, [scheduleId]);
+
+  const mapStore = useMapStore();
+  const [loc, setLoc] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const currentDayPlaces = addedPlaces?.find(
+    (d) => d.dayIndex === currentDayIdx
+  )?.dayLocationResDtoList;
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: detail?.place?.placeId + "" }).then((res) => {
+      const location = res?.data.location;
+      setLoc({
+        lat: Number(location.lat),
+        lng: Number(location.lng),
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (detail?.id) {
+      getPlaceLocation();
+    }
+  }, [detail?.id]);
+
+  useEffect(() => {
+    if (loc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces as any[]);
+    }
+  }, [currentDayIdx, loc?.lat]);
 
   const [isEdit, setIsEdit] = useState(false);
+
+  const handleEditClick = async () => {
+    if (isEdit) {
+      editRequestApi();
+    }
+    setIsEdit((prev) => !prev);
+  };
+
+  const handleDayClick = (day: number) => {
+    setCurrentDayIdx(day);
+  };
+
+  const editRequestApi = async () => {
+    if (
+      detail?.dayResDtos?.find((d) => d.dayIndex === currentDayIdx)
+        ?.dayLocationResDtoList.length === 0
+    ) {
+      return;
+    }
+
+    Promise.all(
+      detail?.dayResDtos.map((day) =>
+        editSchedule(day.id, day.dayLocationResDtoList)
+      )
+    ).then(() => {
+      toast(<span>일정 편집 완료!</span>);
+    });
+  };
+
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
 
-    setDayListData((prevDayListData) => {
+    setAddedPlaces((prevDayListData) => {
       if (!prevDayListData) return;
 
-      const currentDay = prevDayListData.find((day) => day.id === currentDayId);
+      const currentDay = prevDayListData.find(
+        (day) => day.dayIndex === currentDayIdx
+      );
 
       if (!currentDay) return prevDayListData;
 
@@ -60,7 +145,7 @@ export default function ScheduleDetails() {
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
-        day.id === currentDayId
+        day.dayIndex === currentDayIdx
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
@@ -68,98 +153,21 @@ export default function ScheduleDetails() {
     });
   };
 
-  const handleEditClick = async () => {
-    if (isEdit) {
-      editRequestApi();
-    }
-    setIsEdit((prev) => !prev);
-  };
-
-  const editRequestApi = async () => {
-    if (!dayListData) return;
-
-    Promise.all(
-      dayListData.map((day) => editSchedule(day.id, day.dayLocationResDtoList))
-    ).then(() => {
-      toast(<span>일정 편집 완료!</span>);
-    });
-  };
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [scheduleData, setScheduleData] = useState<ScheduleApiProps>();
-  const [currentDayId, setCurrentDayId] = useState<number>(-1);
-  const [dayListData, setDayListData] = useState<DayProps[]>();
-
-  const handleDayClick = (day: number) => {
-    setCurrentDayId(day);
-  };
-
-  const requestApi = async () => {
-    if (scheduleId) {
-      setIsLoading(true);
-      getSchedule(scheduleId).then((res) => {
-        if (res) {
-          setScheduleData(res.data);
-          setDayListData(res.data.dayResDtos);
-          setCurrentDayId(res.data.dayResDtos[0].id);
-        }
-        setIsLoading(false);
-      });
-    }
-  };
-
-  useEffect(() => {
-    requestApi();
-  }, []);
-
-  const mapStore = useMapStore();
-  const [placeLoc, setPlaceLoc] = useState({
-    lat: null,
-    lng: null,
-  });
-  const currentDayPlaces = dayListData?.find(
-    (d) => d.id === currentDayId
-  )?.dayLocationResDtoList;
-
-  const getPlaceLocation = () => {
-    getPlaceDetail({ placeId: scheduleData?.place?.placeId + "" }).then(
-      (res) => {
-        const location = res?.data.location;
-        setPlaceLoc({
-          lat: location.lat,
-          lng: location.lng,
-        });
-      }
-    );
-  };
-
-  useEffect(() => {
-    if (scheduleData?.id) {
-      getPlaceLocation();
-    }
-  }, [scheduleData]);
-
-  useEffect(() => {
-    if (placeLoc?.lat) {
-      mapStore.setAddedPlace(currentDayPlaces?.reverse() as any[]);
-    }
-  }, [currentDayId, placeLoc?.lat]);
-
   const handleAddPlaceClick = () => {
-    if (scheduleData) {
+    if (detail) {
       navigate(`/home/createPlace`, {
         state: {
           scheduleId: scheduleId,
-          city: scheduleData.place.name,
+          city: detail.place.name,
           dates: {
-            startDate: scheduleData.startDate,
-            endDate: scheduleData.endDate,
+            startDate: detail.startDate,
+            endDate: detail.endDate,
           },
           location: {
-            lat: placeLoc?.lat,
-            lng: placeLoc?.lng,
+            lat: loc?.lat,
+            lng: loc?.lng,
           },
-          dayResDtos: scheduleData.dayResDtos,
+          dayResDtos: detail.dayResDtos,
         },
       });
     }
@@ -170,7 +178,7 @@ export default function ScheduleDetails() {
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
     <Container>
-      {scheduleData && dayListData && (
+      {detail && addedPlaces && (
         <>
           <DetailsTitleBox>
             <h1>일정</h1>
@@ -179,19 +187,19 @@ export default function ScheduleDetails() {
           <DetailsInfoBox>
             <InfoBox>
               <TitleBox>
-                <p>{scheduleData.title}</p>
+                <p>{detail.title}</p>
                 <PenIcon stroke="#4D4D4D" />
               </TitleBox>
               <DatesBox
                 dates={{
-                  startDate: scheduleData.startDate,
-                  endDate: scheduleData.endDate,
+                  startDate: detail.startDate,
+                  endDate: detail.endDate,
                 }}
               />
               <MemberBox>
                 <InviteIcon />
                 <ParticipantsRow>
-                  {scheduleData.member.map((user, index) => (
+                  {detail.member.map((user, index) => (
                     <img
                       key={index}
                       src={user.profile ? user.profile : testImg1}
@@ -207,22 +215,14 @@ export default function ScheduleDetails() {
             </AddPlaceButton>
           </DetailsInfoBox>
 
-          {!placeLoc?.lat ? (
+          {!loc?.lat ? (
             <CustomSkeleton width="100%" height="340px" />
           ) : (
             <CustomGoogleMap
               width="100%"
               height="342px"
-              lat={
-                currentDayPlaces?.length === 0
-                  ? Number(placeLoc?.lat)
-                  : undefined
-              }
-              lng={
-                currentDayPlaces?.length === 0
-                  ? Number(placeLoc?.lng)
-                  : undefined
-              }
+              lat={currentDayPlaces?.length === 0 ? loc?.lat : undefined}
+              lng={currentDayPlaces?.length === 0 ? loc?.lng : undefined}
             />
           )}
 
@@ -240,13 +240,13 @@ export default function ScheduleDetails() {
             <DaySliderBox>
               <DaySlider
                 web
-                dayList={scheduleData.dayResDtos}
-                currentDayId={currentDayId}
+                dayList={detail?.dayResDtos}
+                currentDayId={currentDayIdx}
                 onDayClick={handleDayClick}
               />
             </DaySliderBox>
             <PlanList>
-              {dayListData.find((day) => day.id === currentDayId)
+              {addedPlaces?.find((day) => day.dayIndex === currentDayIdx)
                 ?.dayLocationResDtoList?.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
@@ -263,20 +263,20 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      dayListData?.find((day) => day.id === currentDayId)
+                      addedPlaces?.find((day) => day.dayIndex === currentDayIdx)
                         ?.dayLocationResDtoList || []
                     }
                   >
-                    {dayListData
-                      ?.find((day) => day.id === currentDayId)
+                    {addedPlaces
+                      ?.find((day) => day.dayIndex === currentDayIdx)
                       ?.dayLocationResDtoList.map((item: any) => {
                         return (
                           <PlanItem
                             key={item.id}
                             item={item}
                             isEdit={isEdit}
-                            currentDayId={currentDayId}
-                            dayList={dayListData}
+                            currentDayId={currentDayIdx}
+                            dayList={addedPlaces}
                             reloadSchedule={() => requestApi()}
                           />
                         );

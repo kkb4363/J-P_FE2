@@ -17,7 +17,7 @@ export default function DaySlider({
   currentDayId,
   onDayClick,
 }: Props) {
-  const slidesToShowCount = dayList.length < 3 ? dayList.length : 3;
+  const slidesToShowCount = dayList?.length < 3 ? dayList?.length : 3;
   const daySlideSettings = {
     infinite: false,
     focusOnSelect: true,
@@ -31,11 +31,11 @@ export default function DaySlider({
 
   return (
     <StyledSlider {...daySlideSettings}>
-      {dayList.map((day, i) => (
+      {dayList?.map((day, idx) => (
         <DayBox
-          key={i}
-          onClick={() => onDayClick(day.id)}
-          $select={currentDayId === day.id}
+          key={idx}
+          onClick={() => onDayClick(day.dayIndex)}
+          $select={currentDayId === day.dayIndex}
           $web={web}
         >{`Day ${day.dayIndex}`}</DayBox>
       ))}

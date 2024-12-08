@@ -121,7 +121,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
         <TravelPlaceAddModalContainer>
           <h1>{getTitle()}</h1>
           {!selectScheduleId && (
-            <article>
+            <ul>
               {myScheduleList?.map((s) => {
                 const sInfo = formatDayNights(s.startDate, s.endDate);
                 return (
@@ -135,7 +135,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
                   </ScheduleBox>
                 );
               })}
-            </article>
+            </ul>
           )}
 
           {openModal.selectDay && (
@@ -199,13 +199,14 @@ const TravelPlaceAddModalContainer = styled.aside`
     margin-bottom: 30px;
   }
 
-  & > article {
+  & > ul {
     display: flex;
     flex-direction: column;
     gap: 8px;
     height: 160px;
     overflow-y: scroll;
     ${scrollHidden};
+    background-color: tomato;
   }
 `;
 
@@ -240,7 +241,7 @@ const NoTravelPlaceAddModalContainer = styled(TravelPlaceAddModalContainer)`
   }
 `;
 
-export const ScheduleBox = styled.section`
+export const ScheduleBox = styled.li`
   width: 340px;
   height: 70px;
   border-radius: 16px;

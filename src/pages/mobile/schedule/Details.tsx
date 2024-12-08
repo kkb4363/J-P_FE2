@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import PlanSheet from "../../../components/mobile/bottomSheets/PlanSheet";
 import PlanPlaceSheet from "./../../../components/mobile/bottomSheets/PlanPlaceSheet";
@@ -14,61 +14,127 @@ import testImg from "../../../assets/images/testImg.png";
 import { InfoRow } from "../../../assets/styles/home.style";
 import { useDisplayStore } from "../../../store/display.store";
 import { useParams } from "react-router-dom";
+import { getPlaceDetail, getSchedule } from "../../../service/axios";
+import { ScheduleApiProps } from "../../../types/schedule";
+import DatesBox from "../../../components/DatesBox";
+import CustomSkeleton from "../../../components/CustomSkeleton";
+import { useMapStore } from "../../../store/map.store";
+
+const mapStyle = {
+  margin: "10px 0 0 -20px",
+};
 
 type BottomSheetType = "AddPlace" | "Invite";
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
-  const param = useParams();
-  console.log(param.id);
+  const { id: scheduleId } = useParams();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [detail, setDetail] = useState<ScheduleApiProps>(
+    {} as ScheduleApiProps
+  );
+  const [currentDayIdx, setCurrentDayIdx] = useState(1);
+
+  const requestApi = () => {
+    if (scheduleId) {
+      setIsLoading(true);
+      getSchedule(scheduleId).then((res) => {
+        if (res) {
+          setDetail(res?.data);
+        }
+      });
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    requestApi();
+  }, []);
+
+  const mapStore = useMapStore();
+  const [loc, setLoc] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const currentDayPlaces = detail?.dayResDtos?.find(
+    (d) => d.dayIndex === currentDayIdx
+  )?.dayLocationResDtoList;
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: detail?.place?.placeId }).then((res) => {
+      if (res) {
+        const location = res?.data.location;
+        setLoc({
+          lat: Number(location.lat),
+          lng: Number(location.lng),
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (detail?.place?.placeId) {
+      getPlaceLocation();
+    }
+  }, [detail?.place?.placeId]);
+
+  useEffect(() => {
+    if (loc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces as any[]);
+    }
+  }, [currentDayIdx, loc?.lat]);
 
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
   const [isPlanPlace, setIsPlanPlace] = useState(false);
-
-  const mapStyle = {
-    margin: "10px 0 0 -20px",
-  };
 
   const handleInviteClose = () => {
     setSheetOpen("AddPlace");
     setIsIdAdd(false);
   };
 
+  if (isLoading) return <div>로딩중</div>;
   return (
     <>
       <InfoRow>
         <D.DetailsInfoText>
-          남해 여행
+          {detail?.title}
           <div>
             <PenIcon />
           </div>
         </D.DetailsInfoText>
       </InfoRow>
 
-      <D.DetailsSubInfo>
-        <ScheduleIcon stroke="#4d4d4d" />
-        4.17 ~ 4.19(2박 3일)
-      </D.DetailsSubInfo>
+      <DatesBox
+        dates={{ startDate: detail?.startDate, endDate: detail?.endDate }}
+      />
 
       <D.InviteRow>
         <InviteIcon handleClick={() => setSheetOpen("Invite")} />
 
         <D.ParticipantsRow>
-          <img src={testImg} alt="참가자" />
-          <img src={testImg} alt="참가자" />
-          <img src={testImg} alt="참가자" />
+          {detail?.member?.map((user, idx) => (
+            <img
+              key={idx}
+              src={user.profile ? user.profile : testImg}
+              alt={user.nickname}
+            />
+          ))}
         </D.ParticipantsRow>
       </D.InviteRow>
 
-      <CustomGoogleMap
-        width="calc(100% + 20px * 2)"
-        height={`calc(
+      {!loc?.lat ? (
+        <CustomSkeleton width="100%" height="340px" />
+      ) : (
+        <CustomGoogleMap
+          width="calc(100% + 20px * 2)"
+          height={`calc(
     100% - 37px - 28px - 24px - ${getBottomSheetHeight()}px)`}
-        lat={37.579617}
-        lng={126.977041}
-        style={mapStyle}
-      />
+          lat={currentDayPlaces?.length === 0 ? loc?.lat : undefined}
+          lng={currentDayPlaces?.length === 0 ? loc?.lng : undefined}
+          style={mapStyle}
+        />
+      )}
 
       {sheetOpen === "AddPlace" &&
         (isPlanPlace ? (

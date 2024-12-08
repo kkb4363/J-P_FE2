@@ -89,3 +89,9 @@ export interface DayProps {
   dayOfWeek: DayOfWeekType;
   dayLocationResDtoList: DayLocationProps[];
 }
+
+export interface CalendarProps {
+  startDate: Date;
+  endDate: Date | undefined;
+  key: string;
+}

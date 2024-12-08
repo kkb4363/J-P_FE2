@@ -24,7 +24,6 @@ export default function RenderGoogleMap({
   const [places, setPlaces] = useState([] as any);
   const ref = useRef<HTMLDivElement>(null);
   const mapStore = useMapStore();
-
   // 페이지 바뀔 때 clear
   const location = useLocation();
   useEffect(() => {
@@ -158,7 +157,7 @@ export default function RenderGoogleMap({
               </div>
             `;
 
-          if (focusCenterId === place?.placeId) {
+          if (focusCenterId && focusCenterId === place?.placeId) {
             map.setCenter(marker.getPosition());
             infoWindow.setContent(content);
             infoWindow.open(map, marker);
@@ -208,7 +207,7 @@ export default function RenderGoogleMap({
         }
       );
     }
-  }, [map, places, focusCenterId]);
+  }, [map, places, focusCenterId, lat]);
 
   return (
     <CustomGoogleMapContainer

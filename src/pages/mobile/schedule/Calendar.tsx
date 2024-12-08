@@ -5,16 +5,11 @@ import { DateRange } from "react-date-range";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NextButtonBox } from "./ScheduleLayout";
-
-export interface DayProps {
-  startDate: Date;
-  endDate: Date | undefined;
-  key: string;
-}
+import { CalendarProps } from "../../../types/schedule";
 
 export default function Calendar() {
   const navigate = useNavigate();
-  const [state, setState] = useState<DayProps[]>([
+  const [state, setState] = useState<CalendarProps[]>([
     {
       startDate: new Date(),
       endDate: new Date(),
@@ -34,8 +29,8 @@ export default function Calendar() {
           editableDateInputs={true}
           showDateDisplay={false}
           showMonthAndYearPickers={false}
-          onChange={(item) => setState([item.selection] as DayProps[])}
-          ranges={state as DayProps[]}
+          onChange={(item) => setState([item.selection] as CalendarProps[])}
+          ranges={state as CalendarProps[]}
           rangeColors={["#e7e9fe"]}
         />
       </CalendarBox>

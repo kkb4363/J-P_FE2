@@ -15,6 +15,7 @@ import { ReviewProps, CommentProps } from "../types/travelreview";
 import { SelectPlaceProps } from "../types/place";
 import { PlanItemProps } from "../types/schedule";
 import { UserProps } from "../types/mypage";
+import { FilterProps, TestCostProps } from "../types/common";
 
 export const footerTabs = [
   { icon: HomeIcon, label: "홈", route: "/home" },
@@ -97,12 +98,7 @@ export const realTimeWords: string[] = [
   "곡성",
 ];
 
-export interface Filter {
-  name: string;
-  state: string;
-}
-
-export const filter: Filter[] = [
+export const filter: FilterProps[] = [
   { name: "최신순", state: "NEW" },
   { name: "인기순", state: "HOT" },
   { name: "별점 높은순", state: "STAR_HIGH" },
@@ -207,16 +203,7 @@ export const costCategories = [
   { icon: EtcIcon, id: "Etc", label: "기타" },
 ];
 
-export interface testCostTypes {
-  type: {
-    icon: ({ stroke }: { stroke?: string }) => JSX.Element;
-    id: string;
-    label: string;
-  };
-  name: string;
-  cost: number;
-}
-export const testCostList: testCostTypes[] = [
+export const testCostList: TestCostProps[] = [
   {
     type: costCategories[0],
     name: "버스",
