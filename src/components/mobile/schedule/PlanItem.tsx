@@ -1,66 +1,182 @@
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { PlanItemProps } from "../../../types/schedule";
-import {
-  SortableElement,
-  SortableElementProps,
-  SortableHandle,
-} from "react-sortable-hoc";
+import { CSS } from "@dnd-kit/utilities";
+import { DayLocationProps, DayProps } from "../../../types/schedule";
 import { useUserStore } from "../../../store/user.store";
+import { useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
+import {
+  deletePlaceFromSchedule,
+  moveScheduleDate,
+} from "../../../service/axios";
 
-export interface Props {
-  id: number;
+interface Props {
+  item: DayLocationProps;
   isEdit: boolean;
-  setIsPlanDetail: () => void;
-  setIsPlanPlace: () => void;
-  handleDeleteOpen: () => void;
-  planItem: PlanItemProps;
+  currentDayId: number;
+  reloadSchedule: () => Promise<void>;
+  setIsOpenMemo: React.Dispatch<
+    React.SetStateAction<{
+      itemId: number | undefined;
+      memo: boolean;
+      cost: boolean;
+    }>
+  >;
+  setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
-  SortableElement(
-    ({
-      id,
-      isEdit,
-      setIsPlanDetail,
-      setIsPlanPlace,
-      handleDeleteOpen,
-      planItem,
-    }: Props) => {
-      const DragHandler = SortableHandle(() => {
-        return <EditSelectText>선택</EditSelectText>;
-      });
+export default function PlanItem({
+  item,
+  isEdit,
+  currentDayId,
+  reloadSchedule,
+  setIsOpenMemo,
+  setIsPlanPlace,
+}: Props) {
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
+    delete: false,
+    deleteSuccess: false,
+  });
+  const [isMove, setIsMove] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { getUserType } = useUserStore();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
 
-      const handlePlaceClick = isEdit ? undefined : setIsPlanPlace;
+  const {
+    selectDay,
+    setSelectDay,
+    selectTime,
+    setSelectTime,
+    handleDaySelect,
+    openModal,
+    setOpenModal,
+  } = useAddPlaceHook();
 
-      const { getUserType } = useUserStore();
-
-      return (
-        <PlanItemContainer>
-          <TimeBox $isEdit={isEdit}>{planItem.time}</TimeBox>
-          <PlaceBox onClick={handlePlaceClick}>
-            <PlaceIdx $isEdit={isEdit}>{id + 1}</PlaceIdx>
-            <PlaceTitleCol>
-              <p>{planItem.title}</p>
-              <span>{planItem.subtitle}</span>
-            </PlaceTitleCol>
-            {isEdit && <DragHandler />}
-          </PlaceBox>
-          {!isEdit && getUserType() === "J" && (
-            <PlaceDetailsButton $fill={true} onClick={setIsPlanDetail}>
-              <FileCheckIcon />
-            </PlaceDetailsButton>
-          )}
-          {isEdit && (
-            <div onClick={handleDeleteOpen}>
-              <TrashIcon />
-            </div>
-          )}
-        </PlanItemContainer>
-      );
+  const handleItemClick = async () => {
+    if (isEdit) {
+      setIsMove(true);
+      setOpenModal((p) => ({ ...p, selectDay: true }));
+    } else {
+      setIsLoading(true);
+      setIsPlanPlace(true);
     }
+  };
+
+  const handleMovePlanClick = async () => {
+    setOpenModal((p) => ({ ...p, selectTime: false }));
+    if (isMove) {
+      setIsMove(false);
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: selectDay,
+          time: selectTime,
+        },
+        getUserType()
+      ).then(() => {
+        reloadSchedule();
+      });
+    } else {
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: currentDayId,
+          time: selectTime,
+        },
+        getUserType()
+      ).then((res) => {
+        reloadSchedule();
+      });
+    }
+  };
+
+  const handleEditTimeClick = async () => {
+    setOpenModal((p) => ({ ...p, selectTime: true }));
+  };
+
+  const handleDeleteItemClick = async () => {
+    await deletePlaceFromSchedule(item.id).then(() => {
+      setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+      reloadSchedule();
+    });
+  };
+
+  return (
+    <>
+      <PlanItemContainer
+        ref={setNodeRef}
+        {...attributes}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+          zIndex: isDragging ? 100 : "auto",
+        }}
+      >
+        <TimeBox
+          $isEdit={isEdit}
+          onClick={handleEditTimeClick}
+        >{`${item.time}`}</TimeBox>
+        <PlaceBox onClick={handleItemClick}>
+          <PlaceIdx $isEdit={isEdit}>{item.index}</PlaceIdx>
+          <PlaceTitleCol>
+            <p>{item.name}</p>
+            <span>명소</span>
+          </PlaceTitleCol>
+          {isEdit && (
+            <DragHandler
+              ref={setActivatorNodeRef}
+              {...listeners}
+              $isDragging={isDragging}
+            >
+              선택
+            </DragHandler>
+          )}
+        </PlaceBox>
+        {isEdit ? (
+          <button
+            onClick={() =>
+              setIsOpenDeleteModal({
+                delete: true,
+                deleteSuccess: false,
+              })
+            }
+          >
+            <TrashIcon />
+          </button>
+        ) : (
+          <MemoButton
+            onClick={() =>
+              setIsOpenMemo((p) => ({ ...p, itemId: item.id, memo: true }))
+            }
+          >
+            <FileCheckIcon />
+          </MemoButton>
+        )}
+      </PlanItemContainer>
+    </>
   );
+}
+
+const PlanItemContainer = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 99;
+  margin-bottom: 24px;
+  touch-action: none;
+`;
 
 const PlaceBox = styled.div`
   width: 100%;
@@ -71,30 +187,6 @@ const PlaceBox = styled.div`
   border: 1px solid ${(props) => props.theme.color.gray200};
   border-radius: 16px;
   gap: 16px;
-`;
-
-const EditSelectText = styled.p`
-  color: ${(props) => props.theme.color.gray300};
-  font-size: 12px;
-  white-space: nowrap;
-`;
-
-const PlanItemContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  z-index: 99;
-
-  &.dragging-helper-class {
-    ${PlaceBox} {
-      border-color: ${(props) => props.theme.color.secondary};
-    }
-
-    ${EditSelectText} {
-      color: ${(props) => props.theme.color.secondary};
-    }
-  }
 `;
 
 const TimeBox = styled.div<{ $isEdit: boolean }>`
@@ -137,6 +229,16 @@ const PlaceTitleCol = styled.div`
   }
 `;
 
+const DragHandler = styled.div<{ $isDragging: boolean }>`
+  margin: auto;
+  color: ${(props) =>
+    props.$isDragging
+      ? props.theme.color.secondary
+      : props.theme.color.gray300};
+  font-size: 12px;
+  white-space: nowrap;
+`;
+
 const PlaceDetailsButton = styled.div<{ $fill?: boolean }>`
   display: grid;
   place-items: center;
@@ -146,4 +248,13 @@ const PlaceDetailsButton = styled.div<{ $fill?: boolean }>`
   border: 1px solid
     ${(props) =>
       props.$fill ? props.theme.color.secondary : props.theme.color.gray300};
+`;
+
+const MemoButton = styled.button`
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid ${(props) => props.theme.color.secondary};
 `;

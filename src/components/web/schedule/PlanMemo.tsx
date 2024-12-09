@@ -136,7 +136,6 @@ export default function PlanMemo({
                   }))
                 }
                 onInput={adjustTextareaHeight}
-                onClick={() => setIsPlanMemoEdit(true)}
               />
             </ContentInput>
           </div>

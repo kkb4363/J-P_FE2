@@ -28,13 +28,21 @@ type BottomSheetType = "AddPlace" | "Invite";
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
-  const { id: scheduleId } = useParams();
+  const { scheduleId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const [detail, setDetail] = useState<ScheduleApiProps>(
     {} as ScheduleApiProps
   );
   const [currentDayIdx, setCurrentDayIdx] = useState(1);
+  const mapStore = useMapStore();
+  const [loc, setLoc] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const currentDayPlaces = detail?.dayResDtos?.find(
+    (d) => d.dayIndex === currentDayIdx
+  )?.dayLocationResDtoList;
 
   const requestApi = () => {
     if (scheduleId) {
@@ -47,18 +55,6 @@ export default function Details() {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    requestApi();
-  }, []);
-
-  const mapStore = useMapStore();
-  const [loc, setLoc] = useState({
-    lat: 0,
-    lng: 0,
-  });
-  const currentDayPlaces = detail?.dayResDtos?.find(
-    (d) => d.dayIndex === currentDayIdx
-  )?.dayLocationResDtoList;
 
   const getPlaceLocation = () => {
     getPlaceDetail({ placeId: detail?.place?.placeId }).then((res) => {
@@ -71,6 +67,10 @@ export default function Details() {
       }
     });
   };
+
+  useEffect(() => {
+    requestApi();
+  }, [scheduleId]);
 
   useEffect(() => {
     if (detail?.place?.placeId) {
@@ -140,7 +140,14 @@ export default function Details() {
         (isPlanPlace ? (
           <PlanPlaceSheet setIsPlanPlace={setIsPlanPlace} />
         ) : (
-          <PlanSheet setIsPlanPlace={setIsPlanPlace} />
+          <PlanSheet
+            setIsPlanPlace={setIsPlanPlace}
+            currentDayIdx={currentDayIdx}
+            setCurrentDayIdx={setCurrentDayIdx}
+            detail={detail}
+            scheduleId={scheduleId}
+            requestApi={requestApi}
+          />
         ))}
 
       {sheetOpen === "Invite" && (

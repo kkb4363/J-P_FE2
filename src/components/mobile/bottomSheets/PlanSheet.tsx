@@ -1,4 +1,19 @@
-import { arrayMoveImmutable } from "array-move";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddSquareIcon from "../../../assets/icons/AddSquareIcon";
@@ -8,44 +23,65 @@ import PenIcon from "../../../assets/icons/PenIcon";
 import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
-import { useJPStore } from "../../../store/JPType.store";
-import { AddCostDataTypes, PlanItemProps } from "../../../types/schedule";
 import {
-  testCostList,
-  testDayList,
-  testPlanItems,
-} from "../../../utils/staticDatas";
+  AddCostDataTypes,
+  DayLocationProps,
+  DayProps,
+  ScheduleApiProps,
+} from "../../../types/schedule";
+import { testCostList } from "../../../utils/staticDatas";
+import ActionButton from "../../ActionButton";
 import AddCostBox from "../../AddCostBox";
 import CostList from "../../CostList";
 import DaySlider from "../../DaySlider";
 import TransportBox from "../../TransportBox";
 import TwoButtonsModal from "../../TwoButtonsModal";
-import { PlanList } from "../schedule/PlanList";
+import PlanItem from "../schedule/PlanItem";
 import BottomSheet from "./../BottomSheet";
+import PlanMemo from "../schedule/PlanMemo";
 
 interface Props {
-  setIsPlanPlace: (value: React.SetStateAction<boolean>) => void;
+  setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
+  currentDayIdx: number;
+  setCurrentDayIdx: React.Dispatch<React.SetStateAction<number>>;
+  detail: ScheduleApiProps;
+  scheduleId: string | undefined;
+  requestApi: () => void;
 }
 
-export default function PlanSheet({ setIsPlanPlace }: Props) {
-  const [isPlanEdit, setIsPlanEdit] = useState(false);
-  const [isPlanDetail, setIsPlanDetail] = useState(false);
-  const [isPlanDetailEdit, setIsPlanDetailEdit] = useState(false);
+export default function PlanSheet({
+  setIsPlanPlace,
+  currentDayIdx,
+  setCurrentDayIdx,
+  detail,
+  scheduleId,
+  requestApi,
+}: Props) {
+  const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
+  const [isPlanMemo, setIsPlanMemo] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isPlanMemoEdit, setIsPlanMemoEdit] = useState(false);
   const [isAddCostMode, setIsAddCostMode] = useState(false);
-  const [currentDay, setCurrentDay] = useState(0);
-  const [planItems, setPlanItems] = useState<PlanItemProps[]>(testPlanItems);
   const [planDetails, setPlanDetails] = useState({
     content: "",
     cost: testCostList,
     transport: [] as string[],
   });
   const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
-    category: "Car",
+    type: "Car",
     name: "",
-    cost: null,
+    expense: null,
   });
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isOpenMemo, setIsOpenMemo] = useState<{
+    itemId: number | undefined;
+    memo: boolean;
+    cost: boolean;
+  }>({
+    itemId: undefined,
+    memo: false,
+    cost: false,
+  });
 
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState({
@@ -53,32 +89,17 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
     deleteScheduleSuccess: false,
   });
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 0, // 250ms 터치 후 활성화
+        tolerance: 3, // 5px 이동해야 활성화
+      },
+    })
+  );
+
   const handleDayClick = (day: number) => {
-    setCurrentDay(day);
-  };
-
-  // 드래그 이벤트
-  const handleSortEnd = ({
-    oldIndex,
-    newIndex,
-  }: {
-    oldIndex: number;
-    newIndex: number;
-  }) => {
-    setPlanItems(arrayMoveImmutable(planItems, oldIndex, newIndex));
-  };
-
-  const handleDetailsClose = () => {
-    setIsPlanDetail(false);
-    setIsPlanDetailEdit(false);
-  };
-
-  const adjustTextareaHeight = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${textarea.scrollHeight}px`; // 스크롤 높이에 맞게 조절
-    }
+    setCurrentDayIdx(day);
   };
 
   const handleDeleteModalClick = () => {
@@ -88,27 +109,63 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
     });
   };
 
-  const handleDetailEditDone = () => {
-    setIsPlanDetailEdit(false);
-    // [세연 TODO] : 수정사항 DB 반영해야함
+  const handleDragEnd = ({ over, active }: DragEndEvent) => {
+    if (!over || active.id === over.id) return;
+
+    setAddedPlaces((prevDayListData) => {
+      if (!prevDayListData) return;
+
+      const currentDay = prevDayListData.find(
+        (day) => day.dayIndex === currentDayIdx
+      );
+
+      if (!currentDay) return prevDayListData;
+
+      const updatedLocations = [...currentDay.dayLocationResDtoList];
+      const originalTimes = updatedLocations.map((item) => item.time);
+      const activeIndex = updatedLocations.findIndex(
+        (item) => item.id.toString() === active.id.toString()
+      );
+      const overIndex = updatedLocations.findIndex(
+        (item) => item.id.toString() === over.id.toString()
+      );
+
+      const [movedItem] = updatedLocations.splice(activeIndex, 1);
+      updatedLocations.splice(overIndex, 0, movedItem);
+
+      const reorderedLocations = updatedLocations.map((item, index) => ({
+        ...item,
+        index: index + 1,
+        time: originalTimes[index],
+      }));
+
+      const updatedDayListData = prevDayListData.map((day) =>
+        day.dayIndex === currentDayIdx
+          ? { ...day, dayLocationResDtoList: reorderedLocations }
+          : day
+      );
+      return updatedDayListData;
+    });
   };
 
   useEffect(() => {
-    adjustTextareaHeight();
-  }, [planDetails]);
+    setAddedPlaces(detail.dayResDtos);
+  }, [detail]);
+
+  console.log(detail);
+  console.log(currentDayIdx);
+  console.log(addedPlaces);
 
   return (
     <>
       {!isAddCostMode && (
         <BottomSheet maxH={0.75} minH={3.5}>
           {/* 일정 목록 */}
-          {!isPlanDetail && (
+          {!isOpenMemo.memo && !isOpenMemo.cost && (
             <D.PlanContainer>
               <D.PlansBox>
-                <D.PlansEditButton
-                  onClick={() => setIsPlanEdit((prev) => !prev)}
-                >
-                  {isPlanEdit ? (
+                <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
+                  {isEdit ? (
                     <p>완료</p>
                   ) : (
                     <>
@@ -118,23 +175,54 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                   )}
                 </D.PlansEditButton>
                 <DaySlider
-                  dayList={testDayList}
-                  currentDay={currentDay}
+                  dayList={detail?.dayResDtos}
+                  currentDayId={currentDayIdx}
                   onDayClick={handleDayClick}
                 />
-                <PlanList
-                  planItems={planItems}
-                  onSortEnd={handleSortEnd}
-                  helperClass="dragging-helper-class"
-                  isEdit={isPlanEdit}
-                  setIsPlanDetail={() => setIsPlanDetail((prev) => !prev)}
-                  setIsPlanPlace={() => setIsPlanPlace((prev) => !prev)}
-                  handleDeleteOpen={() =>
-                    setOpenModal((p) => ({ ...p, deleteSchedule: true }))
-                  }
-                  useWindowAsScrollContainer
-                  useDragHandle
-                />
+                <D.PlanList>
+                  {addedPlaces?.find((day) => day.dayIndex === currentDayIdx)
+                    ?.dayLocationResDtoList?.length === 0 ? (
+                    <div>
+                      <div>
+                        <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
+                      </div>
+                      <ActionButton add onClick={() => {}}>
+                        + 여행지 추가
+                      </ActionButton>
+                    </div>
+                  ) : (
+                    <DndContext
+                      sensors={sensors}
+                      onDragEnd={handleDragEnd}
+                      modifiers={[restrictToParentElement]}
+                    >
+                      <SortableContext
+                        strategy={verticalListSortingStrategy}
+                        items={
+                          addedPlaces?.find(
+                            (day) => day.dayIndex === currentDayIdx
+                          )?.dayLocationResDtoList || []
+                        }
+                      >
+                        {addedPlaces
+                          ?.find((day) => day.dayIndex === currentDayIdx)
+                          ?.dayLocationResDtoList.map((item: any) => {
+                            return (
+                              <PlanItem
+                                key={item.id}
+                                item={item}
+                                isEdit={isEdit}
+                                currentDayId={currentDayIdx}
+                                reloadSchedule={async () => requestApi()}
+                                setIsOpenMemo={setIsOpenMemo}
+                                setIsPlanPlace={setIsPlanPlace}
+                              />
+                            );
+                          })}
+                      </SortableContext>
+                    </DndContext>
+                  )}
+                </D.PlanList>
               </D.PlansBox>
               <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
                 + 장소 추가
@@ -143,79 +231,20 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
           )}
 
           {/* 일정 상세 */}
-          {isPlanDetail && !isAddCostMode && (
-            <div>
-              <D.PlanDetailsHeader $editMode={isPlanDetailEdit}>
-                <div onClick={handleDetailsClose}>
-                  <ArrowLeftIcon />
-                </div>
-                <D.Title>플랜 추가</D.Title>
-                <p onClick={handleDetailEditDone}>완료</p>
-              </D.PlanDetailsHeader>
-              <D.PlanDetailsBody>
-                <div>
-                  <D.SubTitleBox>
-                    <PlanCalendarIcon />
-                    <p>일정</p>
-                  </D.SubTitleBox>
-                  <D.DetailsInput
-                    isDetailsEdit={isPlanDetailEdit}
-                    onClick={() => setIsPlanDetailEdit(true)}
-                  >
-                    <textarea
-                      ref={textareaRef}
-                      placeholder="여행 상세 일정"
-                      readOnly={!isPlanDetailEdit}
-                      value={planDetails.content}
-                      onChange={(e) =>
-                        setPlanDetails((prev) => ({
-                          ...prev,
-                          content: e.target.value,
-                        }))
-                      }
-                      onInput={adjustTextareaHeight}
-                    />
-                  </D.DetailsInput>
-                </div>
-                <div>
-                  <D.TitlePlusBox>
-                    <D.SubTitleBox>
-                      <CardIcon />
-                      <p>비용</p>
-                    </D.SubTitleBox>
-                    <div onClick={() => setIsAddCostMode(true)}>
-                      <AddSquareIcon />
-                    </div>
-                  </D.TitlePlusBox>
-                  <CostList costList={testCostList} />
-                </div>
-                <div>
-                  <D.TitlePlusBox>
-                    <D.SubTitleBox>
-                      <TrainIcon />
-                      <p>이동 수단</p>
-                    </D.SubTitleBox>
-                    <div onClick={() => setIsPlanDetailEdit(true)}>
-                      <AddSquareIcon />
-                    </div>
-                  </D.TitlePlusBox>
-                  <TransportBox
-                    transport={planDetails.transport}
-                    isPlanMemoEdit={isPlanDetailEdit}
-                    setData={setPlanDetails}
-                  />
-                </div>
-              </D.PlanDetailsBody>
-            </div>
+          {isOpenMemo.memo && (
+            <PlanMemo
+              itemId={isOpenMemo.itemId}
+              setIsOpenMemo={setIsOpenMemo}
+            />
           )}
         </BottomSheet>
       )}
 
       {/* 비용 추가 */}
-      {isAddCostMode && (
+      {isOpenMemo.cost && (
         <BottomSheet maxH={0.65}>
           <div>
-            <D.PlanDetailsHeader $editMode={true}>
+            <D.PlanMemoHeader $editMode={true}>
               <div onClick={() => setIsAddCostMode(false)}>
                 <ArrowLeftIcon />
               </div>
@@ -224,11 +253,11 @@ export default function PlanSheet({ setIsPlanPlace }: Props) {
                 비용
               </D.Title>
               <p>저장</p>
-            </D.PlanDetailsHeader>
+            </D.PlanMemoHeader>
 
             <D.AddCostBox>
               <AddCostBox
-                selectedType={addCostData.category}
+                selectedType={addCostData.type}
                 setAddCostData={setAddCostData}
               />
             </D.AddCostBox>

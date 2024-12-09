@@ -35,6 +35,13 @@ export default function ScheduleDetails() {
   );
   const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
   const [currentDayIdx, setCurrentDayIdx] = useState<number>(1);
+  const [hashtag, setHashtag] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [loc, setLoc] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const mapStore = useMapStore();
 
   const requestApi = async () => {
     if (scheduleId) {
@@ -47,54 +54,6 @@ export default function ScheduleDetails() {
         setIsLoading(false);
       });
     }
-  };
-
-  useEffect(() => {
-    requestApi();
-  }, [scheduleId]);
-
-  const mapStore = useMapStore();
-  const [loc, setLoc] = useState({
-    lat: 0,
-    lng: 0,
-  });
-  const currentDayPlaces = addedPlaces?.find(
-    (d) => d.dayIndex === currentDayIdx
-  )?.dayLocationResDtoList;
-
-  const getPlaceLocation = () => {
-    getPlaceDetail({ placeId: detail?.place?.placeId + "" }).then((res) => {
-      const location = res?.data.location;
-      setLoc({
-        lat: Number(location.lat),
-        lng: Number(location.lng),
-      });
-    });
-  };
-
-  useEffect(() => {
-    if (detail?.id) {
-      getPlaceLocation();
-    }
-  }, [detail?.id]);
-
-  useEffect(() => {
-    if (loc?.lat) {
-      mapStore.setAddedPlace(currentDayPlaces as any[]);
-    }
-  }, [currentDayIdx, loc?.lat]);
-
-  const [isEdit, setIsEdit] = useState(false);
-
-  const handleEditClick = async () => {
-    if (isEdit) {
-      editRequestApi();
-    }
-    setIsEdit((prev) => !prev);
-  };
-
-  const handleDayClick = (day: number) => {
-    setCurrentDayIdx(day);
   };
 
   const editRequestApi = async () => {
@@ -112,6 +71,31 @@ export default function ScheduleDetails() {
     ).then(() => {
       toast(<span>일정 편집 완료!</span>);
     });
+  };
+
+  const currentDayPlaces = addedPlaces?.find(
+    (d) => d.dayIndex === currentDayIdx
+  )?.dayLocationResDtoList;
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: detail?.place?.placeId + "" }).then((res) => {
+      const location = res?.data.location;
+      setLoc({
+        lat: Number(location.lat),
+        lng: Number(location.lng),
+      });
+    });
+  };
+
+  const handleEditClick = async () => {
+    if (isEdit) {
+      editRequestApi();
+    }
+    setIsEdit((prev) => !prev);
+  };
+
+  const handleDayClick = (day: number) => {
+    setCurrentDayIdx(day);
   };
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
@@ -173,7 +157,21 @@ export default function ScheduleDetails() {
     }
   };
 
-  const [hashtag, setHashtag] = useState("");
+  useEffect(() => {
+    requestApi();
+  }, [scheduleId]);
+
+  useEffect(() => {
+    if (detail?.id) {
+      getPlaceLocation();
+    }
+  }, [detail?.id]);
+
+  useEffect(() => {
+    if (loc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces as any[]);
+    }
+  }, [currentDayIdx, loc?.lat]);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
