@@ -246,14 +246,14 @@ export const SubTitleBox = styled.div`
   }
 `;
 
-export const ContentInput = styled.div<{ isMemoEdit: boolean }>`
+export const ContentInput = styled.div<{ $isMemoEdit: boolean }>`
   background-color: ${(props) => props.theme.color.white};
   border: ${(props) =>
-    props.isMemoEdit && `1px solid ${props.theme.color.gray200}`};
+    props.$isMemoEdit && `1px solid ${props.theme.color.gray200}`};
   border-radius: 16px;
   padding: 20px 27px;
   box-shadow: ${(props) =>
-    !props.isMemoEdit && "0px 2px 10px 0px rgba(0, 0, 0, 0.04)"};
+    !props.$isMemoEdit && "0px 2px 10px 0px rgba(0, 0, 0, 0.04)"};
 
   & > textarea {
     padding: 0;

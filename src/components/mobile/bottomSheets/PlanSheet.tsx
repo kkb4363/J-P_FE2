@@ -76,15 +76,6 @@ export default function PlanSheet({
     deleteScheduleSuccess: false,
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        delay: 0,
-        tolerance: 3,
-      },
-    })
-  );
-
   const handleDayClick = (day: number) => {
     setCurrentDayIdx(day);
   };
@@ -212,7 +203,6 @@ export default function PlanSheet({
                     </div>
                   ) : (
                     <DndContext
-                      sensors={sensors}
                       onDragEnd={handleDragEnd}
                       modifiers={[restrictToParentElement]}
                     >
