@@ -57,6 +57,10 @@ export const router = createBrowserRouter([
         path: "city",
         element: <SelectCity />,
       },
+      {
+        path: "details/:scheduleId",
+        element: <Details />,
+      },
     ],
   },
   {
@@ -134,10 +138,6 @@ export const router = createBrowserRouter([
       {
         path: "schedule",
         element: <Schedule />,
-      },
-      {
-        path: "schedule/details/:scheduleId",
-        element: <Details />,
       },
       {
         path: "travels",
