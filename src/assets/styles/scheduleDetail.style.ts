@@ -142,6 +142,7 @@ export const PlanContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding-bottom: 60px;
+  overflow-y: auto;
 `;
 
 export const PlansBox = styled.div`

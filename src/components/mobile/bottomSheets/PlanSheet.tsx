@@ -1,10 +1,4 @@
-import {
-  DndContext,
-  DragEndEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
   SortableContext,
@@ -16,7 +10,11 @@ import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import CardIcon from "../../../assets/icons/CardIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
-import { editPlan, getPlan } from "../../../service/axios";
+import {
+  deletePlaceFromSchedule,
+  editPlan,
+  getPlan,
+} from "../../../service/axios";
 import {
   AddCostDataTypes,
   DayProps,
@@ -26,6 +24,7 @@ import {
 import ActionButton from "../../ActionButton";
 import AddCostBox from "../../AddCostBox";
 import DaySlider from "../../DaySlider";
+import OneButtonModal from "../../OneButtonModal";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import PlanItem from "../schedule/PlanItem";
 import PlanMemo from "../schedule/PlanMemo";
@@ -46,14 +45,16 @@ export default function PlanSheet({
   detail,
   requestApi,
 }: Props) {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
   const [planMemoData, setPlanMemoData] = useState<PlanDetailsProps>({
     memo: "",
     expense: [],
     mobility: [],
   });
-  const [isEdit, setIsEdit] = useState(false);
+
   const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
     type: "Car",
     name: "",
@@ -70,21 +71,18 @@ export default function PlanSheet({
     cost: false,
   });
 
-  const navigate = useNavigate();
-  const [openModal, setOpenModal] = useState({
-    deleteSchedule: false,
-    deleteScheduleSuccess: false,
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<{
+    itemId: number | undefined;
+    delete: boolean;
+    deleteSuccess: boolean;
+  }>({
+    itemId: undefined,
+    delete: false,
+    deleteSuccess: false,
   });
 
   const handleDayClick = (day: number) => {
     setCurrentDayIdx(day);
-  };
-
-  const handleDeleteModalClick = () => {
-    setOpenModal({
-      deleteSchedule: false,
-      deleteScheduleSuccess: true,
-    });
   };
 
   const handleAddCost = () => {
@@ -95,6 +93,19 @@ export default function PlanSheet({
     if (isOpenMemo.itemId) {
       editPlanApi(isOpenMemo.itemId, updatedPlanMemoData);
       setIsOpenMemo((prev) => ({ ...prev, memo: true, cost: false }));
+    }
+  };
+
+  const handleDeleteItemClick = async () => {
+    if (isOpenDeleteModal.itemId) {
+      await deletePlaceFromSchedule(isOpenDeleteModal.itemId).then(() => {
+        setIsOpenDeleteModal((prev) => ({
+          ...prev,
+          delete: false,
+          deleteSuccess: true,
+        }));
+        requestApi();
+      });
     }
   };
 
@@ -193,14 +204,14 @@ export default function PlanSheet({
                 <D.PlanList>
                   {addedPlaces?.find((day) => day.dayIndex === currentDayIdx)
                     ?.dayLocationResDtoList?.length === 0 ? (
-                    <div>
-                      <div>
+                    <D.NoPlaceBox>
+                      <D.NoPlaceTextBox>
                         <p>등록된 장소가 없습니다. 여행 장소를 추가해주세요.</p>
-                      </div>
-                      <ActionButton add onClick={() => {}}>
+                      </D.NoPlaceTextBox>
+                      <ActionButton add onClick={() => navigate("/addPlace")}>
                         + 여행지 추가
                       </ActionButton>
-                    </div>
+                    </D.NoPlaceBox>
                   ) : (
                     <DndContext
                       onDragEnd={handleDragEnd}
@@ -226,6 +237,7 @@ export default function PlanSheet({
                                 reloadSchedule={async () => requestApi()}
                                 setIsOpenMemo={setIsOpenMemo}
                                 setIsPlanPlace={setIsPlanPlace}
+                                setIsOpenDeleteModal={setIsOpenDeleteModal}
                               />
                             );
                           })}
@@ -285,13 +297,34 @@ export default function PlanSheet({
           </div>
         </BottomSheet>
       )}
-      {openModal.deleteSchedule && (
+
+      {isOpenDeleteModal.delete && (
         <TwoButtonsModal
-          isMobile
+          isMobile={true}
+          width="320px"
+          height="230px"
           text="일정을 삭제할까요?"
-          onClick={handleDeleteModalClick}
-          onClose={() => setOpenModal((p) => ({ ...p, deleteSchedule: false }))}
+          onClick={handleDeleteItemClick}
+          onClose={() => setIsOpenDeleteModal((p) => ({ ...p, delete: false }))}
         />
+      )}
+      {isOpenDeleteModal.deleteSuccess && (
+        <OneButtonModal
+          isMobile={true}
+          width="320px"
+          height="230px"
+          noCloseBtn
+          buttonText="확인"
+          onClick={() =>
+            setIsOpenDeleteModal((p) => ({
+              ...p,
+              itemId: undefined,
+              deleteSuccess: false,
+            }))
+          }
+        >
+          <D.ModalText>일정이 삭제되었습니다.</D.ModalText>
+        </OneButtonModal>
       )}
     </>
   );

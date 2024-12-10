@@ -1,16 +1,13 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { CSS } from "@dnd-kit/utilities";
-import { DayLocationProps, DayProps } from "../../../types/schedule";
-import { useUserStore } from "../../../store/user.store";
-import { useState } from "react";
-import { useSortable } from "@dnd-kit/sortable";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
-import {
-  deletePlaceFromSchedule,
-  moveScheduleDate,
-} from "../../../service/axios";
+import { moveScheduleDate } from "../../../service/axios";
+import { useUserStore } from "../../../store/user.store";
+import { DayLocationProps } from "../../../types/schedule";
 
 interface Props {
   item: DayLocationProps;
@@ -25,6 +22,13 @@ interface Props {
     }>
   >;
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenDeleteModal: React.Dispatch<
+    React.SetStateAction<{
+      itemId: number | undefined;
+      delete: boolean;
+      deleteSuccess: boolean;
+    }>
+  >;
 }
 
 export default function PlanItem({
@@ -34,11 +38,8 @@ export default function PlanItem({
   reloadSchedule,
   setIsOpenMemo,
   setIsPlanPlace,
+  setIsOpenDeleteModal,
 }: Props) {
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
-    delete: false,
-    deleteSuccess: false,
-  });
   const [isMove, setIsMove] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { getUserType } = useUserStore();
@@ -104,13 +105,6 @@ export default function PlanItem({
     setOpenModal((p) => ({ ...p, selectTime: true }));
   };
 
-  const handleDeleteItemClick = async () => {
-    await deletePlaceFromSchedule(item.id).then(() => {
-      setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
-      reloadSchedule();
-    });
-  };
-
   return (
     <>
       <PlanItemContainer
@@ -146,6 +140,7 @@ export default function PlanItem({
           <button
             onClick={() =>
               setIsOpenDeleteModal({
+                itemId: item.id,
                 delete: true,
                 deleteSuccess: false,
               })
