@@ -1,51 +1,41 @@
 import {
   DndContext,
   DragEndEvent,
-  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  restrictToParentElement,
-  restrictToVerticalAxis,
-} from "@dnd-kit/modifiers";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AddSquareIcon from "../../../assets/icons/AddSquareIcon";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import CardIcon from "../../../assets/icons/CardIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
-import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
-import TrainIcon from "../../../assets/icons/TrainIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
+import { editPlan, getPlan } from "../../../service/axios";
 import {
   AddCostDataTypes,
-  DayLocationProps,
   DayProps,
+  PlanDetailsProps,
   ScheduleApiProps,
 } from "../../../types/schedule";
-import { testCostList } from "../../../utils/staticDatas";
 import ActionButton from "../../ActionButton";
 import AddCostBox from "../../AddCostBox";
-import CostList from "../../CostList";
 import DaySlider from "../../DaySlider";
-import TransportBox from "../../TransportBox";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import PlanItem from "../schedule/PlanItem";
-import BottomSheet from "./../BottomSheet";
 import PlanMemo from "../schedule/PlanMemo";
+import BottomSheet from "./../BottomSheet";
 
 interface Props {
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
   currentDayIdx: number;
   setCurrentDayIdx: React.Dispatch<React.SetStateAction<number>>;
   detail: ScheduleApiProps;
-  scheduleId: string | undefined;
   requestApi: () => void;
 }
 
@@ -54,19 +44,16 @@ export default function PlanSheet({
   currentDayIdx,
   setCurrentDayIdx,
   detail,
-  scheduleId,
   requestApi,
 }: Props) {
+  const [isLoading, setIsLoading] = useState(false);
   const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
-  const [isPlanMemo, setIsPlanMemo] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [isPlanMemoEdit, setIsPlanMemoEdit] = useState(false);
-  const [isAddCostMode, setIsAddCostMode] = useState(false);
-  const [planDetails, setPlanDetails] = useState({
-    content: "",
-    cost: testCostList,
-    transport: [] as string[],
+  const [planMemoData, setPlanMemoData] = useState<PlanDetailsProps>({
+    memo: "",
+    expense: [],
+    mobility: [],
   });
+  const [isEdit, setIsEdit] = useState(false);
   const [addCostData, setAddCostData] = useState<AddCostDataTypes>({
     type: "Car",
     name: "",
@@ -92,8 +79,8 @@ export default function PlanSheet({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 0, // 250ms 터치 후 활성화
-        tolerance: 3, // 5px 이동해야 활성화
+        delay: 0,
+        tolerance: 3,
       },
     })
   );
@@ -107,6 +94,17 @@ export default function PlanSheet({
       deleteSchedule: false,
       deleteScheduleSuccess: true,
     });
+  };
+
+  const handleAddCost = () => {
+    const updatedPlanMemoData = {
+      ...planMemoData,
+      expense: [...planMemoData.expense, addCostData],
+    };
+    if (isOpenMemo.itemId) {
+      editPlanApi(isOpenMemo.itemId, updatedPlanMemoData);
+      setIsOpenMemo((prev) => ({ ...prev, memo: true, cost: false }));
+    }
   };
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
@@ -148,20 +146,42 @@ export default function PlanSheet({
     });
   };
 
+  const editPlanApi = async (
+    planItemId: number,
+    planMemoData: PlanDetailsProps
+  ) => {
+    await editPlan(planItemId, planMemoData);
+    await getPlanApi();
+  };
+
+  const getPlanApi = async () => {
+    if (isOpenMemo.itemId) {
+      setIsLoading(true);
+      getPlan(isOpenMemo.itemId).then((res) =>
+        setPlanMemoData({
+          memo: res?.data.memo ?? "",
+          expense: res?.data.expense,
+          mobility: res?.data.mobility,
+        })
+      );
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getPlanApi();
+  }, [isOpenMemo.itemId]);
+
   useEffect(() => {
     setAddedPlaces(detail.dayResDtos);
   }, [detail]);
 
-  console.log(detail);
-  console.log(currentDayIdx);
-  console.log(addedPlaces);
-
   return (
     <>
-      {!isAddCostMode && (
+      {!isOpenMemo.cost && (
         <BottomSheet maxH={0.75} minH={3.5}>
           {/* 일정 목록 */}
-          {!isOpenMemo.memo && !isOpenMemo.cost && (
+          {!isOpenMemo.memo && (
             <D.PlanContainer>
               <D.PlansBox>
                 <D.PlansEditButton onClick={() => setIsEdit((prev) => !prev)}>
@@ -234,6 +254,9 @@ export default function PlanSheet({
           {isOpenMemo.memo && (
             <PlanMemo
               itemId={isOpenMemo.itemId}
+              planMemoData={planMemoData}
+              setPlanMemoData={setPlanMemoData}
+              editPlanApi={editPlanApi}
               setIsOpenMemo={setIsOpenMemo}
             />
           )}
@@ -245,14 +268,22 @@ export default function PlanSheet({
         <BottomSheet maxH={0.65}>
           <div>
             <D.PlanMemoHeader $editMode={true}>
-              <div onClick={() => setIsAddCostMode(false)}>
+              <div
+                onClick={() =>
+                  setIsOpenMemo((prev) => ({
+                    ...prev,
+                    memo: true,
+                    cost: false,
+                  }))
+                }
+              >
                 <ArrowLeftIcon />
               </div>
               <D.Title>
                 <CardIcon />
                 비용
               </D.Title>
-              <p>저장</p>
+              <p onClick={handleAddCost}>저장</p>
             </D.PlanMemoHeader>
 
             <D.AddCostBox>

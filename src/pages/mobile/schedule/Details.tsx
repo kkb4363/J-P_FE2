@@ -145,7 +145,6 @@ export default function Details() {
             currentDayIdx={currentDayIdx}
             setCurrentDayIdx={setCurrentDayIdx}
             detail={detail}
-            scheduleId={scheduleId}
             requestApi={requestApi}
           />
         ))}
