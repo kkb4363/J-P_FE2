@@ -556,3 +556,107 @@ export const editPlan = async (id: number, body: PlanDetailsProps) => {
     console.error("플랜 편집 API 에러", err);
   }
 };
+
+export const getAllDiaries = async (sort: string) => {
+  try {
+    const res = await axiosInstance.get(`/diaries?sort=${sort}&page=1`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("전체 여행기 조회 API 에러", err);
+  }
+};
+
+export const getMyDiaries = async () => {
+  try {
+    const res = await axiosInstance.get(`/my/diaries?page=1`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("내 여행기 조회 API 에러", err);
+  }
+};
+
+export const createDiary = async (form: any, id: number) => {
+  try {
+    const res = await axiosInstance.post(`/${id}/diary`, form, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("여행기 작성 API 에러", err);
+  }
+};
+
+export const uploadFiles = async (files: any[], category: string) => {
+  try {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+    const res = await axiosInstance.post(
+      `/upload/files/${category}`,
+      formData,
+      {
+        headers: {
+          Authorization: cookies.get("userToken"),
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("파일 업로드 API 에러", err);
+  }
+};
+
+export const getDiaryDetail = async (id: number) => {
+  try {
+    const res = await axiosInstance.get(`/diary/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("여행기 상세 조회 API 에러", err);
+  }
+};
+
+export const updateDiary = async (form: any, id: number) => {
+  try {
+    const res = await axiosInstance.patch(`/diary/${id}`, form, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("여행기 수정 API 에러", err);
+  }
+};

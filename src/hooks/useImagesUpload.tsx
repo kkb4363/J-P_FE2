@@ -15,6 +15,7 @@ export default function useImagesUploadHook() {
     }
 
     const prevImage = getSelectedImg();
+
     const newImage = [...prevImage, ...selectedFiles];
 
     setSelectedImg(newImage);

@@ -1,10 +1,14 @@
 import styled from "styled-components";
 import OneButtonModal from "../../OneButtonModal";
-import MyTravelCard from "../../MyTravelCard";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ScheduleApiProps } from "../../../types/schedule";
+import { getScheduleList } from "../../../service/axios";
+import MyScheduleCard from "./MyScheduleCard";
+import LoadingText from "../../LoadingText";
 
 interface Props {
   onClose: () => void;
@@ -12,36 +16,60 @@ interface Props {
 
 export default function SelectTravelModal({ onClose }: Props) {
   const navigate = useNavigate();
-  const hasTravel = true;
+
+  const [schedules, setSchedules] = useState<ScheduleApiProps[]>([]);
+  const [scheduleId, setScheduleId] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getScheduleList().then((res) => {
+      setIsLoading(false);
+      setSchedules(res?.data.data);
+    });
+  }, []);
 
   return (
     <OneButtonModal
       isMobile={false}
       title="여행을 선택해주세요."
-      onClick={() => navigate("/home/writeTravelogue")}
+      onClick={() => navigate(`/home/writeTravelogue/${scheduleId}`)}
       onClose={onClose}
       width="580px"
       height="417px"
       buttonText="다음"
-      noBtn={!hasTravel}
+      noBtn={schedules?.length === 0}
     >
-      {hasTravel ? (
-        <TravelCardCol>
-          <MyTravelCard />
-          <MyTravelCard />
-        </TravelCardCol>
+      {isLoading ? (
+        <LoadingText text="로딩중..." />
       ) : (
-        <NoTravelCardBox>
-          <h1>내 여행</h1>
-          <div>
-            <CalendarCheckIcon stroke="#b8b8b8" />
-            <span>일정이 없어요. 새로운 여행 일정을 추가해주세요.</span>
-          </div>
-          <CustomAddTravelButton>
-            <PlusIcon stroke="white" />
-            <span>일정 생성</span>
-          </CustomAddTravelButton>
-        </NoTravelCardBox>
+        <>
+          {schedules?.length !== 0 ? (
+            <TravelCardCol>
+              {schedules?.map((s) => (
+                <MyScheduleCard
+                  key={s.id}
+                  handleClick={() => setScheduleId(s.id)}
+                  checkedId={scheduleId}
+                  data={s}
+                />
+              ))}
+            </TravelCardCol>
+          ) : (
+            <NoTravelCardBox>
+              <h1>내 여행</h1>
+              <div>
+                <CalendarCheckIcon stroke="#b8b8b8" />
+                <span>일정이 없어요. 새로운 여행 일정을 추가해주세요.</span>
+              </div>
+              <CustomAddTravelButton
+                onClick={() => navigate("/home/createSchedule")}
+              >
+                <PlusIcon stroke="white" />
+                <span>일정 생성</span>
+              </CustomAddTravelButton>
+            </NoTravelCardBox>
+          )}
+        </>
       )}
     </OneButtonModal>
   );
@@ -57,7 +85,6 @@ const TravelCardCol = styled.div`
 `;
 
 const NoTravelCardBox = styled.div`
-  margin-top: 30px;
   & > h1 {
     color: ${(props) => props.theme.color.gray900};
     font-size: 14px;
