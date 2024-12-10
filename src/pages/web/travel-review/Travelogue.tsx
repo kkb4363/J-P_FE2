@@ -4,6 +4,7 @@ import styled from "styled-components";
 import TravelogueCard from "../../../components/web/travel-review/TravelogueCard";
 import { ReviewProps } from "../../../types/travelreview";
 import LoadingText from "../../../components/LoadingText";
+import { getAllDiaries } from "../../../service/axios";
 
 interface Props {
   sort: string;
@@ -24,6 +25,10 @@ export default function Travelogue({ sort }: Props) {
   useEffect(() => {
     setData([testReviewItem]);
   }, [page, sort]);
+
+  useEffect(() => {
+    getAllDiaries(sort).then((res) => console.log(res));
+  }, []);
 
   return (
     <>

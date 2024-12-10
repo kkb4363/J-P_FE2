@@ -118,7 +118,7 @@ export const router = createBrowserRouter([
         element: <EditProfile />,
       },
       {
-        path: "writeTravelogue",
+        path: "writeTravelogue/:id",
         element: <WriteTravelouge />,
       },
       {

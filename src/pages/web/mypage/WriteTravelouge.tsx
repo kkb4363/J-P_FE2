@@ -11,6 +11,21 @@ import useImagesUploadHook from "../../../hooks/useImagesUpload";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import OneButtonModal from "../../../components/OneButtonModal";
+import TrashIcon from "../../../assets/icons/TrashIcon";
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import SortablePhoto from "../../../components/web/mypage/SortablePhoto";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
+import { createDiary, uploadFiles } from "../../../service/axios";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function WriteTravelouge() {
   const {
@@ -21,11 +36,34 @@ export default function WriteTravelouge() {
     handleImageDelete,
   } = useImagesUploadHook();
 
+  const [state, setState] = useState({
+    success: false,
+    imgEdit: false,
+  });
+  const [form, setForm] = useState({
+    title: "",
+    content: "",
+    tags: ["태그 작성"],
+    isPublic: true,
+  });
+  const param = useParams();
+  const navigate = useNavigate();
   const tagRef = useRef<HTMLInputElement>(null);
-  const [imgIdx, setImgIdx] = useState(0);
-  const [tags, setTags] = useState(["산책코스", "태그입력"]);
-  const [openSuccess, setOpenSuccess] = useState(false);
+  const handleTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (tagRef.current && e.key === "Enter") {
+      const newTag = tagRef.current.value;
+      if (newTag) {
+        tagRef.current.value = "";
+        setForm((p) => ({ ...p, tags: [...p.tags, newTag] }));
+      }
+    }
+  };
+  const deleteTag = (tag: string) => {
+    const newTags = form.tags.filter((prev) => prev !== tag);
+    setForm((p) => ({ ...p, tags: newTags }));
+  };
 
+  const [imgIdx, setImgIdx] = useState(0);
   const handleImgIdx = (isPrev: boolean) => {
     setImgIdx((p) => {
       if (isPrev) {
@@ -35,120 +73,222 @@ export default function WriteTravelouge() {
       }
     });
   };
-
-  const handleTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (tagRef.current && e.key === "Enter") {
-      const newTag = tagRef.current.value;
-      if (newTag) {
-        setTags((p) => [...p, newTag]);
-        tagRef.current.value = "";
-      }
-    }
+  const deleteImg = () => {
+    handleImageDelete(images[imgIdx].lastModified);
   };
 
-  const deleteTag = (tag: string) => {
-    const newTags = tags.filter((prev) => prev !== tag);
-    setTags(newTags);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  const [activeUrl, setActiveUrl] = useState<any>("");
+  const { setSelectedImg } = useWriteReviewStore();
+  const handleDragStart = (e: any) => {
+    setImgIdx(images.findIndex((p) => p.name === e.active.id));
+    setActiveUrl(
+      URL.createObjectURL(images.find((i) => i.name === e.active.id))
+    );
+  };
+  const handleDragEnd = (e: any) => {
+    const { active, over } = e;
+
+    if (active.id !== over.id) {
+      const oldIdx = images.findIndex((p) => p.name === active.id);
+      const newIdx = images.findIndex((p) => p.name === over.id);
+
+      const updatedArr = [...images];
+      const [movedArr] = updatedArr.splice(oldIdx, 1);
+      updatedArr.splice(newIdx, 0, movedArr);
+      return setSelectedImg(updatedArr);
+    }
+
+    setActiveUrl(null);
+  };
+  const handleDragCancel = () => {
+    setActiveUrl(null);
+  };
+
+  const handleSubmit = () => {
+    if (state.imgEdit) {
+      setState((p) => ({ ...p, imgEdit: false }));
+      setImgIdx(0);
+    } else {
+      uploadFiles(images, "DIARY").then((res) => {
+        if (res) {
+          const body = {
+            subject: form.title,
+            content: form.content,
+            fileIds: res.data.data.map((file: any) => file.fileId),
+            isPublic: form.isPublic,
+          };
+
+          createDiary(body, Number(param.id)).then((res) => {
+            if (res) {
+              setState((p) => ({ ...p, success: true }));
+            }
+          });
+        }
+      });
+    }
   };
 
   return (
     <>
       <Container>
-        <h1>여행기 작성</h1>
+        <h1>{state.imgEdit ? "이미지 수정" : "여행기 작성"}</h1>
 
-        <ImageBox>
-          {imgIdx !== 0 && (
-            <PrevButton onClick={() => handleImgIdx(true)}>
-              <ArrowLeftIcon stroke="white" />
-            </PrevButton>
-          )}
+        {!state.imgEdit && (
+          <>
+            <ImageBox>
+              <ImgEditBtn
+                onClick={() => setState((p) => ({ ...p, imgEdit: true }))}
+              >
+                수정
+              </ImgEditBtn>
 
-          <AddImageBtn onClick={handleButtonClick}>
-            <ImageAddIcon stroke="#6979f8" />
-            <span>이미지 첨부</span>
-          </AddImageBtn>
+              {imgIdx !== 0 && (
+                <PrevButton onClick={() => handleImgIdx(true)}>
+                  <ArrowLeftIcon stroke="white" />
+                </PrevButton>
+              )}
 
-          {images.length === 0 ? (
-            <span>
-              <ImageAddIcon />
-              이미지를 등록해주세요.
-            </span>
-          ) : (
-            <img src={URL.createObjectURL(images[imgIdx])} alt="travel" />
-          )}
+              <AddImageBtn onClick={handleButtonClick}>
+                <ImageAddIcon stroke="#6979f8" />
+                <span>이미지 첨부</span>
+              </AddImageBtn>
 
-          <input
-            hidden
-            ref={imageRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
+              {images.length === 0 ? (
+                <span>
+                  <ImageAddIcon />
+                  이미지를 등록해주세요.
+                </span>
+              ) : (
+                <img src={URL?.createObjectURL(images[imgIdx])} alt="travel" />
+              )}
 
-          <InfoText>최대 10장</InfoText>
+              <input
+                hidden
+                ref={imageRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
 
-          {imgIdx !== images.length - 1 && (
-            <NextButton onClick={() => handleImgIdx(false)}>
-              <ArrowRightIcon stroke="white" />
-            </NextButton>
-          )}
-        </ImageBox>
+              <InfoText>최대 10장</InfoText>
 
-        <TitleBox placeholder="제목을 작성해주세요." />
+              {imgIdx !== images.length - 1 && (
+                <NextButton onClick={() => handleImgIdx(false)}>
+                  <ArrowRightIcon stroke="white" />
+                </NextButton>
+              )}
+            </ImageBox>
 
-        <TextBox>
-          <textarea placeholder="나만의 여행기를 작성해주세요.(여행 계획, 일정, 기억에 남는 장소 등)" />
-          <InfoText>최소 100자</InfoText>
-        </TextBox>
+            <TitleBox
+              placeholder="제목을 작성해주세요."
+              value={form.title}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, title: e.target.value }))
+              }
+            />
 
-        <InfoTag
-          placeholder="태그를 작성해주세요. (최대 5개/10자 이내)"
-          ref={tagRef}
-          onKeyDown={handleTag}
-        />
+            <TextBox>
+              <textarea
+                placeholder="나만의 여행기를 작성해주세요.(여행 계획, 일정, 기억에 남는 장소 등)"
+                value={form.content}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, content: e.target.value }))
+                }
+              />
+              <InfoText>최소 100자</InfoText>
+            </TextBox>
 
-        <TagRow>
-          {tags?.map((tag) => (
-            <div onClick={() => deleteTag(tag)} key={tag}>
-              # {tag}
-            </div>
-          ))}
-        </TagRow>
+            <InfoTag
+              placeholder="태그를 작성해주세요. (최대 5개/10자 이내)"
+              ref={tagRef}
+              onKeyDown={handleTag}
+            />
 
-        <PublicCheckBox>
-          <CheckOnlyIcon stroke="#4d4d4d" />
-          <span>공개</span>
-        </PublicCheckBox>
+            <TagRow>
+              {form?.tags?.map((tag) => (
+                <div onClick={() => deleteTag(tag)} key={tag}>
+                  # {tag}
+                </div>
+              ))}
+            </TagRow>
 
-        <AddTravelBtnBox>
-          <AddTravelButton>
-            <PlusIcon stroke="white" />
-            <span>장소등록</span>
-          </AddTravelButton>
-        </AddTravelBtnBox>
+            <PublicCheckBox
+              onClick={() => setForm((p) => ({ ...p, isPublic: !p.isPublic }))}
+            >
+              <CheckOnlyIcon stroke="#B8B8B8" />
+              <span>{form.isPublic ? "공개" : "비공개"}</span>
+            </PublicCheckBox>
+
+            <AddTravelBtnBox>
+              <AddTravelButton>
+                <PlusIcon stroke="white" />
+                <span>장소등록</span>
+              </AddTravelButton>
+            </AddTravelBtnBox>
+          </>
+        )}
+
+        {state.imgEdit && images && (
+          <>
+            <ImgDeleteBtn onClick={deleteImg}>
+              <TrashIcon width={18} height={18} stroke="#6979F8" />
+              삭제
+            </ImgDeleteBtn>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
+            >
+              <SortableContext items={images} strategy={rectSortingStrategy}>
+                <ImgEditGridBox>
+                  {images?.map((i, idx) => (
+                    <SortablePhoto
+                      key={idx}
+                      url={URL?.createObjectURL(i)}
+                      isChecked={imgIdx === idx}
+                      data={i}
+                    />
+                  ))}
+                </ImgEditGridBox>
+              </SortableContext>
+
+              <DragOverlay adjustScale={true}>
+                {activeUrl && <DraggableImg src={activeUrl} />}
+              </DragOverlay>
+            </DndContext>
+          </>
+        )}
 
         <ButtonsRow>
-          <PrimaryButton
-            width="120px"
-            text="임시저장"
-            onClick={() => toast(<span>임시 저장되었습니다.</span>)}
-            secondary={true}
-          />
+          {!state.imgEdit && (
+            <PrimaryButton
+              width="120px"
+              text="임시저장"
+              onClick={() => toast(<span>임시 저장되었습니다.</span>)}
+              secondary={true}
+            />
+          )}
           <PrimaryButton
             width="120px"
             text="완료"
-            onClick={() => setOpenSuccess(true)}
+            onClick={handleSubmit}
             blue={true}
           />
         </ButtonsRow>
       </Container>
 
-      {openSuccess && (
+      {state.success && (
         <OneButtonModal
           isMobile={false}
           buttonText="확인"
-          onClick={() => setOpenSuccess(false)}
-          onClose={() => setOpenSuccess(false)}
+          onClick={() => {
+            setState((p) => ({ ...p, success: false }));
+            navigate("/home/mypage/travelogue");
+          }}
+          onClose={() => setState((p) => ({ ...p, success: false }))}
           width="470px"
           height="390px"
           noCloseBtn={true}
@@ -206,6 +346,15 @@ const ImageBox = styled.div`
     color: ${(props) => props.theme.color.gray300};
     font-size: 14px;
   }
+`;
+
+const ImgEditBtn = styled.aside`
+  color: ${(props) => props.theme.color.white};
+  font-size: 14px;
+  position: absolute;
+  top: 19px;
+  right: 22px;
+  cursor: pointer;
 `;
 
 const ArrowStyle = css`
@@ -347,4 +496,32 @@ const ButtonsRow = styled.div`
   justify-content: center;
   align-items: center;
   gap: 24px;
+`;
+
+const ImgDeleteBtn = styled.button`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 12px;
+  color: ${(props) => props.theme.color.secondary};
+`;
+
+const ImgEditGridBox = styled.div`
+  display: grid;
+  margin-top: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  place-items: center;
+  gap: 20px;
+
+  & > img {
+    width: 383px;
+    height: 251px;
+  }
+`;
+
+const DraggableImg = styled.img`
+  width: 383px;
+  height: 251px;
 `;

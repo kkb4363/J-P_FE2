@@ -46,6 +46,8 @@ export default function TravelReview() {
     };
   }, [isDropdownView]);
 
+  console.log(selectedFilter);
+
   return (
     <TravelReviewContainer>
       <>

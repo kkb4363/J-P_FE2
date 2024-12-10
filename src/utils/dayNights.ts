@@ -7,8 +7,8 @@ export const formatDayNights = (start: string, end: string) => {
   );
   const days = nights + 1;
 
-  const startString = start.split("-")[1] + "." + start.split("-").pop();
-  const endString = end.split("-")[1] + "." + end.split("-").pop();
+  const startString = start?.split("-")[1] + "." + start?.split("-").pop();
+  const endString = end?.split("-")[1] + "." + end?.split("-").pop();
 
   return {
     nights,
