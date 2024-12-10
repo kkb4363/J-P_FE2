@@ -353,3 +353,30 @@ export const CostInput = styled.div`
     }
   }
 `;
+
+export const ModalText = styled.p`
+  font-size: 16px;
+  font-weight: 700;
+`
+
+export const NoPlaceBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 54px;
+  margin-top: 15px;
+`
+
+export const NoPlaceTextBox = styled.div`
+  width: 100%;
+  height: 81px;
+  display: grid;
+  place-content: center;
+  border-radius: 16px;
+  background-color: ${(props) => props.theme.color.gray100};
+
+  & > p {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 12px;
+  }
+`
