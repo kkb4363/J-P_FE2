@@ -4,15 +4,12 @@ import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import useAddPlaceHook from "../../../hooks/useAddPlace";
-import { moveScheduleDate } from "../../../service/axios";
-import { useUserStore } from "../../../store/user.store";
+import { useAddPlaceStore } from "../../../store/useAddPlace.store";
 import { DayLocationProps } from "../../../types/schedule";
 
 interface Props {
   item: DayLocationProps;
   isEdit: boolean;
-  currentDayId: number;
   reloadSchedule: () => Promise<void>;
   setIsOpenMemo: React.Dispatch<
     React.SetStateAction<{
@@ -29,20 +26,23 @@ interface Props {
       deleteSuccess: boolean;
     }>
   >;
+  setIsMovePlan: React.Dispatch<
+    React.SetStateAction<{
+      itemId: number | undefined;
+      isMove: boolean;
+    }>
+  >;
 }
 
 export default function PlanItem({
   item,
   isEdit,
-  currentDayId,
-  reloadSchedule,
   setIsOpenMemo,
   setIsPlanPlace,
   setIsOpenDeleteModal,
+  setIsMovePlan,
 }: Props) {
-  const [isMove, setIsMove] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { getUserType } = useUserStore();
   const {
     attributes,
     listeners,
@@ -53,56 +53,22 @@ export default function PlanItem({
     isDragging,
   } = useSortable({ id: item.id });
 
-  const {
-    selectDay,
-    setSelectDay,
-    selectTime,
-    setSelectTime,
-    handleDaySelect,
-    openModal,
-    setOpenModal,
-  } = useAddPlaceHook();
-
+  const { setOpenModal } = useAddPlaceStore();
   const handleItemClick = async () => {
     if (isEdit) {
-      setIsMove(true);
-      setOpenModal((p) => ({ ...p, selectDay: true }));
+      setIsMovePlan({ itemId: item.id, isMove: true });
+      setOpenModal({ selectDay: true });
     } else {
       setIsLoading(true);
       setIsPlanPlace(true);
     }
   };
 
-  const handleMovePlanClick = async () => {
-    setOpenModal((p) => ({ ...p, selectTime: false }));
-    if (isMove) {
-      setIsMove(false);
-      await moveScheduleDate(
-        item.id,
-        {
-          newDayId: selectDay,
-          time: selectTime,
-        },
-        getUserType()
-      ).then(() => {
-        reloadSchedule();
-      });
-    } else {
-      await moveScheduleDate(
-        item.id,
-        {
-          newDayId: currentDayId,
-          time: selectTime,
-        },
-        getUserType()
-      ).then((res) => {
-        reloadSchedule();
-      });
-    }
-  };
-
   const handleEditTimeClick = async () => {
-    setOpenModal((p) => ({ ...p, selectTime: true }));
+    if (isEdit) {
+      setIsMovePlan({ itemId: item.id, isMove: false });
+      setOpenModal({ selectTime: true });
+    }
   };
 
   return (
@@ -232,17 +198,6 @@ const DragHandler = styled.div<{ $isDragging: boolean }>`
       : props.theme.color.gray300};
   font-size: 12px;
   white-space: nowrap;
-`;
-
-const PlaceDetailsButton = styled.div<{ $fill?: boolean }>`
-  display: grid;
-  place-items: center;
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 8px;
-  border: 1px solid
-    ${(props) =>
-      props.$fill ? props.theme.color.secondary : props.theme.color.gray300};
 `;
 
 const MemoButton = styled.button`
