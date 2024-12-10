@@ -8,7 +8,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 import useImagesUploadHook from "../../../hooks/useImagesUpload";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import OneButtonModal from "../../../components/OneButtonModal";
 import TrashIcon from "../../../assets/icons/TrashIcon";
@@ -24,8 +24,13 @@ import {
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import SortablePhoto from "../../../components/web/mypage/SortablePhoto";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
-import { createDiary, uploadFiles } from "../../../service/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  createDiary,
+  getDiaryDetail,
+  updateDiary,
+  uploadFiles,
+} from "../../../service/axios";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function WriteTravelouge() {
   const {
@@ -45,6 +50,7 @@ export default function WriteTravelouge() {
     content: "",
     tags: ["태그 작성"],
     isPublic: true,
+    imgs: [],
   });
   const param = useParams();
   const navigate = useNavigate();
@@ -110,24 +116,80 @@ export default function WriteTravelouge() {
       setState((p) => ({ ...p, imgEdit: false }));
       setImgIdx(0);
     } else {
-      uploadFiles(images, "DIARY").then((res) => {
-        if (res) {
-          const body = {
-            subject: form.title,
-            content: form.content,
-            fileIds: res.data.data.map((file: any) => file.fileId),
-            isPublic: form.isPublic,
-          };
+      if (images.length !== 0) {
+        uploadFiles(images, "DIARY").then((res) => {
+          if (res) {
+            if (isEdit) {
+              const body = {
+                subject: titleRef?.current?.value,
+                content: contentRef?.current?.value,
+                newFileIds: res.data.data.map((file: any) => file.fileId),
+                isPublic: form.isPublic,
+              };
+              updateDiary(body, Number(location.state.diaryId)).then((res) => {
+                if (res) {
+                  setState((p) => ({ ...p, success: true }));
+                }
+              });
+            } else {
+              const body = {
+                subject: titleRef?.current?.value,
+                content: contentRef?.current?.value,
+                fileIds: res.data.data.map((file: any) => file.fileId),
+                isPublic: form.isPublic,
+              };
+              createDiary(body, Number(param.id)).then((res) => {
+                if (res) {
+                  setState((p) => ({ ...p, success: true }));
+                }
+              });
+            }
+          }
+        });
+      } else {
+        const body = {
+          subject: titleRef?.current?.value,
+          content: contentRef?.current?.value,
+          isPublic: form.isPublic,
+        };
 
+        if (isEdit) {
+          updateDiary(body, Number(location.state.diaryId)).then((res) => {
+            if (res) {
+              setState((p) => ({ ...p, success: true }));
+            }
+          });
+        } else {
           createDiary(body, Number(param.id)).then((res) => {
             if (res) {
               setState((p) => ({ ...p, success: true }));
             }
           });
         }
-      });
+      }
     }
   };
+
+  const location = useLocation();
+  const isEdit = location.state && location.state.diaryId;
+  useEffect(() => {
+    if (isEdit) {
+      toast(<span>이미지는 추가,수정만 가능합니다</span>);
+      getDiaryDetail(location.state.diaryId).then((res) => {
+        if (res) {
+          setForm((p) => ({
+            ...p,
+            title: res?.data.subject,
+            content: res?.data.content,
+            imgs: res?.data.fileInfos,
+          }));
+        }
+      });
+    }
+  }, [location.state]);
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   return (
     <>
@@ -137,11 +199,13 @@ export default function WriteTravelouge() {
         {!state.imgEdit && (
           <>
             <ImageBox>
-              <ImgEditBtn
-                onClick={() => setState((p) => ({ ...p, imgEdit: true }))}
-              >
-                수정
-              </ImgEditBtn>
+              {images.length !== 0 && (
+                <ImgEditBtn
+                  onClick={() => setState((p) => ({ ...p, imgEdit: true }))}
+                >
+                  수정
+                </ImgEditBtn>
+              )}
 
               {imgIdx !== 0 && (
                 <PrevButton onClick={() => handleImgIdx(true)}>
@@ -167,11 +231,13 @@ export default function WriteTravelouge() {
                 hidden
                 ref={imageRef}
                 type="file"
-                accept="image/*"
+                accept="images/*"
                 onChange={handleImageChange}
               />
 
-              <InfoText>최대 10장</InfoText>
+              <InfoText>
+                {isEdit ? `최대 ${10 - form?.imgs.length}장` : "최대 10장"}
+              </InfoText>
 
               {imgIdx !== images.length - 1 && (
                 <NextButton onClick={() => handleImgIdx(false)}>
@@ -182,19 +248,15 @@ export default function WriteTravelouge() {
 
             <TitleBox
               placeholder="제목을 작성해주세요."
-              value={form.title}
-              onChange={(e) =>
-                setForm((p) => ({ ...p, title: e.target.value }))
-              }
+              defaultValue={form.title}
+              ref={titleRef}
             />
 
             <TextBox>
               <textarea
                 placeholder="나만의 여행기를 작성해주세요.(여행 계획, 일정, 기억에 남는 장소 등)"
-                value={form.content}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, content: e.target.value }))
-                }
+                defaultValue={form.content}
+                ref={contentRef}
               />
               <InfoText>최소 100자</InfoText>
             </TextBox>
@@ -294,7 +356,7 @@ export default function WriteTravelouge() {
           noCloseBtn={true}
         >
           <SuccessModalContainer>
-            <h1>여행기 등록이 완료되었습니다!</h1>
+            <h1>여행기 {isEdit ? "수정" : "등록"}이 완료되었습니다!</h1>
             <p>다른 여행객들에게도 도움이 될 거에요.</p>
           </SuccessModalContainer>
         </OneButtonModal>

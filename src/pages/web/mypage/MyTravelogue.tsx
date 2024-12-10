@@ -4,8 +4,10 @@ import PlusIcon from "../../../assets/icons/PlusIcon";
 import { useEffect, useState } from "react";
 import SelectTravelModal from "../../../components/web/mypage/SelectTravelModal";
 import { getMyDiaries } from "../../../service/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function MyTravelogue() {
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
 
   const [diaries, setDiaries] = useState([]);
@@ -17,6 +19,14 @@ export default function MyTravelogue() {
       }
     });
   }, []);
+
+  const handleEdit = (id: number) => {
+    navigate(`/home/writeTravelogue/edit`, {
+      state: {
+        diaryId: id,
+      },
+    });
+  };
 
   return (
     <>
@@ -41,7 +51,11 @@ export default function MyTravelogue() {
         </ImgCard> */}
         {diaries?.map((d: any) => {
           return (
-            <ImgCard key={d.id} $imgSrc={d.fileInfos[0].fileUrl}>
+            <ImgCard
+              key={d.id}
+              $imgSrc={d?.fileInfos[0]?.fileUrl}
+              onClick={() => handleEdit(d.id)}
+            >
               <p>{d.subject}</p>
               <span>{d.scheduleStartDate + " ~ " + d.scheduleEndDate}</span>
             </ImgCard>
@@ -60,9 +74,11 @@ const ImgCardGridBox = styled.div`
   gap: 60px;
 `;
 
-const ImgCard = styled.div<{ $imgSrc: string }>`
+const ImgCard = styled.div<{ $imgSrc?: string }>`
+  cursor: pointer;
   position: relative;
   background-image: url(${(props) => props.$imgSrc && props.$imgSrc});
+  background-color: ${(props) => !props.$imgSrc && props.theme.color.gray300};
   background-position: center;
   background-size: cover;
   width: 225px;
@@ -86,25 +102,5 @@ const ImgCard = styled.div<{ $imgSrc: string }>`
     color: ${(props) => props.theme.color.white};
     font-size: 16px;
     font-weight: 400;
-  }
-`;
-
-const WritingTag = styled.div`
-  position: absolute;
-  width: 56px;
-  height: 29px;
-  border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.secondary};
-  background-color: ${(props) => props.theme.color.white};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 18px;
-  right: 18px;
-
-  & > span {
-    color: ${(props) => props.theme.color.secondary};
-    font-size: 12px;
-    user-select: none;
   }
 `;

@@ -628,3 +628,35 @@ export const uploadFiles = async (files: any[], category: string) => {
     console.error("파일 업로드 API 에러", err);
   }
 };
+
+export const getDiaryDetail = async (id: number) => {
+  try {
+    const res = await axiosInstance.get(`/diary/${id}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("여행기 상세 조회 API 에러", err);
+  }
+};
+
+export const updateDiary = async (form: any, id: number) => {
+  try {
+    const res = await axiosInstance.patch(`/diary/${id}`, form, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("여행기 수정 API 에러", err);
+  }
+};
