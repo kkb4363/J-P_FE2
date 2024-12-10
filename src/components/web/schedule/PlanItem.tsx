@@ -114,14 +114,16 @@ export default function PlanItem({
           time: selectTime,
         },
         getUserType()
-      ).then((res) => {
+      ).then(() => {
         reloadSchedule();
       });
     }
   };
 
   const handleEditTimeClick = async () => {
-    setOpenModal((p) => ({ ...p, selectTime: true }));
+    if (isEdit) {
+      setOpenModal((p) => ({ ...p, selectTime: true }));
+    }
   };
 
   const handleDeleteItemClick = async () => {
