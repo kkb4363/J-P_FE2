@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function DaySlider({ web = false, dayList }: Props) {
-  const { currentDayId, setCurrentDayId } = useCurrentDayIdStore();
+  const { getCurrentDayId, setCurrentDayId } = useCurrentDayIdStore();
   const slidesToShowCount = dayList?.length < 3 ? dayList?.length : 3;
   const daySlideSettings = {
     infinite: false,
@@ -30,7 +30,7 @@ export default function DaySlider({ web = false, dayList }: Props) {
         <DayBox
           key={idx}
           onClick={() => setCurrentDayId(day.id)}
-          $select={currentDayId === day.id}
+          $select={getCurrentDayId() === day.id}
           $web={web}
         >{`Day ${day.dayIndex}`}</DayBox>
       ))}

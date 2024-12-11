@@ -30,7 +30,7 @@ import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
 export default function ScheduleDetails() {
   const navigate = useNavigate();
   const { scheduleId } = useParams();
-  const { currentDayId, setCurrentDayId } = useCurrentDayIdStore();
+  const { getCurrentDayId, setCurrentDayId } = useCurrentDayIdStore();
   const [isLoading, setIsLoading] = useState(false);
   const [detail, setDetail] = useState<ScheduleApiProps>(
     {} as ScheduleApiProps
@@ -60,7 +60,7 @@ export default function ScheduleDetails() {
 
   const editRequestApi = async () => {
     if (
-      detail?.dayResDtos?.find((d) => d.id === currentDayId)
+      detail?.dayResDtos?.find((d) => d.id === getCurrentDayId())
         ?.dayLocationResDtoList.length === 0
     ) {
       return;
@@ -76,7 +76,7 @@ export default function ScheduleDetails() {
   };
 
   const currentDayPlaces = addedPlaces?.find(
-    (d) => d.id === currentDayId
+    (d) => d.id === getCurrentDayId()
   )?.dayLocationResDtoList;
 
   const getPlaceLocation = () => {
@@ -102,7 +102,9 @@ export default function ScheduleDetails() {
     setAddedPlaces((prevDayListData) => {
       if (!prevDayListData) return;
 
-      const currentDay = prevDayListData.find((day) => day.id === currentDayId);
+      const currentDay = prevDayListData.find(
+        (day) => day.id === getCurrentDayId()
+      );
 
       if (!currentDay) return prevDayListData;
 
@@ -125,7 +127,7 @@ export default function ScheduleDetails() {
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
-        day.id === currentDayId
+        day.id === getCurrentDayId()
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
@@ -167,7 +169,7 @@ export default function ScheduleDetails() {
     if (loc?.lat) {
       mapStore.setAddedPlace(currentDayPlaces as any[]);
     }
-  }, [currentDayId, loc?.lat]);
+  }, [getCurrentDayId(), loc?.lat]);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -235,7 +237,7 @@ export default function ScheduleDetails() {
               <DaySlider web dayList={detail?.dayResDtos} />
             </DaySliderBox>
             <PlanList>
-              {addedPlaces?.find((day) => day.id === currentDayId)
+              {addedPlaces?.find((day) => day.id === getCurrentDayId())
                 ?.dayLocationResDtoList?.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
@@ -252,12 +254,12 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      addedPlaces?.find((day) => day.id === currentDayId)
+                      addedPlaces?.find((day) => day.id === getCurrentDayId())
                         ?.dayLocationResDtoList || []
                     }
                   >
                     {addedPlaces
-                      ?.find((day) => day.id === currentDayId)
+                      ?.find((day) => day.id === getCurrentDayId())
                       ?.dayLocationResDtoList.map((item: any) => {
                         return (
                           <PlanItem

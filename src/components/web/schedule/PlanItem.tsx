@@ -54,7 +54,7 @@ export default function PlanItem({
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
   const [isLoading, setIsLoading] = useState(false);
   const { getUserType } = useUserStore();
-  const { currentDayId } = useCurrentDayIdStore();
+  const { getCurrentDayId } = useCurrentDayIdStore();
   const { selectDay, selectTime, openModal, setOpenModal } = useAddPlaceStore();
 
   const {
@@ -101,7 +101,7 @@ export default function PlanItem({
       await moveScheduleDate(
         item.id,
         {
-          newDayId: currentDayId!,
+          newDayId: getCurrentDayId()!,
           time: selectTime,
         },
         getUserType()

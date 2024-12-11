@@ -51,7 +51,7 @@ export default function PlanSheet({
 }: Props) {
   const navigate = useNavigate();
   const { getUserType } = useUserStore();
-  const { currentDayId } = useCurrentDayIdStore();
+  const { getCurrentDayId } = useCurrentDayIdStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
@@ -123,7 +123,7 @@ export default function PlanSheet({
       await moveScheduleDate(
         isMovePlan.itemId!,
         {
-          newDayId: currentDayId!,
+          newDayId: getCurrentDayId()!,
           time: selectTime,
         },
         getUserType()
@@ -152,7 +152,9 @@ export default function PlanSheet({
     setAddedPlaces((prevDayListData) => {
       if (!prevDayListData) return;
 
-      const currentDay = prevDayListData.find((day) => day.id === currentDayId);
+      const currentDay = prevDayListData.find(
+        (day) => day.id === getCurrentDayId()
+      );
 
       if (!currentDay) return prevDayListData;
 
@@ -175,7 +177,7 @@ export default function PlanSheet({
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
-        day.id === currentDayId
+        day.id === getCurrentDayId()
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
@@ -239,7 +241,7 @@ export default function PlanSheet({
                     </D.PlansEditButton>
                     <DaySlider dayList={detail?.dayResDtos} />
                     <D.PlanList>
-                      {addedPlaces?.find((day) => day.id === currentDayId)
+                      {addedPlaces?.find((day) => day.id === getCurrentDayId())
                         ?.dayLocationResDtoList?.length === 0 ? (
                         <D.NoPlaceBox>
                           <D.NoPlaceTextBox>
@@ -263,12 +265,12 @@ export default function PlanSheet({
                             strategy={verticalListSortingStrategy}
                             items={
                               addedPlaces?.find(
-                                (day) => day.id === currentDayId
+                                (day) => day.id === getCurrentDayId()
                               )?.dayLocationResDtoList || []
                             }
                           >
                             {addedPlaces
-                              ?.find((day) => day.id === currentDayId)
+                              ?.find((day) => day.id === getCurrentDayId())
                               ?.dayLocationResDtoList.map(
                                 (item: DayLocationProps) => {
                                   return (

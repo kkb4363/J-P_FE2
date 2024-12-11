@@ -29,7 +29,7 @@ type BottomSheetType = "AddPlace" | "Invite";
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
-  const { currentDayId, setCurrentDayId } = useCurrentDayIdStore();
+  const { getCurrentDayId, setCurrentDayId } = useCurrentDayIdStore();
   const { scheduleId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function Details() {
     lng: 0,
   });
   const currentDayPlaces = detail?.dayResDtos?.find(
-    (d) => d.id === currentDayId
+    (d) => d.id === getCurrentDayId()
   )?.dayLocationResDtoList;
 
   const requestApi = () => {
@@ -85,7 +85,7 @@ export default function Details() {
     if (loc?.lat) {
       mapStore.setAddedPlace(currentDayPlaces as any[]);
     }
-  }, [currentDayId, loc?.lat]);
+  }, [getCurrentDayId(), loc?.lat]);
 
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
