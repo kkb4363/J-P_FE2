@@ -8,28 +8,38 @@ import CancelIcon from "../../../assets/icons/CancelIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
+import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
 
 interface Props {
   setIsPlanPlace: (value: boolean) => void;
 }
 
 export default function PlanPlaceSheet({ setIsPlanPlace }: Props) {
+  const {getPlanItemId, setPlanItemId} = useSelectPlanItemStore();
+
+  const handleCloseClick = () => {
+    setPlanItemId(undefined);
+    setIsPlanPlace(false);
+  }
+  
   return (
     <BottomSheet maxH={0.4}>
       <div>
         <D.CancelIconBox>
-          <CancelIcon size="24" onClick={() => setIsPlanPlace(false)} />
+          <CancelIcon size="24" onClick={handleCloseClick} />
         </D.CancelIconBox>
         <D.PlanPlaceContainer>
-          <D.PlaceTitleBox>
+          <D.PlaceHeader>
             <ImageView
               src={testImg1}
               alt="일정 장소 이미지"
               width="60px"
               height="60px"
             />
-            <p>금산 보리암</p>
-          </D.PlaceTitleBox>
+            <D.PlaceTitleBox>
+              <h3>금산 보리암</h3>
+            </D.PlaceTitleBox>
+          </D.PlaceHeader>
           <D.Line />
           <S.SelectPlaceDetailCol>
             <div>
