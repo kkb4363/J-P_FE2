@@ -1,105 +1,71 @@
 import styled from "styled-components";
-import { TravelCard, TravelHeader } from "./Travel";
+import { TravelHeader } from "./Travel";
 import EditIcon from "../../../assets/icons/EditIcon";
-import testImg from "../../../assets/images/testImg1.png";
-import { useState } from "react";
-import BottomSheet from "../../../components/mobile/BottomSheet";
-import CalendarCheckIcon from "../../../assets/icons/CalendarCheckIcon";
-import CheckIcon from "../../../assets/icons/CheckIcon";
-import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
-import {
-  AddScheduleBox,
-  AddScheduleButton,
-} from "../../../assets/styles/homeDetail.style";
-import PlusIcon from "../../../assets/icons/PlusIcon";
+import { useEffect, useState } from "react";
+import { getMyDiaries } from "../../../service/axios";
+import { MyTravelogueProps } from "../../../types/mypage";
+import SelectTravelSheet from "../../../components/mobile/bottomSheets/SelectTravelSheet";
+import { useNavigate } from "react-router-dom";
 
 export default function Travelogue() {
-  const [isWrite, setIsWrite] = useState(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState({
+    writeSheet: false,
+  });
+
+  const [diaries, setDiaries] = useState<MyTravelogueProps[]>([]);
+
+  const handleEdit = (id: number) => {
+    navigate(`/home/writeTravelogue/edit`, {
+      state: {
+        diaryId: id,
+      },
+    });
+  };
+
+  useEffect(() => {
+    getMyDiaries().then((res) => {
+      if (res) {
+        setDiaries(res?.data.data);
+      }
+    });
+  }, []);
 
   return (
     <>
       <TravelogueHeader>
         <span>목록</span>
 
-        <div onClick={() => setIsWrite(true)}>
+        <div onClick={() => setOpen((p) => ({ ...p, writeSheet: true }))}>
           <EditIcon />
           <span>작성하기</span>
         </div>
       </TravelogueHeader>
 
       <TravelogueGridBox>
-        <TravelogueCard>
-          <img src={testImg} alt="Travelogue" />
-          <p>제주</p>
-          <span>3.21 ~ 3.24</span>
-          <div>공개</div>
-        </TravelogueCard>
-        <TravelogueCard>
-          <img src={testImg} alt="Travelogue" />
-          <p>제주</p>
-          <span>3.21 ~ 3.24</span>
-          <div>공개</div>
-        </TravelogueCard>
-        <TravelogueCard>
-          <img src={testImg} alt="Travelogue" />
-          <p>제주</p>
-          <span>3.21 ~ 3.24</span>
-          <div>공개</div>
-        </TravelogueCard>
+        {diaries?.map((d: MyTravelogueProps) => (
+          <TravelogueCard
+            key={d.id}
+            $imgSrc={d?.fileInfos[0]?.fileUrl}
+            onClick={() => handleEdit(d.id)}
+          >
+            <p>{d.subject}</p>
+            <span>
+              {`${d.scheduleStartDate.split("-")[1]}.${
+                d.scheduleStartDate.split("-")[2]
+              } ~ ${d.scheduleEndDate.split("-")[1]}.${
+                d.scheduleEndDate.split("-")[2]
+              }`}
+            </span>
+            <div>{d.isPublic ? "공개" : "비공개"}</div>
+          </TravelogueCard>
+        ))}
       </TravelogueGridBox>
 
-      <BottomSheet
-        isBlocking={true}
-        isDismiss={true}
-        maxH={0.4}
-        isOpen={isWrite}
-        handleClose={() => setIsWrite(false)}
-      >
-        <WriteTravelogContainer>
-          <h1>여행을 선택해주세요.</h1>
-          <p>내 여행</p>
-          {/* 여행 일정이 있을 때 */}
-          <ScheduleBox>
-            <WriteTravelogueCard $isActive={true}>
-              <span>제주</span>
-              <div>
-                <CalendarCheckIcon />
-                <span>12.29 ~ 12.23</span>
-              </div>
-              <span>
-                <CheckOnlyIcon stroke="#6979f8" />
-              </span>
-            </WriteTravelogueCard>
-            <WriteTravelogueCard $isActive={false}>
-              <span>제주</span>
-              <div>
-                <CalendarCheckIcon />
-                <span>12.29 ~ 12.23</span>
-              </div>
-              <span>
-                <CheckOnlyIcon stroke="#e6e6e6" />
-              </span>
-            </WriteTravelogueCard>
-          </ScheduleBox>
-
-          {/* 여행 일정이 없을 때*/}
-          {/* <>
-            <NoScheduleBox>
-              <p>
-                <CalendarCheckIcon stroke="#b8b8b8" />
-                일정이 없어요.
-              </p>
-              <span>새로운 여행 일정을 추가해주세요.</span>
-            </NoScheduleBox>
-            <NoScheduleAddBox>
-              <AddScheduleButton>
-                <PlusIcon stroke="#fff" />
-                <span>일정 생성</span>
-              </AddScheduleButton>
-            </NoScheduleAddBox>
-          </> */}
-        </WriteTravelogContainer>
-      </BottomSheet>
+      <SelectTravelSheet
+        isOpen={open.writeSheet}
+        onClose={() => setOpen((p) => ({ ...p, writeSheet: false }))}
+      />
     </>
   );
 }
@@ -127,13 +93,14 @@ export const TravelogueGridBox = styled.div`
   gap: 16px;
 `;
 
-const TravelogueCard = styled.div`
+const TravelogueCard = styled.div<{ $imgSrc?: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex: 1;
-
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.06),
+    0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   position: relative;
   width: 100%;
   height: 100%;
@@ -142,13 +109,11 @@ const TravelogueCard = styled.div`
 
   gap: 12px;
 
-  & > img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    border-radius: 16px;
-  }
+  border-radius: 16px;
+  background-image: url(${(props) => props.$imgSrc && props.$imgSrc});
+  background-color: ${(props) => !props.$imgSrc && props.theme.color.gray300};
+  background-position: center;
+  background-size: cover;
 
   & > p {
     color: ${(props) => props.theme.color.white};
@@ -159,7 +124,7 @@ const TravelogueCard = styled.div`
   & > span {
     color: ${(props) => props.theme.color.white};
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 400;
   }
 
   & > div {
@@ -175,72 +140,8 @@ const TravelogueCard = styled.div`
     color: ${(props) => props.theme.color.gray900};
     font-size: 10px;
     font-weight: 500;
-    padding: 4px 8px;
+    min-height: 20px;
+    padding: 0 8px;
+    white-space: nowrap;
   }
-`;
-
-const WriteTravelogContainer = styled.div`
-  padding: 20px 8px 8px 8px;
-
-  & > h1 {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
-  & > p {
-    color: ${(props) => props.theme.color.gray900};
-    font-size: 14px;
-    font-weight: 700;
-  }
-`;
-
-const ScheduleBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-sizing: border-box;
-  padding: 16px 0;
-`;
-
-const WriteTravelogueCard = styled(TravelCard)<{ $isActive: boolean }>`
-  border: 1px solid
-    ${(props) =>
-      props.$isActive
-        ? props.theme.color.secondary
-        : props.theme.color.gray200};
-`;
-
-const NoScheduleBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 36px;
-
-  & > p {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 14px;
-    font-weight: 400;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-  }
-
-  & > span {
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 14px;
-    font-weight: 400;
-  }
-`;
-
-const NoScheduleAddBox = styled(AddScheduleBox)`
-  position: absolute;
-  padding: 0;
-  left: 0;
-  right: 0;
-  bottom: 30px;
-  margin: 0 auto;
 `;

@@ -241,7 +241,7 @@ export default function Detail() {
       </SubTitle>
 
       <ReviewCardRow>
-        <ReviewCard>
+        {/* <ReviewCard>
           <ImageView
             width="110px"
             height="100px"
@@ -266,7 +266,7 @@ export default function Detail() {
             </ReviewInfo>
             <LikeCommentBox likeCnt={10} commentCnt={1} />
           </ReviewInfoCol>
-        </ReviewCard>
+        </ReviewCard> */}
       </ReviewCardRow>
 
       {!!addPlaceId && (

@@ -5,20 +5,13 @@ import { useEffect, useState } from "react";
 import SelectTravelModal from "../../../components/web/mypage/SelectTravelModal";
 import { getMyDiaries } from "../../../service/axios";
 import { useNavigate } from "react-router-dom";
+import { MyTravelogueProps } from "../../../types/mypage";
 
 export default function MyTravelogue() {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
 
-  const [diaries, setDiaries] = useState([]);
-
-  useEffect(() => {
-    getMyDiaries().then((res) => {
-      if (res) {
-        setDiaries(res?.data.data);
-      }
-    });
-  }, []);
+  const [diaries, setDiaries] = useState<MyTravelogueProps[]>([]);
 
   const handleEdit = (id: number) => {
     navigate(`/home/writeTravelogue/edit`, {
@@ -27,6 +20,14 @@ export default function MyTravelogue() {
       },
     });
   };
+
+  useEffect(() => {
+    getMyDiaries().then((res) => {
+      if (res) {
+        setDiaries(res?.data.data);
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function MyTravelogue() {
             <span>작성중</span>
           </WritingTag>
         </ImgCard> */}
-        {diaries?.map((d: any) => {
+        {diaries?.map((d: MyTravelogueProps) => {
           return (
             <ImgCard
               key={d.id}

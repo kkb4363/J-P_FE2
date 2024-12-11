@@ -30,6 +30,7 @@ import Travelogue from "./mypage/Travelogue";
 import TravelogueDetails from "./travel-review/TravelogueDetails";
 import ErrorPage from "./ErrorPage";
 import Setting from "./mypage/Setting";
+import WriteTravelogue from "./mypage/WriteTravelogue";
 
 export const router = createBrowserRouter([
   {
@@ -151,6 +152,10 @@ export const router = createBrowserRouter([
         path: "setting",
         element: <Setting />,
       },
+      {
+        path: "writeTravelogue/:id",
+        element: <WriteTravelogue />,
+      },
     ],
   },
 
@@ -158,6 +163,7 @@ export const router = createBrowserRouter([
     path: "writeReview",
     element: <WriteReview />,
   },
+
   {
     path: "selectPlace",
     element: <SelectPlace />,
