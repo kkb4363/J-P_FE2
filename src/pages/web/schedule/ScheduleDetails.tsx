@@ -25,16 +25,24 @@ import { DayProps, ScheduleApiProps } from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import { useMapStore } from "../../../store/map.store";
+import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
 
 export default function ScheduleDetails() {
   const navigate = useNavigate();
   const { scheduleId } = useParams();
+  const { getCurrentDayId, setCurrentDayId } = useCurrentDayIdStore();
   const [isLoading, setIsLoading] = useState(false);
   const [detail, setDetail] = useState<ScheduleApiProps>(
     {} as ScheduleApiProps
   );
   const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
-  const [currentDayIdx, setCurrentDayIdx] = useState<number>(1);
+  const [hashtag, setHashtag] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [loc, setLoc] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const mapStore = useMapStore();
 
   const requestApi = async () => {
     if (scheduleId) {
@@ -43,63 +51,16 @@ export default function ScheduleDetails() {
         if (res) {
           setAddedPlaces(res.data.dayResDtos);
           setDetail(res?.data);
+          setCurrentDayId(res.data.dayResDtos[0].id);
         }
         setIsLoading(false);
       });
     }
   };
 
-  useEffect(() => {
-    requestApi();
-  }, [scheduleId]);
-
-  const mapStore = useMapStore();
-  const [loc, setLoc] = useState({
-    lat: 0,
-    lng: 0,
-  });
-  const currentDayPlaces = addedPlaces?.find(
-    (d) => d.dayIndex === currentDayIdx
-  )?.dayLocationResDtoList;
-
-  const getPlaceLocation = () => {
-    getPlaceDetail({ placeId: detail?.place?.placeId + "" }).then((res) => {
-      const location = res?.data.location;
-      setLoc({
-        lat: Number(location.lat),
-        lng: Number(location.lng),
-      });
-    });
-  };
-
-  useEffect(() => {
-    if (detail?.id) {
-      getPlaceLocation();
-    }
-  }, [detail?.id]);
-
-  useEffect(() => {
-    if (loc?.lat) {
-      mapStore.setAddedPlace(currentDayPlaces as any[]);
-    }
-  }, [currentDayIdx, loc?.lat]);
-
-  const [isEdit, setIsEdit] = useState(false);
-
-  const handleEditClick = async () => {
-    if (isEdit) {
-      editRequestApi();
-    }
-    setIsEdit((prev) => !prev);
-  };
-
-  const handleDayClick = (day: number) => {
-    setCurrentDayIdx(day);
-  };
-
   const editRequestApi = async () => {
     if (
-      detail?.dayResDtos?.find((d) => d.dayIndex === currentDayIdx)
+      detail?.dayResDtos?.find((d) => d.id === getCurrentDayId())
         ?.dayLocationResDtoList.length === 0
     ) {
       return;
@@ -114,6 +75,27 @@ export default function ScheduleDetails() {
     });
   };
 
+  const currentDayPlaces = addedPlaces?.find(
+    (d) => d.id === getCurrentDayId()
+  )?.dayLocationResDtoList;
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: detail?.place?.placeId + "" }).then((res) => {
+      const location = res?.data.location;
+      setLoc({
+        lat: Number(location.lat),
+        lng: Number(location.lng),
+      });
+    });
+  };
+
+  const handleEditClick = async () => {
+    if (isEdit) {
+      editRequestApi();
+    }
+    setIsEdit((prev) => !prev);
+  };
+
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
 
@@ -121,7 +103,7 @@ export default function ScheduleDetails() {
       if (!prevDayListData) return;
 
       const currentDay = prevDayListData.find(
-        (day) => day.dayIndex === currentDayIdx
+        (day) => day.id === getCurrentDayId()
       );
 
       if (!currentDay) return prevDayListData;
@@ -145,7 +127,7 @@ export default function ScheduleDetails() {
       }));
 
       const updatedDayListData = prevDayListData.map((day) =>
-        day.dayIndex === currentDayIdx
+        day.id === getCurrentDayId()
           ? { ...day, dayLocationResDtoList: reorderedLocations }
           : day
       );
@@ -173,7 +155,21 @@ export default function ScheduleDetails() {
     }
   };
 
-  const [hashtag, setHashtag] = useState("");
+  useEffect(() => {
+    requestApi();
+  }, [scheduleId]);
+
+  useEffect(() => {
+    if (detail?.id) {
+      getPlaceLocation();
+    }
+  }, [detail?.id]);
+
+  useEffect(() => {
+    if (loc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces as any[]);
+    }
+  }, [getCurrentDayId(), loc?.lat]);
 
   if (isLoading) return <LoadingText text="로딩 중...." />;
   return (
@@ -238,15 +234,10 @@ export default function ScheduleDetails() {
               )}
             </EditButton>
             <DaySliderBox>
-              <DaySlider
-                web
-                dayList={detail?.dayResDtos}
-                currentDayId={currentDayIdx}
-                onDayClick={handleDayClick}
-              />
+              <DaySlider web dayList={detail?.dayResDtos} />
             </DaySliderBox>
             <PlanList>
-              {addedPlaces?.find((day) => day.dayIndex === currentDayIdx)
+              {addedPlaces?.find((day) => day.id === getCurrentDayId())
                 ?.dayLocationResDtoList?.length === 0 ? (
                 <NoPlaceBox>
                   <NoPlaceTextBox>
@@ -263,19 +254,18 @@ export default function ScheduleDetails() {
                 >
                   <SortableContext
                     items={
-                      addedPlaces?.find((day) => day.dayIndex === currentDayIdx)
+                      addedPlaces?.find((day) => day.id === getCurrentDayId())
                         ?.dayLocationResDtoList || []
                     }
                   >
                     {addedPlaces
-                      ?.find((day) => day.dayIndex === currentDayIdx)
+                      ?.find((day) => day.id === getCurrentDayId())
                       ?.dayLocationResDtoList.map((item: any) => {
                         return (
                           <PlanItem
                             key={item.id}
                             item={item}
                             isEdit={isEdit}
-                            currentDayId={currentDayIdx}
                             dayList={addedPlaces}
                             reloadSchedule={() => requestApi()}
                           />

@@ -2,36 +2,36 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useState } from "react";
 import styled from "styled-components";
+import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
+import PhoneIcon from "../../../assets/icons/PhoneIcon";
+import StarIcon from "../../../assets/icons/StarIcon";
+import TicketIcon from "../../../assets/icons/TicketIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import useAddPlaceHook from "../../../hooks/useAddPlace";
 import {
   deletePlaceFromSchedule,
   getGooglePlaceDetail,
   moveScheduleDate,
 } from "../../../service/axios";
+import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
+import { useAddPlaceStore } from "../../../store/useAddPlace.store";
+import { useUserStore } from "../../../store/user.store";
 import { SelectPlaceProps } from "../../../types/place";
+import { DayLocationProps, DayProps } from "../../../types/schedule";
+import CustomSkeleton from "../../CustomSkeleton";
+import IconBox from "../../IconBox";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
+import ImageView from "../ImageView";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
-import IconBox from "../../IconBox";
-import StarIcon from "../../../assets/icons/StarIcon";
-import ImageView from "../ImageView";
-import AlarmIcon from "../../../assets/icons/AlarmIcon";
-import TicketIcon from "../../../assets/icons/TicketIcon";
-import PhoneIcon from "../../../assets/icons/PhoneIcon";
-import CustomSkeleton from "../../CustomSkeleton";
-import { DayLocationProps, DayProps } from "../../../types/schedule";
-import { useUserStore } from "../../../store/user.store";
 
 interface Props {
   item: DayLocationProps;
   isEdit: boolean;
   dayList: DayProps[];
-  currentDayId: number;
   reloadSchedule: () => Promise<void>;
 }
 
@@ -39,7 +39,6 @@ export default function PlanItem({
   item,
   isEdit,
   dayList,
-  currentDayId,
   reloadSchedule,
 }: Props) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
@@ -55,6 +54,8 @@ export default function PlanItem({
   const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
   const [isLoading, setIsLoading] = useState(false);
   const { getUserType } = useUserStore();
+  const { getCurrentDayId } = useCurrentDayIdStore();
+  const { selectDay, selectTime, openModal, setOpenModal } = useAddPlaceStore();
 
   const {
     attributes,
@@ -66,20 +67,10 @@ export default function PlanItem({
     isDragging,
   } = useSortable({ id: item.id });
 
-  const {
-    selectDay,
-    setSelectDay,
-    selectTime,
-    setSelectTime,
-    handleDaySelect,
-    openModal,
-    setOpenModal,
-  } = useAddPlaceHook();
-
   const handleItemClick = async () => {
     if (isEdit) {
       setIsMove(true);
-      setOpenModal((p) => ({ ...p, selectDay: true }));
+      setOpenModal({ selectDay: true });
     } else {
       setIsLoading(true);
       setIsOpenPlaceModal(true);
@@ -93,7 +84,7 @@ export default function PlanItem({
   };
 
   const handleMovePlanClick = async () => {
-    setOpenModal((p) => ({ ...p, selectTime: false }));
+    setOpenModal({ selectTime: false });
     if (isMove) {
       setIsMove(false);
       await moveScheduleDate(
@@ -110,18 +101,20 @@ export default function PlanItem({
       await moveScheduleDate(
         item.id,
         {
-          newDayId: currentDayId,
+          newDayId: getCurrentDayId()!,
           time: selectTime,
         },
         getUserType()
-      ).then((res) => {
+      ).then(() => {
         reloadSchedule();
       });
     }
   };
 
   const handleEditTimeClick = async () => {
-    setOpenModal((p) => ({ ...p, selectTime: true }));
+    if (isEdit) {
+      setOpenModal({ selectTime: true });
+    }
   };
 
   const handleDeleteItemClick = async () => {
@@ -218,7 +211,11 @@ export default function PlanItem({
               <PlaceInfoBox>
                 <div>
                   <AlarmIcon />
-                  <span>{placeInfo.businessStatus}</span>
+                  <PlaceWeekdayBox>
+                    {placeInfo.weekdayText.map((weekday, idx) => {
+                      return <span key={idx}>{weekday}</span>;
+                    })}
+                  </PlaceWeekdayBox>
                 </div>
                 <div>
                   <TicketIcon />
@@ -242,15 +239,10 @@ export default function PlanItem({
           height="390px"
           title="다른 날로 이동"
           buttonText="다음"
-          onClick={handleDaySelect}
-          onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
+          onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
+          onClose={() => setOpenModal({ selectDay: false })}
         >
-          <MoveDaySlider
-            isMobile={false}
-            dayResDtos={dayList}
-            selectDay={selectDay}
-            setSelectDay={setSelectDay}
-          />
+          <MoveDaySlider isMobile={false} dayResDtos={dayList} />
         </OneButtonModal>
       )}
       {openModal.selectTime && (
@@ -261,9 +253,9 @@ export default function PlanItem({
           title="시간 설정"
           buttonText="완료"
           onClick={handleMovePlanClick}
-          onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
+          onClose={() => setOpenModal({ selectTime: false })}
         >
-          <TimeSwiper isMobile={false} setSelectTime={setSelectTime} />
+          <TimeSwiper isMobile={false} />
         </OneButtonModal>
       )}
 
@@ -463,3 +455,8 @@ const PlaceInfoBox = styled.div`
     color: ${(props) => props.theme.color.gray700};
   }
 `;
+
+const PlaceWeekdayBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`

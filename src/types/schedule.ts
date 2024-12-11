@@ -18,12 +18,9 @@ export interface PlanDetailsProps {
 }
 
 export interface AddCostDataTypes {
-  // type: string;
-  // name: string;
-  // expense: number | null;
-  category: string;
+  type: string;
   name: string;
-  cost: number | null;
+  expense: number | null;
 }
 
 export interface CityProps {
