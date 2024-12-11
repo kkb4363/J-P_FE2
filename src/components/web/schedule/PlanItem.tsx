@@ -211,11 +211,11 @@ export default function PlanItem({
               <PlaceInfoBox>
                 <div>
                   <AlarmIcon />
-                  <div>
+                  <PlaceWeekdayBox>
                     {placeInfo.weekdayText.map((weekday, idx) => {
                       return <span key={idx}>{weekday}</span>;
                     })}
-                  </div>
+                  </PlaceWeekdayBox>
                 </div>
                 <div>
                   <TicketIcon />
@@ -455,3 +455,8 @@ const PlaceInfoBox = styled.div`
     color: ${(props) => props.theme.color.gray700};
   }
 `;
+
+const PlaceWeekdayBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`
