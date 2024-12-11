@@ -45,7 +45,7 @@ export default function SelectTravelModal({ onClose }: Props) {
         <>
           {schedules?.length !== 0 ? (
             <TravelCardCol>
-              {schedules?.map((s) => (
+              {schedules?.map((s: ScheduleApiProps) => (
                 <MyScheduleCard
                   key={s.id}
                   handleClick={() => setScheduleId(s.id)}

@@ -46,6 +46,8 @@ export interface ScheduleApiProps {
   status: StatusType;
   isOpen: boolean;
   dayResDtos: DayProps[];
+  mbti?: string;
+  isEditing?: boolean;
 }
 
 export interface AddedPlaceProps {

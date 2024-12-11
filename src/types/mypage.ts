@@ -42,3 +42,14 @@ export interface MySchedules {
   status: string;
   isOpen: boolean;
 }
+
+export interface MyTravelogueProps {
+  createdAt: string;
+  fileInfos: any[];
+  id: number;
+  isPublic: boolean;
+  scheduleEndDate: string;
+  scheduleStartDate: string;
+  subject: string;
+  userCompactResDto: UserProps;
+}
