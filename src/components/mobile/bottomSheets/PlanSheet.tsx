@@ -36,6 +36,7 @@ import TwoButtonsModal from "../../TwoButtonsModal";
 import PlanItem from "../schedule/PlanItem";
 import PlanMemo from "../schedule/PlanMemo";
 import BottomSheet from "./../BottomSheet";
+import MoveDaySlider from "../../MoveDaySlider";
 
 interface Props {
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,6 +66,8 @@ export default function PlanSheet({
     expense: null,
   });
 
+  console.log(detail);
+
   const [isOpenMemo, setIsOpenMemo] = useState({
     itemId: undefined as number | undefined,
     memo: false,
@@ -87,7 +90,6 @@ export default function PlanSheet({
     setSelectDay,
     selectTime,
     setSelectTime,
-    handleDaySelect,
     openModal,
     setOpenModal,
   } = useAddPlaceStore();
@@ -210,9 +212,6 @@ export default function PlanSheet({
   useEffect(() => {
     setAddedPlaces(detail.dayResDtos);
   }, [detail]);
-
-  console.log(detail);
-  console.log(currentDayId);
 
   return (
     <>
@@ -375,6 +374,22 @@ export default function PlanSheet({
           <D.ModalText>일정이 삭제되었습니다.</D.ModalText>
         </OneButtonModal>
       )}
+
+      {/* 일정 이동 Modal */}
+      {openModal.selectDay && (
+        <OneButtonModal
+          isMobile={true}
+          width="320px"
+          height="240px"
+          title="다른 날로 이동"
+          buttonText="다음"
+          onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
+          onClose={() => setOpenModal({ selectDay: false })}
+        >
+          <MoveDaySlider isMobile={true} dayResDtos={detail?.dayResDtos} />
+        </OneButtonModal>
+      )}
+
       {openModal.selectTime && (
         <OneButtonModal
           isMobile={true}

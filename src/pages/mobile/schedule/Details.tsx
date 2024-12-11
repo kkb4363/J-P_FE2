@@ -52,9 +52,7 @@ export default function Details() {
       getSchedule(scheduleId).then((res) => {
         if (res) {
           setDetail(res?.data);
-          if (!currentDayId) {
-            setCurrentDayId(res.data.dayResDtos[0].id);
-          }
+          setCurrentDayId(res.data.dayResDtos[0].id);
         }
       });
       setIsLoading(false);

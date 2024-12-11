@@ -67,7 +67,7 @@ const StyledSlider = styled(Slider)<{ $isMobile: boolean }>`
 
 const DayBox = styled.div<{ $select: boolean; $isMobile: boolean }>`
   height: ${({ $isMobile }) => ($isMobile ? "61px" : "78px")};
-  padding: ${({ $isMobile }) => ($isMobile ? "12px 15px" : "16px 20px")};
+  padding: ${({ $isMobile }) => ($isMobile ? "10px" : "16px 20px")};
   display: flex;
   flex-direction: column;
   gap: 8px;
