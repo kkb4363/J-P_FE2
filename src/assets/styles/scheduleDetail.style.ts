@@ -198,8 +198,6 @@ export const PlaceHeader = styled.div`
   align-items: center;
   gap: 14px;
   padding: 0 6px;
-
-
 `;
 
 export const PlaceTitleBox = styled.div`
@@ -207,11 +205,15 @@ export const PlaceTitleBox = styled.div`
   flex-direction: column;
   gap: 6px;
 
-    & > h3 {
+  & > h1 {
     font-weight: 700;
     font-size: 20px;
   }
-`
+  & > span {
+    font-size: 12px;
+    color: ${(props) => props.theme.color.gray700};
+  }
+`;
 
 export const Line = styled.div`
   width: 100%;
@@ -365,7 +367,7 @@ export const CostInput = styled.div`
 export const ModalText = styled.p`
   font-size: 16px;
   font-weight: 700;
-`
+`;
 
 export const NoPlaceBox = styled.div`
   display: flex;
@@ -373,7 +375,7 @@ export const NoPlaceBox = styled.div`
   align-items: center;
   gap: 54px;
   margin-top: 15px;
-`
+`;
 
 export const NoPlaceTextBox = styled.div`
   width: 100%;
@@ -387,4 +389,4 @@ export const NoPlaceTextBox = styled.div`
     color: ${(props) => props.theme.color.gray300};
     font-size: 12px;
   }
-`
+`;

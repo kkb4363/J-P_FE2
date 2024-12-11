@@ -1,20 +1,19 @@
 import { create } from "zustand";
-import { DayLocationProps } from "../types/schedule";
 
 type selectPlanItemState = {
   planItemId: number | undefined;
-  planItemData: DayLocationProps | undefined;
+  planPlaceId: string | undefined;
   setPlanItemId: (id: number | undefined) => void;
   getPlanItemId: () => number | undefined;
-  setPlanItemData: (item: DayLocationProps | undefined) => void;
-  getPlanItemData: () => DayLocationProps | undefined };
+  setPlanPlaceId: (item: string | undefined) => void;
+  getPlanPlaceId: () => string | undefined;
 };
 
 export const useSelectPlanItemStore = create<selectPlanItemState>((set, get) => ({
   planItemId: undefined,
-  planItemData: undefined,
+  planPlaceId: undefined,
   setPlanItemId: (id) => set({ planItemId: id }),
   getPlanItemId: () => get().planItemId,
-  setPlanItemData: (item) => set({planItemData: item}),
-  getPlanItemData: () => get().planItemData;
+  setPlanPlaceId: (id) => set({ planPlaceId: id }),
+  getPlanPlaceId: () => get().planPlaceId,
 }));

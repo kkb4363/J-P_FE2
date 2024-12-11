@@ -38,7 +38,7 @@ export default function PlanItem({
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const { setOpenModal } = useAddPlaceStore();
-  const { setPlanItemId } = useSelectPlanItemStore();
+  const { setPlanItemId, setPlanPlaceId } = useSelectPlanItemStore();
   const {
     attributes,
     listeners,
@@ -55,7 +55,7 @@ export default function PlanItem({
       setIsMovePlan(true);
       setOpenModal({ selectDay: true });
     } else {
-      setIsLoading(true);
+      setPlanPlaceId(item.placeId);
       setIsPlanPlace(true);
     }
   };

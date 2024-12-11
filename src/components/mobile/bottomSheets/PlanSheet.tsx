@@ -68,8 +68,6 @@ export default function PlanSheet({
     expense: null,
   });
 
-  console.log(detail);
-
   const [isOpenMemo, setIsOpenMemo] = useState({
     memo: false,
     cost: false,

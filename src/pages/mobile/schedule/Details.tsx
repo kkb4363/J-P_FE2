@@ -95,7 +95,7 @@ export default function Details() {
     setSheetOpen("AddPlace");
     setIsIdAdd(false);
   };
-
+  
   if (isLoading) return <div>로딩중</div>;
   return (
     <>

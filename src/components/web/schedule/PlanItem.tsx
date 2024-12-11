@@ -211,7 +211,11 @@ export default function PlanItem({
               <PlaceInfoBox>
                 <div>
                   <AlarmIcon />
-                  <span>{placeInfo.businessStatus}</span>
+                  <div>
+                    {placeInfo.weekdayText.map((weekday, idx) => {
+                      return <span key={idx}>{weekday}</span>;
+                    })}
+                  </div>
                 </div>
                 <div>
                   <TicketIcon />
