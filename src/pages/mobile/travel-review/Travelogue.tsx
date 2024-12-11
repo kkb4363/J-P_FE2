@@ -1,40 +1,40 @@
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import TravelogueCard from "../../../components/mobile/travelReview/TravelogueCard";
-import { ReviewProps } from "../../../types/travelreview";
+import { getAllDiaries } from "../../../service/axios";
+import { TravelogProps } from "../../../types/travelreview";
 
 interface Props {
   sort: string;
 }
 
 export default function Travelogue({ sort }: Props) {
-    const [data, setData] = useState<ReviewProps[]>([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const observer = useRef<IntersectionObserver | null>(null);
+  const [data, setData] = useState<TravelogProps[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
 
-    const requestApi = async () => {
-      setLoading(true);
+  const requestApi = async () => {
+    setIsLoading(true);
 
-      await getReviews({ page, sort }).then((res) => {
-        setData(res?.data.data);
-        setHasMore(res?.data.data.length > 0);
-        setLoading(false);
-      });
+    await getAllDiaries(page, sort).then((res) => {
+      setData(res?.data.data);
+      setHasMore(res?.data.data.length > 0);
+      setIsLoading(false);
+    });
   };
 
-  useEffect(() => { 
-
-  })
-
-
+  useEffect(() => {
+    requestApi();
+  }, [page, sort]);
 
   return (
     <TravelogueContainer>
-      <TravelogueCard />
-      <TravelogueCard />
-      <TravelogueCard />
-      <TravelogueCard />
+      {data &&
+        data.map((item, idx) => {
+          return <TravelogueCard item={item} key={idx} />;
+        })}
     </TravelogueContainer>
   );
 }

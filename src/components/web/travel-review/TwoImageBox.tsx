@@ -1,16 +1,29 @@
 import styled from "styled-components";
 import ImageView from "../ImageView";
+import { useState } from "react";
+import CustomSkeleton from "../../CustomSkeleton";
 
 interface Props {
-  images: string[];
+  images: { fileId: string; fileUrl: string }[];
 }
 
 export default function TwoImageBox({ images }: Props) {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
-    <TwoImageBoxContainer>
-      {images.slice(0, 2).map((url, i) => (
+    <TwoImageBoxContainer $isOne={images.length == 1}>
+      {images.slice(0, 2).map((image, i) => (
         <ImageWrapper key={i}>
-          <ImageView src={url} alt="img view" width="100%" height="191px" />
+          {isLoading && (
+            <CustomSkeleton width="100%" height="191px" borderRadius="16px" />
+          )}
+          <ImageView
+            src={image.fileUrl}
+            alt="img view"
+            width="100%"
+            height="191px"
+            onLoad={() => setIsLoading(false)}
+          />
           {i === 1 && (
             <ImageOverlay>
               <span>{`+ ${images.length - 1}`}</span>
@@ -22,10 +35,10 @@ export default function TwoImageBox({ images }: Props) {
   );
 }
 
-const TwoImageBoxContainer = styled.div`
+const TwoImageBoxContainer = styled.div<{ $isOne: boolean }>`
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: ${({ $isOne }) => ($isOne ? "1fr" : "1fr 1fr")};
   grid-gap: 10px;
 `;
 

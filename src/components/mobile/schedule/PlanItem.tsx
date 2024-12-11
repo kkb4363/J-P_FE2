@@ -1,66 +1,141 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { PlanItemProps } from "../../../types/schedule";
-import {
-  SortableElement,
-  SortableElementProps,
-  SortableHandle,
-} from "react-sortable-hoc";
-import { useUserStore } from "../../../store/user.store";
+import { useAddPlaceStore } from "../../../store/useAddPlace.store";
+import { DayLocationProps } from "../../../types/schedule";
+import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
 
-export interface Props {
-  id: number;
+interface Props {
+  item: DayLocationProps;
   isEdit: boolean;
-  setIsPlanDetail: () => void;
-  setIsPlanPlace: () => void;
-  handleDeleteOpen: () => void;
-  planItem: PlanItemProps;
+  reloadSchedule: () => Promise<void>;
+  setIsOpenMemo: React.Dispatch<
+    React.SetStateAction<{
+      memo: boolean;
+      cost: boolean;
+    }>
+  >;
+  setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenDeleteModal: React.Dispatch<
+    React.SetStateAction<{
+      delete: boolean;
+      deleteSuccess: boolean;
+    }>
+  >;
+  setIsMovePlan: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const PlanItem: React.ComponentClass<SortableElementProps & Props> =
-  SortableElement(
-    ({
-      id,
-      isEdit,
-      setIsPlanDetail,
-      setIsPlanPlace,
-      handleDeleteOpen,
-      planItem,
-    }: Props) => {
-      const DragHandler = SortableHandle(() => {
-        return <EditSelectText>선택</EditSelectText>;
-      });
+export default function PlanItem({
+  item,
+  isEdit,
+  setIsOpenMemo,
+  setIsPlanPlace,
+  setIsOpenDeleteModal,
+  setIsMovePlan,
+}: Props) {
+  const [isLoading, setIsLoading] = useState(false);
+  const { setOpenModal } = useAddPlaceStore();
+  const { setPlanItemId, setPlanPlaceId } = useSelectPlanItemStore();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
 
-      const handlePlaceClick = isEdit ? undefined : setIsPlanPlace;
-
-      const { getUserType } = useUserStore();
-
-      return (
-        <PlanItemContainer>
-          <TimeBox $isEdit={isEdit}>{planItem.time}</TimeBox>
-          <PlaceBox onClick={handlePlaceClick}>
-            <PlaceIdx $isEdit={isEdit}>{id + 1}</PlaceIdx>
-            <PlaceTitleCol>
-              <p>{planItem.title}</p>
-              <span>{planItem.subtitle}</span>
-            </PlaceTitleCol>
-            {isEdit && <DragHandler />}
-          </PlaceBox>
-          {!isEdit && getUserType() === "J" && (
-            <PlaceDetailsButton $fill={true} onClick={setIsPlanDetail}>
-              <FileCheckIcon />
-            </PlaceDetailsButton>
-          )}
-          {isEdit && (
-            <div onClick={handleDeleteOpen}>
-              <TrashIcon />
-            </div>
-          )}
-        </PlanItemContainer>
-      );
+  const handleItemClick = async () => {
+    setPlanItemId(item.id);
+    if (isEdit) {
+      setIsMovePlan(true);
+      setOpenModal({ selectDay: true });
+    } else {
+      setPlanPlaceId(item.placeId);
+      setIsPlanPlace(true);
     }
+  };
+
+  const handleEditTimeClick = async () => {
+    if (isEdit) {
+      setPlanItemId(item.id);
+      setIsMovePlan(false);
+      setOpenModal({ selectTime: true });
+    }
+  };
+
+  const handleMemoClick = () => {
+    setPlanItemId(item.id);
+    setIsOpenMemo((p) => ({ ...p, memo: true }));
+  };
+
+  const handleDeleteClick = () => {
+    setPlanItemId(item.id);
+    setIsOpenDeleteModal({
+      delete: true,
+      deleteSuccess: false,
+    });
+  };
+
+  return (
+    <>
+      <PlanItemContainer
+        ref={setNodeRef}
+        {...attributes}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+          zIndex: isDragging ? 100 : "auto",
+        }}
+      >
+        <TimeBox
+          $isEdit={isEdit}
+          onClick={handleEditTimeClick}
+        >{`${item.time}`}</TimeBox>
+        <PlaceBox onClick={handleItemClick}>
+          <PlaceIdx $isEdit={isEdit}>{item.index}</PlaceIdx>
+          <PlaceTitleCol>
+            <p>{item.name}</p>
+            <span>명소</span>
+          </PlaceTitleCol>
+          {isEdit && (
+            <DragHandler
+              ref={setActivatorNodeRef}
+              {...listeners}
+              $isDragging={isDragging}
+            >
+              선택
+            </DragHandler>
+          )}
+        </PlaceBox>
+        {isEdit ? (
+          <button onClick={handleDeleteClick}>
+            <TrashIcon />
+          </button>
+        ) : (
+          <MemoButton onClick={handleMemoClick}>
+            <FileCheckIcon />
+          </MemoButton>
+        )}
+      </PlanItemContainer>
+    </>
   );
+}
+
+const PlanItemContainer = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 99;
+  margin-bottom: 24px;
+  touch-action: none;
+`;
 
 const PlaceBox = styled.div`
   width: 100%;
@@ -73,32 +148,7 @@ const PlaceBox = styled.div`
   gap: 16px;
 `;
 
-const EditSelectText = styled.p`
-  color: ${(props) => props.theme.color.gray300};
-  font-size: 12px;
-  white-space: nowrap;
-`;
-
-const PlanItemContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  z-index: 99;
-
-  &.dragging-helper-class {
-    ${PlaceBox} {
-      border-color: ${(props) => props.theme.color.secondary};
-    }
-
-    ${EditSelectText} {
-      color: ${(props) => props.theme.color.secondary};
-    }
-  }
-`;
-
 const TimeBox = styled.div<{ $isEdit: boolean }>`
-  width: 48px;
   padding: 8px;
   border-radius: 12px;
   background-color: ${(props) =>
@@ -137,13 +187,21 @@ const PlaceTitleCol = styled.div`
   }
 `;
 
-const PlaceDetailsButton = styled.div<{ $fill?: boolean }>`
+const DragHandler = styled.div<{ $isDragging: boolean }>`
+  margin: auto;
+  color: ${(props) =>
+    props.$isDragging
+      ? props.theme.color.secondary
+      : props.theme.color.gray300};
+  font-size: 12px;
+  white-space: nowrap;
+`;
+
+const MemoButton = styled.button`
   display: grid;
   place-items: center;
   padding: 8px;
-  cursor: pointer;
   border-radius: 8px;
-  border: 1px solid
-    ${(props) =>
-      props.$fill ? props.theme.color.secondary : props.theme.color.gray300};
+  background-color: ${(props) => props.theme.color.white};
+  border: 1px solid ${(props) => props.theme.color.secondary};
 `;

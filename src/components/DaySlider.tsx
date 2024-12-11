@@ -1,22 +1,17 @@
 import Slider from "react-slick";
 import styled from "styled-components";
-import PrevArrow from "./mobile/schedule/PrevArrow";
-import NextArrow from "./mobile/schedule/NextArrow";
+import { useCurrentDayIdStore } from "../store/currentDayId.store";
 import { DayProps } from "../types/schedule";
+import NextArrow from "./mobile/schedule/NextArrow";
+import PrevArrow from "./mobile/schedule/PrevArrow";
 
 interface Props {
   web?: boolean;
   dayList: DayProps[];
-  currentDayId: number;
-  onDayClick: (day: number) => void;
 }
 
-export default function DaySlider({
-  web = false,
-  dayList,
-  currentDayId,
-  onDayClick,
-}: Props) {
+export default function DaySlider({ web = false, dayList }: Props) {
+  const { getCurrentDayId, setCurrentDayId } = useCurrentDayIdStore();
   const slidesToShowCount = dayList?.length < 3 ? dayList?.length : 3;
   const daySlideSettings = {
     infinite: false,
@@ -34,8 +29,8 @@ export default function DaySlider({
       {dayList?.map((day, idx) => (
         <DayBox
           key={idx}
-          onClick={() => onDayClick(day.dayIndex)}
-          $select={currentDayId === day.dayIndex}
+          onClick={() => setCurrentDayId(day.id)}
+          $select={getCurrentDayId() === day.id}
           $web={web}
         >{`Day ${day.dayIndex}`}</DayBox>
       ))}

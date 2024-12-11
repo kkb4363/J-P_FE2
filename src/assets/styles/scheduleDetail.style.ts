@@ -131,12 +131,18 @@ export const FindedUser = styled.div`
 `;
 
 // 일정 목록
+
+export const PlanList = styled.div`
+  padding: 10px;
+`;
+
 export const PlanContainer = styled.div`
   height: calc(100dvh * 0.75);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding-bottom: 60px;
+  overflow-y: auto;
 `;
 
 export const PlansBox = styled.div`
@@ -187,16 +193,25 @@ export const PlanPlaceContainer = styled.div`
   padding: 0 13px;
 `;
 
-export const PlaceTitleBox = styled.div`
+export const PlaceHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 0 6px;
+`;
 
-  & > p {
+export const PlaceTitleBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  & > h1 {
     font-weight: 700;
     font-size: 20px;
-    color: ${(props) => props.theme.color.secondary};
+  }
+  & > span {
+    font-size: 12px;
+    color: ${(props) => props.theme.color.gray700};
   }
 `;
 
@@ -208,7 +223,7 @@ export const Line = styled.div`
 `;
 
 // 일정 상세
-export const PlanDetailsHeader = styled.div<{ $editMode?: boolean }>`
+export const PlanMemoHeader = styled.div<{ $editMode?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -223,7 +238,7 @@ export const PlanDetailsHeader = styled.div<{ $editMode?: boolean }>`
   }
 `;
 
-export const PlanDetailsBody = styled.div`
+export const PlanMemoBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -241,14 +256,14 @@ export const SubTitleBox = styled.div`
   }
 `;
 
-export const DetailsInput = styled.div<{ isDetailsEdit: boolean }>`
+export const ContentInput = styled.div<{ $isMemoEdit: boolean }>`
   background-color: ${(props) => props.theme.color.white};
   border: ${(props) =>
-    props.isDetailsEdit && `1px solid ${props.theme.color.gray200}`};
+    props.$isMemoEdit && `1px solid ${props.theme.color.gray200}`};
   border-radius: 16px;
   padding: 20px 27px;
   box-shadow: ${(props) =>
-    !props.isDetailsEdit && "0px 2px 10px 0px rgba(0, 0, 0, 0.04)"};
+    !props.$isMemoEdit && "0px 2px 10px 0px rgba(0, 0, 0, 0.04)"};
 
   & > textarea {
     padding: 0;
@@ -346,5 +361,32 @@ export const CostInput = styled.div`
     &::placeholder {
       color: ${(props) => props.theme.color.gray300};
     }
+  }
+`;
+
+export const ModalText = styled.p`
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+export const NoPlaceBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 54px;
+  margin-top: 15px;
+`;
+
+export const NoPlaceTextBox = styled.div`
+  width: 100%;
+  height: 81px;
+  display: grid;
+  place-content: center;
+  border-radius: 16px;
+  background-color: ${(props) => props.theme.color.gray100};
+
+  & > p {
+    color: ${(props) => props.theme.color.gray300};
+    font-size: 12px;
   }
 `;

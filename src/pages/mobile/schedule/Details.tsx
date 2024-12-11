@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import BottomSheet from "../../../components/mobile/BottomSheet";
-import PlanSheet from "../../../components/mobile/bottomSheets/PlanSheet";
-import PlanPlaceSheet from "./../../../components/mobile/bottomSheets/PlanPlaceSheet";
-import CustomInput from "../../../components/CustomInput";
-import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
-import * as D from "../../../assets/styles/scheduleDetail.style";
+import { useParams } from "react-router-dom";
 import ClipIcon from "../../../assets/icons/ClipIcon";
 import InviteIcon from "../../../assets/icons/InviteIcon";
 import PenIcon from "../../../assets/icons/PenIcon";
@@ -12,13 +7,19 @@ import ScheduleIcon from "../../../assets/icons/ScheduleIcon";
 import UserIcon from "../../../assets/icons/UserIcon";
 import testImg from "../../../assets/images/testImg.png";
 import { InfoRow } from "../../../assets/styles/home.style";
-import { useDisplayStore } from "../../../store/display.store";
-import { useParams } from "react-router-dom";
-import { getPlaceDetail, getSchedule } from "../../../service/axios";
-import { ScheduleApiProps } from "../../../types/schedule";
-import DatesBox from "../../../components/DatesBox";
+import * as D from "../../../assets/styles/scheduleDetail.style";
+import CustomInput from "../../../components/CustomInput";
 import CustomSkeleton from "../../../components/CustomSkeleton";
+import DatesBox from "../../../components/DatesBox";
+import BottomSheet from "../../../components/mobile/BottomSheet";
+import PlanSheet from "../../../components/mobile/bottomSheets/PlanSheet";
+import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
+import { getPlaceDetail, getSchedule } from "../../../service/axios";
+import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
+import { useDisplayStore } from "../../../store/display.store";
 import { useMapStore } from "../../../store/map.store";
+import { ScheduleApiProps } from "../../../types/schedule";
+import PlanPlaceSheet from "./../../../components/mobile/bottomSheets/PlanPlaceSheet";
 
 const mapStyle = {
   margin: "10px 0 0 -20px",
@@ -28,28 +29,13 @@ type BottomSheetType = "AddPlace" | "Invite";
 
 export default function Details() {
   const { getBottomSheetHeight } = useDisplayStore();
-  const { id: scheduleId } = useParams();
+  const { getCurrentDayId, setCurrentDayId } = useCurrentDayIdStore();
+  const { scheduleId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const [detail, setDetail] = useState<ScheduleApiProps>(
     {} as ScheduleApiProps
   );
-  const [currentDayIdx, setCurrentDayIdx] = useState(1);
-
-  const requestApi = () => {
-    if (scheduleId) {
-      setIsLoading(true);
-      getSchedule(scheduleId).then((res) => {
-        if (res) {
-          setDetail(res?.data);
-        }
-      });
-      setIsLoading(false);
-    }
-  };
-  useEffect(() => {
-    requestApi();
-  }, []);
 
   const mapStore = useMapStore();
   const [loc, setLoc] = useState({
@@ -57,8 +43,21 @@ export default function Details() {
     lng: 0,
   });
   const currentDayPlaces = detail?.dayResDtos?.find(
-    (d) => d.dayIndex === currentDayIdx
+    (d) => d.id === getCurrentDayId()
   )?.dayLocationResDtoList;
+
+  const requestApi = () => {
+    if (scheduleId) {
+      setIsLoading(true);
+      getSchedule(scheduleId).then((res) => {
+        if (res) {
+          setDetail(res?.data);
+          setCurrentDayId(res.data.dayResDtos[0].id);
+        }
+      });
+      setIsLoading(false);
+    }
+  };
 
   const getPlaceLocation = () => {
     getPlaceDetail({ placeId: detail?.place?.placeId }).then((res) => {
@@ -73,6 +72,10 @@ export default function Details() {
   };
 
   useEffect(() => {
+    requestApi();
+  }, [scheduleId]);
+
+  useEffect(() => {
     if (detail?.place?.placeId) {
       getPlaceLocation();
     }
@@ -82,7 +85,7 @@ export default function Details() {
     if (loc?.lat) {
       mapStore.setAddedPlace(currentDayPlaces as any[]);
     }
-  }, [currentDayIdx, loc?.lat]);
+  }, [getCurrentDayId(), loc?.lat]);
 
   const [sheetOpen, setSheetOpen] = useState<BottomSheetType>("AddPlace");
   const [isIdAdd, setIsIdAdd] = useState(false);
@@ -92,7 +95,7 @@ export default function Details() {
     setSheetOpen("AddPlace");
     setIsIdAdd(false);
   };
-
+  
   if (isLoading) return <div>로딩중</div>;
   return (
     <>
@@ -140,7 +143,11 @@ export default function Details() {
         (isPlanPlace ? (
           <PlanPlaceSheet setIsPlanPlace={setIsPlanPlace} />
         ) : (
-          <PlanSheet setIsPlanPlace={setIsPlanPlace} />
+          <PlanSheet
+            setIsPlanPlace={setIsPlanPlace}
+            detail={detail}
+            requestApi={requestApi}
+          />
         ))}
 
       {sheetOpen === "Invite" && (

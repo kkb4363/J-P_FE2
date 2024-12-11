@@ -102,16 +102,22 @@ export const SelectPlaceDetailCol = styled.div`
 
   & > div {
     display: flex;
-    align-items: center;
     gap: 8px;
-    & > span {
+
+    & span {
+      align-self: center;
       color: ${(props) => props.theme.color.gray700};
       font-size: 14px;
       font-weight: 400;
-      width: 90%;
     }
   }
 `;
+
+export const PlaceWeekdayBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`
 
 export const NearPlaceBox = styled.div<{ $height: string }>`
   height: ${({ $height }) => $height && $height};

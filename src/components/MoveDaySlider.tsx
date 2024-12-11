@@ -4,20 +4,14 @@ import { DayProps } from "../types/schedule";
 import { dayOfWeek } from "../utils/staticDatas";
 import NextArrow from "./mobile/schedule/NextArrow";
 import PrevArrow from "./mobile/schedule/PrevArrow";
+import { useAddPlaceStore } from "../store/useAddPlace.store";
 
 interface Props {
   isMobile: boolean;
   dayResDtos: DayProps[];
-  selectDay: number | undefined;
-  setSelectDay: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function MoveDaySlider({
-  isMobile,
-  dayResDtos,
-  selectDay,
-  setSelectDay,
-}: Props) {
+export default function MoveDaySlider({ isMobile, dayResDtos }: Props) {
   const slideSettings = {
     infinite: false,
     focusOnSelect: true,
@@ -29,6 +23,8 @@ export default function MoveDaySlider({
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
   };
+  const { selectDay, setSelectDay } = useAddPlaceStore();
+
   return (
     <StyledSlider {...slideSettings} $isMobile={isMobile}>
       {dayResDtos.map((day, i) => {
@@ -71,7 +67,7 @@ const StyledSlider = styled(Slider)<{ $isMobile: boolean }>`
 
 const DayBox = styled.div<{ $select: boolean; $isMobile: boolean }>`
   height: ${({ $isMobile }) => ($isMobile ? "61px" : "78px")};
-  padding: ${({ $isMobile }) => ($isMobile ? "12px 15px" : "16px 20px")};
+  padding: ${({ $isMobile }) => ($isMobile ? "10px" : "16px 20px")};
   display: flex;
   flex-direction: column;
   gap: 8px;

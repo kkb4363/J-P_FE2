@@ -32,7 +32,7 @@ export default function TransportBox({
   };
 
   return (
-    <TransportBoxContainer>
+    <TransportBoxContainer $isWeb={isWeb}>
       {isPlanMemoEdit &&
         mobilityList.map((item, i) => (
           <TransPortItem
@@ -58,13 +58,14 @@ export default function TransportBox({
   );
 }
 
-const TransportBoxContainer = styled.div`
+const TransportBoxContainer = styled.div<{ $isWeb: boolean }>`
   display: flex;
   gap: 8px;
 
   & > p {
     color: ${(props) => props.theme.color.gray900};
     margin: 5px 0;
+    font-size: ${({ $isWeb }) => !$isWeb && "14px"};
   }
 `;
 

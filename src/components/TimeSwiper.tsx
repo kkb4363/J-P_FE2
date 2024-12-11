@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useAddPlaceStore } from "../store/useAddPlace.store";
 
 interface Props {
   isMobile: boolean;
-  setSelectTime?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function TimeSwiper({ isMobile, setSelectTime }: Props) {
+export default function TimeSwiper({ isMobile }: Props) {
   const [selectPeriod, setSelectPeriod] = useState("AM");
   const [selectHour, setSelectHour] = useState(0);
   const [selectMin, setSelectMin] = useState(0);
+  const { setSelectTime } = useAddPlaceStore();
 
   const hour = Array.from({ length: 12 }).map((v, i) => {
     const num = i + 1;
@@ -90,12 +91,12 @@ export default function TimeSwiper({ isMobile, setSelectTime }: Props) {
 }
 
 const TimeModalContainer = styled.div<{ $isMobile: boolean }>`
-  height: ${({ $isMobile }) => ($isMobile ? "130px" : "120px")};
-  margin-top: ${({ $isMobile }) => ($isMobile ? 0 : "30px")};
-  width: 100%;
+  width: ${({ $isMobile }) => ($isMobile ? "80%" : "100%")};
+  height: ${({ $isMobile }) => ($isMobile ? "110px" : "140px")};
+  margin-top: ${({ $isMobile }) => ($isMobile ? "5px" : "15px")};
   align-items: center;
   display: flex;
-  /* padding: 0 50px; */
+  padding: ${({ $isMobile }) => ($isMobile ? "10px" : "0px 50px")};
 `;
 
 const Text = styled.p<{ $isMobile: boolean }>`
