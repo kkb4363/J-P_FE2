@@ -1,34 +1,51 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as R from "../../../assets/styles/travelReview.style";
+import { TravelogProps } from "../../../types/travelreview";
+import { formatDayNights } from "../../../utils/dayNights";
+import { testLogTags } from "../../../utils/staticDatas";
 import CustomProfile from "../../CustomProfile";
 import HashtagsBox from "../../HashtagsBox";
-import { testImageList, testLogTags } from "../../../utils/staticDatas";
 import ImageView from "../../ImageView";
-import { useNavigate } from "react-router-dom";
-import testImg from "../../../assets/images/testImg2.png";
 import LikeCommentBox from "../../LikeCommentBox";
 
-export default function TravelogueCard() {
+interface Props {
+  item: TravelogProps;
+}
+
+export default function TravelogueCard({ item }: Props) {
   const navigate = useNavigate();
-  // [TODO]: api 연동해서 데이터 연결
+  const { nights, days } = formatDayNights(
+    item.scheduleStartDate,
+    item.scheduleEndDate
+  );
+
   return (
     <TravelogueCardContainer>
       <R.ProfileHeader>
-        <CustomProfile src={testImg} nickname="coco1202" content="24.2.3" />
+        <CustomProfile
+          src={item.userCompactResDto.profile}
+          nickname={item.userCompactResDto.nickname}
+          content={`${nights}박 ${days}일 여행`}
+        />
       </R.ProfileHeader>
       <HashtagsBox hashTags={testLogTags} />
       <TravelogueTitleBox>
-        <p>안동 혼자 뚜벅이 여행 떠나기</p>
-        <span onClick={() => navigate(`/home/travelogue/123`)}>자세히보기</span>
+        <p>{item.subject}</p>
+        <span onClick={() => navigate(`/home/travelogue/${item.id}`)}>자세히보기</span>
       </TravelogueTitleBox>
       <ImageView
-        src={testImg}
+        src={item.fileInfos[0].fileUrl}
         alt="Travelogue"
         width="100%"
         height="191px"
-        bottomText={`+${testImageList.length - 1}`}
+        bottomText={
+          item.fileInfos.length > 1
+            ? `+${item.fileInfos.length - 1}`
+            : undefined
+        }
       />
-      <LikeCommentBox likeCnt={8} commentCnt={2} />
+      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
     </TravelogueCardContainer>
   );
 }
