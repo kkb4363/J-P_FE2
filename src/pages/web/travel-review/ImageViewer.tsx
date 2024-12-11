@@ -4,10 +4,15 @@ import { useState } from "react";
 import ArrowLeftIcon from "./../../../assets/icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../../assets/icons/ArrowRightIcon";
 
+type ImageType = { fileId: string; fileUrl: string };
+
 export default function ImageViewer() {
   const location = useLocation();
 
-  const { currentIndex, images } = location.state || {
+  const {
+    currentIndex,
+    images,
+  }: { currentIndex: number; images: ImageType[] } = location.state || {
     currentIndex: 0,
     images: [],
   };
@@ -32,7 +37,7 @@ export default function ImageViewer() {
           <ArrowLeftIcon />
         </ArrowButton>
         <ImageWrapper>
-          <img src={images[index]} alt={`image-${index}`} />
+          <img src={images[index].fileUrl} alt={`image-${index}`} />
         </ImageWrapper>
         <ArrowButton onClick={handleNext}>
           <ArrowRightIcon stroke="#1A1A1A" />
@@ -40,13 +45,13 @@ export default function ImageViewer() {
       </ViewerContent>
 
       <ThumbnailList>
-        {images.map((imgSrc: string, imgIndex: number) => (
+        {images.map((img: ImageType, imgIndex: number) => (
           <Thumbnail
             key={imgIndex}
             onClick={() => handleThumbnailClick(imgIndex)}
             $isActive={imgIndex === index}
           >
-            <img src={imgSrc} alt={`thumbnail-${imgIndex}`} />
+            <img src={img.fileUrl} alt={`thumbnail-${imgIndex}`} />
           </Thumbnail>
         ))}
       </ThumbnailList>
@@ -60,6 +65,7 @@ const ViewerContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
+  max-height: 100vh;
   overflow-y: auto;
   background-color: ${(props) => props.theme.color.black};
   display: flex;
@@ -80,7 +86,7 @@ const ImageWrapper = styled.div`
   width: 60vw;
 
   & > img {
-    height: 100%;
+    max-height: 600px;
     object-fit: contain;
   }
 `;
@@ -104,6 +110,7 @@ const ThumbnailList = styled.div`
   display: flex;
   gap: 10px;
   max-width: 80vw;
+  z-index: 99;
 `;
 
 const Thumbnail = styled.div<{ $isActive: boolean }>`

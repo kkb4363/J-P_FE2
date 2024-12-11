@@ -5,7 +5,7 @@ import Slider from "react-slick";
 import testImg from "../../assets/images/testImg2.png";
 
 interface Props {
-  imageList: string[];
+  imageList: { fileId: string; fileUrl: string }[];
   onClose: () => void;
   focusIndex?: number;
 }
@@ -37,8 +37,8 @@ export default function ImageSlider({
       </ImageSliderHeader>
       <ImageSliderBody>
         <StyledSlider {...settings}>
-          {imageList.map((url, i) => (
-            <img key={i} src={testImg} alt={`slide-${i}`} width="100%" />
+          {imageList.map((image, i) => (
+            <img key={i} src={image.fileUrl} alt={`slide-${i}`} width="100%" />
           ))}
         </StyledSlider>
       </ImageSliderBody>

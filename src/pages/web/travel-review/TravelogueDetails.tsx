@@ -1,32 +1,35 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import * as R from "../../../assets/styles/travelReview.style";
 import CustomProfile from "../../../components/CustomProfile";
 import HashtagsBox from "../../../components/HashtagsBox";
 import LikeCommentBox from "../../../components/LikeCommentBox";
-import LoadingText from "../../../components/LoadingText";
 import CommentCard from "../../../components/mobile/CommentCard";
 import TraveloguePlaceBox from "../../../components/TraveloguePlaceBox";
+import Container from "../../../components/web/Container";
 import ImageView from "../../../components/web/ImageView";
+import { getDiaryDetail } from "../../../service/axios";
+import { TravelogDetailProps } from "../../../types/travelreview";
+import { formatDayNights } from "../../../utils/dayNights";
 import {
   testImageList,
-  testLogContents1,
-  testLogContents2,
-  testLogContents3,
-  testLogTags,
-  testReviewItem,
+  testLogTags
 } from "../../../utils/staticDatas";
-import Container from "../../../components/web/Container";
 
 export default function TravelogueDetails() {
+  const navigate = useNavigate();
+  const { travelogueId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [diaryData, setDiaryData] = useState<TravelogDetailProps>();
   const [fillLike, setFillLike] = useState(false);
   const [fillHeart, setFillHeart] = useState(false);
   const [comment, setComment] = useState("");
 
-  const navigate = useNavigate();
+  const { nights, days } = diaryData
+    ? formatDayNights(diaryData.scheduleStartDate, diaryData.scheduleEndDate)
+    : { nights: 0, days: 0 };
 
   const handleHeartClick = () => {
     setFillHeart((prev) => !prev);
@@ -38,19 +41,34 @@ export default function TravelogueDetails() {
   };
 
   const handleImageClick = (index: number) => {
-    navigate(`/home/travelogue/1/photo`, {
-      state: { currentIndex: index, images: testImageList }, // 이미지 인덱스와 목록을 state로 전달
+    navigate(`/home/travelogue/${travelogueId}/photo`, {
+      state: { currentIndex: index, images: diaryData?.fileInfos },
     });
   };
 
+  const requestApi = async () => {
+    setIsLoading(true);
+    await getDiaryDetail(Number(travelogueId)).then((res) => {
+      setDiaryData(res?.data);
+    });
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    requestApi();
+  }, [travelogueId]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
-      {isLoading && <LoadingText text="로딩중..." />}
-      {!isLoading && (
+      {diaryData && (
         <Container>
           <TravelogueDetailsTitle>
             <div />
-            <h1>안동 혼자 뚜벅이 여행 떠나기</h1>
+            <h1>{diaryData.subject}</h1>
             <HeartBox onClick={handleHeartClick}>
               <HeartIcon
                 fill={fillHeart ? "#FF5757" : "none"}
@@ -62,13 +80,13 @@ export default function TravelogueDetails() {
             <DetailsHeader>
               <ProfileLikeCommentBox>
                 <CustomProfile
-                  src="/src/assets/images/testImg.png"
-                  nickname="coco1202"
-                  content="24.2.3"
+                  src={diaryData.userCompactResDto.profile}
+                  nickname={diaryData.userCompactResDto.nickname}
+                  content={`${nights}박 ${days}일 여행`}
                 />
                 <LikeCommentBox
-                  likeCnt={12}
-                  commentCnt={8}
+                  likeCnt={diaryData.likeCnt}
+                  commentCnt={diaryData.commentCnt}
                   fillLike={fillLike}
                   likeClick={() => setFillLike((prev) => !prev)}
                 />
@@ -78,20 +96,21 @@ export default function TravelogueDetails() {
             <ImageView
               width="100%"
               height="385px"
-              bottomText="+ 3"
+              bottomText={
+                diaryData.fileInfos.length > 1
+                  ? `+${diaryData.fileInfos.length - 1}`
+                  : undefined
+              }
               alt="여행기 사진"
-              src="/src/assets/images/testImg.png"
+              src={diaryData.fileInfos[0].fileUrl}
               pointer={true}
               handleClick={() => handleImageClick(0)}
             />
-            <p dangerouslySetInnerHTML={{ __html: testLogContents1 }} />
             <PlaceBox>
               <TraveloguePlaceBox place="안동 회화마을" />
               <TraveloguePlaceBox place="부용대" />
             </PlaceBox>
-            <p dangerouslySetInnerHTML={{ __html: testLogContents2 }} />
-            <TraveloguePlaceBox place="월영교" />
-            <p>{testLogContents3}</p>
+            <p>{diaryData.content}</p>
           </TravelogueDetailsBody>
           <RowLine />
           <CommentHeader>댓글</CommentHeader>
@@ -114,13 +133,18 @@ export default function TravelogueDetails() {
             </R.CommentWriteButton>
           </R.CommentInputBox>
           <CommentBox>
-            <CommentCard
-              content={testReviewItem.content}
-              createdAt={testReviewItem.createdAt}
-              user={testReviewItem.userCompactResDto}
-              replyList={[]}
-              web
-            />
+            {diaryData.commentResDtoList.map((comment, idx) => {
+              return (
+                <CommentCard
+                  key={idx}
+                  content={comment.content}
+                  createdAt={comment.createdAt}
+                  user={comment.userCompactResDto}
+                  replyList={comment.replyList}
+                  web
+                />
+              );
+            })}
           </CommentBox>
         </Container>
       )}
