@@ -557,13 +557,9 @@ export const editPlan = async (id: number, body: PlanDetailsProps) => {
   }
 };
 
-export const getAllDiaries = async (sort: string) => {
+export const getAllDiaries = async (page: number, sort: string) => {
   try {
-    const res = await axiosInstance.get(`/diaries?sort=${sort}&page=1`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/diaries?page=${page}&sort=${sort}`);
 
     if (res.status === 200) {
       return res;

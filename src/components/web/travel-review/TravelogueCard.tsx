@@ -1,17 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { ReviewProps } from "../../../types/travelreview";
-import { testImageList, testLogTags } from "../../../utils/staticDatas";
-import TwoImageBox from "./TwoImageBox";
-import LikeCommentBox from "../../LikeCommentBox";
+import { TravelogProps } from "../../../types/travelreview";
+import { formatDayNights } from "../../../utils/dayNights";
+import { testLogTags } from "../../../utils/staticDatas";
 import CustomProfile from "../../CustomProfile";
+import LikeCommentBox from "../../LikeCommentBox";
+import TwoImageBox from "./TwoImageBox";
 
 interface Props {
-  item: ReviewProps;
+  item: TravelogProps;
 }
 
 export default function TravelogueCard({ item }: Props) {
   const navigate = useNavigate();
+  const { nights, days } = formatDayNights(
+    item.scheduleStartDate,
+    item.scheduleEndDate
+  );
+
   return (
     <TravelogueCardContainer
       onClick={() => navigate(`/home/travelogue/${item.id}`)}
@@ -23,14 +29,14 @@ export default function TravelogueCard({ item }: Props) {
       </Tags>
       <TravelogueBody>
         <CustomProfile
-          src="/src/assets/images/testImg.png"
+          src={item.userCompactResDto.profile}
           nickname={item.userCompactResDto.nickname}
-          content="24.2.3"
+          content={`${nights}박 ${days}일 여행`}
         />
-        <Title>안동 혼자 뚜벅이 여행 떠나기</Title>
+        <Title>{item.subject}</Title>
         <span>자세히 보기</span>
       </TravelogueBody>
-      <TwoImageBox images={testImageList} />
+      <TwoImageBox images={item.fileInfos} />
       <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
     </TravelogueCardContainer>
   );

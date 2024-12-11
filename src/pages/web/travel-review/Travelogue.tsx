@@ -22,19 +22,25 @@ export default function Travelogue({ sort }: Props) {
     }
   };
 
-  useEffect(() => {
-    setData([testReviewItem]);
-  }, [page, sort]);
+  const requestApi = async () => {
+    setIsLoading(true);
+
+    await getAllDiaries(page, sort).then((res) => {
+      setData(res?.data.data);
+      setHasMore(res?.data.data.length > 0);
+      setIsLoading(false);
+    });
+  };
 
   useEffect(() => {
-    getAllDiaries(sort).then((res) => console.log(res));
-  }, []);
+    requestApi();
+  }, [page, sort]);
 
   return (
     <>
       {isLoading && <LoadingText text="로딩중..." />}
       {!isLoading && data.length === 0 && (
-        <LoadingText text="첫 리뷰를 작성해주세요!" />
+        <LoadingText text="첫 여행기를 작성해주세요!" />
       )}
       {!isLoading && (
         <TravelogueContainer>

@@ -111,7 +111,7 @@ export const router = createBrowserRouter([
         element: <ReviewDetails />,
       },
       {
-        path: "travelogue/:TravelogueId",
+        path: "travelogue/:travelogueId",
         element: <TravelogueDetails />,
       },
       {
