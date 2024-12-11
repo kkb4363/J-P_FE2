@@ -6,6 +6,7 @@ import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
 import { useAddPlaceStore } from "../../../store/useAddPlace.store";
 import { DayLocationProps } from "../../../types/schedule";
+import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
 
 interface Props {
   item: DayLocationProps;
@@ -13,7 +14,6 @@ interface Props {
   reloadSchedule: () => Promise<void>;
   setIsOpenMemo: React.Dispatch<
     React.SetStateAction<{
-      itemId: number | undefined;
       memo: boolean;
       cost: boolean;
     }>
@@ -21,17 +21,11 @@ interface Props {
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOpenDeleteModal: React.Dispatch<
     React.SetStateAction<{
-      itemId: number | undefined;
       delete: boolean;
       deleteSuccess: boolean;
     }>
   >;
-  setIsMovePlan: React.Dispatch<
-    React.SetStateAction<{
-      itemId: number | undefined;
-      isMove: boolean;
-    }>
-  >;
+  setIsMovePlan: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function PlanItem({
@@ -43,6 +37,8 @@ export default function PlanItem({
   setIsMovePlan,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const { setOpenModal } = useAddPlaceStore();
+  const { setPlanItemId } = useSelectPlanItemStore();
   const {
     attributes,
     listeners,
@@ -53,10 +49,10 @@ export default function PlanItem({
     isDragging,
   } = useSortable({ id: item.id });
 
-  const { setOpenModal } = useAddPlaceStore();
   const handleItemClick = async () => {
+    setPlanItemId(item.id);
     if (isEdit) {
-      setIsMovePlan({ itemId: item.id, isMove: true });
+      setIsMovePlan(true);
       setOpenModal({ selectDay: true });
     } else {
       setIsLoading(true);
@@ -66,9 +62,23 @@ export default function PlanItem({
 
   const handleEditTimeClick = async () => {
     if (isEdit) {
-      setIsMovePlan({ itemId: item.id, isMove: false });
+      setPlanItemId(item.id);
+      setIsMovePlan(false);
       setOpenModal({ selectTime: true });
     }
+  };
+
+  const handleMemoClick = () => {
+    setPlanItemId(item.id);
+    setIsOpenMemo((p) => ({ ...p, memo: true }));
+  };
+
+  const handleDeleteClick = () => {
+    setPlanItemId(item.id);
+    setIsOpenDeleteModal({
+      delete: true,
+      deleteSuccess: false,
+    });
   };
 
   return (
@@ -103,23 +113,11 @@ export default function PlanItem({
           )}
         </PlaceBox>
         {isEdit ? (
-          <button
-            onClick={() =>
-              setIsOpenDeleteModal({
-                itemId: item.id,
-                delete: true,
-                deleteSuccess: false,
-              })
-            }
-          >
+          <button onClick={handleDeleteClick}>
             <TrashIcon />
           </button>
         ) : (
-          <MemoButton
-            onClick={() =>
-              setIsOpenMemo((p) => ({ ...p, itemId: item.id, memo: true }))
-            }
-          >
+          <MemoButton onClick={handleMemoClick}>
             <FileCheckIcon />
           </MemoButton>
         )}
@@ -151,7 +149,6 @@ const PlaceBox = styled.div`
 `;
 
 const TimeBox = styled.div<{ $isEdit: boolean }>`
-  width: 48px;
   padding: 8px;
   border-radius: 12px;
   background-color: ${(props) =>

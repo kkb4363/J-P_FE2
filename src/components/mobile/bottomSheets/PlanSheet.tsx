@@ -17,6 +17,7 @@ import {
   moveScheduleDate,
 } from "../../../service/axios";
 import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
+import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
 import { useAddPlaceStore } from "../../../store/useAddPlace.store";
 import { useUserStore } from "../../../store/user.store";
 import {
@@ -30,13 +31,13 @@ import ActionButton from "../../ActionButton";
 import AddCostBox from "../../AddCostBox";
 import DaySlider from "../../DaySlider";
 import LoadingText from "../../LoadingText";
+import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import PlanItem from "../schedule/PlanItem";
 import PlanMemo from "../schedule/PlanMemo";
 import BottomSheet from "./../BottomSheet";
-import MoveDaySlider from "../../MoveDaySlider";
 
 interface Props {
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
@@ -52,6 +53,7 @@ export default function PlanSheet({
   const navigate = useNavigate();
   const { getUserType } = useUserStore();
   const { getCurrentDayId } = useCurrentDayIdStore();
+  const { getPlanItemId } = useSelectPlanItemStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [addedPlaces, setAddedPlaces] = useState<DayProps[]>();
@@ -69,21 +71,16 @@ export default function PlanSheet({
   console.log(detail);
 
   const [isOpenMemo, setIsOpenMemo] = useState({
-    itemId: undefined as number | undefined,
     memo: false,
     cost: false,
   });
 
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
-    itemId: undefined as number | undefined,
     delete: false,
     deleteSuccess: false,
   });
 
-  const [isMovePlan, setIsMovePlan] = useState({
-    itemId: undefined as number | undefined,
-    isMove: false,
-  });
+  const [isMovePlan, setIsMovePlan] = useState(false);
 
   const {
     selectDay,
@@ -99,18 +96,18 @@ export default function PlanSheet({
       ...planMemoData,
       expense: [...planMemoData.expense, addCostData],
     };
-    if (isOpenMemo.itemId) {
-      editPlanApi(isOpenMemo.itemId, updatedPlanMemoData);
-      setIsOpenMemo((prev) => ({ ...prev, memo: true, cost: false }));
+    if (getPlanItemId()) {
+      editPlanApi(getPlanItemId()!, updatedPlanMemoData);
+      setIsOpenMemo({ memo: true, cost: false });
     }
   };
 
   const handleMovePlanClick = async () => {
     setOpenModal({ selectTime: false });
-    if (isMovePlan.isMove) {
-      setIsMovePlan((p) => ({ ...p, isMove: false }));
+    if (isMovePlan) {
+      setIsMovePlan(false);
       await moveScheduleDate(
-        isMovePlan.itemId!,
+        getPlanItemId()!,
         {
           newDayId: selectDay,
           time: selectTime,
@@ -121,7 +118,7 @@ export default function PlanSheet({
       });
     } else {
       await moveScheduleDate(
-        isMovePlan.itemId!,
+        getPlanItemId()!,
         {
           newDayId: getCurrentDayId()!,
           time: selectTime,
@@ -134,13 +131,13 @@ export default function PlanSheet({
   };
 
   const handleDeleteItemClick = async () => {
-    if (isOpenDeleteModal.itemId) {
-      await deletePlaceFromSchedule(isOpenDeleteModal.itemId).then(() => {
-        setIsOpenDeleteModal((prev) => ({
-          ...prev,
+    if (getPlanItemId()!) {
+      await deletePlaceFromSchedule(getPlanItemId()!).then(() => {
+        setIsOpenDeleteModal({
+
           delete: false,
           deleteSuccess: true,
-        }));
+        });
         requestApi();
       });
     }
@@ -194,9 +191,9 @@ export default function PlanSheet({
   };
 
   const getPlanApi = async () => {
-    if (isOpenMemo.itemId) {
+    if (getPlanItemId()) {
       setIsLoading(true);
-      getPlan(isOpenMemo.itemId).then((res) =>
+      getPlan(getPlanItemId()!).then((res) =>
         setPlanMemoData({
           memo: res?.data.memo ?? "",
           expense: res?.data.expense,
@@ -209,7 +206,7 @@ export default function PlanSheet({
 
   useEffect(() => {
     getPlanApi();
-  }, [isOpenMemo.itemId]);
+  }, [getPlanItemId()]);
 
   useEffect(() => {
     setAddedPlaces(detail.dayResDtos);
@@ -305,7 +302,6 @@ export default function PlanSheet({
           {/* 일정 상세 */}
           {isOpenMemo.memo && (
             <PlanMemo
-              itemId={isOpenMemo.itemId}
               planMemoData={planMemoData}
               setPlanMemoData={setPlanMemoData}
               editPlanApi={editPlanApi}
@@ -322,11 +318,10 @@ export default function PlanSheet({
             <D.PlanMemoHeader $editMode={true}>
               <div
                 onClick={() =>
-                  setIsOpenMemo((prev) => ({
-                    ...prev,
+                  setIsOpenMemo({
                     memo: true,
                     cost: false,
-                  }))
+                  })
                 }
               >
                 <ArrowLeftIcon />
@@ -368,7 +363,6 @@ export default function PlanSheet({
           onClick={() =>
             setIsOpenDeleteModal((p) => ({
               ...p,
-              itemId: undefined,
               deleteSuccess: false,
             }))
           }

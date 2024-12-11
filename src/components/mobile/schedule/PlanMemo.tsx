@@ -5,19 +5,18 @@ import CardIcon from "../../../assets/icons/CardIcon";
 import PlanCalendarIcon from "../../../assets/icons/PlanCalendarIcon";
 import TrainIcon from "../../../assets/icons/TrainIcon";
 import * as D from "../../../assets/styles/scheduleDetail.style";
+import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
 import { PlanDetailsProps } from "../../../types/schedule";
 import CostList from "../../CostList";
-import TransportBox from "../../TransportBox";
 import LoadingText from "../../LoadingText";
+import TransportBox from "../../TransportBox";
 
 interface Props {
-  itemId: number | undefined;
   planMemoData: PlanDetailsProps;
 
   setPlanMemoData: React.Dispatch<React.SetStateAction<PlanDetailsProps>>;
   setIsOpenMemo: React.Dispatch<
     React.SetStateAction<{
-      itemId: number | undefined;
       memo: boolean;
       cost: boolean;
     }>
@@ -29,7 +28,6 @@ interface Props {
 }
 
 export default function PlanMemo({
-  itemId,
   planMemoData,
   setPlanMemoData,
   setIsOpenMemo,
@@ -38,6 +36,7 @@ export default function PlanMemo({
   const [isLoading, setIsLoading] = useState(false);
   const [isPlanMemoEdit, setIsPlanMemoEdit] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { getPlanItemId, setPlanItemId } = useSelectPlanItemStore();
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -52,15 +51,20 @@ export default function PlanMemo({
       ...planMemoData,
       expense: planMemoData.expense.filter((_, idx) => idx !== index),
     };
-    await editPlanApi(itemId!, updatedPlanMemoData);
+    await editPlanApi(getPlanItemId()!, updatedPlanMemoData);
     setIsLoading(false);
   };
 
   const handleEditDoneClick = async () => {
     setIsLoading(true);
-    await editPlanApi(itemId!, planMemoData);
+    await editPlanApi(getPlanItemId()!, planMemoData);
     setIsPlanMemoEdit(false);
     setIsLoading(false);
+  };
+
+  const handleCloseClick = () => {
+    setPlanItemId(undefined);
+    setIsOpenMemo({ memo: false, cost: false });
   };
 
   useEffect(() => {
@@ -70,11 +74,7 @@ export default function PlanMemo({
   return (
     <div>
       <D.PlanMemoHeader $editMode={isPlanMemoEdit}>
-        <div
-          onClick={() =>
-            setIsOpenMemo({ itemId: undefined, memo: false, cost: false })
-          }
-        >
+        <div onClick={handleCloseClick}>
           <ArrowLeftIcon />
         </div>
         <D.Title>플랜 추가</D.Title>

@@ -193,18 +193,25 @@ export const PlanPlaceContainer = styled.div`
   padding: 0 13px;
 `;
 
-export const PlaceTitleBox = styled.div`
+export const PlaceHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 0 6px;
 
-  & > p {
+
+`;
+
+export const PlaceTitleBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+    & > h3 {
     font-weight: 700;
     font-size: 20px;
-    color: ${(props) => props.theme.color.secondary};
   }
-`;
+`
 
 export const Line = styled.div`
   width: 100%;
