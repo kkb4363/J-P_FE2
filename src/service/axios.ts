@@ -123,7 +123,11 @@ export const getReviews = async ({
 
 export const getReviewDetail = async (reviewId: number) => {
   try {
-    const res = await axiosInstance(`/review/${reviewId}`);
+    const res = await axiosInstance.get(`/review/${reviewId}`, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
 
     if (res.status === 200) {
       return res;
@@ -601,6 +605,22 @@ export const createDiary = async (form: any, id: number) => {
   }
 };
 
+export const createReview = async (form: any) => {
+  try {
+    const res = await axiosInstance.post(`/review`, form, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("리뷰 작성 API 에러", err);
+  }
+};
+
 export const uploadFiles = async (files: any[], category: string) => {
   try {
     const formData = new FormData();
@@ -654,5 +674,21 @@ export const updateDiary = async (form: any, id: number) => {
     }
   } catch (err) {
     console.error("여행기 수정 API 에러", err);
+  }
+};
+
+export const updateReview = async (form: any, id: number) => {
+  try {
+    const res = await axiosInstance.patch(`/review/${id}`, form, {
+      headers: {
+        Authorization: cookies.get("userToken"),
+      },
+    });
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("리뷰 수정 API 에러", err);
   }
 };

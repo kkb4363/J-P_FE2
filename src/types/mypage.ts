@@ -45,11 +45,34 @@ export interface MySchedules {
 
 export interface MyTravelogueProps {
   createdAt: string;
-  fileInfos: any[];
+  fileInfos: [
+    {
+      fileId: string;
+      fileUrl: string;
+    }
+  ];
   id: number;
   isPublic: boolean;
   scheduleEndDate: string;
   scheduleStartDate: string;
+  subject: string;
+  userCompactResDto: UserProps;
+}
+
+export interface MyReviewProps {
+  commentCnt: number;
+  content: string;
+  createdAt: any;
+  fileInfos: [
+    {
+      fileId: string;
+      fileUrl: string;
+    }
+  ];
+  id: number;
+  likeCnt: number;
+  placeId: string;
+  star: number;
   subject: string;
   userCompactResDto: UserProps;
 }

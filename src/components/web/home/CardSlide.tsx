@@ -59,6 +59,8 @@ export default function CardSlide({
     navigate(`/home/details/${placeId}`);
   };
 
+  console.log(data);
+
   useEffect(() => {
     requestApi();
   }, []);
@@ -81,6 +83,7 @@ export default function CardSlide({
           ))
         : data?.map((item: PlaceProps) => (
             <PlaceCard
+              photoUrl={item.photoUrl}
               key={item.id}
               bottomText={bottomText ? item.name : ""}
               topText={topText ? "여행지" : ""}

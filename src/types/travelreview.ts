@@ -10,6 +10,12 @@ export interface ReviewProps {
   subject: string;
   content: string;
   userCompactResDto: UserProps;
+  fileInfos: [
+    {
+      fileId: string;
+      fileUrl: string;
+    }
+  ];
 }
 
 export interface ReviewDetailProps {
@@ -23,6 +29,12 @@ export interface ReviewDetailProps {
   viewCnt: number;
   createdAt: string;
   commentResDtoList: CommentProps[];
+  fileInfos: [
+    {
+      fileId: string;
+      fileUrl: string;
+    }
+  ];
 }
 
 export interface CommentProps {
@@ -66,9 +78,11 @@ export interface TravelogDetailProps {
   viewCnt: number;
   commentCnt: 0;
   commentResDtoList: CommentProps[];
-  fileInfos: {
-    fileId: string;
-    fileUrl: string;
-  }[];
+  fileInfos: [
+    {
+      fileId: string;
+      fileUrl: string;
+    }
+  ];
   isPublic: true;
 }

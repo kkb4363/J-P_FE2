@@ -31,15 +31,8 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
   const navigate = useNavigate();
   const modalStore = useModalStore();
 
-  const {
-    selectDay,
-    setSelectDay,
-    selectTime,
-    setSelectTime,
-    openModal,
-    setOpenModal,
-    handleDaySelect,
-  } = useAddPlaceHook();
+  const { selectDay, selectTime, openModal, setOpenModal, handleDaySelect } =
+    useAddPlaceHook();
 
   const [placeInfo, setPlaceInfo] = useState<PlaceDetailAPiProps>(
     {} as PlaceDetailAPiProps
@@ -140,12 +133,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
 
           {openModal.selectDay && (
             <>
-              <MoveDaySlider
-                isMobile={false}
-                dayResDtos={dayResDtos}
-                selectDay={selectDay}
-                setSelectDay={setSelectDay}
-              />
+              <MoveDaySlider isMobile={false} dayResDtos={dayResDtos} />
               <ButtonBox>
                 <PrimaryButton
                   onClick={handleDaySelect}
@@ -159,7 +147,7 @@ export default function TravelPlaceAddModal({ placeId }: Props) {
 
           {openModal.selectTime && (
             <>
-              <TimeSwiper isMobile={false} setSelectTime={setSelectTime} />
+              <TimeSwiper isMobile={false} />
               <ButtonBox>
                 <PrimaryButton
                   onClick={handlePlaceAdd}
@@ -206,7 +194,6 @@ const TravelPlaceAddModalContainer = styled.aside`
     height: 160px;
     overflow-y: scroll;
     ${scrollHidden};
-    background-color: tomato;
   }
 `;
 

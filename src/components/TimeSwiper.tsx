@@ -11,7 +11,7 @@ export default function TimeSwiper({ isMobile }: Props) {
   const [selectPeriod, setSelectPeriod] = useState("AM");
   const [selectHour, setSelectHour] = useState(0);
   const [selectMin, setSelectMin] = useState(0);
-  const { setSelectTime } = useAddPlaceStore();
+  const { getSelectTime, setSelectTime } = useAddPlaceStore();
 
   const hour = Array.from({ length: 12 }).map((v, i) => {
     const num = i + 1;
@@ -22,6 +22,7 @@ export default function TimeSwiper({ isMobile }: Props) {
   });
 
   useEffect(() => {
+    console.log(setSelectTime);
     if (setSelectTime) {
       const hour24 =
         selectPeriod === "PM" && selectHour < 12 ? selectHour + 12 : selectHour;

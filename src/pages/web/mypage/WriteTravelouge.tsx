@@ -182,6 +182,7 @@ export default function WriteTravelouge() {
             title: res?.data.subject,
             content: res?.data.content,
             imgs: res?.data.fileInfos,
+            isPublic: res?.data.isPublic,
           }));
         }
       });

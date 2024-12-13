@@ -73,7 +73,9 @@ const ImageViewContainer = styled.div<{
   }
 
   min-width: ${(props) => props.$minWidth && props.$minWidth};
+  width: ${(props) => props.$minWidth && props.$minWidth};
   min-height: ${(props) => props.$minHeight && props.$minHeight};
+  height: ${(props) => props.$minHeight && props.$minHeight};
 `;
 
 const TopText = styled.div`

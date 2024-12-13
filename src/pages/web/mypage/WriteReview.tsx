@@ -4,7 +4,7 @@ import MarkIcon from "../../../assets/icons/MarkIcon";
 import ActionButton from "../../../components/ActionButton";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HalfStarIcon } from "../../../assets/icons/HalfStarIcon";
 import { InfoText, SuccessModalContainer, TextBox } from "./WriteTravelouge";
 import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
@@ -15,6 +15,13 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import OneButtonModal from "../../../components/OneButtonModal";
 import { useModalStore } from "../../../store/modal.store";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
+import {
+  createReview,
+  getReviewDetail,
+  updateReview,
+  uploadFiles,
+} from "../../../service/axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function WriteReview() {
   const {
@@ -24,26 +31,111 @@ export default function WriteReview() {
     handleButtonClick,
     handleImageDelete,
   } = useImagesUploadHook();
+  const navigate = useNavigate();
   const writeReviewStore = useWriteReviewStore();
+
+  const [form, setForm] = useState({
+    content: "",
+    star: 0,
+    imgs: [],
+  });
+
   const { setCurrentModal } = useModalStore();
   const [openSuccess, setOpenSuccess] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [ratingFixed, setRatingFixed] = useState(rating);
+  const [ratingFixed, setRatingFixed] = useState(form.star);
 
   const handleLeftHalfEnter = (idx: number) => {
-    setRating(idx + 0.5);
+    setForm((p) => ({ ...p, star: idx + 0.5 }));
   };
-  const handleRightHalfEnter = (idx: number) => setRating(idx + 1);
-
+  const handleRightHalfEnter = (idx: number) =>
+    setForm((p) => ({ ...p, star: idx + 1 }));
   const handleRatingClick = () => {
-    setRatingFixed(rating);
+    setRatingFixed(form.star);
   };
-
   const handleRatingLeave = () => {
-    if (rating !== ratingFixed) {
-      setRating(ratingFixed);
+    if (form.star !== ratingFixed) {
+      setForm((p) => ({ ...p, star: ratingFixed }));
     }
   };
+
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSubmit = () => {
+    if (images.length !== 0 && contentRef.current) {
+      uploadFiles(images, "REVIEW").then((res) => {
+        if (res) {
+          if (isEdit) {
+            const body = {
+              subject: writeReviewStore.getSelectedPlace(),
+              content: contentRef?.current?.value,
+              placeId: writeReviewStore.getSelectedPlaceId(),
+              star: form.star,
+              newFileIds: res.data.data.map((file: any) => file.fileId),
+            };
+
+            updateReview(body, isEdit).then((res) => {
+              if (res?.status === 200) setOpenSuccess(true);
+            });
+          } else {
+            const body = {
+              subject: writeReviewStore.getSelectedPlace(),
+              content: contentRef?.current?.value,
+              placeId: writeReviewStore.getSelectedPlaceId(),
+              star: form.star,
+              fileIds: res.data.data.map((file: any) => file.fileId),
+            };
+
+            createReview(body).then((res) => {
+              if (res?.status === 200) setOpenSuccess(true);
+            });
+          }
+        }
+      });
+    } else {
+      const body = {
+        subject: writeReviewStore.getSelectedPlace(),
+        content: contentRef?.current?.value,
+        placeId: writeReviewStore.getSelectedPlaceId(),
+        star: form.star,
+      };
+
+      if (isEdit) {
+        updateReview(body, isEdit).then((res) => {
+          if (res?.status === 200) setOpenSuccess(true);
+        });
+      } else {
+        createReview(body).then((res) => {
+          if (res?.status === 200) setOpenSuccess(true);
+        });
+      }
+    }
+  };
+
+  const handleSuccess = () => {
+    setOpenSuccess(false);
+    navigate("/home/mypage/reviews");
+    writeReviewStore.clear();
+  };
+
+  const location = useLocation();
+  const isEdit = location.state && location.state.reviewId;
+  useEffect(() => {
+    if (isEdit) {
+      toast(<span>이미지는 추가,수정만 가능합니다</span>);
+      getReviewDetail(isEdit).then((res) => {
+        if (res) {
+          writeReviewStore.setSelectedPlace(res?.data.subject);
+          writeReviewStore.setSelectedPlaceId(res?.data.placeId);
+          setForm((p) => ({
+            ...p,
+            star: res?.data.star,
+            content: res?.data.content,
+            imgs: res?.data.fileInfos,
+          }));
+        }
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -92,14 +184,14 @@ export default function WriteReview() {
                     stroke="lightgray"
                   />
                 </DefaultStar>
-                {rating - Math.floor(rating) === 0.5 &&
-                Math.floor(rating) === idx ? (
+                {form.star - Math.floor(form.star) === 0.5 &&
+                Math.floor(form.star) === idx ? (
                   <HalfStarIcon
                     key={`halfstar-${idx}`}
                     width="32"
                     height="32"
                   />
-                ) : idx + 1 > rating ? (
+                ) : idx + 1 > form.star ? (
                   <StarIcon
                     key={`emptystar-${idx}`}
                     width="32"
@@ -126,7 +218,11 @@ export default function WriteReview() {
         </RatingRow>
 
         <TextBox>
-          <textarea placeholder="여행지의 리뷰를 남겨주세요!" />
+          <textarea
+            placeholder="여행지의 리뷰를 남겨주세요!"
+            ref={contentRef}
+            defaultValue={form?.content}
+          />
           <InfoText>최소 50자</InfoText>
         </TextBox>
 
@@ -163,7 +259,9 @@ export default function WriteReview() {
           )}
         </ImageRow>
 
-        <ImgInfo>(최대 10장)</ImgInfo>
+        <ImgInfo>
+          {isEdit ? `(최대 ${10 - form?.imgs.length}장)` : "(최대 10장)"}
+        </ImgInfo>
 
         <ButtonsRow>
           <PrimaryButton
@@ -175,7 +273,7 @@ export default function WriteReview() {
           <PrimaryButton
             width="120px"
             text="완료"
-            onClick={() => setOpenSuccess(true)}
+            onClick={handleSubmit}
             blue={true}
           />
         </ButtonsRow>
@@ -184,13 +282,13 @@ export default function WriteReview() {
         <OneButtonModal
           isMobile={false}
           buttonText="확인"
-          onClick={() => setOpenSuccess(false)}
-          onClose={() => setOpenSuccess(false)}
+          onClick={handleSuccess}
+          onClose={handleSuccess}
           width="360px"
           height="260px"
         >
           <SuccessModalContainer>
-            <h1>리뷰 등록이 완료되었습니다!</h1>
+            <h1>리뷰 {isEdit ? "수정" : "등록"}이 완료되었습니다!</h1>
             <p>다른 여행객들에게도 도움이 될 거에요.</p>
           </SuccessModalContainer>
         </OneButtonModal>

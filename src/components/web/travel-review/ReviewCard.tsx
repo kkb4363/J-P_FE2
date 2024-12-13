@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { ReviewProps } from "../../../types/travelreview";
-import { testImageList } from "../../../utils/staticDatas";
 import CustomProfile from "../../CustomProfile";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import StarIcon from "../../../assets/icons/StarIcon";
@@ -15,12 +14,14 @@ interface Props {
 
 export default function ReviewCard({ item }: Props) {
   const navigate = useNavigate();
+
+  console.log(item);
   return (
     <ReviewCardContainer onClick={() => navigate(`/home/review/${item.id}`)}>
       <ReviewHeader>
         <ReviewPlaceBox>
           <MarkIcon stroke="#6979F8" width="18" height="18" />
-          <span>오대산 선재길</span>
+          <span>{item.subject}</span>
         </ReviewPlaceBox>
         <IconBox>
           <StarIcon />
@@ -35,7 +36,7 @@ export default function ReviewCard({ item }: Props) {
         />
         <ContentText>{item.content}</ContentText>
       </ReviewBody>
-      <TwoImageBox images={testImageList} />
+      <TwoImageBox images={item.fileInfos} />
       <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
     </ReviewCardContainer>
   );
@@ -50,6 +51,8 @@ const ReviewCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.color.gray200};
   background-color: ${(props) => props.theme.color.white};
   cursor: pointer;
+  min-width: 786px;
+  min-height: 362px;
 `;
 
 const ReviewHeader = styled.div`
