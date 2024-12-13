@@ -79,13 +79,7 @@ export default function Search() {
           <SubTitle>검색 결과</SubTitle>
           <ResultsRow>
             {searchData?.map((result) => (
-              <ResultsCard
-                name={result.name}
-                subName={result.subName}
-                rating={result.rating}
-                key={result.id}
-                placeId={result.placeId}
-              />
+              <ResultsCard data={result} key={result.id} />
             ))}
           </ResultsRow>
         </>

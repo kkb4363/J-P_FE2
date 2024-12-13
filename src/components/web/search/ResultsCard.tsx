@@ -1,17 +1,14 @@
 import styled from "styled-components";
-import testImg from "../../../assets/images/testImg1.png";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { useNavigate } from "react-router-dom";
 import { useModalStore } from "../../../store/modal.store";
+import { SearchPlaceProps } from "../../../types/search";
 
 interface Props {
-  name: string;
-  rating: number;
-  subName: string;
-  placeId: string;
+  data: SearchPlaceProps;
 }
 
-export default function ResultsCard({ name, rating, subName, placeId }: Props) {
+export default function ResultsCard({ data }: Props) {
   const navigate = useNavigate();
   const { setCurrentModal } = useModalStore();
 
@@ -21,18 +18,18 @@ export default function ResultsCard({ name, rating, subName, placeId }: Props) {
   };
 
   return (
-    <ResultsCardContainer onClick={() => handleClick(placeId)}>
-      <img src={testImg} alt="result" />
+    <ResultsCardContainer onClick={() => handleClick(data?.placeId)}>
+      <img src={data.photoUrl} alt="result" />
 
       <div>
-        <p>{name}</p>
+        <p>{data.name}</p>
         <span>
           <StarIcon />
-          {rating}
+          {data.rating}
         </span>
       </div>
 
-      <p>{subName}</p>
+      <p>{data.subName}</p>
     </ResultsCardContainer>
   );
 }

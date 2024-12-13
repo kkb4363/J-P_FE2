@@ -42,13 +42,7 @@ export default function SearchBar() {
 
         <SearchResultRow>
           {searchData?.slice(0, 4).map((result) => (
-            <ResultsCard
-              name={result.name}
-              subName={result.subName}
-              rating={result.rating}
-              key={result.id}
-              placeId={result.placeId}
-            />
+            <ResultsCard data={result} key={result.id} />
           ))}
         </SearchResultRow>
       </SearchResultBox>

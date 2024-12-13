@@ -59,8 +59,6 @@ export default function CardSlide({
     navigate(`/home/details/${placeId}`);
   };
 
-  console.log(data);
-
   useEffect(() => {
     requestApi();
   }, []);

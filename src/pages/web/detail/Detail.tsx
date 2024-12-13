@@ -14,7 +14,6 @@ import HeartIcon from "../../../assets/icons/HeartIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import StarIcon from "../../../assets/icons/StarIcon";
-import testImg from "../../../assets/images/testImg3.png";
 import ImageView from "../../../components/web/ImageView";
 import {
   ReviewInfo,
@@ -77,7 +76,11 @@ export default function Detail() {
     if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
-      setLike({ type: "PLACE", id: detail?.placeId }).then(() => {
+      setLike({
+        actionType: "BOOKMARK",
+        targetType: "PLACE",
+        id: detail?.placeId,
+      }).then(() => {
         getDetail();
       });
     }

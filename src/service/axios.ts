@@ -243,10 +243,18 @@ export const getRecommendSchedules = async () => {
   }
 };
 
-export const setLike = async ({ type, id }: { type: string; id: string }) => {
+export const setLike = async ({
+  actionType,
+  targetType,
+  id,
+}: {
+  actionType: string;
+  targetType: string;
+  id: string;
+}) => {
   try {
     const res = await axiosInstance.post(
-      `/like/${type}/${id}`,
+      `/like/${actionType}/${targetType}/${id}`,
       {},
       {
         headers: {
@@ -274,7 +282,7 @@ export const getLikes = async ({
     if (!!likeType) {
       if (likeType === "PLACE") {
         const res = await axiosInstance.get(
-          `/like/page/my?likeType=${likeType}&placeType=${placeType}&page=1`,
+          `/like/page/my?likeTargetType=${likeType}&placeType=${placeType}&page=1`,
           {
             headers: {
               Authorization: cookies.get("userToken"),
