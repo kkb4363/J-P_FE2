@@ -38,7 +38,6 @@ export default function PlanPlaceSheet({ setIsPlanPlace }: Props) {
     });
     setIsLoading(false);
   };
-  console.log(placeData)
 
   useEffect(() => {
     if (getPlanPlaceId()) {

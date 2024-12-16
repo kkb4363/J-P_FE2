@@ -10,8 +10,8 @@ interface Props {
   height?: string;
   imgSize?: string;
   isSelect: boolean;
-  handleAdd: () => void;
-  handleRemove: () => void;
+  handleAdd?: () => void;
+  handleRemove?: () => void;
   handleClick: (id: string) => void;
   item: GooglePlaceProps;
 }

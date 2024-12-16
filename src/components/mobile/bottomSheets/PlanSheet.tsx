@@ -115,7 +115,6 @@ export default function PlanSheet({
         requestApi();
       });
     } else {
-      setOpenModal((p) => ({ ...p, selectDay: true }));
       await moveScheduleDate(
         getPlanItemId()!,
         {
@@ -290,7 +289,7 @@ export default function PlanSheet({
                     </D.PlanList>
                   </D.PlansBox>
                   <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
-                    + 장소 추가
+                    + 여행지 추가
                   </D.AddPlaceButton>
                 </>
               )}

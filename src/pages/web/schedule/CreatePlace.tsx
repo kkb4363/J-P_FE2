@@ -68,8 +68,6 @@ export default function CreatePlace() {
       return;
     }
 
-    console.log(selectTime);
-
     const places = list.map((place) => ({
       time: selectTime,
       location: place.geometry.location,
