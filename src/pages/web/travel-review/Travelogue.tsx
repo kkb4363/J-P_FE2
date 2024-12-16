@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { testReviewItem } from "../../../utils/staticDatas";
 import styled from "styled-components";
 import TravelogueCard from "../../../components/web/travel-review/TravelogueCard";
-import { ReviewProps } from "../../../types/travelreview";
+import { ReviewProps, TravelogProps } from "../../../types/travelreview";
 import LoadingText from "../../../components/LoadingText";
 import { getAllDiaries } from "../../../service/axios";
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function Travelogue({ sort }: Props) {
-  const [data, setData] = useState<ReviewProps[]>([]);
+  const [data, setData] = useState<TravelogProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

@@ -29,13 +29,7 @@ export default function SelectPlaceBar() {
 
       <CardCol>
         {searchData?.map((d) => (
-          <AddPlaceCard
-            key={d.id}
-            photoUrl={d.photourl}
-            name={d.name}
-            rating={d.rating}
-            id={d.placeId}
-          />
+          <AddPlaceCard key={d.id} data={d} />
         ))}
       </CardCol>
 

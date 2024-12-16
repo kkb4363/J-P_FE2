@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useAddPlaceStore } from "../store/useAddPlace.store";
 
 interface Props {
   isMobile: boolean;
+  setSelectTime: (t: string) => void;
 }
 
-export default function TimeSwiper({ isMobile }: Props) {
+export default function TimeSwiper({ isMobile, setSelectTime }: Props) {
   const [selectPeriod, setSelectPeriod] = useState("AM");
   const [selectHour, setSelectHour] = useState(0);
   const [selectMin, setSelectMin] = useState(0);
-  const { setSelectTime } = useAddPlaceStore();
 
   const hour = Array.from({ length: 12 }).map((v, i) => {
     const num = i + 1;
@@ -22,16 +21,14 @@ export default function TimeSwiper({ isMobile }: Props) {
   });
 
   useEffect(() => {
-    if (setSelectTime) {
-      const hour24 =
-        selectPeriod === "PM" && selectHour < 12 ? selectHour + 12 : selectHour;
-      const formattedHour = hour24 < 10 ? `0${hour24}` : `${hour24}`;
-      const formattedTime = `${formattedHour}:${
-        selectMin < 10 ? `0${selectMin}` : selectMin
-      }`;
-      setSelectTime(formattedTime);
-    }
-  }, [selectPeriod, selectHour, selectMin, setSelectTime]);
+    const hour24 =
+      selectPeriod === "PM" && selectHour < 12 ? selectHour + 12 : selectHour;
+    const formattedHour = hour24 < 10 ? `0${hour24}` : `${hour24}`;
+    const formattedTime = `${formattedHour}:${
+      selectMin < 10 ? `0${selectMin}` : selectMin
+    }`;
+    setSelectTime(formattedTime);
+  }, [selectPeriod, selectHour, selectMin]);
 
   return (
     <TimeModalContainer $isMobile={isMobile}>

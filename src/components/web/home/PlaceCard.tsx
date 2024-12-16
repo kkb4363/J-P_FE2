@@ -1,5 +1,4 @@
 import ImageView from "../ImageView";
-import testImg from "../../../assets/images/testImg2.png";
 import styled from "styled-components";
 
 interface Props {
@@ -8,6 +7,7 @@ interface Props {
   title?: string;
   subTitle?: string;
   handleClick?: () => void;
+  photoUrl: string;
 }
 
 export default function PlaceCard({
@@ -16,13 +16,14 @@ export default function PlaceCard({
   title,
   subTitle,
   handleClick,
+  photoUrl,
 }: Props) {
   return (
     <PlaceCardContainer>
       <ImageView
-        src={testImg}
+        src={photoUrl}
         alt="image"
-        width="100%"
+        width="285px"
         height="100%"
         minHeight="240px"
         bottomText={bottomText}

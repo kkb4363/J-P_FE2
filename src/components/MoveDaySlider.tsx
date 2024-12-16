@@ -4,14 +4,20 @@ import { DayProps } from "../types/schedule";
 import { dayOfWeek } from "../utils/staticDatas";
 import NextArrow from "./mobile/schedule/NextArrow";
 import PrevArrow from "./mobile/schedule/PrevArrow";
-import { useAddPlaceStore } from "../store/useAddPlace.store";
 
 interface Props {
   isMobile: boolean;
   dayResDtos: DayProps[];
+  selectDay: number;
+  setSelectDay: (id: number) => void;
 }
 
-export default function MoveDaySlider({ isMobile, dayResDtos }: Props) {
+export default function MoveDaySlider({
+  isMobile,
+  dayResDtos,
+  selectDay,
+  setSelectDay,
+}: Props) {
   const slideSettings = {
     infinite: false,
     focusOnSelect: true,
@@ -23,7 +29,6 @@ export default function MoveDaySlider({ isMobile, dayResDtos }: Props) {
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
   };
-  const { selectDay, setSelectDay } = useAddPlaceStore();
 
   return (
     <StyledSlider {...slideSettings} $isMobile={isMobile}>

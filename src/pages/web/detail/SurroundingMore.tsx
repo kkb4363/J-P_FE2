@@ -113,15 +113,7 @@ export default function SurroundingMore() {
         >
           <PlaceAddModalContainer>
             {modalStore.getCurrentModal() === "placeInfo" && (
-              <InfoModal
-                imgSrc={selectPlace?.photoUrls[0]}
-                title={selectPlace?.name}
-                shortAddress={selectPlace?.shortAddress}
-                rating={selectPlace?.rating}
-                businessStatus={selectPlace?.businessStatus}
-                phoneNumber={selectPlace?.formattedPhoneNumber}
-                fullAddress={selectPlace?.fullAddress}
-              />
+              <InfoModal data={selectPlace} />
             )}
 
             {modalStore.getCurrentModal() === "addPlan" && (

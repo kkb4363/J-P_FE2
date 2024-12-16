@@ -78,7 +78,7 @@ export default function Home() {
         subTitle={true}
       />
 
-      <CarouselTitle>
+      {/* <CarouselTitle>
         사람들이 찜한 여행기
         <div>
           <span>인기순</span>
@@ -100,7 +100,7 @@ export default function Home() {
           <span>더보기</span>
         </div>
       </CarouselTitle>
-      <TravelogueCardSlide responsive={responsive3} isReviewCard={true} />
+      <TravelogueCardSlide responsive={responsive3} isReviewCard={true} /> */}
     </>
   );
 }

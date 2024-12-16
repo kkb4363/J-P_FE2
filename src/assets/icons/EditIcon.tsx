@@ -1,14 +1,21 @@
 interface Props {
   fill?: string;
   stroke?: string;
+  width?: string;
+  height?: string;
 }
 
-const EditIcon = ({ fill = "none", stroke = "#1a1a1a" }: Props) => {
+const EditIcon = ({
+  fill = "none",
+  stroke = "#1a1a1a",
+  width = "16",
+  height = "17",
+}: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="17"
+      width={width}
+      height={height}
       viewBox="0 0 16 17"
       fill={fill}
     >

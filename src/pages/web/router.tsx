@@ -24,6 +24,7 @@ import WriteReview from "./mypage/WriteReview";
 import Survey from "./onboarding/Survey";
 import Onboarding from "./onboarding/Onboarding";
 import ErrorPage from "./ErrorPage";
+import ReviewMore from "./detail/ReviewMore";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: "details/:placeId",
         element: <Detail />,
+      },
+      {
+        path: "reviewMore/:placeId",
+        element: <ReviewMore />,
       },
       {
         path: "more",

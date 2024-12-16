@@ -1,10 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
 import styled from "styled-components";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { useAddPlaceStore } from "../../../store/useAddPlace.store";
 import { DayLocationProps } from "../../../types/schedule";
 import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
 
@@ -26,6 +24,7 @@ interface Props {
     }>
   >;
   setIsMovePlan: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenModal: any;
 }
 
 export default function PlanItem({
@@ -35,9 +34,8 @@ export default function PlanItem({
   setIsPlanPlace,
   setIsOpenDeleteModal,
   setIsMovePlan,
+  setOpenModal,
 }: Props) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { setOpenModal } = useAddPlaceStore();
   const { setPlanItemId, setPlanPlaceId } = useSelectPlanItemStore();
   const {
     attributes,
@@ -53,7 +51,7 @@ export default function PlanItem({
     setPlanItemId(item.id);
     if (isEdit) {
       setIsMovePlan(true);
-      setOpenModal({ selectDay: true });
+      setOpenModal((p: any) => ({ ...p, selectDay: true }));
     } else {
       setPlanPlaceId(item.placeId);
       setIsPlanPlace(true);
@@ -64,7 +62,7 @@ export default function PlanItem({
     if (isEdit) {
       setPlanItemId(item.id);
       setIsMovePlan(false);
-      setOpenModal({ selectTime: true });
+      setOpenModal((p: any) => ({ ...p, selectTime: true }));
     }
   };
 

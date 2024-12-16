@@ -4,23 +4,23 @@ import IconBox from "../../IconBox";
 import StarIcon from "../../../assets/icons/StarIcon";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
+import { PlaceProps } from "../../../types/place";
 
 interface Props {
-  photoUrl?: string;
-  name: string;
-  rating: number;
-  id: string;
+  data: PlaceProps;
 }
 
-export default function AddPlaceCard({ photoUrl, name, rating, id }: Props) {
+export default function AddPlaceCard({ data }: Props) {
   const writeReviewStore = useWriteReviewStore();
-  const isChecked = writeReviewStore.getSelectedPlace() === name;
+  const isChecked = writeReviewStore.getSelectedPlace() === data?.name;
 
   const handleSelect = () => {
     if (isChecked) {
       writeReviewStore.setSelectedPlace("");
+      writeReviewStore.setSelectedPlaceId("");
     } else {
-      writeReviewStore.setSelectedPlace(name);
+      writeReviewStore.setSelectedPlace(data?.name);
+      writeReviewStore.setSelectedPlaceId(data?.placeId);
     }
   };
 
@@ -30,10 +30,10 @@ export default function AddPlaceCard({ photoUrl, name, rating, id }: Props) {
 
       <TextCol>
         <h1>명소</h1>
-        <p>{name}</p>
+        <p>{data?.name}</p>
         <IconBox>
           <StarIcon />
-          <span>{rating}</span>
+          <span>{data?.rating}</span>
         </IconBox>
       </TextCol>
 

@@ -7,7 +7,7 @@ export interface PlaceProps {
   subName: string;
   themeType: ThemeType;
   rating: number;
-  photourl: string;
+  photoUrl: string;
 }
 
 export interface PlaceDetailAPiProps {

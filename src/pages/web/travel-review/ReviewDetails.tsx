@@ -13,23 +13,21 @@ import CommentCard from "../../../components/mobile/CommentCard";
 import Container from "../../../components/web/Container";
 import { getReviewDetail } from "../../../service/axios";
 import { ReviewDetailProps } from "../../../types/travelreview";
-import { testImageList, testReviewItem } from "../../../utils/staticDatas";
+import { testImageList } from "../../../utils/staticDatas";
 
 export default function ReviewDetails() {
+  const navigate = useNavigate();
   const { reviewId } = useParams();
-  const [review, setReview] = useState<ReviewDetailProps>();
   const [isLoading, setIsLoading] = useState(false);
   const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");
-  const [commentCnt, setCommentCnt] = useState(-1);
-  const navigate = useNavigate();
+
+  const [data, setData] = useState<ReviewDetailProps>({} as ReviewDetailProps);
 
   const requestApi = async () => {
     setIsLoading(true);
-
     await getReviewDetail(Number(reviewId)).then((res) => {
-      setReview(res?.data);
-      setCommentCnt(res?.data.commentResDtoList.length);
+      setData(res?.data);
       setIsLoading(false);
     });
   };
@@ -41,14 +39,17 @@ export default function ReviewDetails() {
 
   const handleImageClick = (index: number) => {
     navigate(`/home/review/${reviewId}/photo`, {
-      state: { currentIndex: index, images: testImageList }, // 이미지 인덱스와 목록을 state로 전달
+      state: {
+        currentIndex: index,
+        images: data?.fileInfos,
+      }, // 이미지 인덱스와 목록을 state로 전달
     });
   };
 
   useEffect(() => {
     requestApi();
   }, [reviewId]);
-  
+
   return (
     <div>
       {isLoading && <LoadingText text="로딩중..." />}
@@ -58,34 +59,27 @@ export default function ReviewDetails() {
           <ReviewDetailsBody>
             <ReviewPlaceBox>
               <MarkIcon stroke="#1A1A1A" />
-              <h2>오대산 선재길</h2>
+              <h2>{data?.subject}</h2>
             </ReviewPlaceBox>
             <R.ProfileHeader>
               <CustomProfile
                 src="/src/assets/images/testImg.png"
-                nickname={review ? review.userCompactResDto.nickname : "yeeso"}
-                content="24.2.3"
+                nickname={data?.userCompactResDto?.nickname}
+                content={data?.createdAt}
               />
               <IconBox>
                 <StarIcon />
-                <span>{review ? review.star : 4.8}</span>
+                <span>{data?.star}</span>
               </IconBox>
             </R.ProfileHeader>
             <div>
-              <ReviewContents $isTitle={true}>
-                오대산 선재길에서 산책하기
-              </ReviewContents>
-              <ReviewContents>
-                자연의 힐링을 동시에 누릴 수 있는 최고의 장소였어요! 산책로 따라
-                걸으며 힐링을 만끽했어요! 자연의 힐링을 동시에 누릴 수 있는
-                최고의 장소였어요! 산책로 따라 걸으며 힐링을 만끽했어요!
-              </ReviewContents>
+              <ReviewContents>{data?.content}</ReviewContents>
             </div>
             <ReviewDetailsImageBox>
-              {testImageList.slice(0, 4).map((url, i) => (
+              {data?.fileInfos?.slice(0, 4).map((f, i) => (
                 <ImageWrapper key={i} onClick={() => handleImageClick(i)}>
                   <ImageView
-                    src={url}
+                    src={f.fileUrl}
                     alt="review img"
                     width="100%"
                     height="225px"
@@ -99,8 +93,8 @@ export default function ReviewDetails() {
               ))}
             </ReviewDetailsImageBox>
             <LikeCommentBox
-              likeCnt={5}
-              commentCnt={2}
+              likeCnt={data?.likeCnt}
+              commentCnt={data?.commentResDtoList?.length}
               fillLike={fillLike}
               likeClick={() => setFillLike((prev) => !prev)}
             />
@@ -140,13 +134,13 @@ export default function ReviewDetails() {
               );
             })} */}
           <CommentBox>
-            <CommentCard
+            {/* <CommentCard
               content={testReviewItem.content}
               createdAt={testReviewItem.createdAt}
               user={testReviewItem.userCompactResDto}
               replyList={[]}
               web
-            />
+            /> */}
           </CommentBox>
         </Container>
       )}

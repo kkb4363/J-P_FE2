@@ -63,6 +63,7 @@ export default function CreatePlace() {
   const { getUserType } = useUserStore();
   const handleAddPlaceClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
+
     if (!selectDay || !selectTime) {
       return;
     }

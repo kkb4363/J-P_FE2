@@ -18,7 +18,6 @@ import {
 } from "../../../service/axios";
 import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
 import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
-import { useAddPlaceStore } from "../../../store/useAddPlace.store";
 import { useUserStore } from "../../../store/user.store";
 import {
   AddCostDataTypes,
@@ -38,6 +37,7 @@ import TwoButtonsModal from "../../TwoButtonsModal";
 import PlanItem from "../schedule/PlanItem";
 import PlanMemo from "../schedule/PlanMemo";
 import BottomSheet from "./../BottomSheet";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
 
 interface Props {
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
@@ -87,7 +87,7 @@ export default function PlanSheet({
     setSelectTime,
     openModal,
     setOpenModal,
-  } = useAddPlaceStore();
+  } = useAddPlaceHook();
 
   const handleAddCost = () => {
     const updatedPlanMemoData = {
@@ -101,7 +101,7 @@ export default function PlanSheet({
   };
 
   const handleMovePlanClick = async () => {
-    setOpenModal({ selectTime: false });
+    setOpenModal((p) => ({ ...p, selectTime: false }));
     if (isMovePlan) {
       setIsMovePlan(false);
       await moveScheduleDate(
@@ -132,7 +132,6 @@ export default function PlanSheet({
     if (getPlanItemId()!) {
       await deletePlaceFromSchedule(getPlanItemId()!).then(() => {
         setIsOpenDeleteModal({
-
           delete: false,
           deleteSuccess: true,
         });
@@ -143,7 +142,6 @@ export default function PlanSheet({
 
   const handleDragEnd = ({ over, active }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
-
     setAddedPlaces((prevDayListData) => {
       if (!prevDayListData) return;
 
@@ -280,6 +278,7 @@ export default function PlanSheet({
                                         setIsOpenDeleteModal
                                       }
                                       setIsMovePlan={setIsMovePlan}
+                                      setOpenModal={setOpenModal}
                                     />
                                   );
                                 }
@@ -290,7 +289,7 @@ export default function PlanSheet({
                     </D.PlanList>
                   </D.PlansBox>
                   <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
-                    + 장소 추가
+                    + 여행지 추가
                   </D.AddPlaceButton>
                 </>
               )}
@@ -378,9 +377,14 @@ export default function PlanSheet({
           title="다른 날로 이동"
           buttonText="다음"
           onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
-          onClose={() => setOpenModal({ selectDay: false })}
+          onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
-          <MoveDaySlider isMobile={true} dayResDtos={detail?.dayResDtos} />
+          <MoveDaySlider
+            isMobile={true}
+            dayResDtos={detail?.dayResDtos}
+            selectDay={selectDay}
+            setSelectDay={setSelectDay}
+          />
         </OneButtonModal>
       )}
 
@@ -392,9 +396,9 @@ export default function PlanSheet({
           title="시간 설정"
           buttonText="완료"
           onClick={handleMovePlanClick}
-          onClose={() => setOpenModal({ selectTime: false })}
+          onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
-          <TimeSwiper isMobile={true} />
+          <TimeSwiper isMobile={true} setSelectTime={setSelectTime} />
         </OneButtonModal>
       )}
     </>

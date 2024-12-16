@@ -14,7 +14,6 @@ import HeartIcon from "../../../assets/icons/HeartIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import StarIcon from "../../../assets/icons/StarIcon";
-import testImg from "../../../assets/images/testImg3.png";
 import ImageView from "../../../components/web/ImageView";
 import {
   ReviewInfo,
@@ -77,7 +76,11 @@ export default function Detail() {
     if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (detail?.id) {
-      setLike({ type: "PLACE", id: detail?.placeId }).then(() => {
+      setLike({
+        actionType: "BOOKMARK",
+        targetType: "PLACE",
+        id: detail?.placeId,
+      }).then(() => {
         getDetail();
       });
     }
@@ -237,36 +240,40 @@ export default function Detail() {
 
       <SubTitle>
         <span>리뷰</span>
-        <p>더보기</p>
+        <p onClick={() => navigate(`/home/reviewMore/${param?.placeId}`)}>
+          더보기
+        </p>
       </SubTitle>
 
       <ReviewCardRow>
-        {/* <ReviewCard>
-          <ImageView
-            width="110px"
-            height="100px"
-            src={testImg}
-            alt="review-img"
-          />
+        {review?.map((r) => (
+          <ReviewCard key={r.id}>
+            <ImageView
+              width="110px"
+              height="100px"
+              src={r.fileInfos[0]?.fileUrl}
+              alt="review-img"
+            />
 
-          <ReviewInfoCol>
-            <ReviewTitle>
-              <div>
-                <img src={testImg} alt="user-img" />
-                <span>jiwoo</span>
-                <span>24.4.1</span>
-              </div>
-              <div>
-                <StarIcon />
-                <span>4.8</span>
-              </div>
-            </ReviewTitle>
-            <ReviewInfo>
-              <span>드라이브, 산책 코스로 딱좋았던</span>
-            </ReviewInfo>
-            <LikeCommentBox likeCnt={10} commentCnt={1} />
-          </ReviewInfoCol>
-        </ReviewCard> */}
+            <ReviewInfoCol>
+              <ReviewTitle>
+                <div>
+                  <img src={r.userCompactResDto.profile} alt="user-img" />
+                  <span>{r.userCompactResDto.nickname}</span>
+                  <span>{r.createdAt}</span>
+                </div>
+                <div>
+                  <StarIcon />
+                  <span>{r.star}</span>
+                </div>
+              </ReviewTitle>
+              <ReviewInfo>
+                <span>{r.content}</span>
+              </ReviewInfo>
+              <LikeCommentBox likeCnt={r.likeCnt} commentCnt={r.commentCnt} />
+            </ReviewInfoCol>
+          </ReviewCard>
+        ))}
       </ReviewCardRow>
 
       {!!addPlaceId && (

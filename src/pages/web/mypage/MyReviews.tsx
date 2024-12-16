@@ -1,32 +1,36 @@
 import styled from "styled-components";
-import testImg from "../../../assets/images/testImg.png";
-import CustomProfile from "../../../components/CustomProfile";
-import LikeCommentBox from "../../../components/LikeCommentBox";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getMyReviews } from "../../../service/axios";
 import ReviewCard from "../../../components/web/mypage/ReviewCard";
 import NotHasCard from "../../../components/web/mypage/NotHasCard";
+import { MyReviewProps } from "../../../types/mypage";
 
 export default function MyReviews() {
+  const [reviews, setReviews] = useState<MyReviewProps[]>([]);
+
   useEffect(() => {
     getMyReviews().then((res) => {
       if (res) {
-        console.log(res);
+        setReviews(res?.data.data);
       }
     });
   }, []);
 
   return (
     <>
-      <MyPageTitle>내 작성 리뷰 2</MyPageTitle>
-      {/* <ReviewCardRow>
-        <ReviewCard />
-      </ReviewCardRow> */}
-
-      <NotHasCard
-        text="내 리뷰가 없어요. 새로운 리뷰를 작성해주세요!"
-        noButton={true}
-      />
+      <MyPageTitle>내 작성 리뷰 {reviews?.length}</MyPageTitle>
+      {reviews?.length !== 0 ? (
+        <ReviewCardRow>
+          {reviews?.map((r: MyReviewProps) => (
+            <ReviewCard key={r.id} data={r} />
+          ))}
+        </ReviewCardRow>
+      ) : (
+        <NotHasCard
+          text="내 리뷰가 없어요. 새로운 리뷰를 작성해주세요!"
+          noButton={true}
+        />
+      )}
     </>
   );
 }

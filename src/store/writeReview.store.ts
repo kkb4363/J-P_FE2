@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 interface State {
   selectedPlace: string;
+  selectedPlaceId: string;
   star: number;
   selectedImg: any[];
   title: string;
@@ -11,6 +12,8 @@ interface State {
 interface Action {
   getSelectedPlace: () => string;
   setSelectedPlace: (p: string) => void;
+  getSelectedPlaceId: () => string;
+  setSelectedPlaceId: (id: string) => void;
   getStar: () => number;
   setStar: (s: number) => void;
   getSelectedImg: () => any[];
@@ -24,6 +27,7 @@ interface Action {
 
 const initData: State = {
   selectedPlace: "",
+  selectedPlaceId: "",
   star: 0,
   selectedImg: [],
   title: "",
@@ -42,5 +46,7 @@ export const useWriteReviewStore = create<State & Action>()((set, get) => ({
   setTitle: (t: string) => set({ title: t }),
   getReviewText: () => get().reviewText,
   setReviewText: (t: string) => set({ reviewText: t }),
+  getSelectedPlaceId: () => get().selectedPlaceId,
+  setSelectedPlaceId: (id: string) => set({ selectedPlaceId: id }),
   clear: () => set({ ...initData }),
 }));

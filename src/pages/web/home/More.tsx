@@ -68,6 +68,7 @@ export default function More() {
                 title={getHomeTab() !== "CITY" ? item.name : ""}
                 subTitle={getHomeTab() !== "CITY" ? item.subName : ""}
                 handleClick={() => handleClick(`${item.placeId}`)}
+                photoUrl={item.photoUrl}
               />
             ))}
       </CardGridBox>

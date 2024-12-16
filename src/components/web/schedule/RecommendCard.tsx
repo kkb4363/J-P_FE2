@@ -1,19 +1,34 @@
-import testImg from "../../../assets/images/testImg3.png";
 import styled from "styled-components";
 import CustomProfile from "../../CustomProfile";
+import { TravelogProps } from "../../../types/travelreview";
+import { formatDayNights } from "../../../utils/dayNights";
+import { useNavigate } from "react-router-dom";
 
-export default function RecommendCard() {
+interface Props {
+  data: TravelogProps;
+}
+
+export default function RecommendCard({ data }: Props) {
+  const navigate = useNavigate();
+
+  const travelInfo = formatDayNights(
+    data?.scheduleStartDate,
+    data?.scheduleEndDate
+  );
+
   return (
-    <RecommendCardContainer>
-      <img src={testImg} alt="이미지없음" />
+    <RecommendCardContainer
+      onClick={() => navigate(`/home/travelogue/${data?.id}`)}
+    >
+      <img src={data?.fileInfos[0]?.fileUrl} alt="recommended-travelogue" />
       <RecommendCardTextCol>
         <CustomProfile
-          src={testImg}
+          src={data?.userCompactResDto?.profile}
           fontSize="14px"
-          nickname="Minah"
-          content="1박 2일"
+          nickname={data?.userCompactResDto?.nickname}
+          content={`${travelInfo.nights}박 ${travelInfo.days}일`}
         />
-        <p>남해로 힐링 여행 떠나기</p>
+        <p>{data?.subject}</p>
         <RecommendCardTagRow>
           <span>#한려해상국립공원</span>
           <span>#바람흔적미술관</span>
@@ -32,7 +47,7 @@ const RecommendCardContainer = styled.div`
   gap: 10px;
   border-radius: 16px;
   border: 1px solid ${(props) => props.theme.color.gray200};
-
+  cursor: pointer;
   & > img {
     width: 218px;
     height: 108px;

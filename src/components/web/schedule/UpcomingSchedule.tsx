@@ -3,11 +3,12 @@ import ScheduleSlider from "./ScheduleSlider";
 import RecommendCard from "./RecommendCard";
 import { ScheduleApiProps } from "../../../types/schedule";
 import TrashIcon from "../../../assets/icons/TrashIcon";
-import { useState } from "react";
-import { deleteSchedule } from "../../../service/axios";
+import { useEffect, useState } from "react";
+import { deleteSchedule, getAllDiaries } from "../../../service/axios";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import OneButtonModal from "../../OneButtonModal";
 import { LoadingText } from "../../../pages/web/onboarding/Survey";
+import { TravelogProps } from "../../../types/travelreview";
 
 interface Props {
   schedules: ScheduleApiProps[];
@@ -44,6 +45,18 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
     }
   };
 
+  const [recommendTravelogues, setRecommendTravelogues] = useState<
+    TravelogProps[]
+  >([]);
+
+  useEffect(() => {
+    getAllDiaries(1, "HOT").then((res) => {
+      if (res) {
+        setRecommendTravelogues(res?.data.data);
+      }
+    });
+  }, []);
+
   return (
     <>
       <>
@@ -76,9 +89,9 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
         </SubTitleWithMore>
 
         <RecommendCardBox>
-          <RecommendCard />
-          <RecommendCard />
-          <RecommendCard />
+          {recommendTravelogues?.map((r) => (
+            <RecommendCard data={r} key={r.id} />
+          ))}
         </RecommendCardBox>
       </>
 

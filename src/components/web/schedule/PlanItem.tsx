@@ -2,31 +2,23 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useState } from "react";
 import styled from "styled-components";
-import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
-import PhoneIcon from "../../../assets/icons/PhoneIcon";
-import StarIcon from "../../../assets/icons/StarIcon";
-import TicketIcon from "../../../assets/icons/TicketIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
 import {
   deletePlaceFromSchedule,
-  getGooglePlaceDetail,
   moveScheduleDate,
 } from "../../../service/axios";
 import { useCurrentDayIdStore } from "../../../store/currentDayId.store";
-import { useAddPlaceStore } from "../../../store/useAddPlace.store";
 import { useUserStore } from "../../../store/user.store";
-import { SelectPlaceProps } from "../../../types/place";
 import { DayLocationProps, DayProps } from "../../../types/schedule";
-import CustomSkeleton from "../../CustomSkeleton";
-import IconBox from "../../IconBox";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 import TimeSwiper from "../../TimeSwiper";
 import TwoButtonsModal from "../../TwoButtonsModal";
-import ImageView from "../ImageView";
 import NoButtonModal from "../NoButtonModal";
 import PlanMemo from "./PlanMemo";
+import AddedPlaceDetailModal from "./AddedPlaceDetailModal";
+import useAddPlaceHook from "../../../hooks/useAddPlace";
 
 interface Props {
   item: DayLocationProps;
@@ -41,21 +33,23 @@ export default function PlanItem({
   dayList,
   reloadSchedule,
 }: Props) {
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState({
+  const [isOpenPlaceModal, setIsOpenPlaceModal] = useState(false);
+
+  const [modalState, setModalState] = useState({
     delete: false,
     deleteSuccess: false,
-  });
-  const [isOpenMemoModal, setIsOpenMemoModal] = useState({
     memo: false,
     cost: false,
   });
-  const [isOpenPlaceModal, setIsOpenPlaceModal] = useState(false);
-  const [isMove, setIsMove] = useState(false);
-  const [placeInfo, setPlaceInfo] = useState<SelectPlaceProps>();
-  const [isLoading, setIsLoading] = useState(false);
-  const { getUserType } = useUserStore();
-  const { getCurrentDayId } = useCurrentDayIdStore();
-  const { selectDay, selectTime, openModal, setOpenModal } = useAddPlaceStore();
+
+  const {
+    selectDay,
+    selectTime,
+    openModal,
+    setOpenModal,
+    setSelectDay,
+    setSelectTime,
+  } = useAddPlaceHook();
 
   const {
     attributes,
@@ -67,24 +61,21 @@ export default function PlanItem({
     isDragging,
   } = useSortable({ id: item.id });
 
-  const handleItemClick = async () => {
+  const [isMove, setIsMove] = useState(false);
+  const { getUserType } = useUserStore();
+  const { getCurrentDayId } = useCurrentDayIdStore();
+
+  const handleCardClick = async () => {
     if (isEdit) {
       setIsMove(true);
-      setOpenModal({ selectDay: true });
+      setOpenModal((p) => ({ ...p, selectDay: true }));
     } else {
-      setIsLoading(true);
       setIsOpenPlaceModal(true);
-      await getGooglePlaceDetail({ placeId: item.placeId }).then((res) => {
-        setPlaceInfo(res!.data);
-      });
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 300);
     }
   };
 
   const handleMovePlanClick = async () => {
-    setOpenModal({ selectTime: false });
+    setOpenModal((p) => ({ ...p, selectTime: false }));
     if (isMove) {
       setIsMove(false);
       await moveScheduleDate(
@@ -113,13 +104,15 @@ export default function PlanItem({
 
   const handleEditTimeClick = async () => {
     if (isEdit) {
-      setOpenModal({ selectTime: true });
+      setOpenModal((p) => ({ ...p, selectTime: true }));
     }
   };
 
   const handleDeleteItemClick = async () => {
     await deletePlaceFromSchedule(item.id).then(() => {
-      setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+      // setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
+      setModalState((p) => ({ ...p, delete: false, deleteSuccess: true }));
+
       reloadSchedule();
     });
   };
@@ -139,7 +132,7 @@ export default function PlanItem({
           $isEdit={isEdit}
           onClick={handleEditTimeClick}
         >{`${item.time}`}</TimeBox>
-        <PlaceBox $isDragging={isDragging} onClick={handleItemClick}>
+        <PlaceBox $isDragging={isDragging} onClick={handleCardClick}>
           <PlaceNum $isEdit={isEdit}>{item.index}</PlaceNum>
           <PlaceTitleBox>
             <p>{item.name}</p>
@@ -158,80 +151,31 @@ export default function PlanItem({
         {isEdit ? (
           <button
             onClick={() =>
-              setIsOpenDeleteModal({
+              setModalState((p) => ({
+                ...p,
                 delete: true,
                 deleteSuccess: false,
-              })
+              }))
             }
           >
             <TrashIcon />
           </button>
         ) : (
           <MemoButton
-            onClick={() => setIsOpenMemoModal((p) => ({ ...p, memo: true }))}
+            onClick={() => setModalState((p) => ({ ...p, memo: true }))}
           >
             <FileCheckIcon />
           </MemoButton>
         )}
       </PlanItemContainer>
 
-      {/* 일정 장소 상세 Modal */}
-      {isOpenPlaceModal && placeInfo && (
-        <NoButtonModal
-          width="470px"
-          height="390px"
-          onClose={() => setIsOpenPlaceModal(false)}
-        >
-          <>
-            <ModalTopBox>
-              {isLoading ? (
-                <CustomSkeleton
-                  width="130px"
-                  height="110px"
-                  borderRadius="16px"
-                />
-              ) : (
-                <ImageView
-                  src={placeInfo?.photoUrls[0]}
-                  alt={placeInfo.name}
-                  width="130px"
-                  height="110px"
-                />
-              )}
-              <div>
-                <h1>{placeInfo.name}</h1>
-                <span>{placeInfo.shortAddress}</span>
-                <IconBox>
-                  <StarIcon />
-                  <span>{placeInfo.rating}</span>
-                </IconBox>
-              </div>
-            </ModalTopBox>
-            <ModalBottomBox>
-              <PlaceInfoBox>
-                <div>
-                  <AlarmIcon />
-                  <PlaceWeekdayBox>
-                    {placeInfo.weekdayText.map((weekday, idx) => {
-                      return <span key={idx}>{weekday}</span>;
-                    })}
-                  </PlaceWeekdayBox>
-                </div>
-                <div>
-                  <TicketIcon />
-                  <span>스카이워크 3,000</span>
-                </div>
-                <div>
-                  <PhoneIcon />
-                  <span>{placeInfo.formattedPhoneNumber}</span>
-                </div>
-              </PlaceInfoBox>
-            </ModalBottomBox>
-          </>
-        </NoButtonModal>
+      {isOpenPlaceModal && (
+        <AddedPlaceDetailModal
+          placeId={item.placeId}
+          handleClose={() => setIsOpenPlaceModal(false)}
+        />
       )}
 
-      {/* 일정 이동 Modal */}
       {openModal.selectDay && (
         <OneButtonModal
           isMobile={false}
@@ -240,11 +184,17 @@ export default function PlanItem({
           title="다른 날로 이동"
           buttonText="다음"
           onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
-          onClose={() => setOpenModal({ selectDay: false })}
+          onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
-          <MoveDaySlider isMobile={false} dayResDtos={dayList} />
+          <MoveDaySlider
+            isMobile={false}
+            dayResDtos={dayList}
+            selectDay={selectDay}
+            setSelectDay={setSelectDay}
+          />
         </OneButtonModal>
       )}
+
       {openModal.selectTime && (
         <OneButtonModal
           isMobile={false}
@@ -253,66 +203,63 @@ export default function PlanItem({
           title="시간 설정"
           buttonText="완료"
           onClick={handleMovePlanClick}
-          onClose={() => setOpenModal({ selectTime: false })}
+          onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
-          <TimeSwiper isMobile={false} />
+          <TimeSwiper isMobile={false} setSelectTime={setSelectTime} />
         </OneButtonModal>
       )}
 
-      {/* 일정 삭제 Modal */}
-      {isOpenDeleteModal.delete && (
+      {modalState.delete && (
         <TwoButtonsModal
           isMobile={false}
           width="470px"
           height="390px"
           text="일정을 삭제할까요?"
           onClick={handleDeleteItemClick}
-          onClose={() => setIsOpenDeleteModal((p) => ({ ...p, delete: false }))}
+          onClose={() => setModalState((p) => ({ ...p, delete: false }))}
         />
       )}
-      {isOpenDeleteModal.deleteSuccess && (
+
+      {modalState.deleteSuccess && (
         <OneButtonModal
           isMobile={false}
           width="470px"
           height="390px"
           noCloseBtn
           buttonText="확인"
-          onClick={() =>
-            setIsOpenDeleteModal((p) => ({ ...p, deleteSuccess: false }))
-          }
+          onClick={() => setModalState((p) => ({ ...p, deleteSuccess: false }))}
         >
           <ModalText>일정이 삭제되었습니다.</ModalText>
         </OneButtonModal>
       )}
 
-      {/* 일정 - 나의 플랜 Modal */}
-      {isOpenMemoModal.memo && (
+      {modalState.memo && (
         <NoButtonModal
           width="666px"
           height="808px"
-          onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
+          onClose={() => setModalState((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
           <PlanMemo
             isAddCost={false}
             planItemId={item.id}
-            setIsOpenMemoModal={setIsOpenMemoModal}
+            setIsOpenMemoModal={setModalState}
           />
         </NoButtonModal>
       )}
 
       {/* 일정 - 비용 추가 Modal */}
-      {isOpenMemoModal.cost && (
+      {modalState.cost && (
         <NoButtonModal
           width="666px"
           height="695px"
-          onClose={() => setIsOpenMemoModal((p) => ({ ...p, memo: false }))}
+          onClose={() => setModalState((p) => ({ ...p, memo: false }))}
           noCloseBtn
         >
           <PlanMemo
             isAddCost={true}
             planItemId={item.id}
-            setIsOpenMemoModal={setIsOpenMemoModal}
+            setIsOpenMemoModal={setModalState}
           />
         </NoButtonModal>
       )}
@@ -418,45 +365,3 @@ const ModalText = styled.p`
   font-size: 20px;
   font-weight: 700;
 `;
-
-const ModalTopBox = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  padding: 0 20px;
-  gap: 28px;
-
-  & > div {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 15px;
-  }
-`;
-
-const ModalBottomBox = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-self: flex-start;
-  justify-content: center;
-  padding: 36px;
-`;
-
-const PlaceInfoBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-
-  & > div {
-    display: flex;
-    gap: 10px;
-    color: ${(props) => props.theme.color.gray700};
-  }
-`;
-
-const PlaceWeekdayBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`

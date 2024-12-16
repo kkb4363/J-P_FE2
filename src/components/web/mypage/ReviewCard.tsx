@@ -1,21 +1,41 @@
-import testImg from "../../../assets/images/testImg.png";
 import styled from "styled-components";
 import LikeCommentBox from "../../LikeCommentBox";
 import CustomProfile from "../../CustomProfile";
+import { MyReviewProps } from "../../../types/mypage";
+import { useNavigate } from "react-router-dom";
 
-export default function ReviewCard() {
+interface Props {
+  data: MyReviewProps;
+}
+
+export default function ReviewCard({ data }: Props) {
+  const navigate = useNavigate();
+
   return (
     <ReviewCardContainer>
       <ReviewCardTitleRow>
-        <CustomProfile src={testImg} nickname="arami10" content="24.4.12" />
-        <span>수정</span>
+        <CustomProfile
+          src={data?.fileInfos[0]?.fileUrl}
+          nickname={data?.userCompactResDto?.nickname}
+          content={data?.createdAt}
+        />
+        <span
+          onClick={() =>
+            navigate(`/home/writeReview`, {
+              state: {
+                reviewId: data?.id,
+              },
+            })
+          }
+        >
+          수정
+        </span>
       </ReviewCardTitleRow>
 
       <ReviewCardDetailCol>
-        <p>전주 한옥마을, 벽화마을, 남부시장 먹방 여행</p>
-        <span>오랜만에 한옥마을에서 힐링하고 갑니다~ 조용하고 조용하고</span>
+        <span>{data?.content}</span>
       </ReviewCardDetailCol>
-      <LikeCommentBox commentCnt={1} likeCnt={5} />
+      <LikeCommentBox commentCnt={data?.commentCnt} likeCnt={data?.likeCnt} />
     </ReviewCardContainer>
   );
 }

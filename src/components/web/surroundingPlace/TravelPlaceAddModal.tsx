@@ -206,7 +206,6 @@ const TravelPlaceAddModalContainer = styled.aside`
     height: 160px;
     overflow-y: scroll;
     ${scrollHidden};
-    background-color: tomato;
   }
 `;
 

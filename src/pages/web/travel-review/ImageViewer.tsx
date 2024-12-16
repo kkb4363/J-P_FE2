@@ -18,6 +18,8 @@ export default function ImageViewer() {
   };
   const [index, setIndex] = useState(currentIndex);
 
+  console.log(images);
+
   const handlePrev = () => {
     setIndex((prev: number) => (prev === 0 ? images.length - 1 : prev - 1));
   };

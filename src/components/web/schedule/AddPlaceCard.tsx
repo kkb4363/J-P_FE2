@@ -10,8 +10,8 @@ interface Props {
   height?: string;
   imgSize?: string;
   isSelect: boolean;
-  handleAdd: () => void;
-  handleRemove: () => void;
+  handleAdd?: () => void;
+  handleRemove?: () => void;
   handleClick: (id: string) => void;
   item: GooglePlaceProps;
 }
@@ -26,9 +26,10 @@ export default function AddPlaceCard({
   handleClick,
   item,
 }: Props) {
+  console.log(item);
   return (
     <AddPlaceCardContainer $width={width} $height={height} $imgSize={imgSize}>
-      <img src={item.photoUrl} alt="이미지없음" />
+      {/* <img src={item.photoUrl} alt="이미지없음" /> */}
 
       <div onClick={() => handleClick(item.placeId)}>
         <h1>명소</h1>

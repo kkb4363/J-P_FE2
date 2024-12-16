@@ -10,3 +10,14 @@ export interface GoogleSearchProps {
   userRatingsTotal: number;
   photoUrls: string;
 }
+
+export interface SearchPlaceProps {
+  id: number;
+  name: string;
+  photoUrl: string;
+  placeId: string;
+  placeType: string;
+  rating: number;
+  subName: string;
+  themeType: any;
+}
