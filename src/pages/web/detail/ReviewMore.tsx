@@ -31,7 +31,7 @@ export default function ReviewMore() {
   return (
     <ReviewMoreContainer>
       <h1>
-        리뷰 14
+        리뷰 {reviews?.length}
         <div onClick={() => navigate("/home/writeReview")}>
           <EditIcon stroke="black" width="24" height="24" />
         </div>

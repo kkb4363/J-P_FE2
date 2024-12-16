@@ -9,21 +9,16 @@ import useImgLoading from "../../../hooks/useImgLoading";
 import { useModalStore } from "../../../store/modal.store";
 import { Cookies } from "react-cookie";
 import { toast } from "react-toastify";
+import { SelectPlaceProps } from "../../../types/place";
 
 interface Props {
-  imgSrc: string;
-  title: string;
-  shortAddress: string;
-  rating: number;
-  businessStatus: string;
-  phoneNumber: string;
-  fullAddress: string;
+  data: SelectPlaceProps;
 }
 
 const cookies = new Cookies();
 
-export default function InfoModal(props: Props) {
-  const { loading } = useImgLoading({ imgSrc: props.imgSrc });
+export default function InfoModal({ data }: Props) {
+  const { loading } = useImgLoading({ imgSrc: data?.photoUrls[0] });
   const modalStore = useModalStore();
 
   const handleClick = () => {
@@ -41,18 +36,18 @@ export default function InfoModal(props: Props) {
           <CustomSkeleton width="160px" height="145px" borderRadius="16px" />
         ) : (
           <ImageView
-            src={props.imgSrc}
+            src={data?.photoUrls[0]}
             alt="이미지없음"
             width="160px"
             height="145px"
           />
         )}
         <div>
-          <h1>{props.title}</h1>
-          <p>{props.shortAddress}</p>
+          <h1>{data.name}</h1>
+          <p>{data.shortAddress}</p>
           <span>
             <StarIcon />
-            {props.rating}
+            {data.rating}
           </span>
         </div>
         <ModalAddButton onClick={handleClick}>
@@ -61,14 +56,16 @@ export default function InfoModal(props: Props) {
       </ModalTopBox>
       <ModalBottomBox>
         <span>
-          <AlarmIcon /> {props.businessStatus}
+          <AlarmIcon /> {data.businessStatus}
         </span>
         <span>
           <InfoIcon />{" "}
-          {!props.phoneNumber ? "전화번호 없음" : props.phoneNumber}
+          {!data.formattedPhoneNumber
+            ? "전화번호 없음"
+            : data.formattedPhoneNumber}
         </span>
         <span>
-          <MarkIcon width="18" height="18" /> {props.fullAddress}
+          <MarkIcon width="18" height="18" /> {data.fullAddress}
         </span>
       </ModalBottomBox>
     </>

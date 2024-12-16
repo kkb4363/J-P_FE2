@@ -31,7 +31,9 @@ export default function CreatePlace() {
   const {
     list,
     selectDay,
+    setSelectDay,
     selectTime,
+    setSelectTime,
     handleAdd,
     handleRemove,
     openModal,
@@ -61,11 +63,12 @@ export default function CreatePlace() {
   const { getUserType } = useUserStore();
   const handleAddPlaceClick = async () => {
     setOpenModal((p) => ({ ...p, selectTime: false }));
-    console.log(selectDay, selectTime);
 
     if (!selectDay || !selectTime) {
       return;
     }
+
+    console.log(selectTime);
 
     const places = list.map((place) => ({
       time: selectTime,
@@ -213,7 +216,12 @@ export default function CreatePlace() {
           onClick={handleDaySelect}
           onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
-          <MoveDaySlider isMobile={false} dayResDtos={dayResDtos} />
+          <MoveDaySlider
+            isMobile={false}
+            dayResDtos={dayResDtos}
+            selectDay={selectDay}
+            setSelectDay={setSelectDay}
+          />
         </OneButtonModal>
       )}
 
@@ -228,7 +236,7 @@ export default function CreatePlace() {
           width="440px"
           height="320px"
         >
-          <TimeSwiper isMobile={false} />
+          <TimeSwiper isMobile={false} setSelectTime={setSelectTime} />
         </OneButtonModal>
       )}
     </>

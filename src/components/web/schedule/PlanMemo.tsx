@@ -15,12 +15,7 @@ import CustomSkeleton from "../../CustomSkeleton";
 interface Props {
   isAddCost: boolean;
   planItemId: number;
-  setIsOpenMemoModal: React.Dispatch<
-    React.SetStateAction<{
-      memo: boolean;
-      cost: boolean;
-    }>
-  >;
+  setIsOpenMemoModal: any;
 }
 
 export default function PlanMemo({
@@ -65,7 +60,7 @@ export default function PlanMemo({
         expense: [...planMemoData.expense, addCostData],
       };
       editPlanApi(planItemId, updatedPlanMemoData);
-      setIsOpenMemoModal({ memo: true, cost: false });
+      setIsOpenMemoModal((p: any) => ({ ...p, memo: true, cost: false }));
     } else {
       editPlanApi(planItemId, planMemoData);
       setIsPlanMemoEdit(false);
@@ -147,10 +142,11 @@ export default function PlanMemo({
               </SubtitleBox>
               <div
                 onClick={() =>
-                  setIsOpenMemoModal({
+                  setIsOpenMemoModal((p: any) => ({
+                    ...p,
                     memo: false,
                     cost: true,
-                  })
+                  }))
                 }
               >
                 <AddSquareIcon />

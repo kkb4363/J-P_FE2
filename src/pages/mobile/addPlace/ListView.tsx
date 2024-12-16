@@ -17,12 +17,14 @@ export default function ListView() {
     handleDaySelect,
   } = useAddPlaceHook();
 
+  console.log(list);
+
   return (
     <>
-      <CustomInput text="어디로 떠나고 싶나요?" value="" />
+      <CustomInput text="어디로 떠나고 싶나요?" value="" onChange={() => {}} />
 
       <PlaceCardCol>
-        {Array.from({ length: 7 }).map((_, idx) => (
+        {/* {Array.from({ length: 7 }).map((_, idx) => (
           <AddPlaceCard
             key={idx}
             height="100px"
@@ -32,7 +34,7 @@ export default function ListView() {
             handleAdd={() => handleAdd(idx)}
             handleRemove={() => handleRemove(idx)}
           />
-        ))}
+        ))} */}
       </PlaceCardCol>
 
       <SaveButtonBox>
