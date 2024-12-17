@@ -20,15 +20,20 @@ export interface ProfileAPIProps {
 }
 
 export interface MyLikeProps {
-  id: number;
-  userId: number;
-  targetId: string;
-  likeType: string;
   createdAt: string;
-  targetName: string;
-  targetAddress: string;
   fileUrl: string;
-  placeType: string;
+  id: number;
+  likeActionType: string;
+  likeTargetType: string;
+  targetId: string;
+  targetAddress?: string;
+  targetName?: string;
+  targetScheduleEndDate?: string;
+  targetScheduleStartDate?: string;
+  targetSubject?: string;
+  placeType?: string;
+  userId: number;
+  targetUserCompactResDto?: UserProps;
 }
 
 export interface MySchedules {

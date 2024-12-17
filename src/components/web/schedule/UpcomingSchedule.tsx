@@ -65,9 +65,15 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
             <SubTitleWithMore>
               <h2>내 일정</h2>
 
-              <div onClick={handleDelete}>
-                {isDelete && <TrashIcon width={16} height={16} />}
-                {isDelete ? "삭제" : "편집"}
+              <div>
+                <span onClick={handleDelete}>
+                  {isDelete && <TrashIcon width={16} height={16} />}
+                  {isDelete ? "삭제" : "편집"}
+                </span>
+
+                {isDelete && (
+                  <span onClick={() => setIsDelete(false)}>취소</span>
+                )}
               </div>
             </SubTitleWithMore>
 
@@ -137,10 +143,16 @@ const SubTitleWithMore = styled.section`
   & > div {
     display: flex;
     align-items: center;
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 14px;
-    font-weight: 400;
-    cursor: pointer;
+    gap: 6px;
+
+    & > span {
+      display: flex;
+      align-items: center;
+      color: ${(props) => props.theme.color.gray300};
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+    }
   }
 `;
 

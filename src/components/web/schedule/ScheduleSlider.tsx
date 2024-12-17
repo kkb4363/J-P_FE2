@@ -40,6 +40,9 @@ export default function ScheduleSlider({
     if (isDelete) {
       setSelectId(schedules[0]?.id);
       setDeleteId(schedules[0]?.id);
+    } else {
+      setDeleteId(-1);
+      setSelectId(-1);
     }
   }, [isDelete]);
 

@@ -10,18 +10,18 @@ import CommentCard from "../../../components/mobile/CommentCard";
 import TraveloguePlaceBox from "../../../components/TraveloguePlaceBox";
 import Container from "../../../components/web/Container";
 import ImageView from "../../../components/web/ImageView";
-import { getDiaryDetail } from "../../../service/axios";
+import {
+  getDiaryDetail,
+  setComment as setCommentApi,
+  setLike,
+} from "../../../service/axios";
 import { TravelogDetailProps } from "../../../types/travelreview";
 import { formatDayNights } from "../../../utils/dayNights";
-import {
-  testImageList,
-  testLogTags
-} from "../../../utils/staticDatas";
+import { testLogTags } from "../../../utils/staticDatas";
 
 export default function TravelogueDetails() {
   const navigate = useNavigate();
   const { travelogueId } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
   const [diaryData, setDiaryData] = useState<TravelogDetailProps>();
   const [fillLike, setFillLike] = useState(false);
   const [fillHeart, setFillHeart] = useState(false);
@@ -47,20 +47,63 @@ export default function TravelogueDetails() {
   };
 
   const requestApi = async () => {
-    setIsLoading(true);
     await getDiaryDetail(Number(travelogueId)).then((res) => {
       setDiaryData(res?.data);
     });
-    setIsLoading(false);
   };
 
   useEffect(() => {
     requestApi();
   }, [travelogueId]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleLike = () => {
+    if (diaryData?.id) {
+      setLike({
+        actionType: "LIKE",
+        targetType: "DIARY",
+        id: diaryData.id + "",
+      }).then((res) => {
+        if (res) {
+          console.log(res);
+        }
+      });
+    }
+  };
+
+  const handleHeart = () => {
+    if (diaryData?.id) {
+      setLike({
+        actionType: "BOOKMARK",
+        targetType: "DIARY",
+        id: diaryData.id + "",
+      }).then((res) => {
+        if (res) {
+          console.log(res);
+        }
+      });
+    }
+  };
+
+  const handleReviewAdd = () => {
+    if (comment) {
+      setCommentApi({
+        targetId: Number(travelogueId),
+        commentType: "DIARY",
+        content: comment,
+      }).then((res) => {
+        if (res) {
+          requestApi();
+          setComment("");
+        }
+      });
+    }
+  };
+
+  const [isReplyAdded, setIsReplyAdded] = useState(false);
+
+  useEffect(() => {
+    requestApi();
+  }, [isReplyAdded]);
 
   return (
     <div>
@@ -69,7 +112,7 @@ export default function TravelogueDetails() {
           <TravelogueDetailsTitle>
             <div />
             <h1>{diaryData.subject}</h1>
-            <HeartBox onClick={handleHeartClick}>
+            <HeartBox onClick={handleHeart}>
               <HeartIcon
                 fill={fillHeart ? "#FF5757" : "none"}
                 stroke={fillHeart ? "#FF5757" : "#808080"}
@@ -88,7 +131,7 @@ export default function TravelogueDetails() {
                   likeCnt={diaryData.likeCnt}
                   commentCnt={diaryData.commentCnt}
                   fillLike={fillLike}
-                  likeClick={() => setFillLike((prev) => !prev)}
+                  likeClick={handleLike}
                 />
               </ProfileLikeCommentBox>
               <HashtagsBox hashTags={testLogTags} />
@@ -125,9 +168,9 @@ export default function TravelogueDetails() {
             </CommentInput>
             <R.CommentWriteButton
               type="submit"
-              fill={true}
-              fontsize="14px"
-              onClick={handleWriteCommentSubmit}
+              $fill={true}
+              $fontSize="14px"
+              onClick={handleReviewAdd}
             >
               등록
             </R.CommentWriteButton>
@@ -137,11 +180,9 @@ export default function TravelogueDetails() {
               return (
                 <CommentCard
                   key={idx}
-                  content={comment.content}
-                  createdAt={comment.createdAt}
-                  user={comment.userCompactResDto}
-                  replyList={comment.replyList}
-                  web
+                  {...comment}
+                  isReply={false}
+                  setIsReply={setIsReplyAdded}
                 />
               );
             })}

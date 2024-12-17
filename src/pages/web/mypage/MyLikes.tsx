@@ -11,7 +11,7 @@ import { webMyLikeTabs } from "../../../utils/staticDatas";
 export default function MyLikes() {
   const navigate = useNavigate();
 
-  const [isLoading, SetIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [likes, setLikes] = useState<MyLikeProps[]>([]);
   const [currentTab, setCurrentTab] = useState("");
 
@@ -21,11 +21,24 @@ export default function MyLikes() {
       placeType: webMyLikeTabs.find((t) => t.value === currentTab)?.placeType,
     }).then((res) => {
       if (res) {
+        if (currentTab === "diary") {
+          const diaries = res?.data.data.filter(
+            (d: MyLikeProps) => d.likeTargetType === "DIARY"
+          );
+          setLikes(diaries);
+          return setIsLoading(false);
+        }
+
         setLikes(res?.data.data);
-        SetIsLoading(false);
+        setIsLoading(false);
       }
     });
   }, [currentTab]);
+
+  const handleLike = (type: string, id: string) => {
+    if (type === "DIARY") navigate(`/home/travelogue/${id}`);
+    else navigate(`/home/details/${id}`);
+  };
 
   return (
     <div>
@@ -55,7 +68,7 @@ export default function MyLikes() {
           : likes?.map((like) => (
               <ImgBox
                 key={like.id}
-                onClick={() => navigate(`/home/details/${like.targetId}`)}
+                onClick={() => handleLike(like.likeTargetType, like.targetId)}
               >
                 <HeartIconBox>
                   <HeartIcon
@@ -65,9 +78,16 @@ export default function MyLikes() {
                     fill="#ff5757"
                   />
                 </HeartIconBox>
-                <img src={like.fileUrl} alt="like" />
+                <img
+                  src={like.fileUrl}
+                  alt={like.fileUrl ? like.targetName : "이미지 없음"}
+                />
                 <div>
-                  <p>{like.targetName}</p>
+                  <p>
+                    {like.likeTargetType === "DIARY"
+                      ? like.targetSubject
+                      : like.targetName}
+                  </p>
                   <span>{like.targetAddress}</span>
                 </div>
               </ImgBox>

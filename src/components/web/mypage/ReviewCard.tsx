@@ -6,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
   data: MyReviewProps;
+  handleClick: () => void;
 }
 
-export default function ReviewCard({ data }: Props) {
+export default function ReviewCard({ data, handleClick }: Props) {
   const navigate = useNavigate();
 
   return (
-    <ReviewCardContainer>
+    <ReviewCardContainer onClick={handleClick}>
       <ReviewCardTitleRow>
         <CustomProfile
           src={data?.fileInfos[0]?.fileUrl}
@@ -20,13 +21,14 @@ export default function ReviewCard({ data }: Props) {
           content={data?.createdAt}
         />
         <span
-          onClick={() =>
+          onClick={(e) => {
+            e.stopPropagation();
             navigate(`/home/writeReview`, {
               state: {
                 reviewId: data?.id,
               },
-            })
-          }
+            });
+          }}
         >
           수정
         </span>
@@ -51,6 +53,7 @@ const ReviewCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
 `;
 
 const ReviewCardTitleRow = styled.div`

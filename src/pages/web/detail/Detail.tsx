@@ -247,7 +247,10 @@ export default function Detail() {
 
       <ReviewCardRow>
         {review?.map((r) => (
-          <ReviewCard key={r.id}>
+          <ReviewCard
+            key={r.id}
+            onClick={() => navigate(`/home/review/${r.id}`)}
+          >
             <ImageView
               width="110px"
               height="100px"
@@ -496,6 +499,7 @@ const ReviewCard = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 `;
 
 const ReviewInfoCol = styled.div`

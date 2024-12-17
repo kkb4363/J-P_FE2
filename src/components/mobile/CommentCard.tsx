@@ -3,43 +3,30 @@ import styled from "styled-components";
 import PencilIcon from "../../assets/icons/PencilIcon";
 import ReplyIcon from "../../assets/icons/ReplyIcon";
 import TrashIcon from "../../assets/icons/TrashIcon";
-import testImg from "../../assets/images/testImg.png";
 import * as R from "../../assets/styles/travelReview.style";
-import { UserProps } from "../../types/mypage";
 import { CommentProps } from "../../types/travelreview";
 import CustomProfile from "../CustomProfile";
 import IconBox from "../IconBox";
 import TwoButtonsModal from "../TwoButtonsModal";
+import { deleteComment, setCommentReply } from "../../service/axios";
 
-interface Props {
-  isReply?: boolean;
-  web?: boolean;
-  content: string;
-  createdAt: string;
-  user: UserProps;
-  replyList?: CommentProps[];
-}
+export default function CommentCard(
+  props: CommentProps & { isReply?: boolean; setIsReply?: any; isWeb?: boolean }
+) {
+  const { isReply = false, setIsReply, isWeb } = props;
 
-export default function CommentCard({
-  isReply = false,
-  web = false,
-  content: oldContent,
-  createdAt,
-  user,
-  replyList,
-}: Props) {
   const [writeReply, setWriteReply] = useState(false);
   const [reply, setReply] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [content, setContent] = useState(oldContent);
+  const [content, setContent] = useState(props?.content);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (replyList && replyList?.length > 0) {
+    if (props?.replyList && props?.replyList?.length > 0) {
       setWriteReply(true);
     }
-  }, [replyList?.length]);
+  }, [props?.replyList?.length]);
 
   const handleWriteReplySubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -51,6 +38,11 @@ export default function CommentCard({
   };
 
   const handleDeleteClick = () => {
+    deleteComment({ commentId: props?.id }).then((res) => {
+      if (res) {
+        setIsReply((p: any) => !p);
+      }
+    });
     setDeleteModal(false);
   };
 
@@ -66,6 +58,19 @@ export default function CommentCard({
     AutoResizeTextarea();
   }, [edit]);
 
+  const handleReplyAdd = () => {
+    if (reply) {
+      setCommentReply({ commentId: props.id + "", content: reply }).then(
+        (res) => {
+          if (res) {
+            console.log(res);
+            setIsReply((p: any) => !p);
+          }
+        }
+      );
+    }
+  };
+
   return (
     <>
       {deleteModal && (
@@ -78,11 +83,15 @@ export default function CommentCard({
           onClose={() => setDeleteModal(false)}
         />
       )}
-      <CommentCardContainer $reply={isReply} $edit={edit} $web={web}>
+      <CommentCardContainer $reply={isReply} $edit={edit} $web={false}>
         <CustomProfile
-          src={testImg}
-          nickname={user.nickname}
-          content={createdAt}
+          src={
+            props?.userCompactResDto?.profile
+              ? props?.userCompactResDto?.profile
+              : ""
+          }
+          nickname={props?.userCompactResDto?.nickname}
+          content={props?.createdAt}
         />
         <ContentBox>
           {edit ? (
@@ -102,8 +111,8 @@ export default function CommentCard({
                 {!edit && (
                   <>
                     <ReplyIcon />
-                    {replyList && replyList.length > 0 ? (
-                      <span>{replyList && replyList.length}</span>
+                    {props?.replyList && props?.replyList.length > 0 ? (
+                      <span>{props?.replyList && props?.replyList.length}</span>
                     ) : (
                       <span onClick={() => setWriteReply((prev) => !prev)}>
                         답글달기
@@ -133,17 +142,9 @@ export default function CommentCard({
                 )}
               </CommentEditIconBox>
             </CommentFooter>
-            {replyList &&
-              replyList.map((item: CommentProps) => {
-                return (
-                  <CommentCard
-                    key={item.id}
-                    isReply={true}
-                    content={item.content}
-                    createdAt="23.2.4"
-                    user={item.userCompactResDto}
-                  />
-                );
+            {props?.replyList &&
+              props?.replyList.map((item: CommentProps) => {
+                return <CommentCard key={item.id} {...item} isReply={true} />;
               })}
           </>
         )}
@@ -159,15 +160,15 @@ export default function CommentCard({
             </CommentInput>
             <R.CommentWriteButton
               type="submit"
-              fill={false}
-              fontsize="14px"
-              onClick={handleWriteReplySubmit}
+              $fill={false}
+              $fontSize="14px"
+              onClick={handleReplyAdd}
             >
               등록
             </R.CommentWriteButton>
           </R.CommentInputBox>
         )}
-        {isReply && (
+        {/* {isReply && (
           <>
             <CommentEditIconBox>
               <PencilIcon />
@@ -179,7 +180,7 @@ export default function CommentCard({
               />
             </CommentEditIconBox>
           </>
-        )}
+        )} */}
       </CommentCardContainer>
     </>
   );
@@ -206,6 +207,8 @@ const CommentCardContainer = styled.div<{
   border-radius: 16px;
   box-shadow: ${(props) =>
     props.$edit && `0 0 0 1px ${props.theme.color.gray200} inset`};
+
+  margin-top: 8px;
 `;
 
 const ContentBox = styled.div`

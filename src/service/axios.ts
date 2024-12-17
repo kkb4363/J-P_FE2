@@ -7,20 +7,14 @@ const cookies = new Cookies();
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_SERVER,
+  headers: {
+    Authorization: cookies.get("userToken"),
+  },
 });
 
 export const refreshToken = async () => {
   try {
-    const res = await axiosInstance.post(
-      `/auth/refresh`,
-      {},
-      {
-        headers: {
-          Authorization: cookies.get("userToken"),
-          withCredentials: true,
-        },
-      }
-    );
+    const res = await axiosInstance.post(`/auth/refresh`, {});
 
     if (res.status === 200) {
       return res;
@@ -36,11 +30,7 @@ export const updateUser = async ({ name, type }: UserInfoProps) => {
       nickname: name,
       mbti: type,
     };
-    const res = await axiosInstance.patch("/user", body, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.patch("/user", body);
     if (res.status === 200) {
       return res.data;
     }
@@ -83,11 +73,7 @@ export const getPlaceList = async ({
 
 export const getPlaceDetail = async ({ placeId }: { placeId: string }) => {
   try {
-    const res = await axiosInstance.get(`/place/details/${placeId}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/place/details/${placeId}`);
 
     if (res.status === 200) {
       return res;
@@ -123,11 +109,7 @@ export const getReviews = async ({
 
 export const getReviewDetail = async (reviewId: number) => {
   try {
-    const res = await axiosInstance.get(`/review/${reviewId}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/review/${reviewId}`);
 
     if (res.status === 200) {
       return res;
@@ -177,11 +159,7 @@ export const getGooglePlaceDetail = async ({
 
 export const getMyReviews = async () => {
   try {
-    const res = await axiosInstance.get("/my/reviews?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get("/my/reviews?page=1");
 
     if (res.status === 200) {
       return res;
@@ -213,11 +191,7 @@ export const getSearchPlaceList = async ({
 
 export const getMyProfile = async () => {
   try {
-    const res = await axiosInstance.get("/user/me", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get("/user/me");
 
     if (res.status === 200) {
       return res;
@@ -229,11 +203,7 @@ export const getMyProfile = async () => {
 
 export const getRecommendSchedules = async () => {
   try {
-    const res = await axiosInstance.get("/schedules?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get("/schedules?page=1");
 
     if (res.status === 200) {
       return res;
@@ -255,15 +225,10 @@ export const setLike = async ({
   try {
     const res = await axiosInstance.post(
       `/like/${actionType}/${targetType}/${id}`,
-      {},
-      {
-        headers: {
-          Authorization: cookies.get("userToken"),
-        },
-      }
+      {}
     );
 
-    if (res.status === 200) {
+    if (res.status === 200 || res.status === 201) {
       return res;
     }
   } catch (err) {
@@ -282,12 +247,7 @@ export const getLikes = async ({
     if (!!likeType) {
       if (likeType === "PLACE") {
         const res = await axiosInstance.get(
-          `/like/page/my?likeTargetType=${likeType}&placeType=${placeType}&page=1`,
-          {
-            headers: {
-              Authorization: cookies.get("userToken"),
-            },
-          }
+          `/like/page/my?likeTargetType=${likeType}&placeType=${placeType}&page=1`
         );
 
         if (res.status === 200) {
@@ -295,12 +255,7 @@ export const getLikes = async ({
         }
       } else {
         const res = await axiosInstance.get(
-          `/like/page/my?likeType=${likeType}&page=1`,
-          {
-            headers: {
-              Authorization: cookies.get("userToken"),
-            },
-          }
+          `/like/page/my?likeType=${likeType}&page=1`
         );
 
         if (res.status === 200) {
@@ -309,11 +264,7 @@ export const getLikes = async ({
       }
     }
 
-    const res = await axiosInstance.get("/like/page/my?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get("/like/page/my?page=1");
 
     if (res.status === 200) {
       return res;
@@ -328,11 +279,7 @@ export const uploadProfileImg = async ({ file }: { file: File }) => {
   formData.append("file", file);
 
   try {
-    const res = await axiosInstance.post(`/profile/upload`, formData, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.post(`/profile/upload`, formData);
 
     if (res.status === 200) {
       return res;
@@ -344,11 +291,7 @@ export const uploadProfileImg = async ({ file }: { file: File }) => {
 
 export const deleteProfileImg = async () => {
   try {
-    const res = await axiosInstance.delete("/profile/delete", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.delete("/profile/delete");
 
     if (res.status === 200) {
       return res;
@@ -364,11 +307,7 @@ export const createSchedule = async (schedule: {
   placeId: string;
 }) => {
   try {
-    const res = await axiosInstance.post(`/schedule`, schedule, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.post(`/schedule`, schedule);
     if (res.status === 200) {
       return res;
     }
@@ -379,11 +318,7 @@ export const createSchedule = async (schedule: {
 
 export const getScheduleList = async () => {
   try {
-    const res = await axiosInstance.get("/schedules/my?page=1", {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get("/schedules/my?page=1");
 
     if (res.status === 200) {
       return res;
@@ -395,11 +330,7 @@ export const getScheduleList = async () => {
 
 export const getSchedule = async (id: string) => {
   try {
-    const res = await axiosInstance.get(`/schedule/${id}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/schedule/${id}`);
     if (res.status == 200) {
       return res;
     }
@@ -438,12 +369,7 @@ export const addPlaceToSchedule = async (
   try {
     const res = await axiosInstance.post(
       `/schedule/location/${dayId}?mbti=${jpState}`,
-      places,
-      {
-        headers: {
-          Authorization: cookies.get("userToken"),
-        },
-      }
+      places
     );
     if (res.status == 200) {
       return res;
@@ -464,12 +390,7 @@ export const moveScheduleDate = async (
   try {
     const res = await axiosInstance.put(
       `/schedule/location/${locationId}?mbti=${jpState}`,
-      body,
-      {
-        headers: {
-          Authorization: cookies.get("userToken"),
-        },
-      }
+      body
     );
     if (res.status === 200) {
       return res;
@@ -481,11 +402,7 @@ export const moveScheduleDate = async (
 
 export const editSchedule = async (dayId: number, body: DayLocationProps[]) => {
   try {
-    const res = await axiosInstance.put(`/schedule/day/${dayId}`, body, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.put(`/schedule/day/${dayId}`, body);
     if (res.status == 200) {
       return res;
     }
@@ -496,11 +413,7 @@ export const editSchedule = async (dayId: number, body: DayLocationProps[]) => {
 
 export const deletePlaceFromSchedule = async (locationId: number) => {
   try {
-    const res = await axiosInstance.delete(`/schedule/location/${locationId}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.delete(`/schedule/location/${locationId}`);
     if (res.status === 200) {
       return res;
     }
@@ -511,11 +424,7 @@ export const deletePlaceFromSchedule = async (locationId: number) => {
 
 export const getDaylistFromSchedule = async (id: string) => {
   try {
-    const res = await axiosInstance.get(`/schedule/days/${id}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/schedule/days/${id}`);
     if (res.status == 200) {
       return res;
     }
@@ -526,11 +435,7 @@ export const getDaylistFromSchedule = async (id: string) => {
 
 export const deleteSchedule = async (id: number) => {
   try {
-    const res = await axiosInstance.delete(`/schedule/${id}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.delete(`/schedule/${id}`);
     if (res.status === 200) {
       return res;
     }
@@ -541,11 +446,7 @@ export const deleteSchedule = async (id: number) => {
 
 export const getPlan = async (id: number) => {
   try {
-    const res = await axiosInstance.get(`/schedule/location/${id}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/schedule/location/${id}`);
     if (res.status === 200) {
       return res;
     }
@@ -556,11 +457,7 @@ export const getPlan = async (id: number) => {
 
 export const editPlan = async (id: number, body: PlanDetailsProps) => {
   try {
-    const res = await axiosInstance.put(`/schedule/location/plan/${id}`, body, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.put(`/schedule/location/plan/${id}`, body);
     if (res.status == 200) {
       return res;
     }
@@ -583,11 +480,7 @@ export const getAllDiaries = async (page: number, sort: string) => {
 
 export const getMyDiaries = async () => {
   try {
-    const res = await axiosInstance.get(`/my/diaries?page=1`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/my/diaries?page=1`);
 
     if (res.status === 200) {
       return res;
@@ -599,11 +492,7 @@ export const getMyDiaries = async () => {
 
 export const createDiary = async (form: any, id: number) => {
   try {
-    const res = await axiosInstance.post(`/${id}/diary`, form, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.post(`/${id}/diary`, form);
 
     if (res.status === 200) {
       return res;
@@ -615,11 +504,7 @@ export const createDiary = async (form: any, id: number) => {
 
 export const createReview = async (form: any) => {
   try {
-    const res = await axiosInstance.post(`/review`, form, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.post(`/review`, form);
 
     if (res.status === 200) {
       return res;
@@ -635,15 +520,7 @@ export const uploadFiles = async (files: any[], category: string) => {
     files.forEach((file) => {
       formData.append("files", file);
     });
-    const res = await axiosInstance.post(
-      `/upload/files/${category}`,
-      formData,
-      {
-        headers: {
-          Authorization: cookies.get("userToken"),
-        },
-      }
-    );
+    const res = await axiosInstance.post(`/upload/files/${category}`, formData);
 
     if (res.status === 200) {
       return res;
@@ -655,11 +532,7 @@ export const uploadFiles = async (files: any[], category: string) => {
 
 export const getDiaryDetail = async (id: number) => {
   try {
-    const res = await axiosInstance.get(`/diary/${id}`, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.get(`/diary/${id}`);
 
     if (res.status === 200) {
       return res;
@@ -671,11 +544,7 @@ export const getDiaryDetail = async (id: number) => {
 
 export const updateDiary = async (form: any, id: number) => {
   try {
-    const res = await axiosInstance.patch(`/diary/${id}`, form, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.patch(`/diary/${id}`, form);
 
     if (res.status === 200) {
       return res;
@@ -687,16 +556,73 @@ export const updateDiary = async (form: any, id: number) => {
 
 export const updateReview = async (form: any, id: number) => {
   try {
-    const res = await axiosInstance.patch(`/review/${id}`, form, {
-      headers: {
-        Authorization: cookies.get("userToken"),
-      },
-    });
+    const res = await axiosInstance.patch(`/review/${id}`, form);
 
     if (res.status === 200) {
       return res;
     }
   } catch (err) {
     console.error("리뷰 수정 API 에러", err);
+  }
+};
+
+export const setComment = async ({
+  targetId,
+  commentType,
+  content,
+}: {
+  targetId: number;
+  commentType: string;
+  content: string;
+}) => {
+  try {
+    const body = {
+      content: content,
+    };
+
+    const res = await axiosInstance.post(
+      `/comment/${targetId}?commentType=${commentType}`,
+      body
+    );
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("댓글 작성 API 에러", err);
+  }
+};
+
+export const setCommentReply = async ({
+  commentId,
+  content,
+}: {
+  commentId: string;
+  content: string;
+}) => {
+  try {
+    const body = {
+      content: content,
+    };
+
+    const res = await axiosInstance.post(`/reply/${commentId}`, body);
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("대댓글 작성 API 에러", err);
+  }
+};
+
+export const deleteComment = async ({ commentId }: { commentId: number }) => {
+  try {
+    const res = await axiosInstance.delete(`/comment/${commentId}`);
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("댓글 삭제 API 에러", err);
   }
 };

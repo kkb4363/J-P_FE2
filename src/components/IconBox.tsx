@@ -17,5 +17,6 @@ export const IconBoxContainer = styled.div`
     font-size: 12px;
     color: ${(props) => props.theme.color.gray500};
     line-height: normal;
+    cursor: pointer;
   }
 `;

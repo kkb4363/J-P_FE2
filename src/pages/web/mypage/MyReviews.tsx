@@ -4,8 +4,10 @@ import { getMyReviews } from "../../../service/axios";
 import ReviewCard from "../../../components/web/mypage/ReviewCard";
 import NotHasCard from "../../../components/web/mypage/NotHasCard";
 import { MyReviewProps } from "../../../types/mypage";
+import { useNavigate } from "react-router-dom";
 
 export default function MyReviews() {
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState<MyReviewProps[]>([]);
 
   useEffect(() => {
@@ -22,7 +24,11 @@ export default function MyReviews() {
       {reviews?.length !== 0 ? (
         <ReviewCardRow>
           {reviews?.map((r: MyReviewProps) => (
-            <ReviewCard key={r.id} data={r} />
+            <ReviewCard
+              key={r.id}
+              data={r}
+              handleClick={() => navigate(`/home/review/${r.id}`)}
+            />
           ))}
         </ReviewCardRow>
       ) : (
