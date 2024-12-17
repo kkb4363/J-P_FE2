@@ -110,9 +110,7 @@ export default function PlanItem({
 
   const handleDeleteItemClick = async () => {
     await deletePlaceFromSchedule(item.id).then(() => {
-      // setIsOpenDeleteModal({ delete: false, deleteSuccess: true });
       setModalState((p) => ({ ...p, delete: false, deleteSuccess: true }));
-
       reloadSchedule();
     });
   };

@@ -11,8 +11,12 @@ import LikeCommentBox from "../../../components/LikeCommentBox";
 import LoadingText from "../../../components/LoadingText";
 import CommentCard from "../../../components/mobile/CommentCard";
 import Container from "../../../components/web/Container";
-import { getReviewDetail } from "../../../service/axios";
-import { ReviewDetailProps } from "../../../types/travelreview";
+import {
+  getReviewDetail,
+  setComment as setCommentApi,
+  setLike,
+} from "../../../service/axios";
+import { CommentProps, ReviewDetailProps } from "../../../types/travelreview";
 import { testImageList } from "../../../utils/staticDatas";
 
 export default function ReviewDetails() {
@@ -46,9 +50,43 @@ export default function ReviewDetails() {
     });
   };
 
+  const [isLike, setIsLike] = useState(false);
+  const handleLike = () => {
+    if (reviewId) {
+      setLike({ actionType: "LIKE", targetType: "REVIEW", id: reviewId }).then(
+        (res) => {
+          if (res) {
+            console.log(res);
+          }
+        }
+      );
+    }
+  };
+
   useEffect(() => {
     requestApi();
   }, [reviewId]);
+
+  const handleReviewAdd = () => {
+    if (comment) {
+      setCommentApi({
+        targetId: Number(reviewId),
+        commentType: "REVIEW",
+        content: comment,
+      }).then((res) => {
+        if (res) {
+          requestApi();
+          setComment("");
+        }
+      });
+    }
+  };
+
+  const [isReplyAdded, setIsReplyAdded] = useState(false);
+
+  useEffect(() => {
+    requestApi();
+  }, [isReplyAdded]);
 
   return (
     <div>
@@ -96,7 +134,7 @@ export default function ReviewDetails() {
               likeCnt={data?.likeCnt}
               commentCnt={data?.commentResDtoList?.length}
               fillLike={fillLike}
-              likeClick={() => setFillLike((prev) => !prev)}
+              likeClick={handleLike}
             />
           </ReviewDetailsBody>
           <CommentHeader>댓글</CommentHeader>
@@ -111,28 +149,22 @@ export default function ReviewDetails() {
             </CommentInput>
             <R.CommentWriteButton
               type="submit"
-              fill={true}
-              fontsize="14px"
-              onClick={handleWriteCommentSubmit}
+              $fill={true}
+              $fontSize="14px"
+              onClick={handleReviewAdd}
             >
               등록
             </R.CommentWriteButton>
           </R.CommentInputBox>
-          {/* {commentCnt == 0 && (
-            <R.LoadingText>첫 댓글을 작성해주세요!</R.LoadingText>
-          )}
-          {commentCnt > 0 &&
-            review?.commentResDtoList.map((item: commentResDto) => {
-              return (
-                <CommentCard
-                  key={item.id}
-                  content="좋은 리뷰네요!"
-                  createdAt="24.2.3"
-                  user={item.userCompactResDto}
-                  replyList={item.replyList}
-                />
-              );
-            })} */}
+
+          {data?.commentResDtoList?.length !== 0 &&
+            data?.commentResDtoList?.map((review: CommentProps) => (
+              <CommentCard
+                key={review.id}
+                {...review}
+                setIsReply={setIsReplyAdded}
+              />
+            ))}
           <CommentBox>
             {/* <CommentCard
               content={testReviewItem.content}
@@ -189,7 +221,6 @@ const ImageOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
   border-radius: 16px;
-
   display: grid;
   place-items: center;
   & > span {

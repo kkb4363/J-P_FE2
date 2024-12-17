@@ -9,6 +9,7 @@ import PhoneIcon from "../../../assets/icons/PhoneIcon";
 import TicketIcon from "../../../assets/icons/TicketIcon";
 import AlarmIcon from "../../../assets/icons/AlarmIcon";
 import IconBox from "../../IconBox";
+import MarkIcon from "../../../assets/icons/MarkIcon";
 
 interface Props {
   placeId: string;
@@ -25,6 +26,8 @@ export default function AddedPlaceDetailModal(props: Props) {
       });
     }
   }, [props?.placeId]);
+
+  console.log(data);
 
   return (
     <NoButtonModal width="470px" height="390px" onClose={props.handleClose}>
@@ -50,20 +53,34 @@ export default function AddedPlaceDetailModal(props: Props) {
           <PlaceInfoBox>
             <div>
               <AlarmIcon />
-              <PlaceWeekdayBox>
+              <span>
                 {data?.weekdayText?.map((weekday, idx) => {
                   const todayIdx = new Date().getDay();
                   if (todayIdx === idx) return <span key={idx}>{weekday}</span>;
                 })}
-              </PlaceWeekdayBox>
+              </span>
             </div>
             <div>
               <TicketIcon />
-              <span>스카이워크 3,000</span>
+              <span>
+                {data?.website ? data?.website : "웹사이트는 지원하지 않습니다"}
+              </span>
             </div>
             <div>
               <PhoneIcon />
-              <span>{data?.formattedPhoneNumber}</span>
+              <span>
+                {data?.formattedPhoneNumber
+                  ? data?.formattedPhoneNumber
+                  : "전화번호는 지원하지 않습니다"}
+              </span>
+            </div>
+            <div>
+              <MarkIcon width="18" height="18" stroke="#4d4d4d" />
+              <span>
+                {data?.fullAddress && data?.fullAddress?.length > 30
+                  ? data?.fullAddress.slice(0, 30) + "..."
+                  : data?.fullAddress}
+              </span>
             </div>
           </PlaceInfoBox>
         </ModalBottomBox>
@@ -101,15 +118,15 @@ const PlaceInfoBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: 100%;
 
   & > div {
     display: flex;
+    align-items: center;
     gap: 10px;
-    color: ${(props) => props.theme.color.gray700};
-  }
-`;
 
-const PlaceWeekdayBox = styled.div`
-  display: flex;
-  flex-direction: column;
+    & > span {
+      color: ${(props) => props.theme.color.gray700};
+    }
+  }
 `;

@@ -41,6 +41,7 @@ export interface CommentProps {
   id: number;
   content: string;
   userCompactResDto: UserProps;
+  user?: UserProps;
   createdAt: string;
   replyList: CommentProps[];
 }
