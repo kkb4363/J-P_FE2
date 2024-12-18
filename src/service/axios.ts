@@ -7,10 +7,20 @@ const cookies = new Cookies();
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_SERVER,
-  headers: {
-    Authorization: cookies.get("userToken"),
-  },
 });
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = cookies.get("userToken");
+    if (token) {
+      config.headers.Authorization = token;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const refreshToken = async () => {
   try {

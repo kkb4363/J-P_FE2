@@ -60,34 +60,28 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
   return (
     <>
       <>
-        {schedules?.length !== 0 ? (
-          <>
-            <SubTitleWithMore>
-              <h2>내 일정</h2>
+        <>
+          <SubTitleWithMore>
+            <h2>내 일정</h2>
 
-              <div>
-                <span onClick={handleDelete}>
-                  {isDelete && <TrashIcon width={16} height={16} />}
-                  {isDelete ? "삭제" : "편집"}
-                </span>
+            <div>
+              <span onClick={handleDelete}>
+                {isDelete && <TrashIcon width={16} height={16} />}
+                {isDelete ? "삭제" : "편집"}
+              </span>
 
-                {isDelete && (
-                  <span onClick={() => setIsDelete(false)}>취소</span>
-                )}
-              </div>
-            </SubTitleWithMore>
+              {isDelete && <span onClick={() => setIsDelete(false)}>취소</span>}
+            </div>
+          </SubTitleWithMore>
 
-            <ScheduleCardBox>
-              <ScheduleSlider
-                schedules={schedules}
-                isDelete={isDelete}
-                setDeleteId={setDeleteId}
-              />
-            </ScheduleCardBox>
-          </>
-        ) : (
-          <LoadingText>로딩중...</LoadingText>
-        )}
+          <ScheduleCardBox>
+            <ScheduleSlider
+              schedules={schedules}
+              isDelete={isDelete}
+              setDeleteId={setDeleteId}
+            />
+          </ScheduleCardBox>
+        </>
 
         <SubTitleWithMore>
           <h2>여행 일정 추천</h2>
