@@ -8,88 +8,104 @@ import { CommentProps } from "../../types/travelreview";
 import CustomProfile from "../CustomProfile";
 import IconBox from "../IconBox";
 import TwoButtonsModal from "../TwoButtonsModal";
-import { deleteComment, setCommentReply } from "../../service/axios";
+import {
+  deleteComment,
+  setCommentReply,
+  updateComment,
+} from "../../service/axios";
 
 export default function CommentCard(
   props: CommentProps & { isReply?: boolean; setIsReply?: any; isWeb?: boolean }
 ) {
   const { isReply = false, setIsReply, isWeb } = props;
 
-  const [writeReply, setWriteReply] = useState(false);
+  const [writeReply, setWriteReply] = useState(
+    () => props?.replyList?.length > 0
+  );
   const [reply, setReply] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [edit, setEdit] = useState(false);
   const [content, setContent] = useState(props?.content);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if (props?.replyList && props?.replyList?.length > 0) {
-      setWriteReply(true);
-    }
-  }, [props?.replyList?.length]);
+  const hasReplies = props?.replyList?.length > 0;
 
-  const handleWriteReplySubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log(`${reply} submit`);
-  };
+  useEffect(() => {
+    if (edit && textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [edit, content]);
+
   const handleEditClick = () => {
     setWriteReply(false);
     setEdit(true);
   };
 
-  const handleDeleteClick = () => {
-    deleteComment({ commentId: props?.id }).then((res) => {
-      if (res) {
-        setIsReply((p: any) => !p);
-      }
-    });
-    setDeleteModal(false);
-  };
-
-  const AutoResizeTextarea = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${textarea.scrollHeight}px`; // 스크롤 높이에 맞게 조절
+  const handleEditSubmit = (type: "comment" | "reply") => {
+    if (props?.id) {
+      updateComment({
+        type: type,
+        id: props.id,
+        content: content,
+      }).then(() => {
+        setEdit(false);
+      });
     }
   };
 
-  useEffect(() => {
-    AutoResizeTextarea();
-  }, [edit]);
+  const handleDeleteClick = () => {
+    if (props?.id) {
+      deleteComment({
+        type: props?.isReply ? "reply" : "comment",
+        id: props.id,
+      }).then((res) => {
+        if (res) {
+          setIsReply((prev: any) => !prev);
+        }
+      });
+      setDeleteModal(false);
+    }
+  };
 
   const handleReplyAdd = () => {
     if (reply) {
       setCommentReply({ commentId: props.id + "", content: reply }).then(
         (res) => {
           if (res) {
-            console.log(res);
-            setIsReply((p: any) => !p);
+            setIsReply((prev: any) => !prev);
+            setReply("");
           }
         }
       );
     }
   };
 
+  const renderEditAndDeleteIcons = (type: "comment" | "reply") => {
+    return edit ? (
+      <p onClick={() => handleEditSubmit(type)}>저장</p>
+    ) : (
+      <>
+        <div onClick={handleEditClick}>
+          <PencilIcon />
+        </div>
+        <div onClick={() => setDeleteModal(true)}>
+          <TrashIcon
+            stroke="#808080"
+            strokeWidth={1.8}
+            width={16}
+            height={16}
+          />
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
-      {deleteModal && (
-        <TwoButtonsModal
-          isMobile={false}
-          width="470px"
-          height="390px"
-          text="댓글을 삭제할까요?"
-          onClick={handleDeleteClick}
-          onClose={() => setDeleteModal(false)}
-        />
-      )}
       <CommentCardContainer $reply={isReply} $edit={edit} $web={false}>
         <CustomProfile
-          src={
-            props?.userCompactResDto?.profile
-              ? props?.userCompactResDto?.profile
-              : ""
-          }
+          src={props?.userCompactResDto?.profile || ""}
           nickname={props?.userCompactResDto?.nickname}
           content={props?.createdAt}
         />
@@ -111,8 +127,8 @@ export default function CommentCard(
                 {!edit && (
                   <>
                     <ReplyIcon />
-                    {props?.replyList && props?.replyList.length > 0 ? (
-                      <span>{props?.replyList && props?.replyList.length}</span>
+                    {hasReplies ? (
+                      <span>{props?.replyList.length}</span>
                     ) : (
                       <span onClick={() => setWriteReply((prev) => !prev)}>
                         답글달기
@@ -121,31 +137,18 @@ export default function CommentCard(
                   </>
                 )}
               </IconBox>
-
               <CommentEditIconBox>
-                {edit ? (
-                  <p onClick={() => setEdit(false)}>저장</p>
-                ) : (
-                  <>
-                    <div onClick={handleEditClick}>
-                      <PencilIcon />
-                    </div>
-                    <div onClick={() => setDeleteModal(true)}>
-                      <TrashIcon
-                        stroke="#808080"
-                        strokeWidth={1.8}
-                        width={16}
-                        height={16}
-                      />
-                    </div>
-                  </>
-                )}
+                {renderEditAndDeleteIcons("comment")}
               </CommentEditIconBox>
             </CommentFooter>
-            {props?.replyList &&
-              props?.replyList.map((item: CommentProps) => {
-                return <CommentCard key={item.id} {...item} isReply={true} />;
-              })}
+            {props?.replyList?.map((item: CommentProps) => (
+              <CommentCard
+                key={item.id}
+                {...item}
+                isReply={true}
+                setIsReply={setIsReply}
+              />
+            ))}
           </>
         )}
         {!isReply && writeReply && (
@@ -160,28 +163,31 @@ export default function CommentCard(
             </CommentInput>
             <R.CommentWriteButton
               type="submit"
-              $fill={false}
+              $fill={Boolean(reply)}
               $fontSize="14px"
               onClick={handleReplyAdd}
+              disabled={!reply}
             >
               등록
             </R.CommentWriteButton>
           </R.CommentInputBox>
         )}
-        {/* {isReply && (
-          <>
-            <CommentEditIconBox>
-              <PencilIcon />
-              <TrashIcon
-                stroke="#808080"
-                strokeWidth={1.8}
-                width={16}
-                height={16}
-              />
-            </CommentEditIconBox>
-          </>
-        )} */}
+        {isReply && (
+          <CommentEditIconBox>
+            {renderEditAndDeleteIcons("reply")}
+          </CommentEditIconBox>
+        )}
       </CommentCardContainer>
+      {deleteModal && (
+        <TwoButtonsModal
+          isMobile={false}
+          width="470px"
+          height="390px"
+          text="댓글을 삭제할까요?"
+          onClick={handleDeleteClick}
+          onClose={() => setDeleteModal(false)}
+        />
+      )}
     </>
   );
 }
@@ -241,10 +247,18 @@ const CommentEditIconBox = styled.div`
   align-items: center;
   justify-content: flex-end;
   margin-right: 10px;
-  cursor: pointer;
 
   & > p {
     color: ${(props) => props.theme.color.secondary};
+    cursor: pointer;
+  }
+
+  & > svg {
+    cursor: pointer;
+  }
+
+  & > div > svg {
+    cursor: pointer;
   }
 `;
 
