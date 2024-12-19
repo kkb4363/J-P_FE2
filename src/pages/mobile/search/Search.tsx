@@ -102,7 +102,7 @@ export default function Search() {
                 onClick={() => navigate(`/home/${item.placeId}`)}
               >
                 <ImageView
-                  src={testImg1}
+                  src={item.photoUrl}
                   alt={item.name}
                   width="80px"
                   height="78px"

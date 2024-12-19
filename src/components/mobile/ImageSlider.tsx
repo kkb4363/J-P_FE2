@@ -2,7 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import CancelIcon from "../../assets/icons/CancelIcon";
 import Slider from "react-slick";
-import testImg from "../../assets/images/testImg2.png";
 
 interface Props {
   imageList: { fileId: string; fileUrl: string }[];

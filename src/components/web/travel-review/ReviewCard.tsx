@@ -15,7 +15,6 @@ interface Props {
 export default function ReviewCard({ item }: Props) {
   const navigate = useNavigate();
 
-  console.log(item);
   return (
     <ReviewCardContainer onClick={() => navigate(`/home/review/${item.id}`)}>
       <ReviewHeader>

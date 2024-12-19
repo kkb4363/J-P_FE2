@@ -32,8 +32,6 @@ export default function SelectTravelSheet({ isOpen, onClose }: Props) {
     });
   }, []);
 
-  console.log(schedules);
-
   return (
     <BottomSheet
       isBlocking={true}

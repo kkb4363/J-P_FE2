@@ -625,14 +625,53 @@ export const setCommentReply = async ({
   }
 };
 
-export const deleteComment = async ({ commentId }: { commentId: number }) => {
+export const updateComment = async ({
+  type,
+  id,
+  content,
+}: {
+  type: "reply" | "comment";
+  id: number;
+  content: string;
+}) => {
   try {
-    const res = await axiosInstance.delete(`/comment/${commentId}`);
+    const body = {
+      content: content,
+    };
+
+    let res;
+
+    if (type === "comment") {
+      res = await axiosInstance.patch(`/comment/${id}`, body);
+    } else {
+      res = await axiosInstance.patch(`/reply/${id}`, body);
+    }
 
     if (res.status === 200) {
       return res;
     }
   } catch (err) {
-    console.error("댓글 삭제 API 에러", err);
+    console.error("대/댓글 수정 API 에러", err);
+  }
+};
+
+export const deleteComment = async ({
+  type,
+  id,
+}: {
+  type: "reply" | "comment";
+  id: number;
+}) => {
+  try {
+    let res;
+
+    if (type === "comment") res = await axiosInstance.delete(`/comment/${id}`);
+    else res = await axiosInstance.delete(`/reply/${id}`);
+
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    console.error("대/댓글 삭제 API 에러", err);
   }
 };

@@ -15,10 +15,10 @@ export default function Review({ sort }: Props) {
   const [loading, setLoading] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  const requestApi = async () => {
+  const requestApi = () => {
     setLoading(true);
 
-    await getReviews({ page, sort }).then((res) => {
+    getReviews({ page, sort }).then((res) => {
       setData(res?.data.data);
       setHasMore(res?.data.data.length > 0);
       setLoading(false);
@@ -62,7 +62,7 @@ export default function Review({ sort }: Props) {
           if (data.length === index + 1) {
             // 마지막 요소에 ref 설정
             return (
-              <ReviewCard key={item.id} item={item} ref={lastElementRef} />
+              <ReviewCard key={item.id} item={item} divRef={lastElementRef} />
             );
           } else {
             return <ReviewCard key={item.id} item={item} />;

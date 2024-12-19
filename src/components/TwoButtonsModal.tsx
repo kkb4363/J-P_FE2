@@ -60,7 +60,7 @@ const ModalBody = styled.section<{ $isMobile: boolean }>`
     color: ${(props) => props.theme.color.gray900};
     font-weight: 700;
     padding: 10px 0;
-    font-size: ${({ $isMobile }) => !$isMobile && "20px"};
+    font-size: ${({ $isMobile }) => (!$isMobile ? "20px" : "16px")};
   }
 `;
 

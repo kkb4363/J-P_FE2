@@ -6,209 +6,60 @@ import {
 } from "../../../assets/styles/home.style";
 import { SuggestionBox, SuggestTextCol } from "./Schedule";
 import ImageView from "../../../components/ImageView";
-import testImg from "../../../assets/images/testImg.png";
 import styled from "styled-components";
 import CustomProfile from "../../../components/CustomProfile";
+import { TravelogProps } from "../../../types/travelreview";
+import { useEffect, useState } from "react";
+import { getAllDiaries } from "../../../service/axios";
 
 export default function TravelMore() {
   const navigate = useNavigate();
+  const [recommendTravelogues, setRecommendTravelogues] = useState<
+    TravelogProps[]
+  >([]);
+
+  useEffect(() => {
+    getAllDiaries(1, "HOT").then((res) => {
+      if (res) {
+        setRecommendTravelogues(res?.data.data);
+      }
+    });
+  }, []);
+
   return (
     <>
       <CustomHeader title="여행 일정 추천" handleClick={() => navigate(-1)} />
       <TravelMoreBody>
         <SuggestionCol>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
+          {recommendTravelogues?.map((r) => (
+            <SuggestionBox
+              key={r.id}
+              onClick={() => navigate(`/home/travelogue/${r?.id}`)}
+            >
+              <ImageView
+                src={r?.fileInfos?.[0]?.fileUrl}
+                alt="여행 일정 추천 이미지"
+                width="80px"
+                height="80px"
               />
 
-              <p>남해로 힐링 여행 떠나기</p>
+              <SuggestTextCol>
+                <CustomProfile
+                  src={r?.userCompactResDto?.profile}
+                  nickname={r?.userCompactResDto?.nickname}
+                  content={r?.createdAt}
+                  fontSize="12px"
+                />
 
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
+                <p>{r?.subject}</p>
 
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
-          <SuggestionBox>
-            <ImageView
-              src={testImg}
-              alt="여행 일정 추천 이미지"
-              width="80px"
-              height="80px"
-            />
-
-            <SuggestTextCol>
-              <CustomProfile
-                src={testImg}
-                nickname="Minah"
-                content="1박 2일"
-                fontSize="12px"
-              />
-
-              <p>남해로 힐링 여행 떠나기</p>
-
-              <div>
-                <span>#한려해상국립공원</span>
-                <span>#바람흔적미술관</span>
-              </div>
-            </SuggestTextCol>
-          </SuggestionBox>
+                <div>
+                  <span>#태그 </span>
+                  <span>#api 추가되면 해야함</span>
+                </div>
+              </SuggestTextCol>
+            </SuggestionBox>
+          ))}
         </SuggestionCol>
       </TravelMoreBody>
     </>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import * as R from "../../../assets/styles/travelReview.style";
@@ -11,44 +11,93 @@ import CommentCard from "../../../components/mobile/CommentCard";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import ImageSlider from "../../../components/mobile/ImageSlider";
 import TraveloguePlaceBox from "../../../components/TraveloguePlaceBox";
-import { getDiaryDetail } from "../../../service/axios";
+import {
+  getDiaryDetail,
+  setComment as setCommentApi,
+  setLike,
+} from "../../../service/axios";
 import { TravelogDetailProps } from "../../../types/travelreview";
 import { formatDayNights } from "../../../utils/dayNights";
-import { testImageList, testLogTags } from "../../../utils/staticDatas";
+import { testLogTags } from "../../../utils/staticDatas";
 
 export default function TravelogueDetails() {
-  const { travelogueId } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [diaryData, setDiaryData] = useState<TravelogDetailProps>();
-  const [fillHeart, setFillHeart] = useState(false);
-  const [fillLike, setFillLike] = useState(false);
-  const [comment, setComment] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const { travelogueId } = useParams();
+  const [diaryData, setDiaryData] = useState<TravelogDetailProps>();
+  const [fillLike, setFillLike] = useState(false);
+  const [fillHeart, setFillHeart] = useState(false);
+  const [comment, setComment] = useState("");
+  console.log(diaryData);
   const { nights, days } = diaryData
     ? formatDayNights(diaryData.scheduleStartDate, diaryData.scheduleEndDate)
     : { nights: 0, days: 0 };
 
-  const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log(`${comment} submit`);
+  const handleImageClick = (index: number) => {
+    navigate(`/home/travelogue/${travelogueId}/photo`, {
+      state: { currentIndex: index, images: diaryData?.fileInfos },
+    });
   };
 
   const requestApi = async () => {
-    setIsLoading(true);
     await getDiaryDetail(Number(travelogueId)).then((res) => {
       setDiaryData(res?.data);
     });
-    setIsLoading(false);
   };
 
   useEffect(() => {
     requestApi();
   }, [travelogueId]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleLike = () => {
+    if (diaryData?.id) {
+      setLike({
+        actionType: "LIKE",
+        targetType: "DIARY",
+        id: diaryData.id + "",
+      }).then((res) => {
+        if (res) {
+          console.log(res);
+        }
+      });
+    }
+  };
+
+  const handleHeart = () => {
+    if (diaryData?.id) {
+      setLike({
+        actionType: "BOOKMARK",
+        targetType: "DIARY",
+        id: diaryData.id + "",
+      }).then((res) => {
+        if (res) {
+          console.log(res);
+        }
+      });
+    }
+  };
+
+  const handleCommentAdd = () => {
+    if (comment) {
+      setCommentApi({
+        targetId: Number(travelogueId),
+        commentType: "DIARY",
+        content: comment,
+      }).then((res) => {
+        if (res) {
+          requestApi();
+          setComment("");
+        }
+      });
+    }
+  };
+
+  const [isReplyAdded, setIsReplyAdded] = useState(false);
+
+  useEffect(() => {
+    requestApi();
+  }, [isReplyAdded]);
 
   return (
     <>
@@ -61,7 +110,7 @@ export default function TravelogueDetails() {
             />
           )}
           <CustomHeader title={diaryData.subject} fontSize="16px">
-            <HeartBox onClick={() => setFillHeart((prev) => !prev)}>
+            <HeartBox onClick={handleHeart}>
               <HeartIcon
                 fill={fillHeart ? "#FF5757" : "none"}
                 stroke={fillHeart ? "#FF5757" : "#808080"}
@@ -89,16 +138,16 @@ export default function TravelogueDetails() {
                 content={`${nights}박 ${days}일 여행`}
               />
               <LikeCommentBox
-                likeCnt={12}
-                commentCnt={8}
+                likeCnt={diaryData.likeCnt}
+                commentCnt={diaryData.commentCnt}
                 fillLike={fillLike}
-                likeClick={() => setFillLike((prev) => !prev)}
+                likeClick={handleLike}
               />
             </R.ProfileHeader>
             <HashtagsBox hashTags={testLogTags} />
             <PlaceBox>
-              <TraveloguePlaceBox place="안동 회화마을" />
-              <TraveloguePlaceBox place="부용대" />
+              {/* <TraveloguePlaceBox place="안동 회화마을" />
+              <TraveloguePlaceBox place="부용대" /> */}
             </PlaceBox>
 
             <p>{diaryData.content}</p>
@@ -116,8 +165,8 @@ export default function TravelogueDetails() {
                 </R.CommentInput>
                 <R.CommentWriteButton
                   type="submit"
-                  fill={true}
-                  onClick={handleWriteCommentSubmit}
+                  $fill={true}
+                  onClick={handleCommentAdd}
                 >
                   등록
                 </R.CommentWriteButton>
@@ -127,10 +176,9 @@ export default function TravelogueDetails() {
                 return (
                   <CommentCard
                     key={idx}
-                    content={comment.content}
-                    createdAt={comment.createdAt}
-                    user={comment.userCompactResDto}
-                    replyList={comment.replyList}
+                    {...comment}
+                    isReply={false}
+                    setIsReply={setIsReplyAdded}
                   />
                 );
               })}

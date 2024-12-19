@@ -233,6 +233,7 @@ export default function WriteReview() {
               hidden
               type="file"
               accept="images/*"
+              multiple
               onChange={handleImageChange}
               ref={imageRef}
             />
