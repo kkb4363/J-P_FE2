@@ -36,11 +36,6 @@ export default function ReviewDetails() {
     });
   };
 
-  const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log(`${comment} submit`);
-  };
-
   const handleImageClick = (index: number) => {
     navigate(`/home/review/${reviewId}/photo`, {
       state: {
@@ -50,7 +45,6 @@ export default function ReviewDetails() {
     });
   };
 
-  const [isLike, setIsLike] = useState(false);
   const handleLike = () => {
     if (reviewId) {
       setLike({ actionType: "LIKE", targetType: "REVIEW", id: reviewId }).then(
@@ -67,7 +61,7 @@ export default function ReviewDetails() {
     requestApi();
   }, [reviewId]);
 
-  const handleReviewAdd = () => {
+  const handleCommentAdd = () => {
     if (comment) {
       setCommentApi({
         targetId: Number(reviewId),
@@ -151,7 +145,7 @@ export default function ReviewDetails() {
               type="submit"
               $fill={true}
               $fontSize="14px"
-              onClick={handleReviewAdd}
+              onClick={handleCommentAdd}
             >
               등록
             </R.CommentWriteButton>
@@ -165,15 +159,6 @@ export default function ReviewDetails() {
                 setIsReply={setIsReplyAdded}
               />
             ))}
-          <CommentBox>
-            {/* <CommentCard
-              content={testReviewItem.content}
-              createdAt={testReviewItem.createdAt}
-              user={testReviewItem.userCompactResDto}
-              replyList={[]}
-              web
-            /> */}
-          </CommentBox>
         </Container>
       )}
     </div>

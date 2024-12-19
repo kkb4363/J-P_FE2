@@ -62,18 +62,18 @@ export default function PlanPlaceSheet({ setIsPlanPlace }: Props) {
                 />
               ) : (
                 <ImageView
-                  src={placeData.photoUrls[0]}
+                  src={placeData?.photoUrls[0]}
                   alt="일정 장소 이미지"
                   width="80px"
                   height="78px"
                 />
               )}
               <D.PlaceTitleBox>
-                <h1>{placeData.name}</h1>
-                <span>{placeData.shortAddress}</span>
+                <h1>{placeData?.name}</h1>
+                <span>{placeData?.shortAddress}</span>
                 <IconBox>
                   <StarIcon />
-                  <span>{placeData.rating}</span>
+                  <span>{placeData?.rating}</span>
                 </IconBox>
               </D.PlaceTitleBox>
             </D.PlaceHeader>
@@ -82,22 +82,28 @@ export default function PlanPlaceSheet({ setIsPlanPlace }: Props) {
               <div>
                 <AlarmIcon />
                 <S.PlaceWeekdayBox>
-                  {placeData.weekdayText.map((weekday, idx) => {
-                    return <span key={idx}>{weekday}</span>;
+                  {placeData?.weekdayText?.map((weekday, idx) => {
+                    const todayIdx = (new Date().getDay() + 6) % 7;
+                    if (todayIdx === idx)
+                      return <span key={idx}>{weekday}</span>;
                   })}
                 </S.PlaceWeekdayBox>
               </div>
               <div>
                 <TicketIcon />
-                <span></span>
+                <span>{placeData?.businessStatus}</span>
               </div>
               <div>
                 <InfoIcon />
-                <span>{placeData.formattedPhoneNumber}</span>
+                <span>
+                  {placeData?.formattedPhoneNumber
+                    ? placeData?.formattedPhoneNumber
+                    : "전화번호는 지원하지 않습니다"}
+                </span>
               </div>
               <div>
                 <MarkIcon width="18" height="18" />
-                <span>{placeData.fullAddress}</span>
+                <span>{placeData?.fullAddress}</span>
               </div>
             </S.SelectPlaceDetailCol>
           </D.PlanPlaceContainer>

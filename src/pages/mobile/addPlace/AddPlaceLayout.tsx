@@ -1,6 +1,6 @@
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import styled from "styled-components";
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import MapIcon from "../../../assets/icons/MapIcon";
 import ListIcon from "../../../assets/icons/ListIcon";
 

@@ -6,10 +6,31 @@ import TimeSwiper from "../../../components/TimeSwiper";
 import SelectDayModal from "../../../components/mobile/schedule/SelectDayModal";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
 import AddPlaceCard from "../../../components/web/schedule/AddPlaceCard";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { GooglePlaceProps } from "../../../types/place";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../store/user.store";
+import {
+  addPlaceToSchedule,
+  getGoogleSearchPlaceList,
+} from "../../../service/axios";
+import { useMapStore } from "../../../store/map.store";
 
 export default function ListView() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [placeList, setPlaceList] = useState<GooglePlaceProps[]>([]);
+  const [nextPageToken, setNextPageToken] = useState<string>();
+  const [searchString, setSearchString] = useState<string>("");
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const navigate = useNavigate();
+
   const {
     list,
+    selectDay,
+    setSelectDay,
+    selectTime,
+    setSelectTime,
     handleAdd,
     handleRemove,
     openModal,
@@ -17,7 +38,110 @@ export default function ListView() {
     handleDaySelect,
   } = useAddPlaceHook();
 
-  console.log(list);
+  const {
+    state: { scheduleId, city, dates, dayResDtos, location },
+  } = useLocation();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(e.target.value);
+    setPlaceList([]);
+    setIsSubmitted(false);
+  };
+
+  const handleInputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (searchString.trim() !== "") {
+      setIsSubmitted(true);
+      requestApi(searchString);
+    }
+  };
+
+  const { getUserType } = useUserStore();
+  const handleAddPlaceClick = async () => {
+    setOpenModal((p) => ({ ...p, selectTime: false }));
+
+    if (!selectDay || !selectTime) {
+      return;
+    }
+
+    const places = list.map((place) => ({
+      time: selectTime,
+      location: place.geometry.location,
+      placeId: place.placeId,
+      name: place.name,
+    }));
+
+    await addPlaceToSchedule(selectDay, places, getUserType()).then((res) => {
+      if (res?.data) {
+        navigate(`/schedule/details/${scheduleId}`);
+      }
+    });
+  };
+
+  const requestApi = async (search: string = "", token?: string) => {
+    if (!city) return;
+    const query = search.trim() ? `${city} ${search}` : `${city} 인기 여행지`;
+    setIsLoading(true);
+
+    try {
+      const res = await getGoogleSearchPlaceList(query, token);
+      setPlaceList((prev) => {
+        const newPlaces = res.results.filter(
+          (newPlace: { placeId: string }) =>
+            !prev.some(
+              (existingPlace) => existingPlace.placeId === newPlace.placeId
+            )
+        );
+        return [...prev, ...newPlaces];
+      });
+      setNextPageToken(res.nextPageToken);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading || !nextPageToken) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && nextPageToken) {
+            if (!isSubmitted) {
+              requestApi(searchString, nextPageToken);
+            }
+          }
+        },
+        { threshold: 1.0 }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [nextPageToken, isLoading, searchString]
+  );
+
+  useEffect(() => {
+    requestApi();
+  }, [city]);
+
+  useEffect(() => {
+    if (!isSubmitted && searchString.trim() === "") {
+      requestApi();
+    }
+  }, [searchString, isSubmitted]);
+
+  // 장소 추가
+  const mapStore = useMapStore();
+  useEffect(() => {
+    mapStore.setNearPlace(placeList);
+  }, [placeList]);
+
+  const [focusPlaceId, setFocusPlaceId] = useState("");
+
+  const handleMarkerFocus = (placeId: string) => {
+    setFocusPlaceId(placeId);
+  };
 
   return (
     <>
@@ -35,6 +159,19 @@ export default function ListView() {
             handleRemove={() => handleRemove(idx)}
           />
         ))} */}
+
+        {placeList.map((item, idx) => (
+          <AddPlaceCard
+            key={idx}
+            height="100px"
+            width="320px"
+            isSelect={list.some((place) => place.placeId === item.placeId)}
+            handleAdd={() => handleAdd(item)}
+            handleRemove={() => handleRemove(item.placeId)}
+            handleClick={handleMarkerFocus}
+            item={item}
+          />
+        ))}
       </PlaceCardCol>
 
       <SaveButtonBox>
@@ -48,6 +185,9 @@ export default function ListView() {
 
       {openModal.selectDay && (
         <SelectDayModal
+          dayResDtos={dayResDtos}
+          selectDay={selectDay}
+          setSelectDay={setSelectDay}
           onClick={handleDaySelect}
           onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         />
@@ -59,10 +199,10 @@ export default function ListView() {
           key={"시간 설정 모달"}
           title="시간 설정"
           buttonText="완료"
-          onClick={() => {}}
+          onClick={handleAddPlaceClick}
           onClose={() => setOpenModal((p) => ({ ...p, selectTime: false }))}
         >
-          <TimeSwiper isMobile={true} />
+          <TimeSwiper isMobile={true} setSelectTime={setSelectTime} />
         </OneButtonModal>
       )}
     </>

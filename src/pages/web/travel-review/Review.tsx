@@ -15,7 +15,7 @@ export default function Review({ sort }: Props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const requestApi = async () => {
+  const requestApi = () => {
     setIsLoading(true);
     getReviews({ page, sort }).then((res) => {
       setData(res?.data.data);
@@ -23,7 +23,6 @@ export default function Review({ sort }: Props) {
       setIsLoading(false);
     });
   };
-  console.log(data, hasMore);
 
   const handleMoreClick = () => {
     if (hasMore) {

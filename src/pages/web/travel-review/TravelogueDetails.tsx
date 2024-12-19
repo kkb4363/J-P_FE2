@@ -31,15 +31,6 @@ export default function TravelogueDetails() {
     ? formatDayNights(diaryData.scheduleStartDate, diaryData.scheduleEndDate)
     : { nights: 0, days: 0 };
 
-  const handleHeartClick = () => {
-    setFillHeart((prev) => !prev);
-  };
-
-  const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log(`${comment} submit`);
-  };
-
   const handleImageClick = (index: number) => {
     navigate(`/home/travelogue/${travelogueId}/photo`, {
       state: { currentIndex: index, images: diaryData?.fileInfos },
@@ -84,7 +75,7 @@ export default function TravelogueDetails() {
     }
   };
 
-  const handleReviewAdd = () => {
+  const handleCommentAdd = () => {
     if (comment) {
       setCommentApi({
         targetId: Number(travelogueId),
@@ -170,7 +161,7 @@ export default function TravelogueDetails() {
               type="submit"
               $fill={true}
               $fontSize="14px"
-              onClick={handleReviewAdd}
+              onClick={handleCommentAdd}
             >
               등록
             </R.CommentWriteButton>

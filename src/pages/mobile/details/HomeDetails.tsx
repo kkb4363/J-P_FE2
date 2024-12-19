@@ -27,10 +27,7 @@ import {
 } from "../../../service/axios";
 import { useMapStore } from "../../../store/map.store";
 import { ReviewProps } from "../../../types/travelreview";
-import {
-  GooglePlaceProps,
-  PlaceDetailAPiProps,
-} from "../../../types/place";
+import { GooglePlaceProps, PlaceDetailAPiProps } from "../../../types/place";
 import { testImg2 } from "../../../utils/staticDatas";
 
 const cookies = new Cookies();
@@ -95,7 +92,11 @@ export default function HomeDetails() {
     if (!cookies.get("userToken")) {
       return toast(<span>로그인이 필요합니다.</span>);
     } else if (placeInfo?.id) {
-      setLike({ type: "PLACE", id: placeInfo?.placeId }).then(() => {
+      setLike({
+        actionType: "BOOKMARK",
+        targetType: "PLACE",
+        id: placeInfo?.placeId,
+      }).then(() => {
         getPlaceInfo();
       });
     }

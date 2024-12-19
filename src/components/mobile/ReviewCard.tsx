@@ -14,10 +14,10 @@ import LikeCommentBox from "../LikeCommentBox";
 
 interface Props {
   item: ReviewProps;
-  ref?: (node: HTMLDivElement) => void;
+  divRef?: (node: HTMLDivElement) => void;
 }
 
-export default function ReviewCard({ item, ref }: Props) {
+export default function ReviewCard({ item, divRef }: Props) {
   const navigate = useNavigate();
   const reviewCardRef = useRef(null) as any;
   const [visibleCount, setVisibleCount] = useState(4);
@@ -42,24 +42,22 @@ export default function ReviewCard({ item, ref }: Props) {
     }
   }, []);
 
+  console.log(item);
+
   return (
     <ReviewCardContainer>
       <ReviewPlaceBoxRow ref={reviewCardRef}>
-        {[...Array(4)].slice(0, visibleCount).map((_, idx) => (
-          <ReviewPlaceBox key={idx}>
-            <MarkIcon stroke="#6979F8" width="18" height="18" />
-            <span>오대산 선재길</span>
-          </ReviewPlaceBox>
-        ))}
-
-        {visibleCount < 4 && <PlusIndicator>+{4 - visibleCount}</PlusIndicator>}
+        <ReviewPlaceBox>
+          <MarkIcon stroke="#6979F8" width="18" height="18" />
+          <span>{item.subject}</span>
+        </ReviewPlaceBox>
       </ReviewPlaceBoxRow>
 
       <R.ProfileHeader>
         <CustomProfile
-          src={testImg}
+          src={item.userCompactResDto.profile}
           nickname={item.userCompactResDto.nickname}
-          content="24.2.3"
+          content={item.createdAt}
         />
         <IconBox>
           <StarIcon />
@@ -71,13 +69,13 @@ export default function ReviewCard({ item, ref }: Props) {
         <span onClick={() => navigate(`/home/review/${item.id}`)}>더보기</span>
       </ReviewContentBox>
       <ImageView
-        src={testImg}
+        src={item?.fileInfos?.[0].fileUrl}
         alt="review detail img"
         width="100%"
         height="191px"
-        bottomText={`+${testImageList.length - 1}`}
+        bottomText={`+${item?.fileInfos.length - 1}`}
       ></ImageView>
-      <LikeCommentBox likeCnt={8} commentCnt={2}/>
+      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
     </ReviewCardContainer>
   );
 }

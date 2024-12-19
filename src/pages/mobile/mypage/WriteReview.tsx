@@ -3,46 +3,23 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import ActionButton from "../../../components/ActionButton";
 import StarIcon from "../../../assets/icons/StarIcon";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import ImageAddIcon from "../../../assets/icons/ImageAddIcon";
-import testImg from "../../../assets/images/testImg2.png";
 import XIcon from "../../../assets/icons/XIcon";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useImagesUploadHook from "../../../hooks/useImagesUpload";
 import OneButtonModal from "../../../components/OneButtonModal";
+import {
+  createReview,
+  getReviewDetail,
+  updateReview,
+  uploadFiles,
+} from "../../../service/axios";
 
 export default function WriteReview() {
-  const writeReviewStore = useWriteReviewStore();
-
-  const {
-    imageRef,
-    images,
-    handleImageChange,
-    handleButtonClick,
-    handleImageDelete,
-  } = useImagesUploadHook();
-
   const [openModal, setOpenModal] = useState(false);
-
-  const navigate = useNavigate();
-
-  const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    writeReviewStore.setTitle(event.target.value);
-  };
-
-  const handleReviewText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    event.preventDefault();
-    writeReviewStore.setReviewText(event.target.value);
-  };
-
-  const handleSubmit = () => {
-    console.log(writeReviewStore.getTitle());
-    console.log(writeReviewStore.getReviewText());
-    setOpenModal(true);
-  };
 
   const handlePrev = () => {
     navigate(-1);
@@ -53,6 +30,93 @@ export default function WriteReview() {
     handlePrev();
     setOpenModal(false);
   };
+  const {
+    imageRef,
+    images,
+    handleImageChange,
+    handleButtonClick,
+    handleImageDelete,
+  } = useImagesUploadHook();
+  const navigate = useNavigate();
+  const writeReviewStore = useWriteReviewStore();
+
+  const [form, setForm] = useState({
+    content: "",
+    imgs: [],
+  });
+
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSubmit = () => {
+    if (images.length !== 0 && contentRef.current) {
+      uploadFiles(images, "REVIEW").then((res) => {
+        if (res) {
+          if (isEdit) {
+            const body = {
+              subject: writeReviewStore.getSelectedPlace(),
+              content: contentRef?.current?.value,
+              placeId: writeReviewStore.getSelectedPlaceId(),
+              star: writeReviewStore.getStar(),
+              newFileIds: res.data.data.map((file: any) => file.fileId),
+            };
+
+            updateReview(body, isEdit).then((res) => {
+              if (res?.status === 200) setOpenModal(true);
+            });
+          } else {
+            const body = {
+              subject: writeReviewStore.getSelectedPlace(),
+              content: contentRef?.current?.value,
+              placeId: writeReviewStore.getSelectedPlaceId(),
+              star: writeReviewStore.getStar(),
+              fileIds: res.data.data.map((file: any) => file.fileId),
+            };
+
+            createReview(body).then((res) => {
+              if (res?.status === 200) setOpenModal(true);
+            });
+          }
+        }
+      });
+    } else {
+      const body = {
+        subject: writeReviewStore.getSelectedPlace(),
+        content: contentRef?.current?.value,
+        placeId: writeReviewStore.getSelectedPlaceId(),
+        star: writeReviewStore.getStar(),
+      };
+
+      if (isEdit) {
+        updateReview(body, isEdit).then((res) => {
+          if (res?.status === 200) setOpenModal(true);
+        });
+      } else {
+        createReview(body).then((res) => {
+          if (res?.status === 200) setOpenModal(true);
+        });
+      }
+    }
+  };
+
+  const location = useLocation();
+  const isEdit = location.state && location.state.reviewId;
+  useEffect(() => {
+    if (isEdit) {
+      getReviewDetail(isEdit).then((res) => {
+        if (res) {
+          writeReviewStore.setSelectedPlace(res?.data.subject);
+          writeReviewStore.setSelectedPlaceId(res?.data.placeId);
+          writeReviewStore.setStar(res?.data.star);
+          setForm((p) => ({
+            ...p,
+            star: res?.data.star,
+            content: res?.data.content,
+            imgs: res?.data.fileInfos,
+          }));
+        }
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -98,19 +162,11 @@ export default function WriteReview() {
           ))}
         </StarRow>
 
-        <TitleInputBox>
-          <input
-            placeholder="제목을 작성해주세요"
-            value={writeReviewStore.getTitle()}
-            onChange={handleTitle}
-          />
-        </TitleInputBox>
-
         <TextAreaBox>
           <textarea
             placeholder="여행지의 리뷰를 남겨주세요!"
-            value={writeReviewStore.getReviewText()}
-            onChange={handleReviewText}
+            ref={contentRef}
+            defaultValue={form?.content}
           />
           <span>최소 50자</span>
         </TextAreaBox>
@@ -129,13 +185,15 @@ export default function WriteReview() {
           </ImgAddButton>
 
           <ImgRow>
-            <ImgInfoText>(최대 10장)</ImgInfoText>
+            <ImgInfoText>
+              {isEdit ? `(최대 ${10 - form?.imgs.length}장)` : "(최대 10장)"}
+            </ImgInfoText>
 
             {images?.length !== 0 ? (
               <>
-                {images?.map((image: File) => (
-                  <ShowImgBox key={image.lastModified}>
-                    <img src={testImg} alt="선택된 이미지" />
+                {images?.map((image: File, idx) => (
+                  <ShowImgBox key={idx}>
+                    <img src={URL.createObjectURL(image)} alt="선택된 이미지" />
                     <div onClick={() => handleImageDelete(image.lastModified)}>
                       <XIcon stroke="#e6e6e6" />
                     </div>
@@ -163,7 +221,9 @@ export default function WriteReview() {
           noCloseBtn
         >
           <ModalContainer>
-            <ModalTitle>리뷰 등록이 완료되었습니다!</ModalTitle>
+            <ModalTitle>
+              리뷰 {isEdit ? "수정" : "등록"}이 완료되었습니다!
+            </ModalTitle>
             <ModalText>다른 여행객들에게도 도움이 될 거에요.</ModalText>
           </ModalContainer>
         </OneButtonModal>
@@ -242,36 +302,8 @@ const StarRow = styled.div`
   gap: 10px;
 `;
 
-const TitleInputBox = styled.div`
-  height: 45px;
-
-  margin: 26px 0 22px 0;
-  border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.gray200};
-  padding: 0 30px;
-
-  & > input {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-
-    color: ${(props) => props.theme.color.gray300};
-    font-size: 14px;
-    font-weight: 400;
-
-    &::placeholder {
-      color: ${(props) => props.theme.color.gray300};
-      font-size: 14px;
-      font-weight: 400;
-    }
-
-    &:focus {
-      outline: none;
-    }
-  }
-`;
-
 const TextAreaBox = styled.div`
+  margin-top: 20px;
   height: 200px;
   padding: 30px;
   position: relative;

@@ -4,7 +4,6 @@ import * as S from "../../../assets/styles/home.style";
 import { useNavigate } from "react-router-dom";
 import CardSlide from "../../../components/mobile/home/CardSlide";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
-import TravelogueCard from "../../../components/mobile/home/TravelogueCard";
 import logoImg from "../../../assets/images/logo.png";
 
 export type MoreProps = "TRAVEL_PLACE" | "CITY" | "THEME";
@@ -53,13 +52,13 @@ export default function Home() {
         />
         <CardSlide placeType="THEME" topText={true} />
 
-        <TitleMoreBox title="사람들이 찜한 여행기" handleClick={() => {}} />
+        {/* <TitleMoreBox title="사람들이 찜한 여행기" handleClick={() => {}} />
         <S.ReviewCol>
           <TravelogueCard />
           <TravelogueCard />
         </S.ReviewCol>
 
-        <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} />
+        <TitleMoreBox title="지금 뜨는 리뷰" handleClick={() => {}} /> */}
         {/* <S.ReviewCol>
           {review?.slice(0, 2).map((item: ReviewProps) => (
             <S.ReviewRow key={item.id}>

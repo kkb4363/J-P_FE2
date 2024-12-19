@@ -5,14 +5,15 @@ import Review from "./Review";
 import Travelogue from "./Travelogue";
 import BottomSheet from "../../../components/mobile/BottomSheet";
 import { useReviewStore } from "../../../store/travelReview.store";
-import { Filter, filter } from "../../../utils/staticDatas";
+import { filter } from "../../../utils/staticDatas";
+import { FilterProps } from "../../../types/common";
 
 export default function TravelReview() {
   const reviewStore = useReviewStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(filter[0]);
 
-  const handleFilterChange = (filter: Filter) => {
+  const handleFilterChange = (filter: FilterProps) => {
     setSelectedFilter(filter);
     setIsFilterOpen(false);
   };

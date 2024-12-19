@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 export default function Likes() {
   const navigate = useNavigate();
 
-  const [isLoading, SetIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [likes, setLikes] = useState<MyLikeProps[]>([]);
   const [currentTab, setCurrentTab] = useState("");
 
@@ -23,11 +23,24 @@ export default function Likes() {
       placeType: webMyLikeTabs.find((t) => t.value === currentTab)?.placeType,
     }).then((res) => {
       if (res) {
+        if (currentTab === "diary") {
+          const diaries = res?.data.data.filter(
+            (d: MyLikeProps) => d.likeTargetType === "DIARY"
+          );
+          setLikes(diaries);
+          return setIsLoading(false);
+        }
+
         setLikes(res?.data.data);
-        SetIsLoading(false);
+        setIsLoading(false);
       }
     });
   }, [currentTab]);
+
+  const handleLike = (type: string, id: string) => {
+    if (type === "DIARY") navigate(`/home/travelogue/${id}`);
+    else navigate(`/home/${id}`);
+  };
 
   return (
     <>
@@ -56,11 +69,23 @@ export default function Likes() {
           : likes?.map((like) => (
               <LikeBox
                 key={like.id}
-                onClick={() => navigate(`/home/${like.targetId}`)}
+                onClick={() => handleLike(like.likeTargetType, like.targetId)}
               >
-                <img src={like?.fileUrl} alt="like" />
+                {like.fileUrl ? (
+                  <img src={like?.fileUrl} alt="like" />
+                ) : (
+                  <CustomSkeleton
+                    width="150px"
+                    height="130px"
+                    borderRadius="16px"
+                  />
+                )}
                 <CarouselTitleBox
-                  name={like.targetName}
+                  name={
+                    like.likeTargetType === "DIARY"
+                      ? like.targetSubject
+                      : like.targetName
+                  }
                   subName={like.targetAddress}
                 />
                 <Heart>
@@ -101,8 +126,8 @@ const LikeBox = styled(CarouselWithText)`
   gap: 10px;
 
   & > img {
-    width: 100%;
-    height: 100%;
+    width: 150px;
+    height: 130px;
     border-radius: 16px;
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.06),
       0px 2px 10px 0px rgba(0, 0, 0, 0.08);

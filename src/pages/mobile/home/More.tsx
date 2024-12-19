@@ -7,6 +7,7 @@ import ImageView from "../../../components/ImageView";
 import CarouselTitleBox from "../../../components/mobile/CarouselTitleBox";
 import testImg from "../../../assets/images/testImg.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import CustomSkeleton from "../../../components/CustomSkeleton";
 
 export default function More() {
   const navigate = useNavigate();
@@ -66,15 +67,23 @@ export default function More() {
           // 마지막 요소에 ref 설정
           return (
             <PlaceCardWithText key={item.id} ref={lastElementRef}>
-              <ImageView
-                handleClick={() => navigate(`/home/${item.placeId}`)}
-                src={testImg}
-                alt={item.name}
-                width="100%"
-                height="155px"
-                topText={type === "THEME" ? "여행지" : undefined}
-                bottomText={type === "CITY" ? item.name : undefined}
-              />
+              {item.photoUrl ? (
+                <ImageView
+                  handleClick={() => navigate(`/home/${item.placeId}`)}
+                  src={item.photoUrl}
+                  alt={item.name}
+                  width="100%"
+                  height="155px"
+                  topText={type === "THEME" ? "여행지" : undefined}
+                  bottomText={type === "CITY" ? item.name : undefined}
+                />
+              ) : (
+                <CustomSkeleton
+                  width="100%"
+                  height="155px"
+                  borderRadius="16px"
+                />
+              )}
               {type !== "CITY" && (
                 <CarouselTitleBox
                   paddingLeft="8px"
@@ -87,15 +96,23 @@ export default function More() {
         } else {
           return (
             <PlaceCardWithText key={item.id}>
-              <ImageView
-                handleClick={() => navigate(`/home/${item.placeId}`)}
-                src={testImg}
-                alt={item.name}
-                width="100%"
-                height="155px"
-                topText={type === "THEME" ? "여행지" : undefined}
-                bottomText={type === "CITY" ? item.name : undefined}
-              />
+              {item.photoUrl ? (
+                <ImageView
+                  handleClick={() => navigate(`/home/${item.placeId}`)}
+                  src={item.photoUrl}
+                  alt={item.name}
+                  width="100%"
+                  height="155px"
+                  topText={type === "THEME" ? "여행지" : undefined}
+                  bottomText={type === "CITY" ? item.name : undefined}
+                />
+              ) : (
+                <CustomSkeleton
+                  width="100%"
+                  height="155px"
+                  borderRadius="16px"
+                />
+              )}
 
               {type !== "CITY" && (
                 <CarouselTitleBox

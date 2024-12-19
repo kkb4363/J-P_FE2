@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { getPlaceList } from "../../../service/axios";
 import { PlaceProps } from "../../../types/place";
 import ImageView from "../../ImageView";
-import testImg from "../../../assets/images/testImg.png";
 import { useNavigate } from "react-router-dom";
 import CarouselTitleBox from "../CarouselTitleBox";
 import CustomSkeleton from "../../CustomSkeleton";
@@ -49,13 +48,21 @@ export default function CardSlide({ placeType, bottomText, topText }: Props) {
           ))
         : data?.map((item: PlaceProps) => (
             <CardBox key={item.id}>
-              <ImageView
-                src={testImg}
-                alt={item.name}
-                handleClick={() => handleClick(item.placeId)}
-                bottomText={bottomText ? item.name : ""}
-                topText={topText ? "여행지" : ""}
-              />
+              {item.photoUrl ? (
+                <ImageView
+                  src={item.photoUrl}
+                  alt={item.name}
+                  handleClick={() => handleClick(item.placeId)}
+                  bottomText={bottomText ? item.name : ""}
+                  topText={topText ? "여행지" : ""}
+                />
+              ) : (
+                <CustomSkeleton
+                  width="120px"
+                  height="120px"
+                  borderRadius="16px"
+                />
+              )}
               {placeType !== "CITY" && (
                 <CarouselTitleBox name={item.name} subName={item.subName} />
               )}

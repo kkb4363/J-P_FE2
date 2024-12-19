@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 interface Props {
   paddingLeft?: string;
-  name: string;
-  subName: string;
+  name?: string;
+  subName?: string;
 }
 export default function CarouselTitleBox({
   paddingLeft,

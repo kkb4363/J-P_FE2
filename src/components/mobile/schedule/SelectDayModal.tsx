@@ -1,13 +1,22 @@
-import { testDayList } from "../../../utils/staticDatas";
+import { DayProps } from "../../../types/schedule";
 import MoveDaySlider from "../../MoveDaySlider";
 import OneButtonModal from "../../OneButtonModal";
 
 interface Props {
   onClick: () => void;
   onClose: () => void;
+  dayResDtos: DayProps[];
+  selectDay: number;
+  setSelectDay: (id: number) => void;
 }
 
-export default function SelectDayModal({ onClick, onClose }: Props) {
+export default function SelectDayModal({
+  onClick,
+  onClose,
+  dayResDtos,
+  selectDay,
+  setSelectDay,
+}: Props) {
   return (
     <OneButtonModal
       isMobile
@@ -17,7 +26,12 @@ export default function SelectDayModal({ onClick, onClose }: Props) {
       onClick={onClick}
       onClose={onClose}
     >
-      <MoveDaySlider isMobile dayList={testDayList} currentDay={1} />
+      <MoveDaySlider
+        isMobile
+        dayResDtos={dayResDtos}
+        selectDay={selectDay}
+        setSelectDay={setSelectDay}
+      />
     </OneButtonModal>
   );
 }

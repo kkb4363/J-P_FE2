@@ -1,65 +1,62 @@
 import styled from "styled-components";
 import { TravelHeader } from "./Travel";
 import CustomProfile from "../../../components/CustomProfile";
-import testImg from "../../../assets/images/testImg3.png";
 import { useEffect, useState } from "react";
 import LikeCommentBox from "../../../components/LikeCommentBox";
 import { getMyReviews } from "../../../service/axios";
+import { useNavigate } from "react-router-dom";
+import { MyReviewProps } from "../../../types/mypage";
 
 export default function Review() {
-  const [reviews, setReviews] = useState([]);
+  const navigate = useNavigate();
+  const [reviews, setReviews] = useState<MyReviewProps[]>([]);
 
   useEffect(() => {
     getMyReviews().then((res) => {
-      setReviews(res?.data.data);
+      if (res) {
+        setReviews(res?.data.data);
+      }
     });
   }, []);
 
   return (
     <>
       <TravelHeader>
-        <span>내 작성 리뷰 2</span>
+        <span>내 작성 리뷰 {reviews?.length}</span>
       </TravelHeader>
 
       <ReviewCardCol>
-        <ReviewCard>
-          <ProfileBox>
-            <CustomProfile
-              src={testImg}
-              fontSize="12px"
-              nickname="arami10"
-              content="24.3.26"
-            />
-            <span>수정</span>
-          </ProfileBox>
+        {reviews?.map((r: MyReviewProps) => (
+          <ReviewCard
+            key={r.id}
+            onClick={() => navigate(`/home/review/${r.id}`)}
+          >
+            <ProfileBox>
+              <CustomProfile
+                src={r?.userCompactResDto?.profile}
+                fontSize="12px"
+                nickname={r?.userCompactResDto?.nickname}
+                content={r?.createdAt}
+              />
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/writeReview`, {
+                    state: {
+                      reviewId: r?.id,
+                    },
+                  });
+                }}
+              >
+                수정
+              </span>
+            </ProfileBox>
 
-          <TextBox>
-            전주 한옥마을, 벽화마을, 남부시장 먹방 여행오랜만에 한옥마을에서
-            힐링하고 갑니다~ 조용하고 혼자 편안히 휴식을 취하기 아주 좋은
-            곳이에요
-          </TextBox>
+            <TextBox>{r?.content}</TextBox>
 
-          <LikeCommentBox likeCnt={6} commentCnt={2} />
-        </ReviewCard>
-        <ReviewCard>
-          <ProfileBox>
-            <CustomProfile
-              src={testImg}
-              fontSize="12px"
-              nickname="arami10"
-              content="24.3.26"
-            />
-            <span>수정</span>
-          </ProfileBox>
-
-          <TextBox>
-            전주 한옥마을, 벽화마을, 남부시장 먹방 여행오랜만에 한옥마을에서
-            힐링하고 갑니다~ 조용하고 혼자 편안히 휴식을 취하기 아주 좋은
-            곳이에요
-          </TextBox>
-
-          <LikeCommentBox likeCnt={6} commentCnt={2} />
-        </ReviewCard>
+            <LikeCommentBox likeCnt={r?.likeCnt} commentCnt={r?.commentCnt} />
+          </ReviewCard>
+        ))}
       </ReviewCardCol>
     </>
   );

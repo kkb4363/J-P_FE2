@@ -180,9 +180,9 @@ export default function CommentCard(
       </CommentCardContainer>
       {deleteModal && (
         <TwoButtonsModal
-          isMobile={false}
-          width="470px"
-          height="390px"
+          isMobile={!isWeb}
+          width={isWeb ? "470px" : "320px"}
+          height={isWeb ? "390px" : "230px"}
           text="댓글을 삭제할까요?"
           onClick={handleDeleteClick}
           onClose={() => setDeleteModal(false)}

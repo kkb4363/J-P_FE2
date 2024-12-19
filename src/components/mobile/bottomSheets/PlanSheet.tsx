@@ -13,6 +13,7 @@ import * as D from "../../../assets/styles/scheduleDetail.style";
 import {
   deletePlaceFromSchedule,
   editPlan,
+  getPlaceDetail,
   getPlan,
   moveScheduleDate,
 } from "../../../service/axios";
@@ -38,6 +39,7 @@ import PlanItem from "../schedule/PlanItem";
 import PlanMemo from "../schedule/PlanMemo";
 import BottomSheet from "./../BottomSheet";
 import useAddPlaceHook from "../../../hooks/useAddPlace";
+import { useMapStore } from "../../../store/map.store";
 
 interface Props {
   setIsPlanPlace: React.Dispatch<React.SetStateAction<boolean>>;
@@ -208,6 +210,58 @@ export default function PlanSheet({
     setAddedPlaces(detail.dayResDtos);
   }, [detail]);
 
+  const handleAddPlaceClick = () => {
+    if (detail) {
+      navigate(`/addPlace`, {
+        state: {
+          scheduleId: detail.id,
+          city: detail.place.name,
+          dates: {
+            startDate: detail.startDate,
+            endDate: detail.endDate,
+          },
+          location: {
+            lat: loc?.lat,
+            lng: loc?.lng,
+          },
+          dayResDtos: detail.dayResDtos,
+        },
+      });
+    }
+  };
+
+  const getPlaceLocation = () => {
+    getPlaceDetail({ placeId: detail?.place?.placeId + "" }).then((res) => {
+      const location = res?.data.location;
+      setLoc({
+        lat: Number(location.lat),
+        lng: Number(location.lng),
+      });
+    });
+  };
+
+  const [loc, setLoc] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const mapStore = useMapStore();
+
+  useEffect(() => {
+    if (detail?.id) {
+      getPlaceLocation();
+    }
+  }, [detail?.id]);
+
+  const currentDayPlaces = addedPlaces?.find(
+    (d) => d.id === getCurrentDayId()
+  )?.dayLocationResDtoList;
+
+  useEffect(() => {
+    if (loc?.lat) {
+      mapStore.setAddedPlace(currentDayPlaces as any[]);
+    }
+  }, [getCurrentDayId(), loc?.lat]);
+
   return (
     <>
       {!isOpenMemo.cost && (
@@ -242,10 +296,7 @@ export default function PlanSheet({
                               등록된 장소가 없습니다. 여행 장소를 추가해주세요.
                             </p>
                           </D.NoPlaceTextBox>
-                          <ActionButton
-                            add
-                            onClick={() => navigate("/addPlace")}
-                          >
+                          <ActionButton add onClick={handleAddPlaceClick}>
                             + 여행지 추가
                           </ActionButton>
                         </D.NoPlaceBox>
@@ -288,7 +339,7 @@ export default function PlanSheet({
                       )}
                     </D.PlanList>
                   </D.PlansBox>
-                  <D.AddPlaceButton onClick={() => navigate("/addPlace")}>
+                  <D.AddPlaceButton onClick={handleAddPlaceClick}>
                     + 여행지 추가
                   </D.AddPlaceButton>
                 </>
@@ -403,4 +454,7 @@ export default function PlanSheet({
       )}
     </>
   );
+}
+function getPlaceLocation() {
+  throw new Error("Function not implemented.");
 }

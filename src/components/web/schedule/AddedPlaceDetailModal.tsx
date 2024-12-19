@@ -27,8 +27,6 @@ export default function AddedPlaceDetailModal(props: Props) {
     }
   }, [props?.placeId]);
 
-  console.log(data);
-
   return (
     <NoButtonModal width="470px" height="390px" onClose={props.handleClose}>
       <>
@@ -55,16 +53,14 @@ export default function AddedPlaceDetailModal(props: Props) {
               <AlarmIcon />
               <span>
                 {data?.weekdayText?.map((weekday, idx) => {
-                  const todayIdx = new Date().getDay();
+                  const todayIdx = (new Date().getDay() + 6) % 7;
                   if (todayIdx === idx) return <span key={idx}>{weekday}</span>;
                 })}
               </span>
             </div>
             <div>
               <TicketIcon />
-              <span>
-                {data?.website ? data?.website : "웹사이트는 지원하지 않습니다"}
-              </span>
+              <span>{data?.businessStatus}</span>
             </div>
             <div>
               <PhoneIcon />

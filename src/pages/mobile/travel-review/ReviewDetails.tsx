@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import StarIcon from "../../../assets/icons/StarIcon";
 import testImg from "../../../assets/images/testImg2.png";
@@ -11,68 +11,110 @@ import LikeCommentBox from "../../../components/LikeCommentBox";
 import CommentCard from "../../../components/mobile/CommentCard";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import ImageSlider from "../../../components/mobile/ImageSlider";
-import { getReviewDetail } from "../../../service/axios";
-import { testImageList } from "../../../utils/staticDatas";
+import {
+  getReviewDetail,
+  setComment as setCommentApi,
+  setLike,
+} from "../../../service/axios";
 import { CommentProps, ReviewDetailProps } from "../../../types/travelreview";
 
 export default function ReviewDetails() {
-  const { reviewId } = useParams();
-  const [review, setReview] = useState<ReviewDetailProps>();
-  const [loading, setLoading] = useState(false);
-  const [fillLike, setFillLike] = useState(false);
-  const [comment, setComment] = useState("");
-  const [commentCnt, setCommentCnt] = useState(-1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [focusImgIdx, setFocusImgIdx] = useState(0);
 
+  const navigate = useNavigate();
+  const { reviewId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [fillLike, setFillLike] = useState(false);
+  const [comment, setComment] = useState("");
+
+  const [data, setData] = useState<ReviewDetailProps>({} as ReviewDetailProps);
+
   const requestApi = async () => {
-    setLoading(true);
+    setIsLoading(true);
     await getReviewDetail(Number(reviewId)).then((res) => {
-      setReview(res?.data);
-      setCommentCnt(res?.data.commentResDtoList.length);
-      setLoading(false);
+      setData(res?.data);
+      setIsLoading(false);
     });
   };
-  const handleWriteCommentSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log(`${comment} submit`);
+
+  const handleImageClick = (index: number) => {
+    navigate(`/home/review/${reviewId}/photo`, {
+      state: {
+        currentIndex: index,
+        images: data?.fileInfos,
+      }, // 이미지 인덱스와 목록을 state로 전달
+    });
+  };
+
+  const handleLike = () => {
+    if (reviewId) {
+      setLike({ actionType: "LIKE", targetType: "REVIEW", id: reviewId }).then(
+        (res) => {
+          if (res) {
+            console.log(res);
+          }
+        }
+      );
+    }
   };
 
   useEffect(() => {
     requestApi();
   }, [reviewId]);
 
+  const handleCommentAdd = () => {
+    if (comment) {
+      setCommentApi({
+        targetId: Number(reviewId),
+        commentType: "REVIEW",
+        content: comment,
+      }).then((res) => {
+        if (res) {
+          requestApi();
+          setComment("");
+        }
+      });
+    }
+  };
+
+  const [isReplyAdded, setIsReplyAdded] = useState(false);
+
+  useEffect(() => {
+    requestApi();
+  }, [isReplyAdded]);
+
   return (
     <ReviewDetailContainer>
       <CustomHeader title="오대산 선재길" isPlace fontSize="16px" />
-      {loading && <NoResultsText>로딩중...</NoResultsText>}
+      {isLoading && <NoResultsText>로딩중...</NoResultsText>}
       {isModalOpen && (
         <ImageSlider
-          imageList={testImageList}
+          imageList={data?.fileInfos}
           onClose={() => setIsModalOpen(false)}
           focusIndex={focusImgIdx}
         />
       )}
-      {!loading && (
+      {!isLoading && (
         <ReviewDetailsBody>
           <R.ProfileHeader>
             <CustomProfile
-              src={testImg}
-              nickname={review?.userCompactResDto.nickname}
-              content="24.2.3"
+              src={data?.userCompactResDto?.profile}
+              nickname={data?.userCompactResDto?.nickname}
+              content={data?.createdAt}
             />
             <IconBox>
               <StarIcon />
-              <span>{review?.star}</span>
+              <span>{data?.star}</span>
             </IconBox>
           </R.ProfileHeader>
-          <p>{review?.content}</p>
+          <p>{data?.content}</p>
           <ReviewDetailsImageBox>
             {/* [TODO]: 이미지 api 연결해서 mapping, 4장 이상일 때 +1 표시 추가 */}
-            {testImageList.slice(0, 4).map((url, i) => (
+            {data?.fileInfos?.slice(0, 4).map((d, i) => (
               <ImageWrapper key={i}>
                 <ImageView
-                  src={testImg}
+                  src={d?.fileUrl}
                   alt="review img"
                   width="100%"
                   height="129px"
@@ -83,22 +125,25 @@ export default function ReviewDetails() {
                 />
                 {i === 3 && (
                   <ImageOverlay
+                    $isActive={data?.fileInfos?.length > 4}
                     onClick={() => {
                       setIsModalOpen(true);
-                      setFocusImgIdx(0);
+                      setFocusImgIdx(3);
                     }}
                   >
-                    <span>{`+ ${testImageList.length - 3}`}</span>
+                    {data?.fileInfos.length > 4 && (
+                      <span>{`+ ${data?.fileInfos?.length - 3}`}</span>
+                    )}
                   </ImageOverlay>
                 )}
               </ImageWrapper>
             ))}
           </ReviewDetailsImageBox>
           <LikeCommentBox
-            likeCnt={review!.likeCnt}
-            commentCnt={review!.commentResDtoList.length}
+            likeCnt={data?.likeCnt}
+            commentCnt={data?.commentResDtoList?.length}
             fillLike={fillLike}
-            likeClick={() => setFillLike((prev) => !prev)}
+            likeClick={handleLike}
           />
           <R.CommentsBox>
             <p>댓글</p>
@@ -113,24 +158,23 @@ export default function ReviewDetails() {
               </R.CommentInput>
               <R.CommentWriteButton
                 type="submit"
-                fill={true}
-                onClick={handleWriteCommentSubmit}
+                $fill={true}
+                onClick={handleCommentAdd}
               >
                 등록
               </R.CommentWriteButton>
             </R.CommentInputBox>
-            {commentCnt == 0 && (
+            {data?.commentResDtoList?.length == 0 && (
               <NoCommentBox>첫 댓글을 작성해주세요!</NoCommentBox>
             )}
-            {commentCnt > 0 &&
-              review?.commentResDtoList.map((item: CommentProps) => {
+            {data?.commentResDtoList?.length > 0 &&
+              data?.commentResDtoList.map((item: CommentProps) => {
                 return (
                   <CommentCard
+                    isWeb={false}
                     key={item.id}
-                    content="좋은 리뷰네요!"
-                    createdAt="24.2.3"
-                    user={item.userCompactResDto}
-                    replyList={item.replyList}
+                    {...item}
+                    setIsReply={setIsReplyAdded}
                   />
                 );
               })}
@@ -188,13 +232,13 @@ const ImageWrapper = styled.div`
   display: inline-block; /* Ensure the wrapper sizes to the image */
 `;
 
-const ImageOverlay = styled.div`
+const ImageOverlay = styled.div<{ $isActive: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.$isActive && "rgba(0,0,0,0.5)"};
   z-index: 1;
   border-radius: 16px;
 

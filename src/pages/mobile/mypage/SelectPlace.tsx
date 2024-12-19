@@ -8,69 +8,81 @@ import {
   PlaceCardTextCol,
   SaveButtonBox,
 } from "../addPlace/ListView";
-import testImg from "../../../assets/images/testImg1.png";
 import StarIcon from "../../../assets/icons/StarIcon";
 import { scrollHidden } from "../../../assets/styles/home.style";
 import CheckOnlyIcon from "../../../assets/icons/CheckOnlyIcon";
 import { useWriteReviewStore } from "../../../store/writeReview.store";
 import { useNavigate } from "react-router-dom";
+import useSearchHook from "../../../hooks/useSearch";
+import { useState } from "react";
 
 export default function SelectPlace() {
-  const { setSelectedPlace } = useWriteReviewStore();
+  const { setSelectedPlaceId, setSelectedPlace } = useWriteReviewStore();
   const navigate = useNavigate();
 
-  const test = () => {
-    setSelectedPlace("순천만 국가정원");
+  const handleSubmit = () => {
+    setSelectedPlaceId(select.id + "");
+    setSelectedPlace(select.name);
     navigate(-1);
   };
+
+  const [select, setSelect] = useState({
+    id: -1,
+    name: "",
+  });
+
+  const handleSelect = (id: number, name: string) => {
+    setSelect({
+      id: id,
+      name: name,
+    });
+  };
+
+  const { search, searchData, setSearch, handleInput, handleInputSubmit } =
+    useSearchHook();
 
   return (
     <>
       <CustomHeader title="장소 등록" />
       <SelectPlaceBody>
-        <CustomInput text="장소를 입력해주세요." value="" />
+        <CustomInput
+          text="장소를 입력해주세요."
+          value={search}
+          onChange={handleInput}
+          onSubmit={handleInputSubmit}
+          onDelete={() => setSearch("")}
+        />
 
         <PlaceCardCol>
-          <PlaceCard>
-            <img src={testImg} alt="장소 등록" />
+          {searchData?.map((d) => (
+            <PlaceCard key={d.id}>
+              <img src={d.photoUrl} alt="장소 등록" />
 
-            <PlaceCardTextCol>
-              <h1>명소</h1>
-              <span>월영교</span>
-              <div>
-                <StarIcon />
-                <span>4.9</span>
-              </div>
-            </PlaceCardTextCol>
+              <PlaceCardTextCol>
+                <h1>{d.name}</h1>
+                <span>{d.subName}</span>
+                <div>
+                  <StarIcon />
+                  <span>{d.rating}</span>
+                </div>
+              </PlaceCardTextCol>
 
-            <PlaceAddButtonBox>
-              <PlaceAddButton>
-                <CheckOnlyIcon stroke="#b8b8b8" />
-              </PlaceAddButton>
-            </PlaceAddButtonBox>
-          </PlaceCard>
-          <PlaceCard>
-            <img src={testImg} alt="장소 등록" />
-
-            <PlaceCardTextCol>
-              <h1>명소</h1>
-              <span>월영교</span>
-              <div>
-                <StarIcon />
-                <span>4.9</span>
-              </div>
-            </PlaceCardTextCol>
-
-            <PlaceAddButtonBox>
-              <PlaceAddButton>
-                <CheckOnlyIcon stroke="#b8b8b8" />
-              </PlaceAddButton>
-            </PlaceAddButtonBox>
-          </PlaceCard>
+              <PlaceAddButtonBox>
+                <PlaceAddButton
+                  $isActive={d.id === select.id}
+                  onClick={() => handleSelect(d.id, d.name)}
+                >
+                  <CheckOnlyIcon
+                    stroke={d.id === select.id ? "#6979f8" : "#b8b8b8"}
+                  />
+                </PlaceAddButton>
+              </PlaceAddButtonBox>
+            </PlaceCard>
+          ))}
         </PlaceCardCol>
 
         <SelectPlaceSaveButtonBox>
-          <button onClick={test}>
+          <button onClick={handleSubmit}>
             <span>완료</span>
           </button>
         </SelectPlaceSaveButtonBox>
@@ -98,6 +110,10 @@ const PlaceAddButtonBox = styled.div`
   align-items: center;
 `;
 
-const PlaceAddButton = styled(PlaceCardAddButton)`
-  border: 1px solid ${(props) => props.theme.color.gray300};
+const PlaceAddButton = styled(PlaceCardAddButton)<{ $isActive: boolean }>`
+  border: 1px solid
+    ${(props) =>
+      props.$isActive
+        ? props.theme.color.secondary
+        : props.theme.color.gray300};
 `;
