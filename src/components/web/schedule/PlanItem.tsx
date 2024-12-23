@@ -115,6 +115,23 @@ export default function PlanItem({
     });
   };
 
+  const handleSelectDay = async () => {
+    if (getUserType() === "P") {
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: selectDay,
+        },
+        getUserType()
+      ).then(() => {
+        reloadSchedule();
+        setOpenModal((p) => ({ ...p, selectDay: false }));
+      });
+    } else {
+      setOpenModal(() => ({ selectDay: false, selectTime: true }));
+    }
+  };
+
   return (
     <>
       <PlanItemContainer
@@ -189,7 +206,7 @@ export default function PlanItem({
           height="390px"
           title="다른 날로 이동"
           buttonText="다음"
-          onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
+          onClick={handleSelectDay}
           onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
           <MoveDaySlider
