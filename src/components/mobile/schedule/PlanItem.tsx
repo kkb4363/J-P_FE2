@@ -5,6 +5,7 @@ import FileCheckIcon from "../../../assets/icons/FileCheckIcon";
 import TrashIcon from "../../../assets/icons/TrashIcon";
 import { DayLocationProps } from "../../../types/schedule";
 import { useSelectPlanItemStore } from "../../../store/selectPlanItem.store";
+import { useUserStore } from "../../../store/user.store";
 
 interface Props {
   item: DayLocationProps;
@@ -46,6 +47,7 @@ export default function PlanItem({
     transition,
     isDragging,
   } = useSortable({ id: item.id });
+  const { getUserType } = useUserStore();
 
   const handleItemClick = async () => {
     setPlanItemId(item.id);
@@ -90,11 +92,13 @@ export default function PlanItem({
           zIndex: isDragging ? 100 : "auto",
         }}
       >
-        <TimeBox
-          $isEdit={isEdit}
-          onClick={handleEditTimeClick}
-        >{`${item.time}`}</TimeBox>
-        <PlaceBox onClick={handleItemClick}>
+        {getUserType() === "J" && (
+          <TimeBox
+            $isEdit={isEdit}
+            onClick={handleEditTimeClick}
+          >{`${item.time}`}</TimeBox>
+        )}
+        <PlaceBox onClick={handleItemClick} $userType={getUserType()}>
           <PlaceIdx $isEdit={isEdit}>{item.index}</PlaceIdx>
           <PlaceTitleCol>
             <p>{item.name}</p>
@@ -115,9 +119,11 @@ export default function PlanItem({
             <TrashIcon />
           </button>
         ) : (
-          <MemoButton onClick={handleMemoClick}>
-            <FileCheckIcon />
-          </MemoButton>
+          getUserType() === "J" && (
+            <MemoButton onClick={handleMemoClick}>
+              <FileCheckIcon />
+            </MemoButton>
+          )
         )}
       </PlanItemContainer>
     </>
@@ -135,10 +141,11 @@ const PlanItemContainer = styled.div`
   touch-action: none;
 `;
 
-const PlaceBox = styled.div`
+const PlaceBox = styled.div<{ $userType: string }>`
   width: 100%;
   display: flex;
   align-items: center;
+  margin: ${({ $userType }) => ($userType === "P" && "0 20px")};
   padding: 12px 16px;
   background-color: ${(props) => props.theme.color.white};
   border: 1px solid ${(props) => props.theme.color.gray200};
