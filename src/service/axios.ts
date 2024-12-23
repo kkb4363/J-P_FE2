@@ -393,7 +393,7 @@ export const moveScheduleDate = async (
   locationId: number,
   body: {
     newDayId: number;
-    time: string;
+    time?: string;
   },
   jpState: string
 ) => {

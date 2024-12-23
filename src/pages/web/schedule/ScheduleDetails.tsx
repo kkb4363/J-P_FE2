@@ -21,7 +21,7 @@ import {
   getSchedule,
   getPlaceDetail,
 } from "../../../service/axios";
-import { DayProps, ScheduleApiProps } from "../../../types/schedule";
+import { DayLocationProps, DayProps, ScheduleApiProps } from "../../../types/schedule";
 import { testImg1 } from "../../../utils/staticDatas";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import { useMapStore } from "../../../store/map.store";
@@ -260,7 +260,7 @@ export default function ScheduleDetails() {
                   >
                     {addedPlaces
                       ?.find((day) => day.id === getCurrentDayId())
-                      ?.dayLocationResDtoList.map((item: any) => {
+                      ?.dayLocationResDtoList.map((item: DayLocationProps) => {
                         return (
                           <PlanItem
                             key={item.id}

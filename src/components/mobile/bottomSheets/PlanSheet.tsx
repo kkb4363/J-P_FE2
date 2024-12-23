@@ -130,6 +130,23 @@ export default function PlanSheet({
     }
   };
 
+  const handleSelectDay = async () => {
+    if (getUserType() === "P") {
+      await moveScheduleDate(
+        getPlanItemId()!,
+        {
+          newDayId: selectDay,
+        },
+        getUserType()
+      ).then(() => {
+        requestApi();
+        setOpenModal((p) => ({ ...p, selectDay: false }));
+      });
+    } else {
+      setOpenModal(() => ({ selectDay: false, selectTime: true }));
+    }
+  };
+
   const handleDeleteItemClick = async () => {
     if (getPlanItemId()!) {
       await deletePlaceFromSchedule(getPlanItemId()!).then(() => {
@@ -427,7 +444,7 @@ export default function PlanSheet({
           height="240px"
           title="다른 날로 이동"
           buttonText="다음"
-          onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
+          onClick={handleSelectDay}
           onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
           <MoveDaySlider

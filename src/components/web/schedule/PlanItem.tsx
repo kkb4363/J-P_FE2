@@ -115,6 +115,23 @@ export default function PlanItem({
     });
   };
 
+  const handleSelectDay = async () => {
+    if (getUserType() === "P") {
+      await moveScheduleDate(
+        item.id,
+        {
+          newDayId: selectDay,
+        },
+        getUserType()
+      ).then(() => {
+        reloadSchedule();
+        setOpenModal((p) => ({ ...p, selectDay: false }));
+      });
+    } else {
+      setOpenModal(() => ({ selectDay: false, selectTime: true }));
+    }
+  };
+
   return (
     <>
       <PlanItemContainer
@@ -126,11 +143,17 @@ export default function PlanItem({
           zIndex: isDragging ? "100" : "auto",
         }}
       >
-        <TimeBox
-          $isEdit={isEdit}
-          onClick={handleEditTimeClick}
-        >{`${item.time}`}</TimeBox>
-        <PlaceBox $isDragging={isDragging} onClick={handleCardClick}>
+        {getUserType() === "J" && (
+          <TimeBox
+            $isEdit={isEdit}
+            onClick={handleEditTimeClick}
+          >{`${item.time}`}</TimeBox>
+        )}
+        <PlaceBox
+          $isDragging={isDragging}
+          $userType={getUserType()}
+          onClick={handleCardClick}
+        >
           <PlaceNum $isEdit={isEdit}>{item.index}</PlaceNum>
           <PlaceTitleBox>
             <p>{item.name}</p>
@@ -159,11 +182,13 @@ export default function PlanItem({
             <TrashIcon />
           </button>
         ) : (
-          <MemoButton
-            onClick={() => setModalState((p) => ({ ...p, memo: true }))}
-          >
-            <FileCheckIcon />
-          </MemoButton>
+          getUserType() === "J" && (
+            <MemoButton
+              onClick={() => setModalState((p) => ({ ...p, memo: true }))}
+            >
+              <FileCheckIcon />
+            </MemoButton>
+          )
         )}
       </PlanItemContainer>
 
@@ -181,7 +206,7 @@ export default function PlanItem({
           height="390px"
           title="다른 날로 이동"
           buttonText="다음"
-          onClick={() => setOpenModal({ selectDay: false, selectTime: true })}
+          onClick={handleSelectDay}
           onClose={() => setOpenModal((p) => ({ ...p, selectDay: false }))}
         >
           <MoveDaySlider
@@ -288,7 +313,7 @@ const TimeBox = styled.div<{ $isEdit: boolean }>`
   cursor: pointer;
 `;
 
-const PlaceBox = styled.div<{ $isDragging: boolean }>`
+const PlaceBox = styled.div<{ $isDragging: boolean; $userType: string }>`
   width: 100%;
   height: 75px;
   display: flex;
@@ -303,6 +328,7 @@ const PlaceBox = styled.div<{ $isDragging: boolean }>`
   border-radius: 16px;
   gap: 16px;
   cursor: pointer;
+  margin: ${({ $userType }) => $userType === "P" && "0 50px"};
 `;
 
 const PlaceNum = styled.div<{ $isEdit: boolean }>`
