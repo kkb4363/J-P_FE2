@@ -37,7 +37,11 @@ export default function TravelogueCard({ item }: Props) {
         <span>자세히 보기</span>
       </TravelogueBody>
       <TwoImageBox images={item.fileInfos} />
-      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
+      <LikeCommentBox
+        likeCnt={item.likeCnt}
+        commentCnt={item.commentCnt}
+        fillLike={item.isLiked}
+      />
     </TravelogueCardContainer>
   );
 }

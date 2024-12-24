@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import { deleteSchedule, getAllDiaries } from "../../../service/axios";
 import TwoButtonsModal from "../../TwoButtonsModal";
 import OneButtonModal from "../../OneButtonModal";
-import { LoadingText } from "../../../pages/web/onboarding/Survey";
 import { TravelogProps } from "../../../types/travelreview";
+import { useReviewStore } from "../../../store/travelReview.store";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   schedules: ScheduleApiProps[];
@@ -57,6 +58,13 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
     });
   }, []);
 
+  const navigate = useNavigate();
+  const reviewStore = useReviewStore();
+  const handleTripMore = () => {
+    reviewStore.setIsReview(false);
+    navigate("/home/travelReview");
+  };
+
   return (
     <>
       <>
@@ -85,7 +93,9 @@ export default function UpcomingSchedule({ schedules, setSchedules }: Props) {
 
         <SubTitleWithMore>
           <h2>여행 일정 추천</h2>
-          <span>더보기</span>
+          <div onClick={handleTripMore}>
+            <span>더보기</span>
+          </div>
         </SubTitleWithMore>
 
         <RecommendCardBox>

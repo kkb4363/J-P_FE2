@@ -14,7 +14,6 @@ interface Props {
 
 export default function ReviewCard({ item }: Props) {
   const navigate = useNavigate();
-
   return (
     <ReviewCardContainer onClick={() => navigate(`/home/review/${item.id}`)}>
       <ReviewHeader>
@@ -29,14 +28,18 @@ export default function ReviewCard({ item }: Props) {
       </ReviewHeader>
       <ReviewBody>
         <CustomProfile
-          src="/src/assets/images/testImg.png"
+          src={item.userCompactResDto.profile}
           nickname={item.userCompactResDto.nickname}
           content="24.2.3"
         />
         <ContentText>{item.content}</ContentText>
       </ReviewBody>
       <TwoImageBox images={item.fileInfos} />
-      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
+      <LikeCommentBox
+        fillLike={item.isLiked}
+        likeCnt={item.likeCnt}
+        commentCnt={item.commentCnt}
+      />
     </ReviewCardContainer>
   );
 }

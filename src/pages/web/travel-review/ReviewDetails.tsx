@@ -23,16 +23,24 @@ export default function ReviewDetails() {
   const navigate = useNavigate();
   const { reviewId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [fillLike, setFillLike] = useState(false);
   const [comment, setComment] = useState("");
 
   const [data, setData] = useState<ReviewDetailProps>({} as ReviewDetailProps);
+  const [likeState, setLikeState] = useState({
+    isLiked: false,
+    likeCount: 0,
+  });
 
   const requestApi = async () => {
     setIsLoading(true);
     await getReviewDetail(Number(reviewId)).then((res) => {
       setData(res?.data);
       setIsLoading(false);
+
+      setLikeState({
+        isLiked: res?.data?.isLiked,
+        likeCount: res?.data?.likeCnt,
+      });
     });
   };
 
@@ -49,8 +57,16 @@ export default function ReviewDetails() {
     if (reviewId) {
       setLike({ actionType: "LIKE", targetType: "REVIEW", id: reviewId }).then(
         (res) => {
-          if (res) {
-            console.log(res);
+          if (res?.data) {
+            setLikeState((p) => ({
+              isLiked: true,
+              likeCount: p.likeCount + 1,
+            }));
+          } else {
+            setLikeState((p) => ({
+              isLiked: false,
+              likeCount: p.likeCount - 1,
+            }));
           }
         }
       );
@@ -95,7 +111,7 @@ export default function ReviewDetails() {
             </ReviewPlaceBox>
             <R.ProfileHeader>
               <CustomProfile
-                src="/src/assets/images/testImg.png"
+                src={data?.userCompactResDto?.profile}
                 nickname={data?.userCompactResDto?.nickname}
                 content={data?.createdAt}
               />
@@ -108,7 +124,7 @@ export default function ReviewDetails() {
               <ReviewContents>{data?.content}</ReviewContents>
             </div>
             <ReviewDetailsImageBox>
-              {data?.fileInfos?.slice(0, 4).map((f, i) => (
+              {data?.fileInfos?.slice(0, 4)?.map((f, i) => (
                 <ImageWrapper key={i} onClick={() => handleImageClick(i)}>
                   <ImageView
                     src={f.fileUrl}
@@ -116,18 +132,18 @@ export default function ReviewDetails() {
                     width="100%"
                     height="225px"
                   />
-                  {i === 3 && (
-                    <ImageOverlay>
-                      <span>{`+ ${testImageList.length - 3}`}</span>
+                  {i === 3 && data?.fileInfos?.length > 4 && (
+                    <ImageOverlay $isActive={data?.fileInfos?.length > 4}>
+                      <span>+ {data?.fileInfos?.length - 4}</span>
                     </ImageOverlay>
                   )}
                 </ImageWrapper>
               ))}
             </ReviewDetailsImageBox>
             <LikeCommentBox
-              likeCnt={data?.likeCnt}
+              likeCnt={likeState?.likeCount}
               commentCnt={data?.commentResDtoList?.length}
-              fillLike={fillLike}
+              fillLike={likeState?.isLiked}
               likeClick={handleLike}
             />
           </ReviewDetailsBody>
@@ -197,13 +213,13 @@ const ImageWrapper = styled.div`
   display: inline-block;
 `;
 
-const ImageOverlay = styled.div`
+const ImageOverlay = styled.div<{ $isActive?: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.$isActive && "rgba(0, 0, 0, 0.5)"};
   z-index: 1;
   border-radius: 16px;
   display: grid;

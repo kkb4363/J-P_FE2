@@ -23,7 +23,11 @@ export default function LikeCommentBox({
     <LikeCommentBoxContainer>
       <IconBox>
         {isReview ? (
-          <LikeIcon fill={fillLike ? "#FFC814" : "none"} onClick={likeClick} />
+          <LikeIcon
+            stroke={fillLike ? "#FFC814" : "#808080"}
+            fill={fillLike ? "#FFC814" : "none"}
+            onClick={likeClick}
+          />
         ) : (
           <HeartIcon />
         )}

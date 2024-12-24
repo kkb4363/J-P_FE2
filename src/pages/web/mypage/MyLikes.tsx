@@ -40,6 +40,8 @@ export default function MyLikes() {
     else navigate(`/home/details/${id}`);
   };
 
+  console.log(likes);
+
   return (
     <div>
       <MyPageTitle>내 찜 목록</MyPageTitle>

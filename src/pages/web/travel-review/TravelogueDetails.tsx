@@ -18,14 +18,23 @@ import {
 import { TravelogDetailProps } from "../../../types/travelreview";
 import { formatDayNights } from "../../../utils/dayNights";
 import { testLogTags } from "../../../utils/staticDatas";
+import { toast } from "react-toastify";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 export default function TravelogueDetails() {
   const navigate = useNavigate();
   const { travelogueId } = useParams();
   const [diaryData, setDiaryData] = useState<TravelogDetailProps>();
-  const [fillLike, setFillLike] = useState(false);
-  const [fillHeart, setFillHeart] = useState(false);
   const [comment, setComment] = useState("");
+
+  const [likeState, setLikeState] = useState({
+    isLiked: false,
+    likeCount: 0,
+  });
+
+  const [isBookMarked, setIsBookMarked] = useState(false);
 
   const { nights, days } = diaryData
     ? formatDayNights(diaryData.scheduleStartDate, diaryData.scheduleEndDate)
@@ -39,7 +48,16 @@ export default function TravelogueDetails() {
 
   const requestApi = async () => {
     await getDiaryDetail(Number(travelogueId)).then((res) => {
-      setDiaryData(res?.data);
+      if (res) {
+        setDiaryData(res?.data);
+
+        setLikeState({
+          isLiked: res?.data?.isLiked,
+          likeCount: res?.data?.likeCnt,
+        });
+
+        setIsBookMarked(res?.data?.isBookmarked);
+      }
     });
   };
 
@@ -54,22 +72,37 @@ export default function TravelogueDetails() {
         targetType: "DIARY",
         id: diaryData.id + "",
       }).then((res) => {
-        if (res) {
-          console.log(res);
+        if (res?.data) {
+          setLikeState((p) => ({
+            isLiked: true,
+            likeCount: p.likeCount + 1,
+          }));
+        } else {
+          setLikeState((p) => ({
+            isLiked: false,
+            likeCount: p.likeCount - 1,
+          }));
         }
       });
     }
   };
 
   const handleHeart = () => {
+    if (!cookies.get("userToken"))
+      return toast(<span>로그인이 필요합니다.</span>);
+
     if (diaryData?.id) {
       setLike({
         actionType: "BOOKMARK",
         targetType: "DIARY",
         id: diaryData.id + "",
       }).then((res) => {
-        if (res) {
-          console.log(res);
+        if (res?.data) {
+          setIsBookMarked(true);
+          toast(<span>내 찜 목록에 추가되었습니다</span>);
+        } else {
+          setIsBookMarked(false);
+          toast(<span>내 찜 목록에서 삭제되었습니다</span>);
         }
       });
     }
@@ -105,8 +138,8 @@ export default function TravelogueDetails() {
             <h1>{diaryData.subject}</h1>
             <HeartBox onClick={handleHeart}>
               <HeartIcon
-                fill={fillHeart ? "#FF5757" : "none"}
-                stroke={fillHeart ? "#FF5757" : "#808080"}
+                fill={isBookMarked ? "#FF5757" : "none"}
+                stroke={isBookMarked ? "#FF5757" : "#808080"}
               />
             </HeartBox>
           </TravelogueDetailsTitle>
@@ -119,9 +152,9 @@ export default function TravelogueDetails() {
                   content={`${nights}박 ${days}일 여행`}
                 />
                 <LikeCommentBox
-                  likeCnt={diaryData.likeCnt}
+                  likeCnt={likeState?.likeCount}
                   commentCnt={diaryData.commentCnt}
-                  fillLike={fillLike}
+                  fillLike={likeState?.isLiked}
                   likeClick={handleLike}
                 />
               </ProfileLikeCommentBox>

@@ -26,7 +26,7 @@ export default function AddPlaceCard({ data }: Props) {
 
   return (
     <AddPlaceCardContainer>
-      <img src={testImg} alt="addPlace" />
+      <img src={data?.photoUrl} alt="addPlace" />
 
       <TextCol>
         <h1>명소</h1>
