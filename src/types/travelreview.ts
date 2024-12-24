@@ -3,6 +3,7 @@ import { UserProps } from "./mypage";
 export interface ReviewProps {
   commentCnt: number;
   id: number;
+  isLiked?: boolean;
   createdAt: string;
   likeCnt: number;
   placeId: string;
@@ -26,6 +27,7 @@ export interface ReviewDetailProps {
   placeId: string;
   star: number;
   likeCnt: number;
+  isLiked?: boolean;
   viewCnt: number;
   createdAt: string;
   commentResDtoList: CommentProps[];
@@ -48,6 +50,7 @@ export interface CommentProps {
 
 export interface TravelogProps {
   id: number;
+  isLiked?: boolean;
   subject: string;
   scheduleStartDate: string;
   scheduleEndDate: string;

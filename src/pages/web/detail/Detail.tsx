@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
+  getAllDiaries,
   getPlaceDetail,
   getReviews,
   getSurroundingPlace,
@@ -8,21 +9,14 @@ import {
 } from "../../../service/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { GooglePlaceProps, PlaceDetailAPiProps } from "../../../types/place";
-import { ReviewProps } from "../../../types/travelreview";
+import { ReviewProps, TravelogProps } from "../../../types/travelreview";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
-import StarIcon from "../../../assets/icons/StarIcon";
-import ImageView from "../../../components/web/ImageView";
-import {
-  ReviewInfo,
-  ReviewTitle,
-} from "../../../assets/styles/homeDetail.style";
 import CustomSkeleton from "../../../components/CustomSkeleton";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import SurroundingPlaceCard from "../../../components/web/home/SurroundingPlaceCard";
-import LikeCommentBox from "../../../components/LikeCommentBox";
 import { toast } from "react-toastify";
 import { useModalStore } from "../../../store/modal.store";
 import NoButtonModal from "../../../components/web/NoButtonModal";
@@ -30,6 +24,11 @@ import { PlaceAddModalContainer } from "./SurroundingMore";
 import SuccessModal from "../../../components/web/surroundingPlace/SuccessModal";
 import { Cookies } from "react-cookie";
 import TravelPlaceAddModal from "../../../components/web/surroundingPlace/TravelPlaceAddModal";
+import TripCard from "../../../components/web/detail/TripCard";
+import ReviewCard from "../../../components/web/detail/ReviewCard";
+import EditIcon from "../../../assets/icons/EditIcon";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
+import { useReviewStore } from "../../../store/travelReview.store";
 
 const cookies = new Cookies();
 
@@ -47,15 +46,16 @@ export default function Detail() {
     []
   );
   const [review, setReviews] = useState<ReviewProps[]>([]);
+  const [recommendedTrips, setRecommendedTrips] = useState<TravelogProps[]>([]);
 
-  const getDetail = async () => {
+  const getDetail = () => {
     getPlaceDetail({ placeId: param.placeId + "" }).then((res) => {
       setDetails(res?.data);
       setLoading(false);
     });
   };
 
-  const getReview = async () => {
+  const getReview = () => {
     getReviews({ page: 1, sort: "HOT", placeId: param.placeId + "" }).then(
       (res) => {
         setReviews(res?.data.data);
@@ -63,7 +63,13 @@ export default function Detail() {
     );
   };
 
-  const getNearPlace = async () => {
+  const getRecommendedTrips = () => {
+    getAllDiaries(1, "HOT", param?.placeId).then((res) => {
+      if (res) setRecommendedTrips(res?.data?.data);
+    });
+  };
+
+  const getNearPlace = () => {
     getSurroundingPlace({
       lat: detail?.location.lat + "",
       lng: detail?.location.lng + "",
@@ -104,6 +110,7 @@ export default function Detail() {
     if (param?.placeId) {
       getDetail();
       getReview();
+      getRecommendedTrips();
     }
   }, [param?.placeId]);
 
@@ -112,6 +119,23 @@ export default function Detail() {
       getNearPlace();
     }
   }, [detail?.id]);
+
+  const writeReviewStore = useWriteReviewStore();
+  const reviewStore = useReviewStore();
+  const handleReviewWrite = () => {
+    writeReviewStore.setSelectedPlace(detail?.placeId);
+    writeReviewStore.setSelectedPlace(detail?.name);
+    navigate("/home/writeReview");
+  };
+
+  const handleReviewTripMore = () => {
+    if (detail?.placeType === "CITY") {
+      reviewStore.setIsReview(false);
+      navigate("/home/travelReview");
+    } else {
+      navigate(`/home/reviewMore/${param?.placeId}`);
+    }
+  };
 
   return (
     <>
@@ -239,44 +263,25 @@ export default function Detail() {
       </SurroundingPlaceCardRow>
 
       <SubTitle>
-        <span>리뷰</span>
-        <p onClick={() => navigate(`/home/reviewMore/${param?.placeId}`)}>
-          더보기
-        </p>
+        <span>{detail?.placeType === "CITY" ? "여행기" : "리뷰"}</span>
+        <p onClick={handleReviewTripMore}>더보기</p>
       </SubTitle>
 
       <ReviewCardRow>
-        {review?.map((r) => (
-          <ReviewCard
-            key={r.id}
-            onClick={() => navigate(`/home/review/${r.id}`)}
-          >
-            <ImageView
-              width="110px"
-              height="100px"
-              src={r.fileInfos[0]?.fileUrl}
-              alt="review-img"
-            />
+        {detail?.placeType !== "CITY" && review?.length === 0 ? (
+          <NoReviewAndTripText>
+            <span>등록된 리뷰가 없어요. 첫 리뷰를 작성해보세요 😀</span>
+            <div onClick={handleReviewWrite}>
+              작성하기
+              <EditIcon stroke="black" width="24" height="24" />
+            </div>
+          </NoReviewAndTripText>
+        ) : (
+          review?.map((r) => <ReviewCard item={r} key={r.id} />)
+        )}
 
-            <ReviewInfoCol>
-              <ReviewTitle>
-                <div>
-                  <img src={r.userCompactResDto.profile} alt="user-img" />
-                  <span>{r.userCompactResDto.nickname}</span>
-                  <span>{r.createdAt}</span>
-                </div>
-                <div>
-                  <StarIcon />
-                  <span>{r.star}</span>
-                </div>
-              </ReviewTitle>
-              <ReviewInfo>
-                <span>{r.content}</span>
-              </ReviewInfo>
-              <LikeCommentBox likeCnt={r.likeCnt} commentCnt={r.commentCnt} />
-            </ReviewInfoCol>
-          </ReviewCard>
-        ))}
+        {detail?.placeType === "CITY" &&
+          recommendedTrips?.map((r, i) => <TripCard key={i} item={r} />)}
       </ReviewCardRow>
 
       {!!addPlaceId && (
@@ -488,24 +493,24 @@ const ReviewCardRow = styled.div`
   gap: 15px;
 `;
 
-const ReviewCard = styled.div`
-  padding: 17px;
-  width: 390px;
-  height: 134px;
-  border-radius: 16px;
-  border: 1px solid ${(props) => props.theme.color.gray200};
-  background-color: ${(props) => props.theme.color.white};
-
+const NoReviewAndTripText = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  cursor: pointer;
-`;
+  justify-content: space-between;
 
-const ReviewInfoCol = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  & > span {
+    color: ${(props) => props.theme.color.gray700};
+    font-size: 16px;
+    text-align: center;
+  }
+
+  & > div {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    gap: 4px;
+    color: ${(props) => props.theme.color.gray700};
+  }
 `;

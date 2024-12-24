@@ -5,30 +5,32 @@ import Slider from "react-slick";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import ArrowLeftIcon from "../../../assets/icons/ArrowLeftIcon";
-import EditIcon from "../../../assets/icons/EditIcon";
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import MarkIcon from "../../../assets/icons/MarkIcon";
 import PlusIcon from "../../../assets/icons/PlusIcon";
-import StarIcon from "../../../assets/icons/StarIcon";
 import { ReviewTag, ReviewTagRow } from "../../../assets/styles/home.style";
 import * as S from "../../../assets/styles/homeDetail.style";
 import CustomSkeleton from "../../../components/CustomSkeleton";
-import LikeCommentBox from "../../../components/LikeCommentBox";
 import TravelPlaceAddSheet from "../../../components/mobile/bottomSheets/TravelPlaceAddSheet";
 import CustomGoogleMap from "../../../components/mobile/googleMap/CustomGoogleMap";
 import SurroundingPlaceCard from "../../../components/mobile/home/SurroundingPlaceCard";
 import TitleMoreBox from "../../../components/mobile/home/TitleMoreBox";
 import useImgLoading from "../../../hooks/useImgLoading";
 import {
+  getAllDiaries,
   getPlaceDetail,
   getReviews,
   getSurroundingPlace,
   setLike,
 } from "../../../service/axios";
 import { useMapStore } from "../../../store/map.store";
-import { ReviewProps } from "../../../types/travelreview";
+import { ReviewProps, TravelogProps } from "../../../types/travelreview";
 import { GooglePlaceProps, PlaceDetailAPiProps } from "../../../types/place";
-import { testImg2 } from "../../../utils/staticDatas";
+import { useWriteReviewStore } from "../../../store/writeReview.store";
+import { useReviewStore } from "../../../store/travelReview.store";
+import ReviewCard from "../../../components/mobile/detail/ReviewCard";
+import TripCard from "../../../components/mobile/detail/TripCard";
+import EditIcon from "../../../assets/icons/EditIcon";
 
 const cookies = new Cookies();
 
@@ -59,7 +61,9 @@ export default function HomeDetails() {
   const [reviews, setReviews] = useState<ReviewProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectPlaceId, setSelectPlaceId] = useState("");
-
+  const [recommendedTrips, setRecommendedTrips] = useState<TravelogProps[]>([]);
+  console.log(placeInfo);
+  console.log(recommendedTrips);
   const { loading: imgLoading } = useImgLoading({
     imgSrc: placeInfo?.photoUrls?.[0],
   });
@@ -77,6 +81,12 @@ export default function HomeDetails() {
         setReviews(res?.data.data);
       }
     );
+  };
+
+  const getRecommendedTrips = () => {
+    getAllDiaries(1, "HOT", param?.placeId).then((res) => {
+      if (res) setRecommendedTrips(res?.data?.data);
+    });
   };
 
   const getNearPlace = async () => {
@@ -114,6 +124,7 @@ export default function HomeDetails() {
     if (param?.placeId) {
       getPlaceInfo();
       getReview();
+      getRecommendedTrips();
     }
   }, [param?.placeId]);
 
@@ -122,6 +133,23 @@ export default function HomeDetails() {
       getNearPlace();
     }
   }, [placeInfo?.id]);
+
+  const writeReviewStore = useWriteReviewStore();
+  const reviewStore = useReviewStore();
+  const handleReviewWrite = () => {
+    writeReviewStore.setSelectedPlace(placeInfo?.placeId);
+    writeReviewStore.setSelectedPlace(placeInfo?.name);
+    navigate("/writeReview");
+  };
+
+  const handleReviewTripMore = () => {
+    if (placeInfo?.placeType === "CITY") {
+      reviewStore.setIsReview(false);
+      navigate("/home/travelReview");
+    } else {
+      navigate(`/home/reviews/${param?.placeId}`);
+    }
+  };
 
   return (
     <>
@@ -228,50 +256,27 @@ export default function HomeDetails() {
           </S.NearPlaceCol>
 
           <S.DetailsTitleWithMoreText>
-            리뷰
+            {placeInfo?.placeType === "CITY" ? "여행기" : "리뷰"}
             <S.MoreTextAbsolute>
-              {reviews.length === 0 ? (
-                <div onClick={() => navigate("/writeReview")}>
-                  <EditIcon />
-                </div>
-              ) : (
-                <span
-                  onClick={() => navigate(`/home/reviews/${param?.placeId}`)}
-                >
-                  더보기
-                </span>
-              )}
+              <span onClick={handleReviewTripMore}>더보기</span>
             </S.MoreTextAbsolute>
           </S.DetailsTitleWithMoreText>
 
-          {reviews.length === 0 ? (
+          {placeInfo?.placeType !== "CITY" && reviews.length === 0 ? (
             <S.DetailsNoReview>
-              <span>첫 리뷰를 남겨주세요!</span>
+              <span>첫 리뷰를 남겨주세요 😀</span>
+              <div onClick={handleReviewWrite}>
+                <EditIcon stroke="#b8b8b8" width="24" height="24" />
+              </div>
             </S.DetailsNoReview>
           ) : (
             <S.DetailsReviewRow>
-              {reviews?.map((review) => (
-                <S.DetailsReviewBox key={review.id}>
-                  <S.ReviewTitle>
-                    <div>
-                      <img src={testImg2} alt="user-img" />
-                      <span>{review.userCompactResDto.nickname} | </span>
-                      <span>24.4.1</span>
-                    </div>
-                    <div>
-                      <StarIcon />
-                      <span>{review.star}</span>
-                    </div>
-                  </S.ReviewTitle>
-                  <S.ReviewInfo>
-                    <span>{review.content}</span>
-                  </S.ReviewInfo>
-                  <LikeCommentBox
-                    likeCnt={review.likeCnt}
-                    commentCnt={review.commentCnt}
-                  />
-                </S.DetailsReviewBox>
+              {reviews?.map((review, idx) => (
+                <ReviewCard item={review} key={idx} />
               ))}
+
+              {placeInfo?.placeType === "CITY" &&
+                recommendedTrips?.map((r, i) => <TripCard key={i} item={r} />)}
             </S.DetailsReviewRow>
           )}
 

@@ -6,28 +6,40 @@ import CustomHeader from "../../../components/mobile/CustomHeader";
 import ReviewCard from "../../../components/mobile/ReviewCard";
 import { getReviews } from "../../../service/axios";
 import { ReviewProps } from "../../../types/travelreview";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Reviews() {
-  const [data, setData] = useState<ReviewProps[]>([]);
+  const param = useParams();
+  const navigate = useNavigate();
 
-  const requestApi = async () => {
-    getReviews({ page: 1, sort: "HOT" }).then((res) => {
-      setData(res?.data.data);
-    });
+  const [reviews, setReviews] = useState<ReviewProps[]>([]);
+
+  const requestReviews = () => {
+    getReviews({ page: 1, sort: "NEW", placeId: param?.placeId }).then(
+      (res) => {
+        if (res) {
+          setReviews(res?.data.data);
+        }
+      }
+    );
   };
 
   useEffect(() => {
-    requestApi();
-  }, []);
+    if (param?.placeId) {
+      requestReviews();
+    }
+  }, [param?.placeId]);
 
   return (
     <>
-      <CustomHeader title="리뷰 14">
-        <EditIcon />
+      <CustomHeader title={`리뷰 ${reviews?.length}`}>
+        <div onClick={() => navigate("/writeReview")}>
+          <EditIcon />
+        </div>
       </CustomHeader>
 
       <ReviewsBody>
-        {data.map((item, idx) => (
+        {reviews?.map((item, idx) => (
           <ReviewCard key={idx} item={item} />
         ))}
       </ReviewsBody>

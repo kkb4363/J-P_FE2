@@ -32,7 +32,9 @@ export default function TravelogueCard({ item }: Props) {
       <HashtagsBox hashTags={testLogTags} />
       <TravelogueTitleBox>
         <p>{item.subject}</p>
-        <span onClick={() => navigate(`/home/travelogue/${item.id}`)}>자세히보기</span>
+        <span onClick={() => navigate(`/home/travelogue/${item.id}`)}>
+          자세히보기
+        </span>
       </TravelogueTitleBox>
       <ImageView
         src={item.fileInfos[0].fileUrl}
@@ -45,7 +47,11 @@ export default function TravelogueCard({ item }: Props) {
             : undefined
         }
       />
-      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
+      <LikeCommentBox
+        fillLike={item.isLiked}
+        likeCnt={item.likeCnt}
+        commentCnt={item.commentCnt}
+      />
     </TravelogueCardContainer>
   );
 }

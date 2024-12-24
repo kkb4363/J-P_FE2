@@ -25,8 +25,8 @@ export default function TwoImageBox({ images }: Props) {
             onLoad={() => setIsLoading(false)}
           />
           {i === 1 && (
-            <ImageOverlay>
-              <span>{`+ ${images.length - 1}`}</span>
+            <ImageOverlay $isActive={images.length > 2}>
+              <span>{images?.length > 2 && `+ ${images.length - 1}`}</span>
             </ImageOverlay>
           )}
         </ImageWrapper>
@@ -48,13 +48,13 @@ const ImageWrapper = styled.div`
   height: 100%;
 `;
 
-const ImageOverlay = styled.div`
+const ImageOverlay = styled.div<{ $isActive?: boolean }>`
   position: absolute;
   top: 0;
   right: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.$isActive && "rgba(0, 0, 0, 0.5)"};
   z-index: 1;
   border-radius: 16px;
 

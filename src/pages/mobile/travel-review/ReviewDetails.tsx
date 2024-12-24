@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import StarIcon from "../../../assets/icons/StarIcon";
-import testImg from "../../../assets/images/testImg2.png";
 import * as R from "../../../assets/styles/travelReview.style";
 import CustomProfile from "../../../components/CustomProfile";
 import IconBox from "../../../components/IconBox";
@@ -25,16 +24,24 @@ export default function ReviewDetails() {
   const navigate = useNavigate();
   const { reviewId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [fillLike, setFillLike] = useState(false);
+  const [likeState, setLikeState] = useState({
+    isLiked: false,
+    likeCount: 0,
+  });
   const [comment, setComment] = useState("");
 
   const [data, setData] = useState<ReviewDetailProps>({} as ReviewDetailProps);
 
-  const requestApi = async () => {
+  const requestApi = () => {
     setIsLoading(true);
-    await getReviewDetail(Number(reviewId)).then((res) => {
+    getReviewDetail(Number(reviewId)).then((res) => {
       setData(res?.data);
       setIsLoading(false);
+
+      setLikeState({
+        isLiked: res?.data?.isLiked,
+        likeCount: res?.data?.likeCnt,
+      });
     });
   };
 
@@ -51,8 +58,16 @@ export default function ReviewDetails() {
     if (reviewId) {
       setLike({ actionType: "LIKE", targetType: "REVIEW", id: reviewId }).then(
         (res) => {
-          if (res) {
-            console.log(res);
+          if (res?.data) {
+            setLikeState((p) => ({
+              isLiked: true,
+              likeCount: p.likeCount + 1,
+            }));
+          } else {
+            setLikeState((p) => ({
+              isLiked: false,
+              likeCount: p.likeCount - 1,
+            }));
           }
         }
       );
@@ -123,7 +138,7 @@ export default function ReviewDetails() {
                     setFocusImgIdx(i);
                   }}
                 />
-                {i === 3 && (
+                {i === 3 && data?.fileInfos?.length > 4 && (
                   <ImageOverlay
                     $isActive={data?.fileInfos?.length > 4}
                     onClick={() => {
@@ -132,7 +147,7 @@ export default function ReviewDetails() {
                     }}
                   >
                     {data?.fileInfos.length > 4 && (
-                      <span>{`+ ${data?.fileInfos?.length - 3}`}</span>
+                      <span>{`+ ${data?.fileInfos?.length - 4}`}</span>
                     )}
                   </ImageOverlay>
                 )}
@@ -140,9 +155,9 @@ export default function ReviewDetails() {
             ))}
           </ReviewDetailsImageBox>
           <LikeCommentBox
-            likeCnt={data?.likeCnt}
+            likeCnt={likeState?.likeCount}
             commentCnt={data?.commentResDtoList?.length}
-            fillLike={fillLike}
+            fillLike={likeState?.isLiked}
             likeClick={handleLike}
           />
           <R.CommentsBox>

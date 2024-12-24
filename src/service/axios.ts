@@ -476,9 +476,21 @@ export const editPlan = async (id: number, body: PlanDetailsProps) => {
   }
 };
 
-export const getAllDiaries = async (page: number, sort: string) => {
+export const getAllDiaries = async (
+  page: number,
+  sort: string,
+  placeId?: string
+) => {
   try {
-    const res = await axiosInstance.get(`/diaries?page=${page}&sort=${sort}`);
+    let res;
+
+    if (placeId) {
+      res = await axiosInstance.get(
+        `/diaries?page=${page}&sort=${sort}&placeId=${placeId}`
+      );
+    } else {
+      res = await axiosInstance.get(`/diaries?page=${page}&sort=${sort}`);
+    }
 
     if (res.status === 200) {
       return res;

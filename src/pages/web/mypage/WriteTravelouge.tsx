@@ -237,6 +237,7 @@ export default function WriteTravelouge() {
                 ref={imageRef}
                 type="file"
                 accept="images/*"
+                multiple
                 onChange={handleImageChange}
               />
 

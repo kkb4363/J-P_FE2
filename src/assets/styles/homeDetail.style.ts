@@ -148,6 +148,7 @@ export const DetailsNoReview = styled.div`
   background-color: ${(props) => props.theme.color.white};
   border: 1px solid ${(props) => props.theme.color.gray200};
   border-radius: 16px;
+  gap: 16px;
 
   & > span {
     color: ${(props) => props.theme.color.gray300};
