@@ -73,9 +73,15 @@ export default function ReviewCard({ item, divRef }: Props) {
         alt="review detail img"
         width="100%"
         height="191px"
-        bottomText={`+${item?.fileInfos.length - 1}`}
+        bottomText={
+          item?.fileInfos?.length > 1 ? `+${item?.fileInfos.length - 1}` : ""
+        }
       ></ImageView>
-      <LikeCommentBox likeCnt={item.likeCnt} commentCnt={item.commentCnt} />
+      <LikeCommentBox
+        fillLike={item.isLiked}
+        likeCnt={item.likeCnt}
+        commentCnt={item.commentCnt}
+      />
     </ReviewCardContainer>
   );
 }

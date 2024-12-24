@@ -10,7 +10,6 @@ import LikeCommentBox from "../../../components/LikeCommentBox";
 import CommentCard from "../../../components/mobile/CommentCard";
 import CustomHeader from "../../../components/mobile/CustomHeader";
 import ImageSlider from "../../../components/mobile/ImageSlider";
-import TraveloguePlaceBox from "../../../components/TraveloguePlaceBox";
 import {
   getDiaryDetail,
   setComment as setCommentApi,
@@ -19,6 +18,10 @@ import {
 import { TravelogDetailProps } from "../../../types/travelreview";
 import { formatDayNights } from "../../../utils/dayNights";
 import { testLogTags } from "../../../utils/staticDatas";
+import { Cookies } from "react-cookie";
+import { toast } from "react-toastify";
+
+const cookies = new Cookies();
 
 export default function TravelogueDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,10 +29,15 @@ export default function TravelogueDetails() {
   const navigate = useNavigate();
   const { travelogueId } = useParams();
   const [diaryData, setDiaryData] = useState<TravelogDetailProps>();
-  const [fillLike, setFillLike] = useState(false);
-  const [fillHeart, setFillHeart] = useState(false);
   const [comment, setComment] = useState("");
-  console.log(diaryData);
+
+  const [likeState, setLikeState] = useState({
+    isLiked: false,
+    likeCount: 0,
+  });
+
+  const [isBookMarked, setIsBookMarked] = useState(false);
+
   const { nights, days } = diaryData
     ? formatDayNights(diaryData.scheduleStartDate, diaryData.scheduleEndDate)
     : { nights: 0, days: 0 };
@@ -40,9 +48,16 @@ export default function TravelogueDetails() {
     });
   };
 
-  const requestApi = async () => {
-    await getDiaryDetail(Number(travelogueId)).then((res) => {
+  const requestApi = () => {
+    getDiaryDetail(Number(travelogueId)).then((res) => {
       setDiaryData(res?.data);
+
+      setLikeState({
+        isLiked: res?.data?.isLiked,
+        likeCount: res?.data?.likeCnt,
+      });
+
+      setIsBookMarked(res?.data?.isBookmarked);
     });
   };
 
@@ -57,27 +72,41 @@ export default function TravelogueDetails() {
         targetType: "DIARY",
         id: diaryData.id + "",
       }).then((res) => {
-        if (res) {
-          console.log(res);
+        if (res?.data) {
+          setLikeState((p) => ({
+            isLiked: true,
+            likeCount: p.likeCount + 1,
+          }));
+        } else {
+          setLikeState((p) => ({
+            isLiked: false,
+            likeCount: p.likeCount - 1,
+          }));
         }
       });
     }
   };
 
   const handleHeart = () => {
+    if (!cookies.get("userToken"))
+      return toast(<span>로그인이 필요합니다.</span>);
+
     if (diaryData?.id) {
       setLike({
         actionType: "BOOKMARK",
         targetType: "DIARY",
         id: diaryData.id + "",
       }).then((res) => {
-        if (res) {
-          console.log(res);
+        if (res?.data) {
+          setIsBookMarked(true);
+          toast(<span>내 찜 목록에 추가되었습니다</span>);
+        } else {
+          setIsBookMarked(false);
+          toast(<span>내 찜 목록에서 삭제되었습니다</span>);
         }
       });
     }
   };
-
   const handleCommentAdd = () => {
     if (comment) {
       setCommentApi({
@@ -112,8 +141,8 @@ export default function TravelogueDetails() {
           <CustomHeader title={diaryData.subject} fontSize="16px">
             <HeartBox onClick={handleHeart}>
               <HeartIcon
-                fill={fillHeart ? "#FF5757" : "none"}
-                stroke={fillHeart ? "#FF5757" : "#808080"}
+                fill={isBookMarked ? "#FF5757" : "none"}
+                stroke={isBookMarked ? "#FF5757" : "#808080"}
               />
             </HeartBox>
           </CustomHeader>
@@ -140,7 +169,7 @@ export default function TravelogueDetails() {
               <LikeCommentBox
                 likeCnt={diaryData.likeCnt}
                 commentCnt={diaryData.commentCnt}
-                fillLike={fillLike}
+                fillLike={likeState?.isLiked}
                 likeClick={handleLike}
               />
             </R.ProfileHeader>

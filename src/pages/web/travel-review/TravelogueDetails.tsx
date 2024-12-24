@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import HeartIcon from "../../../assets/icons/HeartIcon";
@@ -46,8 +46,8 @@ export default function TravelogueDetails() {
     });
   };
 
-  const requestApi = async () => {
-    await getDiaryDetail(Number(travelogueId)).then((res) => {
+  const requestApi = () => {
+    getDiaryDetail(Number(travelogueId)).then((res) => {
       if (res) {
         setDiaryData(res?.data);
 

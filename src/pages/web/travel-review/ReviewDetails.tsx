@@ -17,7 +17,6 @@ import {
   setLike,
 } from "../../../service/axios";
 import { CommentProps, ReviewDetailProps } from "../../../types/travelreview";
-import { testImageList } from "../../../utils/staticDatas";
 
 export default function ReviewDetails() {
   const navigate = useNavigate();
@@ -31,9 +30,9 @@ export default function ReviewDetails() {
     likeCount: 0,
   });
 
-  const requestApi = async () => {
+  const requestApi = () => {
     setIsLoading(true);
-    await getReviewDetail(Number(reviewId)).then((res) => {
+    getReviewDetail(Number(reviewId)).then((res) => {
       setData(res?.data);
       setIsLoading(false);
 
