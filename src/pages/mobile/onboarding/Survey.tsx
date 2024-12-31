@@ -56,7 +56,7 @@ export default function Survey() {
     setIsLoading(true);
     try {
       const res = await axiosInstance.get(
-        `/login/oauth2/code/google?code=${code}&isDev=true`
+        `/login/oauth2/code/google?code=${code}&isDev=false`
       );
       const accessToken = res.headers.authorization;
       const tokenExpiryTime = new Date(Date.now() + 60 * 200 * 1000);
