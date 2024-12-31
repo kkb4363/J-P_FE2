@@ -15,15 +15,19 @@ export default function Review({ sort }: Props) {
   const [loading, setLoading] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  const requestApi = () => {
-    setLoading(true);
+  const requestApi = useCallback(() => {
+    if (data?.length === 0) setLoading(true);
 
-    getReviews({ page, sort }).then((res) => {
-      setData(res?.data.data);
-      setHasMore(res?.data.data.length > 0);
-      setLoading(false);
-    });
-  };
+    getReviews({ page, sort })
+      .then((res) => {
+        setData((prevData) => [...prevData, ...res?.data.data]);
+        setHasMore(res?.data.data.length > 0);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, [page, sort]);
 
   // 마지막 요소 감지 후 페이지 증가
   const lastElementRef = useCallback(
@@ -49,7 +53,7 @@ export default function Review({ sort }: Props) {
 
   useEffect(() => {
     requestApi();
-  }, [page, sort]);
+  }, [requestApi]);
 
   return (
     <ReviewContainer>
@@ -60,7 +64,6 @@ export default function Review({ sort }: Props) {
       {!loading &&
         data?.map((item: ReviewProps, index: number) => {
           if (data.length === index + 1) {
-            // 마지막 요소에 ref 설정
             return (
               <ReviewCard key={item.id} item={item} divRef={lastElementRef} />
             );

@@ -11,9 +11,10 @@ import LikeCommentBox from "../../LikeCommentBox";
 
 interface Props {
   item: TravelogProps;
+  divRef?: (node: HTMLDivElement) => void;
 }
 
-export default function TravelogueCard({ item }: Props) {
+export default function TravelogueCard({ item, divRef }: Props) {
   const navigate = useNavigate();
   const { nights, days } = formatDayNights(
     item.scheduleStartDate,
@@ -21,7 +22,7 @@ export default function TravelogueCard({ item }: Props) {
   );
 
   return (
-    <TravelogueCardContainer>
+    <TravelogueCardContainer ref={divRef}>
       <R.ProfileHeader>
         <CustomProfile
           src={item.userCompactResDto.profile}
@@ -37,7 +38,7 @@ export default function TravelogueCard({ item }: Props) {
         </span>
       </TravelogueTitleBox>
       <ImageView
-        src={item.fileInfos[0].fileUrl}
+        src={item.fileInfos?.[0]?.fileUrl}
         alt="Travelogue"
         width="100%"
         height="191px"

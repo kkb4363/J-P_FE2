@@ -18,6 +18,8 @@ export default function MyReviews() {
     });
   }, []);
 
+  console.log(reviews);
+
   return (
     <>
       <MyPageTitle>내 작성 리뷰 {reviews?.length}</MyPageTitle>

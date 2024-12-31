@@ -5,10 +5,8 @@ import StarIcon from "../../assets/icons/StarIcon";
 import { useNavigate } from "react-router-dom";
 import ImageView from "../ImageView";
 import * as R from "../../assets/styles/travelReview.style";
-import { testImageList } from "../../utils/staticDatas";
 import MarkIcon from "../../assets/icons/MarkIcon";
 import { useEffect, useRef, useState } from "react";
-import testImg from "../../assets/images/testImg.png";
 import IconBox from "../IconBox";
 import LikeCommentBox from "../LikeCommentBox";
 
@@ -42,11 +40,9 @@ export default function ReviewCard({ item, divRef }: Props) {
     }
   }, []);
 
-  console.log(item);
-
   return (
     <ReviewCardContainer>
-      <ReviewPlaceBoxRow ref={reviewCardRef}>
+      <ReviewPlaceBoxRow ref={divRef}>
         <ReviewPlaceBox>
           <MarkIcon stroke="#6979F8" width="18" height="18" />
           <span>{item.subject}</span>

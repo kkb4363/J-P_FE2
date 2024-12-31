@@ -68,6 +68,7 @@ export interface MyReviewProps {
   commentCnt: number;
   content: string;
   createdAt: any;
+  isLiked?: boolean;
   fileInfos: [
     {
       fileId: string;
