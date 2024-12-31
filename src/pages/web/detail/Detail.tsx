@@ -277,11 +277,13 @@ export default function Detail() {
             </div>
           </NoReviewAndTripText>
         ) : (
-          review?.map((r) => <ReviewCard item={r} key={r.id} />)
+          review?.slice(0, 3)?.map((r) => <ReviewCard item={r} key={r.id} />)
         )}
 
         {detail?.placeType === "CITY" &&
-          recommendedTrips?.map((r, i) => <TripCard key={i} item={r} />)}
+          recommendedTrips
+            ?.slice(0, 3)
+            ?.map((r, i) => <TripCard key={i} item={r} />)}
       </ReviewCardRow>
 
       {!!addPlaceId && (

@@ -22,7 +22,7 @@ export default function ReviewCard({ item }: Props) {
       <ImageView
         width="110px"
         height="100px"
-        src={item?.fileInfos[0]?.fileUrl}
+        src={item?.fileInfos?.[0]?.fileUrl}
         alt="review-img"
       />
 

@@ -169,7 +169,7 @@ export default function Schedule() {
               >
                 <ImageView
                   src={r?.fileInfos?.[0]?.fileUrl}
-                  alt="여행 일정 추천 이미지"
+                  alt="추천이미지"
                   width="80px"
                   height="80px"
                 />

@@ -129,6 +129,8 @@ export default function TravelogueDetails() {
     requestApi();
   }, [isReplyAdded]);
 
+  console.log(diaryData);
+
   return (
     <div>
       {diaryData && (
@@ -169,7 +171,7 @@ export default function TravelogueDetails() {
                   : undefined
               }
               alt="여행기 사진"
-              src={diaryData.fileInfos[0].fileUrl}
+              src={diaryData?.fileInfos[0]?.fileUrl}
               pointer={true}
               handleClick={() => handleImageClick(0)}
             />

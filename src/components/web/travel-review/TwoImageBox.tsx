@@ -11,8 +11,8 @@ export default function TwoImageBox({ images }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <TwoImageBoxContainer $isOne={images.length == 1}>
-      {images.slice(0, 2).map((image, i) => (
+    <TwoImageBoxContainer $isOne={images?.length == 1}>
+      {images?.slice(0, 2).map((image, i) => (
         <ImageWrapper key={i}>
           {isLoading && (
             <CustomSkeleton width="100%" height="191px" borderRadius="16px" />
@@ -25,8 +25,8 @@ export default function TwoImageBox({ images }: Props) {
             onLoad={() => setIsLoading(false)}
           />
           {i === 1 && (
-            <ImageOverlay $isActive={images.length > 2}>
-              <span>{images?.length > 2 && `+ ${images.length - 1}`}</span>
+            <ImageOverlay $isActive={images?.length > 2}>
+              <span>{images?.length > 2 && `+ ${images?.length - 1}`}</span>
             </ImageOverlay>
           )}
         </ImageWrapper>

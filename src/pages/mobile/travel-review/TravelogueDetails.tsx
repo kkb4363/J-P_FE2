@@ -148,7 +148,7 @@ export default function TravelogueDetails() {
           </CustomHeader>
           <TravelogueDetailsBody>
             <ImageView
-              src={diaryData.fileInfos[0].fileUrl}
+              src={diaryData.fileInfos?.[0]?.fileUrl}
               alt="Travelogue"
               width="100%"
               height="191px"

@@ -16,7 +16,7 @@ export default function ReviewCard({ data, handleClick }: Props) {
     <ReviewCardContainer onClick={handleClick}>
       <ReviewCardTitleRow>
         <CustomProfile
-          src={data?.fileInfos[0]?.fileUrl}
+          src={data?.userCompactResDto?.profile}
           nickname={data?.userCompactResDto?.nickname}
           content={data?.createdAt}
         />
@@ -37,7 +37,11 @@ export default function ReviewCard({ data, handleClick }: Props) {
       <ReviewCardDetailCol>
         <span>{data?.content}</span>
       </ReviewCardDetailCol>
-      <LikeCommentBox commentCnt={data?.commentCnt} likeCnt={data?.likeCnt} />
+      <LikeCommentBox
+        commentCnt={data?.commentCnt}
+        likeCnt={data?.likeCnt}
+        fillLike={data?.isLiked}
+      />
     </ReviewCardContainer>
   );
 }

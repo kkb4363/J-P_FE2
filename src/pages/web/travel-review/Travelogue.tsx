@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { testReviewItem } from "../../../utils/staticDatas";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import TravelogueCard from "../../../components/web/travel-review/TravelogueCard";
-import { ReviewProps, TravelogProps } from "../../../types/travelreview";
+import { TravelogProps } from "../../../types/travelreview";
 import LoadingText from "../../../components/LoadingText";
 import { getAllDiaries } from "../../../service/axios";
 
@@ -22,15 +21,19 @@ export default function Travelogue({ sort }: Props) {
     }
   };
 
-  const requestApi = async () => {
-    setIsLoading(true);
+  const requestApi = useCallback(() => {
+    if (data?.length === 0) setIsLoading(true);
 
-    await getAllDiaries(page, sort).then((res) => {
-      setData(res?.data.data);
-      setHasMore(res?.data.data.length > 0);
-      setIsLoading(false);
-    });
-  };
+    getAllDiaries(page, sort)
+      .then((res) => {
+        setData((prevData) => [...prevData, ...res?.data.data]);
+        setHasMore(res?.data.data?.length > 0);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
+  }, [page, sort]);
 
   useEffect(() => {
     requestApi();
@@ -39,7 +42,7 @@ export default function Travelogue({ sort }: Props) {
   return (
     <>
       {isLoading && <LoadingText text="로딩중..." />}
-      {!isLoading && data.length === 0 && (
+      {!isLoading && data?.length === 0 && (
         <LoadingText text="첫 여행기를 작성해주세요!" />
       )}
       {!isLoading && (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import LoadingText from "../../../components/LoadingText";
 import { getReviews } from "../../../service/axios";
@@ -15,14 +15,19 @@ export default function Review({ sort }: Props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const requestApi = () => {
-    setIsLoading(true);
-    getReviews({ page, sort }).then((res) => {
-      setData(res?.data.data);
-      setHasMore(res?.data.data.length > 0);
-      setIsLoading(false);
-    });
-  };
+  const requestApi = useCallback(() => {
+    if (data?.length === 0) setIsLoading(true);
+
+    getReviews({ page, sort })
+      .then((res) => {
+        setData((prevData) => [...prevData, ...res?.data.data]);
+        setHasMore(res?.data?.data?.length > 0);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
+  }, [page, sort]);
 
   const handleMoreClick = () => {
     if (hasMore) {
@@ -37,12 +42,12 @@ export default function Review({ sort }: Props) {
   return (
     <>
       {isLoading && <LoadingText text="로딩중..." />}
-      {!isLoading && data.length === 0 && (
+      {!isLoading && data?.length === 0 && (
         <LoadingText text="첫 리뷰를 작성해주세요!" />
       )}
       {!isLoading && (
         <ReviewContainer>
-          {data.map((item, i) => {
+          {data?.map((item, i) => {
             return <ReviewCard key={i} item={item} />;
           })}
           {hasMore && <MoreButton onClick={handleMoreClick}>더보기</MoreButton>}
